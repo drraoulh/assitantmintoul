@@ -1,0 +1,62 @@
+[
+  {
+    "id": "kribi-plages",
+    "name": "Plages de Kribi",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "beach",
+    "summary_fr": "Station balnéaire du sud camerounais, connue pour ses plages de sable, restaurants de fruits de mer et ambiance détendue. Destination phare pour baignade et week-ends.",
+    "summary_en": "Southern Cameroon beach destination known for sandy shores, seafood restaurants, and a relaxed vibe. A top spot for swimming and weekend getaways.",
+    "tips_fr": "Choisissez des zones fréquentées. Vérifiez les conditions de baignade. Les prix des hôtels et restaurants varient fortement selon la saison.",
+    "tips_en": "Prefer busy beach stretches. Check swimming conditions. Hotel and restaurant prices vary a lot by season.",
+    "tags": ["kribi", "plage", "beach", "mer", "sea", "sud", "balnéaire"]
+  },
+  {
+    "id": "kribi-lobé",
+    "name": "Chutes de la Lobé",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "Chutes d'eau se jetant dans l'océan Atlantique près de Kribi — site naturel rare et très photographié. Accessible en excursion depuis Kribi.",
+    "summary_en": "Waterfalls flowing into the Atlantic near Kribi — a rare and highly photographed natural site. Reachable as a day trip from Kribi.",
+    "tips_fr": "Souvent visitées avec un guide ou piroguier local. Prévoyez de la monnaie pour l'accès / accompagnement. Respectez les consignes de sécurité près de l'eau.",
+    "tips_en": "Often visited with a local guide or canoeist. Bring cash for access/guidance. Respect safety rules near the water.",
+    "tags": ["kribi", "lobé", "lobe", "chutes", "waterfall", "nature", "atlantique"]
+  },
+  {
+    "id": "limbe-botanic-garden",
+    "name": "Jardin botanique de Limbé",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Jardin botanique historique de Limbé, utile pour découvrir la flore tropicale et l'héritage scientifique de la région volcanique du Mont Cameroun.",
+    "summary_en": "Historic botanical garden in Limbe, useful for tropical flora and the scientific heritage of the Mount Cameroon volcanic region.",
+    "tips_fr": "Combinez souvent avec le Wildlife Centre. Confirmez horaires et tarifs à l'entrée.",
+    "tips_en": "Often combined with the Wildlife Centre. Confirm hours and fees at the entrance.",
+    "tags": ["limbe", "limbé", "jardin", "botanic", "garden", "nature", "sud-ouest"]
+  },
+  {
+    "id": "limbe-wildlife-centre",
+    "name": "Limbé Wildlife Centre",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "wildlife",
+    "summary_fr": "Centre de primatologie et de conservation à Limbé. Sensibilisation à la protection des primates et de la biodiversité camerounaise.",
+    "summary_en": "Primate and conservation centre in Limbe. Education about primate protection and Cameroonian biodiversity.",
+    "tips_fr": "Respectez les règles de visite. Soutenez les projets de conservation plutôt que le commerce illégal d'animaux.",
+    "tips_en": "Respect visit rules. Support conservation rather than illegal wildlife trade.",
+    "tags": ["limbe", "limbé", "wildlife", "primates", "conservation", "animaux"]
+  },
+  {
+    "id": "limbe-black-sand",
+    "name": "Plages de sable noir de Limbé",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "beach",
+    "summary_fr": "Plages volcaniques de sable noir caractéristiques de Limbé, au pied du Mont Cameroun. Ambiance côtière anglophone du Sud-Ouest.",
+    "summary_en": "Distinctive volcanic black-sand beaches in Limbe, at the foot of Mount Cameroon. Coastal atmosphere of the Anglophone Southwest.",
+    "tips_fr": "La baignade peut être risquée selon les courants : renseignez-vous localement. Le soir, restez dans des zones fréquentées.",
+    "tips_en": "Swimming can be risky depending on currents: ask locally. At night, stay in busy areas.",
+    "tags": ["limbe", "limbé", "plage", "beach", "sable noir", "black sand", "volcan"]
+  }
+]

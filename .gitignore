@@ -40,13 +40,12 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Data and model caches (keep folder structure)
-data/tourist_sites/*
-!data/tourist_sites/.gitkeep
-data/documents/*
-!data/documents/.gitkeep
+# Generated / binary data caches (curated JSON + Markdown knowledge base is tracked)
 data/images/*
 !data/images/.gitkeep
+data/**/*.faiss
+data/**/*.npy
+data/**/index/
 *.faiss
 /models/
 .cache/

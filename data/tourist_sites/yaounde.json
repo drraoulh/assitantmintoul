@@ -1,0 +1,62 @@
+[
+  {
+    "id": "yaounde-monument-reunification",
+    "name": "Monument de la Réunification",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "monument",
+    "summary_fr": "Monument emblématique de Yaoundé rappelant la réunification du Cameroun. Point de vue et symbole politique et historique au cœur de la capitale.",
+    "summary_en": "Landmark monument in Yaoundé commemorating Cameroon's reunification. A symbolic historical stop in the capital.",
+    "tips_fr": "Combinez souvent avec une promenade dans le centre et le quartier administratif. Vérifiez les accès piétons et la sécurité selon l'heure.",
+    "tips_en": "Often paired with a walk through the city centre and administrative district. Check pedestrian access and safety by time of day.",
+    "tags": ["yaounde", "yaoundé", "histoire", "history", "monument", "capitale", "capital"]
+  },
+  {
+    "id": "yaounde-musee-national",
+    "name": "Musée National du Cameroun",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Musée national présentant l'histoire, les cultures et le patrimoine du Cameroun. Utile pour comprendre la diversité ethnique et les royaumes historiques.",
+    "summary_en": "National museum covering Cameroon's history, cultures, and heritage. Useful for understanding ethnic diversity and historic kingdoms.",
+    "tips_fr": "Demandez les horaires du jour à l'entrée ou via un guide local. Prévoir 1 à 2 heures.",
+    "tips_en": "Confirm opening hours on site or with a local guide. Allow 1–2 hours.",
+    "tags": ["yaounde", "yaoundé", "musée", "museum", "culture", "histoire", "history"]
+  },
+  {
+    "id": "yaounde-mont-febé",
+    "name": "Mont Fébé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Colline et zone résidentielle avec vue sur Yaoundé. Appréciée pour la promenade, l'air plus frais et les points de vue sur la ville.",
+    "summary_en": "Hill and residential area with views over Yaoundé. Popular for walks, cooler air, and city viewpoints.",
+    "tips_fr": "Idéal en fin d'après-midi pour la lumière. Transport local ou taxi recommandé si vous n'avez pas de véhicule.",
+    "tips_en": "Nice in late afternoon light. Local transport or taxi recommended without a car.",
+    "tags": ["yaounde", "yaoundé", "nature", "vue", "viewpoint", "mont", "fébé", "febe"]
+  },
+  {
+    "id": "yaounde-marche-mokolo",
+    "name": "Marché Mokolo",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "market",
+    "summary_fr": "Grand marché populaire de Yaoundé : fruits, légumes, tissus, objets du quotidien. Immersion dans la vie locale et l'ambiance commerciale de la capitale.",
+    "summary_en": "Large popular market in Yaoundé: fruit, vegetables, fabrics, everyday goods. Immersion in local life and the capital's commercial energy.",
+    "tips_fr": "Gardez vos affaires près de vous. Négociez poliment. Allez de préférence en journée.",
+    "tips_en": "Keep belongings close. Bargain politely. Prefer daytime visits.",
+    "tags": ["yaounde", "yaoundé", "marché", "market", "shopping", "food", "local"]
+  },
+  {
+    "id": "yaounde-cathedral-notre-dame",
+    "name": "Cathédrale Notre-Dame-des-Victoires",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "religious",
+    "summary_fr": "Cathédrale catholique notable de Yaoundé, élément du paysage religieux et architectural du centre-ville.",
+    "summary_en": "Notable Catholic cathedral in Yaoundé and part of the city centre's religious and architectural landscape.",
+    "tips_fr": "Respectez les offices en cours. La photo à l'intérieur peut être restreinte.",
+    "tips_en": "Respect ongoing services. Indoor photography may be restricted.",
+    "tags": ["yaounde", "yaoundé", "église", "church", "cathedral", "architecture"]
+  }
+]

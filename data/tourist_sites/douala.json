@@ -1,0 +1,62 @@
+[
+  {
+    "id": "douala-bonanjo",
+    "name": "Quartier Bonanjo",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "district",
+    "summary_fr": "Quartier administratif et historique de Douala, avec architecture coloniale, institutions et accès au centre économique de la ville.",
+    "summary_en": "Administrative and historic district of Douala, with colonial architecture, institutions, and access to the city's economic centre.",
+    "tips_fr": "Bonne base pour une première découverte à pied du centre. Attention à la circulation dense.",
+    "tips_en": "A good base for a first walking tour of the centre. Expect heavy traffic.",
+    "tags": ["douala", "bonanjo", "histoire", "history", "architecture", "littoral"]
+  },
+  {
+    "id": "douala-marche-central",
+    "name": "Marché Central de Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "market",
+    "summary_fr": "Marché animé au cœur de Douala : produits frais, artisanat, tissus et ambiance urbaine intense. Reflet de la vie quotidienne de la capitale économique.",
+    "summary_en": "Busy market in the heart of Douala: fresh produce, crafts, fabrics, and intense urban energy. A window into daily life in Cameroon's economic capital.",
+    "tips_fr": "Visitez en journée. Gardez téléphone et argent en sécurité. Un guide local aide pour s'orienter.",
+    "tips_en": "Visit during the day. Keep phone and cash secure. A local guide helps with orientation.",
+    "tags": ["douala", "marché", "market", "shopping", "local"]
+  },
+  {
+    "id": "douala-la-pagne",
+    "name": "Espace Doual'art / scène culturelle",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "culture",
+    "summary_fr": "Douala dispose d'une scène artistique et culturelle dynamique (expositions, initiatives contemporaines). Demandez les événements du moment auprès d'espaces culturels locaux.",
+    "summary_en": "Douala has a lively arts and culture scene (exhibitions, contemporary initiatives). Ask local cultural spaces for current events.",
+    "tips_fr": "Les programmes changent souvent : vérifiez sur place ou via les réseaux culturels locaux.",
+    "tips_en": "Programmes change often: confirm on site or via local cultural networks.",
+    "tags": ["douala", "art", "culture", "exposition", "gallery"]
+  },
+  {
+    "id": "douala-wouri",
+    "name": "Fleuve Wouri",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Le fleuve Wouri structure Douala. Ponts, ports et berges rappellent le rôle commercial et maritime de la ville.",
+    "summary_en": "The Wouri River shapes Douala. Bridges, ports, and riverbanks recall the city's commercial and maritime role.",
+    "tips_fr": "Observez plutôt depuis des points sécurisés recommandés localement. Évitez les zones isolées la nuit.",
+    "tips_en": "View from locally recommended safe points. Avoid isolated areas at night.",
+    "tags": ["douala", "wouri", "fleuve", "river", "port", "littoral"]
+  },
+  {
+    "id": "douala-deido",
+    "name": "Quartier Deido",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "district",
+    "summary_fr": "Quartier populaire et commercial de Douala, connu pour son animation, ses commerces et son rôle dans la vie urbaine locale.",
+    "summary_en": "Popular commercial neighbourhood in Douala, known for its energy, shops, and everyday urban life.",
+    "tips_fr": "Intéressant pour sentir le rythme de Douala ; privilégiez la journée et un accompagnement local si vous découvrez la ville.",
+    "tips_en": "Good for feeling Douala's rhythm; prefer daytime and local accompaniment if new to the city.",
+    "tags": ["douala", "deido", "quartier", "local", "urbain"]
+  }
+]
