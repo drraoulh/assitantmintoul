@@ -17,6 +17,9 @@ from app.services.ai.base import AIService
 from app.services.ai.prompts import SYSTEM_PROMPT
 from app.services.conversation.base import ConversationStore
 from app.services.conversation.memory import InMemoryConversationStore
+from app.services.rag.base import PlaceholderRAGService, RAGService
+from app.services.rag.context import build_system_prompt, format_knowledge_context
+from app.services.rag.factory import get_rag_service
 
 logger = logging.getLogger(__name__)
 
@@ -30,13 +33,19 @@ class OllamaAIService(AIService):
         self,
         conversation_store: ConversationStore | None = None,
         *,
+        rag_service: RAGService | None = None,
         base_url: str | None = None,
         model: str | None = None,
         timeout_seconds: float | None = None,
         client: httpx.AsyncClient | None = None,
+        rag_top_k: int | None = None,
     ) -> None:
         settings = get_settings()
         self._store = conversation_store or InMemoryConversationStore()
+        self._rag = rag_service if rag_service is not None else get_rag_service()
+        self._rag_top_k = (
+            rag_top_k if rag_top_k is not None else settings.rag_top_k
+        )
         self._base_url = (base_url or settings.ollama_base_url).rstrip("/")
         self._model = model or settings.llm_model
         self._timeout_seconds = (
@@ -53,9 +62,10 @@ class OllamaAIService(AIService):
     ) -> ChatResponse:
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
+        system_prompt = await self._grounded_system_prompt(message, history)
 
         payload_messages: list[dict[str, str]] = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             *history,
             {"role": "user", "content": message},
         ]
@@ -70,6 +80,31 @@ class OllamaAIService(AIService):
             message=reply,
             provider="ollama",
         )
+
+    async def _grounded_system_prompt(
+        self,
+        message: str,
+        history: list[dict[str, str]],
+    ) -> str:
+        if isinstance(self._rag, PlaceholderRAGService):
+            return SYSTEM_PROMPT
+
+        # Include a bit of recent user context so follow-ups like
+        # "que puis-je visiter ?" still retrieve the right city.
+        recent_user = " ".join(
+            turn["content"]
+            for turn in history[-4:]
+            if turn.get("role") == "user"
+        )
+        query = f"{recent_user} {message}".strip()
+        try:
+            chunks = await self._rag.retrieve_chunks(query, top_k=self._rag_top_k)
+        except Exception:
+            logger.exception("RAG retrieval failed; continuing without context")
+            return SYSTEM_PROMPT
+
+        context = format_knowledge_context(chunks)
+        return build_system_prompt(SYSTEM_PROMPT, context)
 
     async def _complete(self, messages: list[dict[str, str]]) -> str:
         body: dict[str, Any] = {

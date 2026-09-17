@@ -6,6 +6,7 @@ from app.core.exceptions import GenerationFailedError, OllamaUnavailableError
 from app.main import app
 from app.services.ai.ollama import OllamaAIService
 from app.services.conversation.memory import InMemoryConversationStore
+from app.services.rag.base import PlaceholderRAGService
 from tests.conftest import FakeAIService, client_with_ai
 
 
@@ -70,6 +71,7 @@ async def test_ollama_connect_error_is_mapped() -> None:
     client = httpx.AsyncClient(transport=transport, base_url="http://localhost:11434")
     service = OllamaAIService(
         conversation_store=InMemoryConversationStore(),
+        rag_service=PlaceholderRAGService(),
         client=client,
         model="qwen3:4b",
         timeout_seconds=5,
@@ -88,6 +90,7 @@ async def test_ollama_missing_model_is_mapped() -> None:
     client = httpx.AsyncClient(transport=transport, base_url="http://localhost:11434")
     service = OllamaAIService(
         conversation_store=InMemoryConversationStore(),
+        rag_service=PlaceholderRAGService(),
         client=client,
         model="qwen3:4b",
         timeout_seconds=5,
@@ -97,6 +100,42 @@ async def test_ollama_missing_model_is_mapped() -> None:
         await service.generate_response("Bonjour")
 
     assert "qwen3:4b" in str(exc_info.value)
+
+
+@pytest.mark.asyncio
+async def test_ollama_prompt_includes_rag_context() -> None:
+    captured: dict[str, object] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["body"] = request.read()
+        return httpx.Response(
+            200,
+            json={"message": {"role": "assistant", "content": "Voici des idées à Yaoundé."}},
+        )
+
+    transport = httpx.MockTransport(handler)
+    client = httpx.AsyncClient(transport=transport, base_url="http://localhost:11434")
+    from app.services.rag.local import LocalRAGService
+
+    service = OllamaAIService(
+        conversation_store=InMemoryConversationStore(),
+        rag_service=LocalRAGService(),
+        client=client,
+        model="qwen3:4b",
+        timeout_seconds=5,
+        rag_top_k=3,
+    )
+
+    response = await service.generate_response(
+        "Quels sites visiter à Yaoundé ?"
+    )
+    assert response.message
+    import json
+
+    payload = json.loads(captured["body"].decode())
+    system = payload["messages"][0]["content"]
+    assert "Curated knowledge base excerpts" in system
+    assert "Yaound" in system
 
 
 def teardown_module() -> None:

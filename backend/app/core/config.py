@@ -45,6 +45,12 @@ class Settings(BaseSettings):
     hf_tts_model_id: str = "piper"
     huggingface_hub_token: str = ""
 
+    # Local tourism knowledge base (RAG). Lexical retrieval by default —
+    # no embedding model download required for the MVP.
+    rag_enabled: bool = True
+    rag_top_k: int = 4
+    rag_data_dir: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         if self.cors_origins.strip() == "*":

@@ -2,11 +2,11 @@
 
 Intelligent tourist assistant dedicated to Cameroon.
 
-Phase 2 connects the chat UI to a **local open-source LLM** through FastAPI.
-The mobile app calls FastAPI only. FastAPI calls Ollama. Ollama is never exposed to the phone.
+Phase 3 adds a **local tourism knowledge base** and lightweight RAG.
+Retrieved excerpts are injected into the system prompt before Ollama generates an answer.
 
 ```
-React Native → FastAPI /api/chat → AIService → Ollama → Qwen → FastAPI → React Native
+React Native → FastAPI /api/chat → AIService → RAG (local data) → Ollama → Qwen → FastAPI → React Native
 ```
 
 ## Default model
@@ -29,13 +29,15 @@ The model name is only in environment variables, not hard-coded in routes.
 - `POST /api/chat` unchanged from the mobile side
 - `AIService` abstraction with a real Ollama implementation
 - In-memory multi-turn conversation history (replaceable later with PostgreSQL)
-- System prompt for Cameroon tourism, with explicit “no RAG yet” honesty
+- Curated Cameroon tourism knowledge base under `data/`
+- Local lexical RAG (`LocalRAGService`) that grounds answers in those files
+- System prompt that prefers retrieved excerpts and stays honest about missing live data
 - HTTP errors when Ollama is down, the model is missing, or generation times out
-- Backend tests for chat success, empty messages, and AI failures
+- Backend tests for chat success, empty messages, AI failures, and RAG retrieval
 
 ## What this phase does not include
 
-RAG, embeddings, Whisper, TTS playback, computer vision, GPS, maps, authentication, payments, and cloud deployment. Microphone and camera buttons remain placeholders.
+Dense embeddings / FAISS, Whisper, TTS playback, computer vision, GPS, maps, authentication, payments, and cloud deployment. Microphone and camera buttons remain placeholders.
 
 ## Folder structure
 
@@ -44,9 +46,13 @@ RAG, embeddings, Whisper, TTS playback, computer vision, GPS, maps, authenticati
 ├── mobile/                 Expo application
 ├── backend/                FastAPI application
 │   ├── app/services/ai/    AIService, Ollama adapter, prompts
+│   ├── app/services/rag/   Local knowledge retrieval (lexical TF-IDF)
+│   ├── app/services/tourism/
 │   ├── app/services/conversation/   in-memory history
 │   └── tests/
 ├── data/
+│   ├── documents/          Markdown tourism guides
+│   └── tourist_sites/      Curated site JSON by region
 ├── docs/
 ├── docker-compose.yml
 ├── .env.example
@@ -206,8 +212,28 @@ Restart Expo after changing `mobile/.env`. Allow inbound TCP **8000** in Windows
 | `The model 'qwen3:4b' is not installed` | `ollama pull qwen3:4b` |
 | `took too long to respond` | Wait for first-load (model loads into RAM). Try `LLM_MODEL=qwen3:4b`. Increase `OLLAMA_TIMEOUT_SECONDS`. Close other heavy apps. |
 | Phone header **Hors ligne** | Wrong API URL. Use the PC LAN IP, not `localhost`. |
-| Reply invents precise prices | Expected until RAG exists. The system prompt tells the model not to present guesses as facts. |
+| Reply invents precise prices | Knowledge base has no live prices. The prompt forbids presenting guesses as facts. |
 | Very slow answers | CPU-only Intel graphics. Stay on `qwen3:4b`, or use a machine with a discrete GPU for `qwen3:8b`. |
+| Answers ignore local sites | Confirm `RAG_ENABLED=true` and that `data/tourist_sites` / `data/documents` are present. |
+
+## Knowledge base (RAG)
+
+Curated files live in:
+
+- `data/tourist_sites/*.json` — sites with FR/EN summaries and tips
+- `data/documents/*.md` — regional overview, practical tips, food & culture
+
+At chat time, `LocalRAGService` retrieves the top `RAG_TOP_K` passages (lexical TF-IDF, bilingual aliases) and `OllamaAIService` appends them to the system prompt. No embedding model download is required for this MVP.
+
+Toggle:
+
+```env
+RAG_ENABLED=true
+RAG_TOP_K=4
+RAG_DATA_DIR=
+```
+
+To enrich the assistant later, add JSON sites or Markdown sections under `data/` — they are picked up on the next backend process start (RAG service is cached at import/startup).
 
 ## Optional PostgreSQL
 
@@ -221,10 +247,12 @@ Then set `DATABASE_ENABLED=true`. Chat history is still in-memory in this phase.
 
 1. `backend/app/api/chat.py` — HTTP route (no Ollama calls)
 2. `backend/app/services/ai/base.py` — `AIService`
-3. `backend/app/services/ai/ollama.py` — Ollama adapter
+3. `backend/app/services/ai/ollama.py` — Ollama adapter + RAG grounding
 4. `backend/app/services/ai/factory.py` — provider switch
 5. `backend/app/services/ai/prompts.py` — system prompt
-6. `backend/app/services/conversation/memory.py` — in-memory threads
-7. `mobile/services/api.ts` — FastAPI client
-8. `mobile/constants/config.ts` — API base URL
-9. `.env.example` — `LLM_PROVIDER` / `LLM_MODEL`
+6. `backend/app/services/rag/local.py` — lexical knowledge retrieval
+7. `backend/app/services/conversation/memory.py` — in-memory threads
+8. `data/tourist_sites/` / `data/documents/` — curated knowledge base
+9. `mobile/services/api.ts` — FastAPI client
+10. `mobile/constants/config.ts` — API base URL
+11. `.env.example` — `LLM_PROVIDER` / `LLM_MODEL` / `RAG_*`
