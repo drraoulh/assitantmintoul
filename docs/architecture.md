@@ -39,12 +39,24 @@ HUGGINGFACE_HUB_TOKEN=hf_xxx
 `RAGService` loads curated JSON sites and Markdown documents from `data/`.
 
 `LocalRAGService` scores passages with lightweight TF-IDF (no embedding download).
-A later upgrade can call Hugging Face embeddings for dense retrieval.
+The dataset includes monuments, museums, parks, beaches, chiefdoms, and practical guides.
 
 ```env
 RAG_ENABLED=true
 RAG_TOP_K=6
 ```
+
+## Firebase (Firestore) — planned cloud database
+
+Local `data/` remains the seed source of truth for the MVP.
+
+Firebase is wired as an optional cloud store:
+
+- Collections: `tourist_sites`, `knowledge_documents`
+- Seed: `python -m app.services.firebase.cli_seed`
+- Config: `FIREBASE_ENABLED`, `FIREBASE_PROJECT_ID`, `FIREBASE_CREDENTIALS_FILE`
+
+When disabled (default), the chat stack keeps using local files only.
 
 ## Live web search
 
@@ -68,7 +80,8 @@ Curated KB excerpts are preferred over web snippets when both cover the same pla
 
 | Capability | Planned tool |
 | --- | --- |
-| Dense RAG | HF embedding endpoint + FAISS / pgvector |
+| Cloud DB | Firebase Firestore (sites, docs, later chat history) |
+| Dense RAG | HF embedding endpoint + FAISS / vector search |
 | STT | Whisper (HF) |
 | TTS | Piper / HF TTS |
 | Vision | HF vision model |

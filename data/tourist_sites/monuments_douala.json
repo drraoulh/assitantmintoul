@@ -1,0 +1,92 @@
+[
+  {
+    "id": "douala-cathedrale",
+    "name": "Cathédrale Saint-Pierre-et-Saint-Paul",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "religious",
+    "summary_fr": "Cathédrale catholique majeure de Douala, élément du paysage religieux et architectural du centre.",
+    "summary_en": "Major Catholic cathedral in Douala and part of the city's religious and architectural landscape.",
+    "tips_fr": "Respectez les célébrations en cours.",
+    "tips_en": "Respect ongoing services.",
+    "tags": [
+      "douala",
+      "cathédrale",
+      "église",
+      "monument",
+      "religion"
+    ]
+  },
+  {
+    "id": "douala-palace-justice",
+    "name": "Quartier des institutions / Bonanjo monumental",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "monument",
+    "summary_fr": "Ensemble d'édifices administratifs et coloniaux à Bonanjo : mémoire urbaine de Douala, banques, gouvernements locaux et architecture historique.",
+    "summary_en": "Cluster of administrative and colonial-era buildings in Bonanjo: Douala's urban memory, banks, local government and historic architecture.",
+    "tips_fr": "Balade à pied en journée ; circulation dense.",
+    "tips_en": "Walk by day; traffic is heavy.",
+    "tags": [
+      "douala",
+      "bonanjo",
+      "architecture",
+      "colonial",
+      "monument"
+    ]
+  },
+  {
+    "id": "douala-pagode",
+    "name": "Pagode de Douala (temple)",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "religious",
+    "summary_fr": "Lieu de culte / architecture d'inspiration asiatique parfois cité parmi les curiosités religieuses de Douala. Confirmez accès et horaires localement.",
+    "summary_en": "Place of worship / Asian-inspired architecture sometimes listed among Douala curiosities. Confirm access and hours locally.",
+    "tips_fr": "Demandez avant de photographier l'intérieur.",
+    "tips_en": "Ask before photographing indoors.",
+    "tags": [
+      "douala",
+      "pagode",
+      "temple",
+      "religion",
+      "curiosité"
+    ]
+  },
+  {
+    "id": "douala-monument-liberte",
+    "name": "Espaces mémoriels et monuments urbains de Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "monument",
+    "summary_fr": "Douala compte plusieurs monuments et places liées à l'histoire locale (indépendance, figures nationales, héritage Sawa). Un guide local aide à les situer.",
+    "summary_en": "Douala has several monuments and squares tied to local history (independence, national figures, Sawa heritage). A local guide helps locate them.",
+    "tips_fr": "Demandez un circuit « patrimoine » court d'une demi-journée.",
+    "tips_en": "Ask for a short half-day heritage circuit.",
+    "tags": [
+      "douala",
+      "monument",
+      "mémoire",
+      "histoire",
+      "sawa"
+    ]
+  },
+  {
+    "id": "douala-musee-maritime",
+    "name": "Patrimoine portuaire et maritime de Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "heritage",
+    "summary_fr": "Le port et le fleuve Wouri racontent le rôle commercial de Douala. Certains espaces culturels évoquent l'histoire maritime et coloniale de la ville.",
+    "summary_en": "The port and Wouri River tell Douala's commercial story. Some cultural spaces cover the city's maritime and colonial history.",
+    "tips_fr": "Observez depuis des points autorisés ; zones portuaires souvent réglementées.",
+    "tips_en": "View from authorised points; port zones are often restricted.",
+    "tags": [
+      "douala",
+      "port",
+      "maritime",
+      "wouri",
+      "heritage"
+    ]
+  }
+]

@@ -1,0 +1,187 @@
+[
+  {
+    "id": "foumban-musee-rois",
+    "name": "Musée des Rois Bamoun (Foumban)",
+    "city": "Foumban",
+    "region": "Ouest",
+    "category": "museum",
+    "summary_fr": "Musée associé au palais du sultan : trésors, écriture bamoun, histoire dynastique. Incontournable du patrimoine monumental de l'Ouest.",
+    "summary_en": "Museum linked to the sultan's palace: treasures, Bamoun script, dynastic history. Essential monumental heritage of the West.",
+    "tips_fr": "Prévoyez 1–2 h et un guide pour le contexte.",
+    "tips_en": "Allow 1–2 hours and a guide for context.",
+    "tags": [
+      "foumban",
+      "musée",
+      "bamoun",
+      "palais",
+      "monument",
+      "ouest"
+    ]
+  },
+  {
+    "id": "buea-castle",
+    "name": "Buea Castle / héritage colonial allemand",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "monument",
+    "summary_fr": "Vestiges et bâtiments de l'époque coloniale allemande à Buea (dont le « castle » / résidences historiques). Mémoire alpine du Sud-Ouest au pied du Mont Cameroun.",
+    "summary_en": "German colonial-era remains and buildings in Buea (including the historic 'castle' / residences). Highland memory of the Southwest at Mount Cameroon's foot.",
+    "tips_fr": "Renseignez-vous sur les bâtiments visitables ; certains sont administratifs.",
+    "tips_en": "Check which buildings are visitable; some are administrative.",
+    "tags": [
+      "buea",
+      "castle",
+      "colonial",
+      "allemand",
+      "monument",
+      "sud-ouest"
+    ]
+  },
+  {
+    "id": "dschang-musee-civilisations",
+    "name": "Musée des Civilisations (Dschang)",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "museum",
+    "summary_fr": "Musée présentant les civilisations et cultures du Cameroun, notamment des Grassfields. Complément idéal à une visite de chefferies.",
+    "summary_en": "Museum presenting Cameroon's civilisations and cultures, especially the Grassfields. Ideal complement to chiefdom visits.",
+    "tips_fr": "Vérifiez horaires ; combinez avec le lac municipal.",
+    "tips_en": "Check hours; combine with the municipal lake.",
+    "tags": [
+      "dschang",
+      "musée",
+      "civilisations",
+      "ouest",
+      "culture"
+    ]
+  },
+  {
+    "id": "ekom-nkam",
+    "name": "Chutes d'Ekom-Nkam",
+    "city": "Melong / Ekom-Nkam",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Chutes spectaculaires sur le Nkam, souvent citées parmi les plus belles cascades du Cameroun. Site naturel « monumental » près de Melong.",
+    "summary_en": "Spectacular falls on the Nkam, often listed among Cameroon's finest waterfalls. A monumental natural site near Melong.",
+    "tips_fr": "Accès parfois exigeant ; guide local recommandé. Attention aux sols glissants.",
+    "tips_en": "Access can be demanding; local guide recommended. Watch for slippery ground.",
+    "tags": [
+      "ekom",
+      "nkam",
+      "chutes",
+      "waterfall",
+      "melong",
+      "nature",
+      "monument"
+    ]
+  },
+  {
+    "id": "lac-tison",
+    "name": "Lac Tison",
+    "city": "Ngaoundéré",
+    "region": "Adamaoua",
+    "category": "nature",
+    "summary_fr": "Lac de cratère près de Ngaoundéré, site naturel emblématique de l'Adamaoua. Balade et photographie en paysage de plateau.",
+    "summary_en": "Crater lake near Ngaoundéré, an emblematic Adamaoua natural site. Walking and photography on the plateau landscape.",
+    "tips_fr": "Prévoir véhicule ; confirmez l'accès saisonnier.",
+    "tips_en": "Plan a vehicle; confirm seasonal access.",
+    "tags": [
+      "lac tison",
+      "ngaoundéré",
+      "adamaoua",
+      "lac",
+      "nature"
+    ]
+  },
+  {
+    "id": "maroua-grande-mosquee",
+    "name": "Grande Mosquée et patrimoine de Maroua",
+    "city": "Maroua",
+    "region": "Extrême-Nord",
+    "category": "religious",
+    "summary_fr": "Maroua, porte du Sahel camerounais, possède un patrimoine religieux et urbain peul notable (mosquées, marchés, architecture de terre selon quartiers).",
+    "summary_en": "Maroua, gateway to Cameroon's Sahel, has notable Fulani religious and urban heritage (mosques, markets, earthen architecture in some quarters).",
+    "tips_fr": "Vérifiez la sécurité régionale avant le voyage. Respectez les lieux de culte.",
+    "tips_en": "Check regional security before travel. Respect places of worship.",
+    "tags": [
+      "maroua",
+      "mosquée",
+      "islam",
+      "extrême-nord",
+      "patrimoine"
+    ]
+  },
+  {
+    "id": "garoua-lamidat",
+    "name": "Lamidat et patrimoine de Garoua",
+    "city": "Garoua",
+    "region": "Nord",
+    "category": "heritage",
+    "summary_fr": "Garoua conserve une mémoire des lamidats peuls et un rôle historique sur la Bénoué. Patrimoine vivant plus qu'un seul monument isolé.",
+    "summary_en": "Garoua preserves Fulani lamidat memory and a historic role on the Benue. Living heritage more than a single isolated monument.",
+    "tips_fr": "Un guide culturel aide à comprendre l'organisation traditionnelle.",
+    "tips_en": "A cultural guide helps explain traditional organisation.",
+    "tags": [
+      "garoua",
+      "lamidat",
+      "peul",
+      "nord",
+      "heritage"
+    ]
+  },
+  {
+    "id": "bandjoun-cases-patrimoine",
+    "name": "Cases patrimoniales de Bandjoun",
+    "city": "Bandjoun",
+    "region": "Ouest",
+    "category": "monument",
+    "summary_fr": "Grandes cases cheffales et architecture monumentale bamiléké. Parmi les plus impressionnants ensembles patrimoniaux des Grassfields.",
+    "summary_en": "Large chiefly compounds and monumental Bamileke architecture. Among the most impressive Grassfields heritage ensembles.",
+    "tips_fr": "Protocole strict : suivez votre guide pour photos et circulation.",
+    "tips_en": "Strict protocol: follow your guide for photos and movement.",
+    "tags": [
+      "bandjoun",
+      "case",
+      "chefferie",
+      "bamiléké",
+      "monument",
+      "ouest"
+    ]
+  },
+  {
+    "id": "kribi-grand-batanga",
+    "name": "Grand Batanga et côte sud de Kribi",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "beach",
+    "summary_fr": "Secteur côtier au sud de Kribi, villages et plages vers Grand Batanga. Ambiance plus calme que le front de mer central.",
+    "summary_en": "Coastal stretch south of Kribi toward Grand Batanga villages and beaches. Calmer than the central seafront.",
+    "tips_fr": "Transport local ou moto-taxi ; revenez avant la nuit.",
+    "tips_en": "Local transport or moto-taxi; return before night.",
+    "tags": [
+      "kribi",
+      "grand batanga",
+      "plage",
+      "sud",
+      "côte"
+    ]
+  },
+  {
+    "id": "limbe-down-beach",
+    "name": "Down Beach (Limbé)",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "beach",
+    "summary_fr": "Front de mer populaire de Limbé : sable noir, restaurants de poisson, vue vers le Mont Cameroun par temps clair.",
+    "summary_en": "Popular Limbe seafront: black sand, fish restaurants, Mount Cameroon views on clear days.",
+    "tips_fr": "Baignade : renseignez-vous sur les courants.",
+    "tips_en": "Swimming: ask about currents.",
+    "tags": [
+      "limbe",
+      "limbé",
+      "down beach",
+      "plage",
+      "sable noir"
+    ]
+  }
+]

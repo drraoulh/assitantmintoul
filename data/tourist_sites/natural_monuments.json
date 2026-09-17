@@ -1,0 +1,75 @@
+[
+  {
+    "id": "reserve-benoue",
+    "name": "Parc / Réserve de la Bénoué",
+    "city": "Lagdo / Bénoué",
+    "region": "Nord",
+    "category": "park",
+    "summary_fr": "Aire protégée de savane du Nord le long de la Bénoué. Observation de faune selon saison et accès autorisé.",
+    "summary_en": "Northern savannah protected area along the Benue. Wildlife viewing by season and authorised access.",
+    "tips_fr": "Organisez via opérateurs / guides ; vérifiez ouverture.",
+    "tips_en": "Organise via operators/guides; check opening status.",
+    "tags": [
+      "bénoué",
+      "benoue",
+      "parc",
+      "nord",
+      "safari",
+      "wildlife"
+    ]
+  },
+  {
+    "id": "mont-manengouba",
+    "name": "Mont Manengouba",
+    "city": "Nkongsamba / Bangem",
+    "region": "Littoral / Sud-Ouest",
+    "category": "hiking",
+    "summary_fr": "Massif volcanique aux lacs de cratère, randonnées et paysages verdoyants entre Littoral et Sud-Ouest.",
+    "summary_en": "Volcanic massif with crater lakes, hikes and green landscapes between Littoral and Southwest.",
+    "tips_fr": "Guide local recommandé ; météo changeante.",
+    "tips_en": "Local guide recommended; changeable weather.",
+    "tags": [
+      "manengouba",
+      "trek",
+      "lacs",
+      "nkongsamba",
+      "randonnée"
+    ]
+  },
+  {
+    "id": "chutes-metche",
+    "name": "Chutes de la Métché / cascades de l'Ouest",
+    "city": "Bafoussam / Ouest",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Plusieurs cascades des hauts plateaux de l'Ouest (dont sites près de Bafoussam selon accès). Nature monumentale des Grassfields.",
+    "summary_en": "Several highland waterfalls in the West (including sites near Bafoussam depending on access). Monumental Grassfields nature.",
+    "tips_fr": "Demandez le site précis ouvert aux visiteurs le jour J.",
+    "tips_en": "Ask which exact site is open to visitors that day.",
+    "tags": [
+      "chutes",
+      "cascade",
+      "bafoussam",
+      "ouest",
+      "nature"
+    ]
+  },
+  {
+    "id": "rhumsiki-peak",
+    "name": "Pic de Rhumsiki",
+    "city": "Rhumsiki",
+    "region": "Extrême-Nord",
+    "category": "monument",
+    "summary_fr": "Pic volcanique emblématique dominant le village de Rhumsiki dans les Mandara. Monument naturel photographique du Nord.",
+    "summary_en": "Iconic volcanic peak above Rhumsiki village in the Mandara. A photographic natural monument of the North.",
+    "tips_fr": "Sécurité et accès à vérifier avant tout projet.",
+    "tips_en": "Security and access must be checked before any trip.",
+    "tags": [
+      "rhumsiki",
+      "pic",
+      "mandara",
+      "monument",
+      "extrême-nord"
+    ]
+  }
+]

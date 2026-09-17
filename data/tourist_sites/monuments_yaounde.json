@@ -1,0 +1,130 @@
+[
+  {
+    "id": "yaounde-palais-unite",
+    "name": "Palais de l'Unité (extérieur)",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "monument",
+    "summary_fr": "Siège de la Présidence de la République à Yaoundé. Monumental bâtiment symbolique de l'État ; la visite se limite en général aux abords / vues extérieures selon les consignes de sécurité.",
+    "summary_en": "Seat of the Presidency in Yaoundé. A monumental state landmark; visits are usually limited to exterior views under security rules.",
+    "tips_fr": "Ne photographiez pas les zones sensibles ni le personnel de sécurité. Respectez les périmètres.",
+    "tips_en": "Do not photograph sensitive zones or security staff. Respect perimeters.",
+    "tags": [
+      "yaoundé",
+      "yaounde",
+      "palais",
+      "monument",
+      "capitale",
+      "présidence"
+    ]
+  },
+  {
+    "id": "yaounde-place-independance",
+    "name": "Place de l'Indépendance",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "monument",
+    "summary_fr": "Place symbolique liée à l'indépendance du Cameroun. Point de repère urbain et lieu de cérémonies / mémoire nationale selon les événements.",
+    "summary_en": "Symbolic square linked to Cameroon's independence. An urban landmark and site of national ceremonies or remembrance depending on events.",
+    "tips_fr": "Combinez avec une balade dans le centre administratif.",
+    "tips_en": "Combine with a walk through the administrative centre.",
+    "tags": [
+      "yaoundé",
+      "indépendance",
+      "monument",
+      "histoire",
+      "place"
+    ]
+  },
+  {
+    "id": "yaounde-basilique-mvolye",
+    "name": "Basilique Marie-Reine-des-Apôtres (Mvolyé)",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "religious",
+    "summary_fr": "Grande basilique de Mvolyé, haut lieu du catholicisme à Yaoundé. Architecture imposante et pèlerinages.",
+    "summary_en": "Large basilica in Mvolyé, a major Catholic landmark in Yaoundé. Imposing architecture and pilgrimages.",
+    "tips_fr": "Respectez les offices. Tenue correcte recommandée.",
+    "tips_en": "Respect services. Modest dress recommended.",
+    "tags": [
+      "yaoundé",
+      "basilique",
+      "église",
+      "mvolyé",
+      "mvolye",
+      "religion",
+      "monument"
+    ]
+  },
+  {
+    "id": "yaounde-palais-congres",
+    "name": "Palais des Congrès",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "monument",
+    "summary_fr": "Grand complexe de conférences et événements officiels de Yaoundé. Architecture moderne emblématique de la capitale.",
+    "summary_en": "Major conference and official events complex in Yaoundé. Emblematic modern architecture of the capital.",
+    "tips_fr": "L'accès intérieur dépend des événements ; renseignez-vous sur place.",
+    "tips_en": "Indoor access depends on events; check on site.",
+    "tags": [
+      "yaoundé",
+      "palais des congrès",
+      "architecture",
+      "monument"
+    ]
+  },
+  {
+    "id": "yaounde-stade-ahidjo",
+    "name": "Stade Ahmadou Ahidjo",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "landmark",
+    "summary_fr": "Stade national historique de Yaoundé, lieu de grands matchs et événements sportifs. Symbole populaire de la capitale.",
+    "summary_en": "Historic national stadium in Yaoundé, venue for major matches and sports events. A popular capital landmark.",
+    "tips_fr": "Vérifiez calendrier sportif si vous voulez assister à un match.",
+    "tips_en": "Check the sports calendar if you want to attend a match.",
+    "tags": [
+      "yaoundé",
+      "stade",
+      "sport",
+      "ahidjo",
+      "landmark"
+    ]
+  },
+  {
+    "id": "yaounde-musee-blackitude",
+    "name": "Musée de la Blackitude (et patrimoine culturel)",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Espace muséal / culturel dédié aux arts et civilisations africaines (vérifier horaires d'ouverture actuels). Complète la visite du Musée National.",
+    "summary_en": "Museum/cultural space dedicated to African arts and civilisations (confirm current opening hours). Complements a National Museum visit.",
+    "tips_fr": "Confirmez ouverture et expositions du moment avant de vous déplacer.",
+    "tips_en": "Confirm opening hours and current exhibitions before going.",
+    "tags": [
+      "yaoundé",
+      "musée",
+      "museum",
+      "culture",
+      "art",
+      "blackitude"
+    ]
+  },
+  {
+    "id": "yaounde-obili-nkolbisson",
+    "name": "Axes Obili / Nkolbisson (vie étudiante & vues)",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "district",
+    "summary_fr": "Secteurs universitaires et résidentiels avec collines et animation étudiante. Utile pour sentir le quotidien de Yaoundé hors centre administratif.",
+    "summary_en": "University and residential areas with hills and student life. Useful for everyday Yaoundé beyond the administrative centre.",
+    "tips_fr": "Transports locaux fréquents en journée.",
+    "tips_en": "Local transport is frequent by day.",
+    "tags": [
+      "yaoundé",
+      "obili",
+      "université",
+      "quartiers"
+    ]
+  }
+]

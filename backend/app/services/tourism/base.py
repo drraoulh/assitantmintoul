@@ -5,7 +5,8 @@ from typing import Any
 class TourismService(ABC):
     """Tourist sites, nearby places, and itineraries.
 
-    Planned: PostgreSQL + PostGIS queries over curated Cameroon data.
+    Planned: Firebase Firestore queries over curated Cameroon data
+    (local JSON remains the seed / offline source of truth).
     """
 
     @abstractmethod
