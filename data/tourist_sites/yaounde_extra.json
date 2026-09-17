@@ -1,0 +1,56 @@
+[
+  {
+    "id": "yaounde-boulevard-du-20-mai",
+    "name": "Boulevard du 20 Mai / centre administratif",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "district",
+    "summary_fr": "Axe et secteur administratifs de Yaoundé: institutions, monuments et ambiance de capitale politique.",
+    "summary_en": "Administrative axis of Yaoundé: institutions, monuments and political-capital atmosphere.",
+    "tips_fr": "Utile pour une première orientation en centre-ville.",
+    "tips_en": "Useful for first orientation downtown.",
+    "tags": [
+      "yaounde",
+      "yaoundé",
+      "centre",
+      "capitale",
+      "administratif"
+    ]
+  },
+  {
+    "id": "yaounde-mvog-mbi",
+    "name": "Quartier Mvog-Mbi / vie nocturne & restauration",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "district",
+    "summary_fr": "Secteur connu pour restaurants et vie nocturne. Bon endroit pour goûter cuisine camerounaise en ville.",
+    "summary_en": "Area known for restaurants and nightlife. Good place to try Cameroonian food in the city.",
+    "tips_fr": "Comme partout, restez attentif la nuit et privilégiez les établissements fréquentés.",
+    "tips_en": "As anywhere, stay alert at night and prefer busy venues.",
+    "tags": [
+      "yaounde",
+      "restaurant",
+      "food",
+      "nightlife",
+      "cuisine"
+    ]
+  },
+  {
+    "id": "yaounde-lac-municipal",
+    "name": "Environs des lacs et collines de Yaoundé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Yaoundé est une ville de sept collines: promenades, points de vue et espaces verts selon les quartiers (dont secteurs autour des lacs municipaux selon accès).",
+    "summary_en": "Yaoundé is a city of seven hills: walks, viewpoints and green spaces by neighbourhood (including municipal lake areas depending on access).",
+    "tips_fr": "Demandez un itinéraire de balade local; la circulation peut être dense.",
+    "tips_en": "Ask for a local walking route; traffic can be heavy.",
+    "tags": [
+      "yaounde",
+      "collines",
+      "hills",
+      "nature",
+      "lac"
+    ]
+  }
+]

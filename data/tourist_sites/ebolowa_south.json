@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ebolowa-sud",
+    "name": "Ebolowa et forêt du Sud",
+    "city": "Ebolowa",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "Ebolowa, capitale du Sud, au cœur d'un environnement forestier humide. Base pour découvrir le Sud camerounais hors littoral de Kribi.",
+    "summary_en": "Ebolowa, South Region capital, in a humid forest setting. Base for inland southern Cameroon beyond Kribi's coast.",
+    "tips_fr": "Climat très pluvieux selon la saison; prévoyez imperméable.",
+    "tips_en": "Very rainy depending on season; bring rain gear.",
+    "tags": [
+      "ebolowa",
+      "sud",
+      "south",
+      "forêt",
+      "forest"
+    ]
+  }
+]

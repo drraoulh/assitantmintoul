@@ -21,12 +21,20 @@ _ALIASES: dict[str, set[str]] = {
     "limbé": {"limbe", "limbé", "buea"},
     "foumban": {"foumban", "bamoun"},
     "maroua": {"maroua", "mandara", "rhumsiki"},
+    "waza": {"waza", "safari", "parc", "park"},
+    "dja": {"dja", "forêt", "forest", "unesco"},
+    "bamenda": {"bamenda", "nord-ouest", "northwest"},
+    "garoua": {"garoua", "bénoué", "benue", "nord"},
+    "ngaoundere": {"ngaoundéré", "ngaoundere", "adamaoua"},
+    "ngaoundéré": {"ngaoundéré", "ngaoundere", "adamaoua"},
     "visite": {"visiter", "voir", "site", "sites", "attraction", "attractions"},
     "visiter": {"visite", "voir", "site", "sites"},
     "plage": {"plages", "beach", "beaches", "balnéaire"},
     "beach": {"plage", "plages", "beaches"},
     "manger": {"cuisine", "plat", "food", "restaurant", "ndolé", "ndole"},
     "food": {"cuisine", "manger", "plat", "restaurant"},
+    "parc": {"park", "safari", "wildlife", "réserve", "reserve"},
+    "park": {"parc", "safari", "wildlife"},
 }
 
 

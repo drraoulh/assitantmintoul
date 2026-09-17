@@ -1,0 +1,39 @@
+[
+  {
+    "id": "buea-town",
+    "name": "Buea Town & pied du Mont Cameroun",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "hiking",
+    "summary_fr": "Ancienne capitale coloniale allemande / britannique au pied du Mont Cameroun. Climat plus frais, point de départ des treks vers le sommet.",
+    "summary_en": "Former German/British colonial capital at the foot of Mount Cameroon. Cooler climate and trailhead for summit treks.",
+    "tips_fr": "Engagez un guide pour le mont. Emportez couches chaudes même si Douala est chaud.",
+    "tips_en": "Hire a guide for the mountain. Pack warm layers even if Douala is hot.",
+    "tags": [
+      "buea",
+      "mont cameroun",
+      "mount cameroon",
+      "trek",
+      "sud-ouest",
+      "colonial"
+    ]
+  },
+  {
+    "id": "buea-botanic",
+    "name": "Environs naturels de Buea",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Collines verdoyantes, cascades et villages autour de Buea. Ambiance montagnarde anglophone du Sud-Ouest.",
+    "summary_en": "Green hills, waterfalls and villages around Buea. Anglophone highland feel of the Southwest.",
+    "tips_fr": "Combinez souvent avec Limbé (jardin botanique, plages) en une à deux journées.",
+    "tips_en": "Often combined with Limbe (botanic garden, beaches) over one or two days.",
+    "tags": [
+      "buea",
+      "nature",
+      "cascade",
+      "limbe",
+      "sud-ouest"
+    ]
+  }
+]

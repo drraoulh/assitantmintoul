@@ -16,9 +16,9 @@ def create_ai_service() -> AIService:
     if provider == "ollama":
         return OllamaAIService(conversation_store=store)
     if provider in {"huggingface", "hf"}:
-        return HuggingFaceAIService()
+        return HuggingFaceAIService(conversation_store=store)
 
     raise ValueError(
         f"Unknown LLM_PROVIDER '{provider}'. "
-        "Use ollama, placeholder, or huggingface."
+        "Use huggingface, ollama, or placeholder."
     )

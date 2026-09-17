@@ -15,6 +15,27 @@ class OllamaUnavailableError(AppError):
         super().__init__(message, status_code=503)
 
 
+class HuggingFaceUnavailableError(AppError):
+    def __init__(
+        self,
+        message: str = (
+            "Hugging Face Inference Providers cannot be reached or the model is unavailable."
+        ),
+    ) -> None:
+        super().__init__(message, status_code=503)
+
+
+class HuggingFaceAuthError(AppError):
+    def __init__(
+        self,
+        message: str = (
+            "Hugging Face token missing or invalid. Set HUGGINGFACE_HUB_TOKEN "
+            "(or HF_TOKEN) with Inference Providers access."
+        ),
+    ) -> None:
+        super().__init__(message, status_code=401)
+
+
 class ModelNotInstalledError(AppError):
     def __init__(self, model: str) -> None:
         super().__init__(

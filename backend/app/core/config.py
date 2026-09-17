@@ -25,31 +25,44 @@ class Settings(BaseSettings):
     )
     database_enabled: bool = False
 
+    # Primary stack is Hugging Face Inference Providers.
     llm_provider: str = Field(
-        default="ollama",
+        default="huggingface",
         validation_alias=AliasChoices("LLM_PROVIDER", "AI_PROVIDER"),
     )
     llm_model: str = Field(
-        default="qwen3:4b",
+        default="Qwen/Qwen2.5-7B-Instruct",
         validation_alias=AliasChoices("LLM_MODEL", "OLLAMA_MODEL"),
     )
     ollama_base_url: str = "http://localhost:11434"
     ollama_timeout_seconds: float = 120
 
-    hf_model_id: str = "Qwen/Qwen2.5-7B-Instruct"
+    hf_model_id: str = Field(
+        default="Qwen/Qwen2.5-7B-Instruct",
+        validation_alias=AliasChoices("HF_MODEL_ID", "LLM_MODEL"),
+    )
+    hf_api_base_url: str = "https://router.huggingface.co/v1"
+    hf_timeout_seconds: float = 120
     hf_embedding_model_id: str = (
         "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     )
     hf_vision_model_id: str = "openai/clip-vit-base-patch32"
     hf_whisper_model_id: str = "openai/whisper-small"
     hf_tts_model_id: str = "piper"
-    huggingface_hub_token: str = ""
+    huggingface_hub_token: str = Field(
+        default="",
+        validation_alias=AliasChoices("HUGGINGFACE_HUB_TOKEN", "HF_TOKEN"),
+    )
+    hf_token: str = ""
 
-    # Local tourism knowledge base (RAG). Lexical retrieval by default —
-    # no embedding model download required for the MVP.
+    # Local tourism knowledge base (RAG). Lexical retrieval by default.
     rag_enabled: bool = True
-    rag_top_k: int = 4
+    rag_top_k: int = 6
     rag_data_dir: str = ""
+
+    # Live web enrichment (Wikipedia + DuckDuckGo).
+    web_search_enabled: bool = True
+    web_search_max_results: int = 4
 
     @property
     def cors_origin_list(self) -> list[str]:

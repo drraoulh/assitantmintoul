@@ -1,30 +1,198 @@
-from uuid import uuid4
+from __future__ import annotations
+
+import logging
+from collections.abc import Mapping
+from typing import Any
+
+import httpx
 
 from app.core.config import get_settings
+from app.core.exceptions import (
+    GenerationFailedError,
+    GenerationTimeoutError,
+    HuggingFaceAuthError,
+    HuggingFaceUnavailableError,
+)
 from app.schemas.chat import ChatResponse
 from app.services.ai.base import AIService
+from app.services.ai.grounding import build_grounded_system_prompt
+from app.services.conversation.base import ConversationStore
+from app.services.conversation.memory import InMemoryConversationStore
+from app.services.rag.base import RAGService
+from app.services.rag.factory import get_rag_service
+from app.services.search.base import WebSearchService
+from app.services.search.factory import get_web_search_service
+
+logger = logging.getLogger(__name__)
 
 
 class HuggingFaceAIService(AIService):
-    """Hugging Face compatible adapter.
+    """Chat via Hugging Face Inference Providers (OpenAI-compatible API).
 
-    Not implemented in this phase. Later this can load a local Transformers
-    model or call a self-hosted inference endpoint.
+    Default stack for this project: HF chat + local RAG + optional web search.
     """
+
+    def __init__(
+        self,
+        conversation_store: ConversationStore | None = None,
+        *,
+        rag_service: RAGService | None = None,
+        web_search_service: WebSearchService | None = None,
+        api_base_url: str | None = None,
+        model: str | None = None,
+        api_token: str | None = None,
+        timeout_seconds: float | None = None,
+        client: httpx.AsyncClient | None = None,
+        rag_top_k: int | None = None,
+        web_search_max_results: int | None = None,
+    ) -> None:
+        settings = get_settings()
+        self._store = conversation_store or InMemoryConversationStore()
+        self._rag = rag_service if rag_service is not None else get_rag_service()
+        self._web = (
+            web_search_service
+            if web_search_service is not None
+            else get_web_search_service()
+        )
+        self._rag_top_k = rag_top_k if rag_top_k is not None else settings.rag_top_k
+        self._web_max = (
+            web_search_max_results
+            if web_search_max_results is not None
+            else settings.web_search_max_results
+        )
+        self._base_url = (api_base_url or settings.hf_api_base_url).rstrip("/")
+        self._model = model or settings.hf_model_id
+        self._token = (
+            api_token
+            if api_token is not None
+            else (settings.huggingface_hub_token or settings.hf_token)
+        ).strip()
+        self._timeout_seconds = (
+            timeout_seconds
+            if timeout_seconds is not None
+            else settings.hf_timeout_seconds
+        )
+        self._client = client
 
     async def generate_response(
         self,
         message: str,
         conversation_id: str | None = None,
     ) -> ChatResponse:
-        settings = get_settings()
+        if not self._token:
+            raise HuggingFaceAuthError()
+
+        thread_id = await self._store.start(conversation_id)
+        history = await self._store.get_messages(thread_id)
+        system_prompt = await build_grounded_system_prompt(
+            message,
+            history,
+            rag_service=self._rag,
+            web_search_service=self._web,
+            rag_top_k=self._rag_top_k,
+            web_search_max_results=self._web_max,
+        )
+
+        payload_messages: list[dict[str, str]] = [
+            {"role": "system", "content": system_prompt},
+            *history,
+            {"role": "user", "content": message},
+        ]
+        reply = await self._complete(payload_messages)
+
+        await self._store.add_message(thread_id, "user", message)
+        await self._store.add_message(thread_id, "assistant", reply)
+
         return ChatResponse(
-            conversation_id=conversation_id or str(uuid4()),
+            conversation_id=thread_id,
             role="assistant",
-            message=(
-                "The Hugging Face provider is reserved in the architecture "
-                f"(planned model: {settings.hf_model_id}) but is not wired yet. "
-                "Set LLM_PROVIDER=ollama for local Qwen inference."
-            ),
+            message=reply,
             provider="huggingface",
         )
+
+    async def _complete(self, messages: list[dict[str, str]]) -> str:
+        body: dict[str, Any] = {
+            "model": self._model,
+            "messages": messages,
+            "temperature": 0.6,
+            "max_tokens": 1024,
+            "stream": False,
+        }
+
+        try:
+            response = await self._post("/chat/completions", body)
+        except httpx.ConnectError as exc:
+            logger.warning("Hugging Face connection failed: %s", exc)
+            raise HuggingFaceUnavailableError() from exc
+        except httpx.TimeoutException as exc:
+            logger.warning("Hugging Face timed out: %s", exc)
+            raise GenerationTimeoutError() from exc
+        except httpx.HTTPError as exc:
+            logger.warning("Hugging Face HTTP error: %s", exc)
+            raise HuggingFaceUnavailableError() from exc
+
+        return self._parse_response(response)
+
+    async def _post(self, path: str, body: Mapping[str, Any]) -> httpx.Response:
+        timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
+        headers = {
+            "Authorization": f"Bearer {self._token}",
+            "Content-Type": "application/json",
+        }
+        if self._client is not None:
+            return await self._client.post(
+                path,
+                json=dict(body),
+                headers=headers,
+                timeout=timeout,
+            )
+
+        async with httpx.AsyncClient(base_url=self._base_url, timeout=timeout) as client:
+            return await client.post(path, json=dict(body), headers=headers)
+
+    def _parse_response(self, response: httpx.Response) -> str:
+        try:
+            payload = response.json()
+        except ValueError as exc:
+            logger.warning(
+                "Hugging Face returned non-JSON (status %s)",
+                response.status_code,
+            )
+            raise GenerationFailedError() from exc
+
+        if not isinstance(payload, dict):
+            raise GenerationFailedError()
+
+        error = payload.get("error")
+        error_text = ""
+        if isinstance(error, dict):
+            error_text = str(error.get("message") or error)
+        elif error is not None:
+            error_text = str(error)
+        lowered = error_text.lower()
+
+        if response.status_code in {401, 403}:
+            raise HuggingFaceAuthError(
+                "Hugging Face rejected the token. Check HUGGINGFACE_HUB_TOKEN "
+                "and Inference Providers permission."
+            )
+        if response.status_code == 404 or "not found" in lowered:
+            raise HuggingFaceUnavailableError(
+                f"Hugging Face model '{self._model}' is unavailable on Inference Providers."
+            )
+        if response.status_code in {429, 502, 503, 504}:
+            raise HuggingFaceUnavailableError(
+                "Hugging Face Inference Providers are busy or unavailable. Try again shortly."
+            )
+        if response.status_code >= 400:
+            logger.warning("Hugging Face error %s: %s", response.status_code, error_text)
+            raise GenerationFailedError()
+
+        choices = payload.get("choices") or []
+        if not choices:
+            raise GenerationFailedError()
+        message = choices[0].get("message") if isinstance(choices[0], dict) else {}
+        content = str((message or {}).get("content") or "").strip()
+        if not content:
+            raise GenerationFailedError()
+        return content

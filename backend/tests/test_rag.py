@@ -8,10 +8,19 @@ from app.services.tourism.local import LocalTourismService
 
 def test_knowledge_base_loads_curated_chunks() -> None:
     chunks = load_knowledge_chunks()
-    assert len(chunks) >= 15
+    assert len(chunks) >= 40
     sources = {chunk.source.split("/", maxsplit=1)[0] for chunk in chunks}
     assert "tourist_sites" in sources
     assert "documents" in sources
+
+
+@pytest.mark.asyncio
+async def test_local_rag_retrieves_national_park() -> None:
+    rag = LocalRAGService()
+    chunks = await rag.retrieve_chunks("parc national de Waza safari", top_k=4)
+    assert chunks
+    joined = " ".join(chunk.text.lower() for chunk in chunks)
+    assert "waza" in joined
 
 
 @pytest.mark.asyncio

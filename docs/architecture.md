@@ -1,78 +1,75 @@
 # Architecture — Cameroon AI Tour Guide
 
-## Current flow (phase 3)
+## Current flow (Hugging Face + knowledge base + web)
 
 ```
 React Native (Expo)
         ↓  POST /api/chat
 FastAPI
         ↓  AIService.generate_response()
-OllamaAIService
-        ↓  RAGService.retrieve_chunks(query)
-LocalRAGService  ←  data/tourist_sites + data/documents
+HuggingFaceAIService
+        ├─ LocalRAGService  ←  data/tourist_sites + data/documents
+        ├─ CompositeWebSearchService  ←  Wikipedia + DuckDuckGo
         ↓  grounded system prompt
-        ↓  POST http://localhost:11434/api/chat
-Ollama  →  Qwen (LLM_MODEL)
+        ↓  POST https://router.huggingface.co/v1/chat/completions
+Hugging Face Inference Providers  →  Qwen (HF_MODEL_ID)
         ↓
 FastAPI  →  mobile chat bubble
 ```
 
-The mobile app never calls Ollama. Ollama stays on the developer machine.
+The mobile app never calls Hugging Face directly. Only FastAPI holds the token.
 
 ## Provider independence
 
 Routes depend only on `AIService`.
 
-Switch models with environment variables, not code changes:
+Default:
 
 ```env
-LLM_PROVIDER=ollama
-LLM_MODEL=qwen3:4b
-OLLAMA_BASE_URL=http://localhost:11434
+LLM_PROVIDER=huggingface
+HF_MODEL_ID=Qwen/Qwen2.5-7B-Instruct
+HF_API_BASE_URL=https://router.huggingface.co/v1
+HUGGINGFACE_HUB_TOKEN=hf_xxx
 ```
 
-`LLM_PROVIDER` also accepts the older alias `AI_PROVIDER`.
-`LLM_MODEL` also accepts the older alias `OLLAMA_MODEL`.
+`LLM_PROVIDER=ollama` remains available as an optional local fallback.
 
 ## Knowledge base / RAG
 
-`RAGService` is an interface.
+`RAGService` loads curated JSON sites and Markdown documents from `data/`.
 
-Phase 3 uses `LocalRAGService`:
-
-- Loads curated JSON sites and Markdown documents from `data/`
-- Scores passages with lightweight TF-IDF (no embedding download)
-- Injects the top `RAG_TOP_K` excerpts into the system prompt
+`LocalRAGService` scores passages with lightweight TF-IDF (no embedding download).
+A later upgrade can call Hugging Face embeddings for dense retrieval.
 
 ```env
 RAG_ENABLED=true
-RAG_TOP_K=4
-RAG_DATA_DIR=
+RAG_TOP_K=6
 ```
 
-`LocalTourismService` reads the same site JSON for structured city lookups / simple itineraries.
+## Live web search
 
-A later phase can replace lexical retrieval with open-source embeddings + FAISS or pgvector without changing the chat route.
+`WebSearchService` enriches answers with public web snippets:
+
+- French / English Wikipedia extracts
+- DuckDuckGo Instant Answer API
+
+```env
+WEB_SEARCH_ENABLED=true
+WEB_SEARCH_MAX_RESULTS=4
+```
+
+Curated KB excerpts are preferred over web snippets when both cover the same place.
 
 ## Conversation memory
 
-`ConversationStore` is an interface.
+`InMemoryConversationStore` (lost on restart). PostgreSQL persistence comes later.
 
-Phase 2/3 uses `InMemoryConversationStore` (lost on restart, no login).
-A later phase can persist the same `{role, content}` turns in PostgreSQL.
-
-## Default model
-
-`qwen3:4b` is the default because this project is developed on a 16 GB RAM
-laptop with Intel UHD Graphics 620 (CPU inference only). `qwen3:8b` is a
-valid upgrade when more RAM / a discrete GPU is available.
-
-## Later phases (not implemented)
+## Later phases
 
 | Capability | Planned tool |
 | --- | --- |
-| Dense RAG | sentence-transformers + FAISS and/or pgvector |
-| STT | Whisper |
-| TTS | Piper |
-| Vision | Hugging Face vision model |
+| Dense RAG | HF embedding endpoint + FAISS / pgvector |
+| STT | Whisper (HF) |
+| TTS | Piper / HF TTS |
+| Vision | HF vision model |
 | Maps | OpenStreetMap |

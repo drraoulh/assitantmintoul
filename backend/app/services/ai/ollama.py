@@ -14,12 +14,13 @@ from app.core.exceptions import (
 )
 from app.schemas.chat import ChatResponse
 from app.services.ai.base import AIService
-from app.services.ai.prompts import SYSTEM_PROMPT
+from app.services.ai.grounding import build_grounded_system_prompt
 from app.services.conversation.base import ConversationStore
 from app.services.conversation.memory import InMemoryConversationStore
-from app.services.rag.base import PlaceholderRAGService, RAGService
-from app.services.rag.context import build_system_prompt, format_knowledge_context
+from app.services.rag.base import RAGService
 from app.services.rag.factory import get_rag_service
+from app.services.search.base import WebSearchService
+from app.services.search.factory import get_web_search_service
 
 logger = logging.getLogger(__name__)
 
@@ -27,24 +28,36 @@ _THINK_BLOCK = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
 
 
 class OllamaAIService(AIService):
-    """Local LLM adapter. FastAPI talks to this class; this class talks to Ollama."""
+    """Optional local LLM adapter (legacy). Prefer HuggingFaceAIService."""
 
     def __init__(
         self,
         conversation_store: ConversationStore | None = None,
         *,
         rag_service: RAGService | None = None,
+        web_search_service: WebSearchService | None = None,
         base_url: str | None = None,
         model: str | None = None,
         timeout_seconds: float | None = None,
         client: httpx.AsyncClient | None = None,
         rag_top_k: int | None = None,
+        web_search_max_results: int | None = None,
     ) -> None:
         settings = get_settings()
         self._store = conversation_store or InMemoryConversationStore()
         self._rag = rag_service if rag_service is not None else get_rag_service()
+        self._web = (
+            web_search_service
+            if web_search_service is not None
+            else get_web_search_service()
+        )
         self._rag_top_k = (
             rag_top_k if rag_top_k is not None else settings.rag_top_k
+        )
+        self._web_max = (
+            web_search_max_results
+            if web_search_max_results is not None
+            else settings.web_search_max_results
         )
         self._base_url = (base_url or settings.ollama_base_url).rstrip("/")
         self._model = model or settings.llm_model
@@ -62,7 +75,14 @@ class OllamaAIService(AIService):
     ) -> ChatResponse:
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
-        system_prompt = await self._grounded_system_prompt(message, history)
+        system_prompt = await build_grounded_system_prompt(
+            message,
+            history,
+            rag_service=self._rag,
+            web_search_service=self._web,
+            rag_top_k=self._rag_top_k,
+            web_search_max_results=self._web_max,
+        )
 
         payload_messages: list[dict[str, str]] = [
             {"role": "system", "content": system_prompt},
@@ -80,31 +100,6 @@ class OllamaAIService(AIService):
             message=reply,
             provider="ollama",
         )
-
-    async def _grounded_system_prompt(
-        self,
-        message: str,
-        history: list[dict[str, str]],
-    ) -> str:
-        if isinstance(self._rag, PlaceholderRAGService):
-            return SYSTEM_PROMPT
-
-        # Include a bit of recent user context so follow-ups like
-        # "que puis-je visiter ?" still retrieve the right city.
-        recent_user = " ".join(
-            turn["content"]
-            for turn in history[-4:]
-            if turn.get("role") == "user"
-        )
-        query = f"{recent_user} {message}".strip()
-        try:
-            chunks = await self._rag.retrieve_chunks(query, top_k=self._rag_top_k)
-        except Exception:
-            logger.exception("RAG retrieval failed; continuing without context")
-            return SYSTEM_PROMPT
-
-        context = format_knowledge_context(chunks)
-        return build_system_prompt(SYSTEM_PROMPT, context)
 
     async def _complete(self, messages: list[dict[str, str]]) -> str:
         body: dict[str, Any] = {

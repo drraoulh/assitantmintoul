@@ -1,0 +1,37 @@
+[
+  {
+    "id": "bertoua-foret",
+    "name": "Porte de l'Est forestier (Bertoua)",
+    "city": "Bertoua",
+    "region": "Est",
+    "category": "nature",
+    "summary_fr": "Bertoua est la capitale de la région de l'Est, porte d'entrée vers les forêts denses, les communautés forestières et des aires protégées de l'Est camerounais.",
+    "summary_en": "Bertoua is the East Region capital and gateway to dense forests, forest communities and protected areas of eastern Cameroon.",
+    "tips_fr": "Les distances sont longues; prévoyez transport fiable et infos locales sur les pistes.",
+    "tips_en": "Distances are long; plan reliable transport and local info on tracks.",
+    "tags": [
+      "bertoua",
+      "est",
+      "east",
+      "forêt",
+      "forest"
+    ]
+  },
+  {
+    "id": "bertoua-marche",
+    "name": "Marché de Bertoua",
+    "city": "Bertoua",
+    "region": "Est",
+    "category": "market",
+    "summary_fr": "Marché régional où circulent produits forestiers, vivres et biens du quotidien de l'Est.",
+    "summary_en": "Regional market for forest products, staples and everyday goods of the East.",
+    "tips_fr": "Utile pour s'approvisionner avant une excursion forestière.",
+    "tips_en": "Useful for supplies before a forest excursion.",
+    "tags": [
+      "bertoua",
+      "marché",
+      "market",
+      "est"
+    ]
+  }
+]

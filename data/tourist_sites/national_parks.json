@@ -1,0 +1,98 @@
+[
+  {
+    "id": "parc-waza",
+    "name": "Parc national de Waza",
+    "city": "Waza",
+    "region": "Extrême-Nord",
+    "category": "park",
+    "summary_fr": "Parc emblématique de savane du Extrême-Nord (éléphants, antilopes, oiseaux selon saison). Safari dans un paysage sahélien.",
+    "summary_en": "Iconic Far North savannah park (elephants, antelopes, birds depending on season). Safari in a Sahelian landscape.",
+    "tips_fr": "Accès et sécurité à vérifier impérativement. Meilleure observation souvent en saison sèche près des points d'eau. Guide et véhicule 4x4 recommandés.",
+    "tips_en": "Access and security must be checked. Wildlife viewing often best in the dry season near water. Guide and 4x4 recommended.",
+    "tags": [
+      "waza",
+      "parc",
+      "park",
+      "safari",
+      "extrême-nord",
+      "éléphant",
+      "wildlife"
+    ]
+  },
+  {
+    "id": "parc-dja",
+    "name": "Réserve de faune du Dja",
+    "city": "Djoum / Dja",
+    "region": "Sud / Est",
+    "category": "park",
+    "summary_fr": "Réserve de biosphère / patrimoine mondial: forêt tropicale dense, biodiversité exceptionnelle (primates, oiseaux). Joyau de conservation du Sud-Est.",
+    "summary_en": "Biosphere reserve / World Heritage site: dense rainforest and outstanding biodiversity (primates, birds). A conservation jewel of the southeast.",
+    "tips_fr": "Accès exigeant; organisez via opérateurs/guides spécialisés. Respectez strictement les règles de conservation.",
+    "tips_en": "Demanding access; organise via specialised operators/guides. Strictly respect conservation rules.",
+    "tags": [
+      "dja",
+      "parc",
+      "unesco",
+      "forêt",
+      "primates",
+      "biodiversité",
+      "wildlife"
+    ]
+  },
+  {
+    "id": "parc-korup",
+    "name": "Parc national de Korup",
+    "city": "Mundemba",
+    "region": "Sud-Ouest",
+    "category": "park",
+    "summary_fr": "Forêt primaire du Sud-Ouest, très riche en biodiversité botanique et primatologique. Destination trekking / nature pour voyageurs préparés.",
+    "summary_en": "Southwest primary forest, very rich in botanical and primate biodiversity. Trekking/nature destination for prepared travellers.",
+    "tips_fr": "Sentiers humides; guide obligatoire recommandé. Vérifiez saison des pluies.",
+    "tips_en": "Wet trails; guided visits strongly recommended. Check rainy season.",
+    "tags": [
+      "korup",
+      "parc",
+      "park",
+      "forêt",
+      "sud-ouest",
+      "trek"
+    ]
+  },
+  {
+    "id": "parc-campo-maan",
+    "name": "Parc national de Campo-Ma'an",
+    "city": "Campo",
+    "region": "Sud",
+    "category": "park",
+    "summary_fr": "Parc côtier-forestier du Sud près de la frontière équato-guinéenne. Éléphants de forêt, plages et écosystèmes variés.",
+    "summary_en": "Coastal-forest park in the South near the Equatorial Guinea border. Forest elephants, beaches and varied ecosystems.",
+    "tips_fr": "Combine parfois nature et littoral; logistique locale indispensable.",
+    "tips_en": "Sometimes combines nature and coast; local logistics essential.",
+    "tags": [
+      "campo",
+      "campo-maan",
+      "parc",
+      "sud",
+      "éléphant",
+      "plage"
+    ]
+  },
+  {
+    "id": "parc-bouba-ndjida",
+    "name": "Parc national de Bouba Ndjida",
+    "city": "Touboro / Bouba Ndjida",
+    "region": "Nord",
+    "category": "park",
+    "summary_fr": "Grand parc de savane du Nord, connu pour sa faune (historiquement rhinocéros, antilopes, etc.). Accès et statut de visite à confirmer.",
+    "summary_en": "Large northern savannah park known for wildlife (historically rhinos, antelopes, etc.). Access and visit status must be confirmed.",
+    "tips_fr": "Consultez autorités/parcs avant tout projet. Sécurité et conservation sont prioritaires.",
+    "tips_en": "Consult park authorities before any trip. Security and conservation come first.",
+    "tags": [
+      "bouba ndjida",
+      "parc",
+      "nord",
+      "savane",
+      "wildlife"
+    ]
+  }
+]

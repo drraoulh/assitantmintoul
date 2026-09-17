@@ -1,0 +1,57 @@
+[
+  {
+    "id": "bandjoun-chefferie",
+    "name": "Chefferie de Bandjoun",
+    "city": "Bandjoun",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Grande chefferie bamiléké de l'Ouest: architecture traditionnelle, cases patrimoniales et cérémonies. Haut lieu de la culture des Grassfields.",
+    "summary_en": "Major Bamileke chiefdom in the West: traditional architecture, heritage compounds and ceremonies. A Grassfields culture highlight.",
+    "tips_fr": "Respectez le protocole; un guide culturel enrichit fortement la visite.",
+    "tips_en": "Respect protocol; a cultural guide greatly enriches the visit.",
+    "tags": [
+      "bandjoun",
+      "chefferie",
+      "bamiléké",
+      "ouest",
+      "culture",
+      "grassfields"
+    ]
+  },
+  {
+    "id": "baham-chefferie",
+    "name": "Chefferies des Hauts-Plateaux (Baham et environs)",
+    "city": "Baham",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Réseau de chefferies des hauts plateaux de l'Ouest: masques, danses, artisanat et histoire politique traditionnelle.",
+    "summary_en": "Network of highland chiefdoms in the West: masks, dances, crafts and traditional political history.",
+    "tips_fr": "Demandez permission avant photos de lieux sacrés.",
+    "tips_en": "Ask permission before photographing sacred places.",
+    "tags": [
+      "baham",
+      "chefferie",
+      "ouest",
+      "masques",
+      "culture"
+    ]
+  },
+  {
+    "id": "kribi-lobe-pirogue",
+    "name": "Pirogue vers les chutes de la Lobé",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "experience",
+    "summary_fr": "Approche classique des chutes de la Lobé en pirogue sur l'océan/estuaire. Expérience signature de Kribi.",
+    "summary_en": "Classic approach to Lobé Falls by canoe on the ocean/estuary. A signature Kribi experience.",
+    "tips_fr": "Fixez le prix avant; gilet de sauvetage si disponible; respectez la mer.",
+    "tips_en": "Agree price first; wear a life jacket if available; respect the sea.",
+    "tags": [
+      "kribi",
+      "lobé",
+      "pirogue",
+      "canoe",
+      "expérience"
+    ]
+  }
+]

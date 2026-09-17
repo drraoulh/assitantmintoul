@@ -1,4 +1,5 @@
 from app.services.rag.chunk import KnowledgeChunk
+from app.services.search.base import WebSearchHit
 
 
 def format_knowledge_context(chunks: list[KnowledgeChunk]) -> str:
@@ -21,17 +22,42 @@ def format_knowledge_context(chunks: list[KnowledgeChunk]) -> str:
     return "\n\n".join(blocks)
 
 
-def build_system_prompt(base_prompt: str, context: str) -> str:
-    if not context.strip():
-        return base_prompt
+def format_web_context(hits: list[WebSearchHit]) -> str:
+    if not hits:
+        return ""
+    blocks: list[str] = []
+    for index, hit in enumerate(hits, start=1):
+        blocks.append(f"[W{index}] {hit.as_text()}")
+    return "\n\n".join(blocks)
 
-    grounded = (
-        f"{base_prompt.rstrip()}\n\n"
-        "## Curated knowledge base excerpts\n"
-        "Use the excerpts below as your primary factual ground when they are relevant. "
-        "Prefer them over general memory for places, tips, and regional orientation. "
-        "If the excerpts do not cover the question, say what is missing instead of inventing "
-        "precise prices, schedules, or official rules.\n\n"
-        f"{context.strip()}\n"
-    )
-    return grounded
+
+def build_system_prompt(
+    base_prompt: str,
+    knowledge_context: str = "",
+    web_context: str = "",
+) -> str:
+    sections = [base_prompt.rstrip()]
+
+    if knowledge_context.strip():
+        sections.append(
+            "## Curated knowledge base excerpts\n"
+            "Use the excerpts below as your primary factual ground when they are relevant. "
+            "Prefer them over general memory for places, tips, and regional orientation. "
+            "If the excerpts do not cover the question, say what is missing instead of inventing "
+            "precise prices, schedules, or official rules.\n\n"
+            f"{knowledge_context.strip()}"
+        )
+
+    if web_context.strip():
+        sections.append(
+            "## Live web search results\n"
+            "These snippets were retrieved from the public web (Wikipedia / DuckDuckGo). "
+            "Use them to complement the local knowledge base for broader or more recent context. "
+            "Treat them as unverified secondary sources: prefer the curated knowledge base when "
+            "both cover the same place. Never invent URLs. If results conflict, say so briefly.\n\n"
+            f"{web_context.strip()}"
+        )
+
+    if len(sections) == 1:
+        return base_prompt
+    return "\n\n".join(sections) + "\n"
