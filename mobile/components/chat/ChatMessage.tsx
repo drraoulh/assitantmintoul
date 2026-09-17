@@ -1,14 +1,22 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, radius, spacing } from '../../constants/theme';
 import type { ChatMessage as ChatMessageType } from '../../types/chat';
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  onSpeak?: (text: string) => void;
+  onStopSpeaking?: () => void;
+  isSpeaking?: boolean;
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  onSpeak,
+  onStopSpeaking,
+  isSpeaking = false,
+}: ChatMessageProps) {
   const isUser = message.role === 'user';
 
   return (
@@ -26,23 +34,46 @@ export function ChatMessage({ message }: ChatMessageProps) {
           message.isError && styles.errorBubble,
         ]}
       >
-        <Text selectable style={[styles.text, isUser && styles.userText]}>
-          {message.content}
-        </Text>
-        {!isUser && !message.isError && (
+        {message.imageUri ? (
+          <Image
+            source={{ uri: message.imageUri }}
+            style={styles.image}
+            resizeMode="cover"
+            accessibilityLabel="Photo envoyée"
+          />
+        ) : null}
+        {message.content && !(message.imageUri && message.content === 'Photo envoyée') ? (
+          <Text selectable style={[styles.text, isUser && styles.userText]}>
+            {message.content}
+          </Text>
+        ) : null}
+        {message.imageUri && message.content === 'Photo envoyée' ? (
+          <Text style={[styles.caption, isUser && styles.userText]}>Photo</Text>
+        ) : null}
+        {!isUser && !message.isError && message.sources && message.sources.length > 0 && (
+          <Text style={styles.sourcesHint}>Sources</Text>
+        )}
+        {!isUser && !message.isError && onSpeak && (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Écouter la réponse"
-            onPress={() =>
-              Alert.alert(
-                'Lecture vocale',
-                "La synthèse vocale sera disponible dans une prochaine phase.",
-              )
-            }
+            accessibilityLabel={isSpeaking ? 'Arrêter la lecture' : 'Écouter la réponse'}
+            onPress={() => {
+              if (isSpeaking) {
+                onStopSpeaking?.();
+                return;
+              }
+              onSpeak(message.content);
+            }}
             style={styles.speak}
           >
-            <Ionicons name="volume-high-outline" size={16} color={colors.canopy} />
-            <Text style={styles.speakLabel}>Écouter</Text>
+            <Ionicons
+              name={isSpeaking ? 'stop-circle-outline' : 'volume-high-outline'}
+              size={16}
+              color={colors.canopy}
+            />
+            <Text style={styles.speakLabel}>
+              {isSpeaking ? 'Stop' : 'Écouter'}
+            </Text>
           </Pressable>
         )}
       </View>
@@ -97,7 +128,18 @@ const styles = StyleSheet.create({
   },
   errorBubble: {
     backgroundColor: colors.errorBubble,
-    borderColor: '#E8B298',
+    borderColor: 'rgba(206, 17, 38, 0.35)',
+  },
+  image: {
+    width: 220,
+    height: 160,
+    borderRadius: radius.sm,
+    marginBottom: 8,
+    backgroundColor: 'rgba(0,0,0,0.12)',
+  },
+  caption: {
+    fontSize: 12,
+    opacity: 0.85,
   },
   text: {
     color: colors.ink,
@@ -119,5 +161,13 @@ const styles = StyleSheet.create({
     color: colors.canopy,
     fontSize: 12,
     fontWeight: '600',
+  },
+  sourcesHint: {
+    marginTop: 10,
+    color: colors.muted,
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
   },
 });

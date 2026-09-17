@@ -7,5 +7,12 @@ asyncpg==0.30.0
 python-dotenv==1.1.0
 httpx==0.28.1
 greenlet==3.2.1
+numpy==2.2.4
+faiss-cpu==1.10.0
+sentence-transformers==3.4.1
+python-multipart==0.0.20
+faster-whisper==1.1.1
 pytest==8.3.5
 pytest-asyncio==0.26.0
+# Test-only: stands in for Postgres when exercising the conversation store.
+aiosqlite==0.21.0

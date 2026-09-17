@@ -1,0 +1,83 @@
+[
+  {
+    "id": "site-009",
+    "name": "Jardin botanique de Limbe",
+    "slug": "jardin-botanique-de-limbe",
+    "region": "Sud-Ouest",
+    "city": "Limbe",
+    "category": "Garden",
+    "latitude": null,
+    "longitude": null,
+    "description": "The Limbe Botanic Garden is listed by Cameroon's Ministry of Tourism and Leisure among national ecotourism sites, together with Korup National Park, the Dja Reserve and Mount Cameroon. Opening hours and ticket prices are not recorded here.",
+    "history": null,
+    "culture": "Limbe (Southwest Region) is a coastal town near Mount Cameroon. The botanic garden is a nature and plant-collection visit.",
+    "activities": ["garden walk", "plant viewing"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["en", "fr"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Écotourisme",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/ecotourisme/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "site-010",
+    "name": "Mont Cameroun",
+    "slug": "mont-cameroun",
+    "region": "Sud-Ouest",
+    "city": "Buea",
+    "category": "Natural",
+    "latitude": null,
+    "longitude": null,
+    "description": "Mount Cameroon is listed by the Ministry of Tourism and Leisure as 4,070 m high and as a national ecotourism site. It is an active volcanic massif in the Southwest Region, approached from the Buea area. Trail fees, guide rules and eruption-status bulletins are not stored here.",
+    "history": null,
+    "culture": "The mountain is a major hiking and nature landmark of Cameroon. Local mountain communities exist around its slopes; unsourced ethnographic claims are omitted.",
+    "activities": ["hiking", "nature visit"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["en", "fr"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Écotourisme",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/ecotourisme/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "site-011",
+    "name": "Parc national de Korup",
+    "slug": "parc-national-de-korup",
+    "region": "Sud-Ouest",
+    "city": "Mundemba",
+    "category": "Park",
+    "latitude": null,
+    "longitude": null,
+    "description": "Korup National Park is listed by MINTOUL as an ecotourism site that holds plant species described as several million years old. It is a rainforest park in the Southwest Region. Permit prices and trail maps are not recorded in this knowledge base.",
+    "history": null,
+    "culture": null,
+    "activities": ["wildlife viewing", "forest walk"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["en", "fr"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Écotourisme",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/ecotourisme/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  }
+]

@@ -11,6 +11,8 @@ class PlaceholderAIService(AIService):
         self,
         message: str,
         conversation_id: str | None = None,
+        *,
+        brief: bool = False,
     ) -> ChatResponse:
         thread_id = conversation_id or str(uuid4())
         reply = (

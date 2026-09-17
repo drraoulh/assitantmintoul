@@ -8,6 +8,7 @@ from app.api.router import api_router
 from app.core.config import get_settings
 from app.core.database import init_database
 from app.core.error_handlers import register_error_handlers
+from app.core.http import close_shared_clients
 
 settings = get_settings()
 
@@ -16,6 +17,7 @@ settings = get_settings()
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     await init_database()
     yield
+    await close_shared_clients()
 
 
 app = FastAPI(

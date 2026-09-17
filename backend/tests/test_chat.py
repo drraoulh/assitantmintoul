@@ -3,6 +3,7 @@ import json
 import httpx
 import pytest
 
+from app.core.config import get_settings
 from app.core.exceptions import (
     GenerationFailedError,
     HuggingFaceAuthError,
@@ -58,6 +59,8 @@ def test_ollama_unavailable_returns_503() -> None:
             self,
             message: str,
             conversation_id: str | None = None,
+            *,
+            brief: bool = False,
         ):
             raise OllamaUnavailableError()
 
@@ -74,6 +77,8 @@ def test_huggingface_auth_error_returns_401() -> None:
             self,
             message: str,
             conversation_id: str | None = None,
+            *,
+            brief: bool = False,
         ):
             raise HuggingFaceAuthError()
 
@@ -89,6 +94,8 @@ def test_ai_service_error_returns_502() -> None:
             self,
             message: str,
             conversation_id: str | None = None,
+            *,
+            brief: bool = False,
         ):
             raise GenerationFailedError()
 
@@ -229,6 +236,42 @@ async def test_huggingface_prompt_includes_rag_and_web() -> None:
     assert "Curated knowledge base excerpts" in system
     assert "Live web search results" in system
     assert "wikipedia" in system.lower() or "Kribi" in system
+
+
+@pytest.mark.asyncio
+async def test_voice_mode_asks_for_a_short_spoken_answer() -> None:
+    captured: dict[str, object] = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["body"] = request.read()
+        return httpx.Response(
+            200,
+            json={
+                "choices": [
+                    {"message": {"role": "assistant", "content": "Allez à Kribi."}}
+                ]
+            },
+        )
+
+    transport = httpx.MockTransport(handler)
+    client = httpx.AsyncClient(
+        transport=transport,
+        base_url="https://router.huggingface.co/v1",
+    )
+    service = HuggingFaceAIService(
+        conversation_store=InMemoryConversationStore(),
+        rag_service=PlaceholderRAGService(),
+        web_search_service=PlaceholderWebSearchService(),
+        client=client,
+        api_token="hf_test_token",
+        timeout_seconds=5,
+    )
+
+    await service.generate_response("Que voir à Kribi ?", brief=True)
+    payload = json.loads(captured["body"].decode())
+    assert "Voice mode" in payload["messages"][0]["content"]
+    assert payload["max_tokens"] == get_settings().llm_voice_max_tokens
+    assert payload["max_tokens"] < get_settings().llm_max_tokens
 
 
 @pytest.mark.asyncio

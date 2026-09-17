@@ -35,7 +35,10 @@ class WikipediaSearchService(WebSearchService):
         *,
         client: httpx.AsyncClient | None = None,
         timeout_seconds: float = 12.0,
-        user_agent: str = "CameroonAITourGuide/0.3 (local educational assistant)",
+        user_agent: str = (
+            "CameroonAITourGuide/0.4 "
+            "(https://github.com/drraoulh/assitantmintoul; educational tourism assistant)"
+        ),
     ) -> None:
         self._client = client
         self._timeout = timeout_seconds
@@ -71,8 +74,13 @@ class WikipediaSearchService(WebSearchService):
                     "utf8": 1,
                 },
             )
-        except Exception:
-            logger.warning("Wikipedia %s search failed for %r", lang, query, exc_info=True)
+        except Exception as exc:
+            logger.warning(
+                "Wikipedia %s search failed for %r: %s",
+                lang,
+                query[:80],
+                exc,
+            )
             return []
 
         results = ((search_payload.get("query") or {}).get("search")) or []

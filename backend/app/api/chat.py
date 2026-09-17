@@ -15,4 +15,5 @@ async def chat(
     return await ai_service.generate_response(
         message=payload.message,
         conversation_id=payload.conversation_id,
+        brief=payload.mode == "voice",
     )

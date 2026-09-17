@@ -1,4 +1,4 @@
-{
+﻿{
   "expo": {
     "name": "Cameroon AI Tour Guide",
     "slug": "cameroon-ai-tour-guide",
@@ -9,15 +9,25 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0E3B2E"
+      "backgroundColor": "#00412F"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Allow Cameroon AI Tour Guide to use the microphone so you can ask travel questions by voice.",
+        "NSCameraUsageDescription": "Allow Cameroon AI Tour Guide to take photos of tourist sites for identification.",
+        "NSPhotoLibraryUsageDescription": "Allow Cameroon AI Tour Guide to analyze photos of tourist sites from your library."
+      }
     },
     "android": {
       "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "RECORD_AUDIO",
+        "CAMERA",
+        "READ_MEDIA_IMAGES"
+      ],
       "adaptiveIcon": {
-        "backgroundColor": "#0E3B2E",
+        "backgroundColor": "#00412F",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -26,6 +36,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow Cameroon AI Tour Guide to use the microphone so you can ask travel questions by voice."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Cameroon AI Tour Guide to analyze photos of tourist sites from your library.",
+          "cameraPermission": "Allow Cameroon AI Tour Guide to take photos of tourist sites for identification."
+        }
+      ]
+    ]
   }
 }

@@ -9,8 +9,8 @@ export function WelcomeCard() {
       <Text style={styles.title}>Bonjour, voyageur</Text>
       <Text style={styles.body}>
         Posez une question sur les villes, les parcs, la culture ou un
-        itinéraire au Cameroun. Je construis la conversation au fil de vos
-        messages.
+        itinéraire au Cameroun. Ouvrez « Mode conversation » pour parler
+        en continu au guide : vous parlez, il répond, puis vous reparlez.
       </Text>
     </View>
   );

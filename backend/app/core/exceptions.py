@@ -61,3 +61,49 @@ class GenerationFailedError(AppError):
         message: str = "The language model failed to generate a response.",
     ) -> None:
         super().__init__(message, status_code=502)
+
+
+class SpeechUnavailableError(AppError):
+    def __init__(
+        self,
+        message: str = (
+            "Speech recognition is not available. "
+            "Set SPEECH_PROVIDER=whisper and install faster-whisper."
+        ),
+    ) -> None:
+        super().__init__(message, status_code=503)
+
+
+class TranscriptionFailedError(AppError):
+    def __init__(
+        self,
+        message: str = "Could not transcribe the audio. Try speaking again.",
+    ) -> None:
+        super().__init__(message, status_code=502)
+
+
+class SynthesisFailedError(AppError):
+    def __init__(
+        self,
+        message: str = "Could not synthesize speech. Try again.",
+    ) -> None:
+        super().__init__(message, status_code=502)
+
+
+class VisionUnavailableError(AppError):
+    def __init__(
+        self,
+        message: str = (
+            "Photo identification is not available. "
+            "Set VISION_PROVIDER=gemini and GEMINI_API_KEY."
+        ),
+    ) -> None:
+        super().__init__(message, status_code=503)
+
+
+class VisionFailedError(AppError):
+    def __init__(
+        self,
+        message: str = "Could not analyze the image. Try another photo.",
+    ) -> None:
+        super().__init__(message, status_code=502)

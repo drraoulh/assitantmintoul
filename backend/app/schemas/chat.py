@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
@@ -6,6 +7,8 @@ from pydantic import BaseModel, Field, field_validator
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=4000)
     conversation_id: str | None = None
+    # "voice" asks for a short spoken answer (faster generation + faster TTS).
+    mode: Literal["text", "voice"] = "text"
 
     @field_validator("message")
     @classmethod
@@ -29,3 +32,28 @@ class ChatResponse(BaseModel):
     message: str
     role: Literal["assistant"] = "assistant"
     provider: str
+
+
+class ConversationTurn(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+    created_at: datetime | None = None
+
+
+class ConversationSummary(BaseModel):
+    id: str
+    title: str
+    message_count: int
+    updated_at: datetime | None = None
+
+
+class ConversationListResponse(BaseModel):
+    items: list[ConversationSummary]
+    count: int
+    persistent: bool
+
+
+class ConversationHistoryResponse(BaseModel):
+    conversation_id: str
+    messages: list[ConversationTurn]
+    count: int

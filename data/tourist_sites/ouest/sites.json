@@ -1,0 +1,56 @@
+[
+  {
+    "id": "site-005",
+    "name": "Palais des Rois Bamoun",
+    "slug": "palais-des-rois-bamoun-foumban",
+    "region": "Ouest",
+    "city": "Foumban",
+    "category": "Palace",
+    "latitude": null,
+    "longitude": null,
+    "description": "The Palace of the Bamoun Kings is the principal cultural landmark of Foumban in the West Region. It is associated with the Bamoun (Bamum) kingdom and is a major stop for visitors interested in palaces and chefferies. Ticket prices, daily hours and interior inventories are not recorded in this knowledge base.",
+    "history": "Foumban is historically linked to the Bamoun kingdom. Detailed reigns, construction years and object lists are omitted until an official palace or museum notice is attached.",
+    "culture": "The Bamoun cultural area of the West Region is known for palaces, crafts and court traditions. The palace in Foumban is the usual reference point for travellers asking what to visit in Foumban.",
+    "activities": ["palace visit", "cultural visit"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["fr"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Tourisme culturel",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/tourisme-culturel/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "site-006",
+    "name": "Chefferie de Bandjoun",
+    "slug": "chefferie-de-bandjoun",
+    "region": "Ouest",
+    "city": "Bandjoun",
+    "category": "Chefferie",
+    "latitude": null,
+    "longitude": null,
+    "description": "Bandjoun is a Grassfields community in the West Region, known for its traditional chefferie (chiefdom). It is often cited among cultural visits of the Bamiléké area. Access rules, ceremonies and fees are not stored here.",
+    "history": null,
+    "culture": "Chefferies of the West Region are living cultural institutions. Visitors should follow local protocol. Unverified founding myths are not included.",
+    "activities": ["chefferie visit"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["fr"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Tourisme culturel",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/tourisme-culturel/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  }
+]

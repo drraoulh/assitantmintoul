@@ -1,10 +1,12 @@
 from abc import ABC, abstractmethod
 
+from app.core.exceptions import VisionUnavailableError
+
 
 class VisionService(ABC):
     """Identify tourist sites or objects from a photo.
 
-    Planned: an open-source vision model compatible with Hugging Face.
+    Default provider: Google Gemini multimodal vision.
     """
 
     @abstractmethod
@@ -14,4 +16,7 @@ class VisionService(ABC):
 
 class PlaceholderVisionService(VisionService):
     async def identify(self, image_bytes: bytes, mime_type: str = "image/jpeg") -> str:
-        raise NotImplementedError("Photo identification will be added in a later phase.")
+        raise VisionUnavailableError(
+            "Photo identification is disabled. "
+            "Set VISION_PROVIDER=gemini and GEMINI_API_KEY."
+        )

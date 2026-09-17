@@ -16,5 +16,10 @@ class AIService(ABC):
         self,
         message: str,
         conversation_id: str | None = None,
+        *,
+        brief: bool = False,
     ) -> ChatResponse:
-        """Return an assistant reply for the given user message."""
+        """Return an assistant reply for the given user message.
+
+        `brief` requests a short spoken-style answer (voice mode).
+        """

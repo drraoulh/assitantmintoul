@@ -1,15 +1,23 @@
 from abc import ABC, abstractmethod
 
+from app.core.exceptions import SpeechUnavailableError
+
 
 class SpeechService(ABC):
     """Speech-to-text and text-to-speech adapters.
 
-    Planned: Whisper (STT) and Piper or another open-source TTS model.
+    STT: Whisper (local faster-whisper or Hugging Face cloud).
+    TTS: Fish Audio (s2.1-pro-free) when TTS_PROVIDER=fish.
     """
 
     @abstractmethod
-    async def transcribe(self, audio_bytes: bytes, mime_type: str = "audio/wav") -> str:
-        """Convert recorded audio into text."""
+    async def transcribe(
+        self,
+        audio_bytes: bytes,
+        mime_type: str = "audio/wav",
+        filename: str | None = None,
+    ) -> tuple[str, str | None]:
+        """Convert recorded audio into text and optional detected language."""
 
     @abstractmethod
     async def synthesize(self, text: str) -> bytes:
@@ -17,8 +25,17 @@ class SpeechService(ABC):
 
 
 class PlaceholderSpeechService(SpeechService):
-    async def transcribe(self, audio_bytes: bytes, mime_type: str = "audio/wav") -> str:
-        raise NotImplementedError("Speech-to-text will be added in a later phase.")
+    async def transcribe(
+        self,
+        audio_bytes: bytes,
+        mime_type: str = "audio/wav",
+        filename: str | None = None,
+    ) -> tuple[str, str | None]:
+        raise SpeechUnavailableError(
+            "Speech recognition is disabled. Set SPEECH_PROVIDER=whisper."
+        )
 
     async def synthesize(self, text: str) -> bytes:
-        raise NotImplementedError("Text-to-speech will be added in a later phase.")
+        raise SpeechUnavailableError(
+            "Text-to-speech is disabled. Set TTS_PROVIDER=fish and FISH_AUDIO_API_KEY."
+        )

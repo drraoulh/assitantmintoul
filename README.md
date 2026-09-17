@@ -2,45 +2,75 @@
 
 Intelligent tourist assistant dedicated to Cameroon.
 
-The stack is **Hugging Face first**: FastAPI calls Hugging Face Inference Providers for chat,
-grounds answers in a **rich local Cameroon knowledge base**, and can enrich them with
-**live web search** (Wikipedia + DuckDuckGo).
+Phase 3 adds a **curated Cameroon tourism knowledge base** and **RAG** (embeddings + FAISS).
+The LLM is no longer the primary source of site facts.
 
 ```
-React Native → FastAPI /api/chat → HuggingFaceAIService
-                 ├─ LocalRAG (data/)
-                 ├─ Web search (Wikipedia / DuckDuckGo)
-                 └─ HF Inference Providers → Qwen → mobile
+React Native → FastAPI /api/chat → RAG (FAISS) → AIService → Ollama/Qwen or placeholder → Mobile
 ```
+
+## How to launch the app and see the UI
+
+You need **two PowerShell windows**. The chat screen is the main interface.
+
+**1. Backend**
+
+```powershell
+cd "C:\Users\hp\git\assitant mintoul\backend"
+.\.venv\Scripts\Activate.ps1
+python -m scripts.build_knowledge_base
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+API docs (interface backend): http://127.0.0.1:8000/docs
+
+**2. Mobile UI**
+
+```powershell
+cd "C:\Users\hp\git\assitant mintoul\mobile"
+npm start
+```
+
+Then:
+
+- press **`w`** to open the chat in the **browser**
+- or scan the QR code with **Expo Go** on your phone
+- or press **`a`** for Android emulator
+
+The screen you should see: header **Cameroon AI Tour Guide**, welcome card, suggested prompts, text field, mic, camera, send.
+
+Without Ollama, set `LLM_PROVIDER=placeholder` in `backend/.env` so answers quote the knowledge base instead of returning 503.
+
+On a phone, `localhost` is the phone. Use `EXPO_PUBLIC_API_URL=http://YOUR_PC_LAN_IP:8000` in `mobile/.env`.
 
 ## Default model
 
-**`Qwen/Qwen2.5-7B-Instruct`** via Hugging Face Inference Providers
-(`https://router.huggingface.co/v1/chat/completions`).
+**`qwen3:4b`** (Qwen 3, 4 billion parameters, Hugging Face family, served by Ollama).
 
-Set your token (Inference Providers permission):
+Why not `qwen3:8b` by default? This project is aimed at a student laptop. The current development machine has about 16 GB of RAM and Intel UHD Graphics 620, so inference is CPU-only. `qwen3:8b` (~5.2 GB) can run, but it is slow and leaves little RAM for Windows, Expo, and FastAPI. `qwen3:4b` (~2.5 GB) is still a current Qwen 3 instruction model, handles French and English, and is a better MVP default.
+
+To use the larger model later:
 
 ```env
-LLM_PROVIDER=huggingface
-HF_MODEL_ID=Qwen/Qwen2.5-7B-Instruct
-HUGGINGFACE_HUB_TOKEN=hf_your_token
+LLM_MODEL=qwen3:8b
 ```
 
-Optional local fallback: `LLM_PROVIDER=ollama` with a pulled Ollama model.
+The model name is only in environment variables, not hard-coded in routes.
 
 ## What this phase includes
 
 - Conversational Expo chat UI
 - `POST /api/chat` unchanged from the mobile side
-- **Hugging Face** chat adapter (primary) + optional Ollama adapter
-- Rich curated Cameroon tourism knowledge base under `data/`
-- Local lexical RAG + live web search injected into the system prompt
-- In-memory multi-turn conversation history
-- Backend tests for chat, HF errors, RAG, and web-search merging
+- `AIService` abstraction with a real Ollama implementation
+- In-memory multi-turn conversation history (replaceable later with PostgreSQL)
+- System prompt for Cameroon tourism, with explicit “no RAG yet” honesty
+- HTTP errors when Ollama is down, the model is missing, or generation times out
+- Backend tests for chat success, empty messages, and AI failures
+- Curated tourism JSON (20 sites), FAISS/NumPy RAG, `GET /api/tourist-sites`
 
 ## What this phase does not include
 
-Dense embeddings / FAISS, Whisper, TTS playback, computer vision, GPS, maps, authentication, payments, and cloud deployment. Microphone and camera buttons remain placeholders.
+TTS uses **Fish Audio** (`s2.1-pro-free`) via `POST /api/speech/synthesize` when `TTS_PROVIDER=fish` and `FISH_AUDIO_API_KEY` are set; otherwise the app falls back to on-device `expo-speech`. Photo recognition uses **Google Gemini** (`gemini-3.6-flash`) via `POST /api/vision/identify` when `VISION_PROVIDER=gemini` and `GEMINI_API_KEY` are set. GPS maps, authentication, payments, and cloud deployment remain later phases. Microphone STT uses Whisper on Hugging Face Inference (`openai/whisper-large-v3-turbo` with `SPEECH_PROVIDER=huggingface` + `HUGGINGFACE_HUB_TOKEN`), or local `faster-whisper` with `SPEECH_PROVIDER=whisper`.
 
 ## Folder structure
 
@@ -48,15 +78,10 @@ Dense embeddings / FAISS, Whisper, TTS playback, computer vision, GPS, maps, aut
 .
 ├── mobile/                 Expo application
 ├── backend/                FastAPI application
-│   ├── app/services/ai/    Hugging Face + grounding + prompts
-│   ├── app/services/rag/   Local knowledge retrieval
-│   ├── app/services/search/  Wikipedia + DuckDuckGo
-│   ├── app/services/tourism/
-│   ├── app/services/conversation/
+│   ├── app/services/ai/    AIService, Ollama adapter, prompts
+│   ├── app/services/conversation/   in-memory history
 │   └── tests/
 ├── data/
-│   ├── documents/          Markdown tourism guides
-│   └── tourist_sites/      Curated site JSON by region
 ├── docs/
 ├── docker-compose.yml
 ├── .env.example
@@ -65,11 +90,12 @@ Dense embeddings / FAISS, Whisper, TTS playback, computer vision, GPS, maps, aut
 
 ## Prerequisites
 
-- Windows 10/11 (or Linux/macOS)
+- Windows 10/11
 - Python 3.11+
 - Node.js 20+
 - Git
-- A Hugging Face account + access token with **Inference Providers** permission
+- PowerShell
+- [Ollama](https://ollama.com/download/windows)
 - Expo Go on a phone, an Android emulator, or Expo web
 
 ## 1. Environment files
@@ -81,23 +107,44 @@ Copy-Item .env.example backend\.env
 Copy-Item mobile\.env.example mobile\.env
 ```
 
-Keep `LLM_PROVIDER=huggingface`, set `HUGGINGFACE_HUB_TOKEN`, and `DATABASE_ENABLED=false`.
+Keep `LLM_PROVIDER=ollama` and `DATABASE_ENABLED=false`.
 
-## 2. Hugging Face token
+Voice conversation is press-to-talk: opening the mode only prepares the microphone, and recording starts when you tap the orb. Tap again to send, or enable the “Mains libres” pill to chain turns automatically. Voice turns post `mode=voice` to `/api/chat`, which caps the answer length (`LLM_VOICE_MAX_TOKENS`) and time-boxes web search (`VOICE_WEB_SEARCH_TIMEOUT_SECONDS`) to keep replies fast.
 
-1. Create a token: https://huggingface.co/settings/tokens
-2. Enable **Inference Providers** / make inference calls permission
-3. Put it in `.env`:
+For natural voice replies, set `FISH_AUDIO_API_KEY` (free key at https://fish.audio/app/api-keys/) with `TTS_PROVIDER=fish`. Without it, the app keeps using on-device `expo-speech`. STT already uses `SPEECH_PROVIDER=huggingface` + `HUGGINGFACE_HUB_TOKEN` and Whisper `openai/whisper-large-v3-turbo`.
 
-```env
-HUGGINGFACE_HUB_TOKEN=hf_...
-```
+For photo recognition, set `GEMINI_API_KEY` (https://aistudio.google.com/apikey) with `VISION_PROVIDER=gemini`.
 
-### Optional: test the router directly
+## 2. Install Ollama and pull the model
+
+Download and install: https://ollama.com/download/windows
+
+Then in PowerShell:
 
 ```powershell
-curl https://router.huggingface.co/v1/chat/completions -Method POST -Headers @{Authorization="Bearer $env:HUGGINGFACE_HUB_TOKEN"; "Content-Type"="application/json"} -Body '{"model":"Qwen/Qwen2.5-7B-Instruct","messages":[{"role":"user","content":"Bonjour"}],"stream":false}'
+ollama --version
+ollama pull qwen3:4b
 ```
+
+Ollama usually starts in the background on Windows. Verify:
+
+```powershell
+curl http://127.0.0.1:11434/api/tags
+```
+
+### Test Ollama by itself (before FastAPI)
+
+```powershell
+ollama run qwen3:4b "En une phrase, présente le Cameroun à un voyageur."
+```
+
+Or:
+
+```powershell
+curl http://127.0.0.1:11434/api/chat -Method POST -ContentType "application/json" -Body '{"model":"qwen3:4b","messages":[{"role":"user","content":"Bonjour"}],"stream":false,"think":false}'
+```
+
+You should see a JSON payload with `message.content`. If this fails, do not start the mobile app yet.
 
 ## 3. Install backend dependencies
 
@@ -137,7 +184,7 @@ Health:
 curl http://127.0.0.1:8000/api/health
 ```
 
-Chat through FastAPI:
+Chat through FastAPI (not Ollama directly from the phone):
 
 ```powershell
 curl http://127.0.0.1:8000/api/chat -Method POST -ContentType "application/json" -Body '{"message":"Bonjour"}'
@@ -185,61 +232,67 @@ Restart Expo after changing `mobile/.env`. Allow inbound TCP **8000** in Windows
 
 ## How to test the full chat
 
-1. `HUGGINGFACE_HUB_TOKEN` is set and Inference Providers work.
+1. Ollama is running and `qwen3:4b` is pulled.
 2. FastAPI is running on port 8000.
 3. Open the app. Header shows **Connecté**.
 4. Type `Bonjour` and send.
-5. Ask `Que voir à Kribi ?` — answer should use local KB (and optionally web) context.
+5. You should see **Cameroon Guide is thinking...**, then a real Qwen reply.
 6. Send `Je suis à Yaoundé.` then `Que puis-je visiter ?` — the second answer should use Yaoundé from context.
 
-## Troubleshooting
+## Troubleshooting Ollama
 
 | Symptom | What to do |
 | --- | --- |
-| `Hugging Face token missing or invalid` | Set `HUGGINGFACE_HUB_TOKEN` with Inference Providers permission |
-| HF 503 / busy | Retry; or try another `HF_MODEL_ID` available on the router |
+| `Ollama is not running or cannot be reached` | Start Ollama from the Start menu, then `curl http://127.0.0.1:11434/api/tags` |
+| `The model 'qwen3:4b' is not installed` | `ollama pull qwen3:4b` |
+| `took too long to respond` | Wait for first-load (model loads into RAM). Try `LLM_MODEL=qwen3:4b`. Increase `OLLAMA_TIMEOUT_SECONDS`. Close other heavy apps. |
 | Phone header **Hors ligne** | Wrong API URL. Use the PC LAN IP, not `localhost`. |
-| Reply invents precise prices | KB/web have no live prices. Prompt forbids presenting guesses as facts. |
-| Answers ignore local sites | Confirm `RAG_ENABLED=true` and `data/` files are present. |
-| No web enrichment | Confirm `WEB_SEARCH_ENABLED=true` and network access to Wikipedia / DuckDuckGo. |
+| Reply invents precise prices | Those fields are `null` in the knowledge base. Rebuild RAG if the model ignores context. |
+| Very slow answers | CPU-only Intel graphics. Stay on `qwen3:4b`, or use a machine with a discrete GPU for `qwen3:8b`. |
 
-## Knowledge base (RAG) + web search
+## Conversation history (Supabase or local Postgres)
 
-Curated files live in:
+Without a database the app still works: threads live in memory and vanish when the backend restarts. To keep them, point `DATABASE_URL` at a Postgres instance and set `DATABASE_ENABLED=true`. Tables (`conversations`, `messages`) are created on the first boot.
 
-- `data/tourist_sites/*.json` — sites with FR/EN summaries and tips (all regions, parks, culture)
-- `data/documents/*.md` — history, transport, parks, climate, safety, food, crafts, etiquette
+**Supabase** (recommended, free tier):
 
-At chat time:
+1. Create a project on [supabase.com](https://supabase.com), then open **Project Settings → Database → Connection string → URI**.
+2. Copy the URI, replace `postgresql://` with `postgresql+asyncpg://`, and paste your database password.
+3. Put it in `.env` **and** `backend/.env`:
 
-1. `LocalRAGService` retrieves top `RAG_TOP_K` local passages
-2. `CompositeWebSearchService` fetches up to `WEB_SEARCH_MAX_RESULTS` public web hits
-3. `HuggingFaceAIService` appends both to the system prompt
-
-```env
-RAG_ENABLED=true
-RAG_TOP_K=6
-WEB_SEARCH_ENABLED=true
-WEB_SEARCH_MAX_RESULTS=4
+```dotenv
+DATABASE_URL=postgresql+asyncpg://postgres:YOUR_PASSWORD@db.YOUR_REF.supabase.co:5432/postgres
+DATABASE_ENABLED=true
 ```
 
-To enrich the assistant, add JSON sites or Markdown sections under `data/` and restart the backend.
+If your network blocks IPv6, use the pooler URI instead (port `6543`); the backend detects it and disables prepared statement caching, which pgbouncer rejects. TLS is enabled automatically for any non-local host.
 
-## Optional PostgreSQL
+**Local Postgres** instead:
 
 ```powershell
 docker compose up -d
 ```
 
-Then set `DATABASE_ENABLED=true`. Chat history is still in-memory in this phase.
+The mobile app remembers the open thread, reopens it on launch, and the clock icon in the header lists past conversations (open, or delete). Endpoints: `GET /api/conversations`, `GET /api/conversations/{id}`, `DELETE /api/conversations/{id}`. If the database becomes unreachable while running, the chat keeps answering and falls back to in-memory history instead of failing.
+
+## Rebuild the knowledge base
+
+```powershell
+cd "C:\Users\hp\git\assitant mintoul\backend"
+.\.venv\Scripts\Activate.ps1
+python -m scripts.build_knowledge_base
+```
+
+How to add sites: `data/tourist_sites/README.md`
 
 ## Files to inspect first
 
-1. `backend/app/api/chat.py` — HTTP route
-2. `backend/app/services/ai/huggingface.py` — Hugging Face Inference Providers adapter
-3. `backend/app/services/ai/grounding.py` — RAG + web prompt assembly
-4. `backend/app/services/rag/local.py` — lexical knowledge retrieval
-5. `backend/app/services/search/` — Wikipedia + DuckDuckGo
-6. `data/tourist_sites/` / `data/documents/` — curated knowledge base
+1. `backend/app/api/chat.py` — HTTP route (no Ollama calls)
+2. `backend/app/services/ai/base.py` — `AIService`
+3. `backend/app/services/ai/ollama.py` — Ollama adapter
+4. `backend/app/services/ai/factory.py` — provider switch
+5. `backend/app/services/ai/prompts.py` — system prompt
+6. `backend/app/services/conversation/memory.py` — in-memory threads
 7. `mobile/services/api.ts` — FastAPI client
-8. `.env.example` — `LLM_PROVIDER` / `HF_*` / `RAG_*` / `WEB_SEARCH_*`
+8. `mobile/constants/config.ts` — API base URL
+9. `.env.example` — `LLM_PROVIDER` / `LLM_MODEL`

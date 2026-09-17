@@ -1,0 +1,204 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  createAudioPlayer,
+  setAudioModeAsync,
+  type AudioPlayer,
+} from 'expo-audio';
+import { File, Paths } from 'expo-file-system';
+import * as Speech from 'expo-speech';
+
+import { synthesizeSpeech } from '../services/api';
+
+// Fish Audio synthesis time grows with the text, so speak in chunks: the first
+// sentence starts playing while the rest is still being synthesized.
+const MAX_SEGMENT_CHARS = 180;
+
+function cleanForSpeech(text: string): string {
+  return text
+    .replace(/\*\*/g, '')
+    .replace(/`+/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function splitForSpeech(text: string): string[] {
+  const sentences = text.match(/[^.!?…]+[.!?…]*/g) ?? [text];
+  const segments: string[] = [];
+  let current = '';
+
+  for (const sentence of sentences) {
+    const piece = sentence.trim();
+    if (!piece) {
+      continue;
+    }
+    if (!current) {
+      current = piece;
+    } else if (current.length + piece.length + 1 <= MAX_SEGMENT_CHARS) {
+      current = `${current} ${piece}`;
+    } else {
+      segments.push(current);
+      current = piece;
+    }
+  }
+  if (current) {
+    segments.push(current);
+  }
+  return segments.length > 0 ? segments : [text];
+}
+
+function speakOnDevice(cleaned: string): Promise<void> {
+  return new Promise<void>((resolve) => {
+    Speech.speak(cleaned, {
+      language: 'fr-FR',
+      rate: 0.96,
+      pitch: 1.0,
+      onDone: () => resolve(),
+      onStopped: () => resolve(),
+      onError: () => resolve(),
+    });
+  });
+}
+
+async function synthesizeOrNull(text: string): Promise<ArrayBuffer | null> {
+  try {
+    return await synthesizeSpeech(text);
+  } catch {
+    return null;
+  }
+}
+
+export function useSpeechPlayback() {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const playerRef = useRef<AudioPlayer | null>(null);
+  const cancelledRef = useRef(false);
+
+  const stop = useCallback(() => {
+    cancelledRef.current = true;
+    Speech.stop();
+    const player = playerRef.current;
+    playerRef.current = null;
+    if (player) {
+      try {
+        player.pause();
+        player.remove();
+      } catch {
+        // ignore
+      }
+    }
+    setIsSpeaking(false);
+  }, []);
+
+  const playBytes = useCallback(async (audio: ArrayBuffer, index: number) => {
+    const file = new File(Paths.cache, `tts-${Date.now()}-${index}.mp3`);
+    file.create({ overwrite: true });
+    file.write(new Uint8Array(audio));
+
+    const player = createAudioPlayer({ uri: file.uri });
+    playerRef.current = player;
+
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const subscription = player.addListener(
+          'playbackStatusUpdate',
+          (status) => {
+            if (status.error) {
+              subscription.remove();
+              reject(new Error(status.error));
+              return;
+            }
+            if (status.didJustFinish) {
+              subscription.remove();
+              resolve();
+            }
+          },
+        );
+        player.play();
+      });
+    } finally {
+      playerRef.current = null;
+      try {
+        player.remove();
+      } catch {
+        // ignore
+      }
+      try {
+        if (file.exists) {
+          file.delete();
+        }
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
+
+  const speak = useCallback(
+    async (text: string) => {
+      const cleaned = cleanForSpeech(text);
+      if (!cleaned) {
+        return;
+      }
+
+      stop();
+      cancelledRef.current = false;
+      setIsSpeaking(true);
+
+      const segments = splitForSpeech(cleaned);
+      let played = 0;
+
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          allowsRecording: false,
+        });
+
+        let pending = synthesizeOrNull(segments[0]);
+        for (let index = 0; index < segments.length; index += 1) {
+          const audio = await pending;
+          if (cancelledRef.current) {
+            return;
+          }
+
+          // Start the next synthesis before playing the current chunk.
+          pending =
+            index + 1 < segments.length
+              ? synthesizeOrNull(segments[index + 1])
+              : Promise.resolve(null);
+
+          if (!audio) {
+            const remaining = segments.slice(index).join(' ');
+            await speakOnDevice(remaining);
+            return;
+          }
+
+          await playBytes(audio, index);
+          played += 1;
+          if (cancelledRef.current) {
+            return;
+          }
+        }
+      } catch {
+        if (!cancelledRef.current && played === 0) {
+          await speakOnDevice(cleaned);
+        }
+      } finally {
+        if (!cancelledRef.current) {
+          setIsSpeaking(false);
+        }
+      }
+    },
+    [playBytes, stop],
+  );
+
+  useEffect(
+    () => () => {
+      stop();
+    },
+    [stop],
+  );
+
+  return {
+    isSpeaking,
+    speak,
+    stop,
+  };
+}

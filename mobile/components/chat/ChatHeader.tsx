@@ -1,12 +1,15 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { APP_NAME, APP_TAGLINE } from '../../constants/config';
-import { colors, spacing } from '../../constants/theme';
+import { colors, flagStripes, spacing } from '../../constants/theme';
 import type { BackendStatus } from '../../types/chat';
 
 interface ChatHeaderProps {
   status: BackendStatus;
   onStatusPress: () => void;
+  onOpenHistory: () => void;
+  onNewConversation: () => void;
 }
 
 const STATUS_LABEL: Record<BackendStatus, string> = {
@@ -15,7 +18,12 @@ const STATUS_LABEL: Record<BackendStatus, string> = {
   offline: 'Hors ligne',
 };
 
-export function ChatHeader({ status, onStatusPress }: ChatHeaderProps) {
+export function ChatHeader({
+  status,
+  onStatusPress,
+  onOpenHistory,
+  onNewConversation,
+}: ChatHeaderProps) {
   return (
     <View style={styles.wrap}>
       <View style={styles.brandRow}>
@@ -26,6 +34,24 @@ export function ChatHeader({ status, onStatusPress }: ChatHeaderProps) {
           <Text style={styles.name}>{APP_NAME}</Text>
           <Text style={styles.tagline}>{APP_TAGLINE}</Text>
         </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Ouvrir l’historique des conversations"
+          hitSlop={10}
+          onPress={onOpenHistory}
+          style={styles.iconBtn}
+        >
+          <Ionicons name="time-outline" size={20} color={colors.ivory} />
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Nouvelle conversation"
+          hitSlop={10}
+          onPress={onNewConversation}
+          style={[styles.iconBtn, styles.iconBtnAccent]}
+        >
+          <Ionicons name="add" size={22} color={colors.greenDeep} />
+        </Pressable>
       </View>
       <Pressable
         accessibilityRole="button"
@@ -36,6 +62,15 @@ export function ChatHeader({ status, onStatusPress }: ChatHeaderProps) {
         <View style={[styles.dot, styles[status]]} />
         <Text style={styles.statusText}>{STATUS_LABEL[status]}</Text>
       </Pressable>
+
+      <View style={styles.stripes}>
+        {flagStripes.map((stripe) => (
+          <View
+            key={stripe}
+            style={[styles.stripe, { backgroundColor: stripe }]}
+          />
+        ))}
+      </View>
     </View>
   );
 }
@@ -51,7 +86,7 @@ const styles = StyleSheet.create({
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.xs,
   },
   mark: {
     width: 44,
@@ -80,6 +115,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
   },
+  iconBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 253, 247, 0.16)',
+  },
+  iconBtnAccent: {
+    backgroundColor: colors.yellow,
+  },
   statusChip: {
     alignSelf: 'flex-start',
     flexDirection: 'row',
@@ -96,17 +142,26 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   checking: {
-    backgroundColor: colors.gold,
+    backgroundColor: colors.yellow,
   },
   online: {
-    backgroundColor: '#7DCEA0',
+    backgroundColor: colors.mint,
   },
   offline: {
-    backgroundColor: '#E57373',
+    backgroundColor: colors.red,
   },
   statusText: {
     color: colors.ivory,
     fontSize: 12,
     fontWeight: '600',
+  },
+  stripes: {
+    flexDirection: 'row',
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  stripe: {
+    flex: 1,
   },
 });

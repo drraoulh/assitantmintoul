@@ -67,11 +67,17 @@ class OllamaAIService(AIService):
             else settings.ollama_timeout_seconds
         )
         self._client = client
+        self._max_tokens = settings.llm_max_tokens
+        self._voice_max_tokens = settings.llm_voice_max_tokens
+        self._web_timeout = settings.web_search_timeout_seconds
+        self._voice_web_timeout = settings.voice_web_search_timeout_seconds
 
     async def generate_response(
         self,
         message: str,
         conversation_id: str | None = None,
+        *,
+        brief: bool = False,
     ) -> ChatResponse:
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
@@ -80,16 +86,20 @@ class OllamaAIService(AIService):
             history,
             rag_service=self._rag,
             web_search_service=self._web,
-            rag_top_k=self._rag_top_k,
-            web_search_max_results=self._web_max,
+            rag_top_k=max(3, self._rag_top_k - 2) if brief else self._rag_top_k,
+            web_search_max_results=min(2, self._web_max) if brief else self._web_max,
+            web_search_timeout_seconds=(
+                self._voice_web_timeout if brief else self._web_timeout
+            ),
+            brief=brief,
         )
 
         payload_messages: list[dict[str, str]] = [
             {"role": "system", "content": system_prompt},
-            *history,
+            *(history[-6:] if brief else history),
             {"role": "user", "content": message},
         ]
-        reply = await self._complete(payload_messages)
+        reply = await self._complete(payload_messages, brief=brief)
 
         await self._store.add_message(thread_id, "user", message)
         await self._store.add_message(thread_id, "assistant", reply)
@@ -101,7 +111,12 @@ class OllamaAIService(AIService):
             provider="ollama",
         )
 
-    async def _complete(self, messages: list[dict[str, str]]) -> str:
+    async def _complete(
+        self,
+        messages: list[dict[str, str]],
+        *,
+        brief: bool = False,
+    ) -> str:
         body: dict[str, Any] = {
             "model": self._model,
             "messages": messages,
@@ -110,6 +125,9 @@ class OllamaAIService(AIService):
             "options": {
                 "temperature": 0.6,
                 "num_ctx": 4096,
+                "num_predict": (
+                    self._voice_max_tokens if brief else self._max_tokens
+                ),
             },
         }
 

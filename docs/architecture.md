@@ -1,75 +1,59 @@
 # Architecture — Cameroon AI Tour Guide
 
-## Current flow (Hugging Face + knowledge base + web)
+## Current flow
 
 ```
 React Native (Expo)
-        ↓  POST /api/chat
+        ↓  POST /api/chat | /speech/* | POST /api/vision/identify
 FastAPI
-        ↓  AIService.generate_response()
-HuggingFaceAIService
-        ├─ LocalRAGService  ←  data/tourist_sites + data/documents
-        ├─ CompositeWebSearchService  ←  Wikipedia + DuckDuckGo
-        ↓  grounded system prompt
-        ↓  POST https://router.huggingface.co/v1/chat/completions
-Hugging Face Inference Providers  →  Qwen (HF_MODEL_ID)
+        ↓  Local RAG (lexical) + optional web search
+AIService (Hugging Face / Ollama / placeholder)
         ↓
-FastAPI  →  mobile chat bubble
+Mobile chat (+ voice + photo)
 ```
 
-The mobile app never calls Hugging Face directly. Only FastAPI holds the token.
+## Chat / knowledge
 
-## Provider independence
+- Default LLM: Hugging Face Inference Providers (`LLM_PROVIDER=huggingface`)
+- Local RAG: curated files under `data/tourist_sites/` and `data/documents/`
+- Live enrichment: Wikipedia + DuckDuckGo (`WEB_SEARCH_ENABLED=true`)
 
-Routes depend only on `AIService`.
+## Voice
 
-Default:
+- STT: Whisper via Hugging Face (`SPEECH_PROVIDER=huggingface`, `openai/whisper-large-v3-turbo`)
+  or local faster-whisper (`SPEECH_PROVIDER=whisper`)
+- TTS: Fish Audio (`TTS_PROVIDER=fish`, `s2.1-pro-free`) with `expo-speech` fallback
+- Conversation screen: press-to-talk. Entering the mode only warms up the mic;
+  recording starts on the first tap. The "Mains libres" pill chains the next
+  turn automatically after the answer.
+- Latency budget per voice turn: `mode=voice` on `POST /api/chat` caps the answer
+  at `LLM_VOICE_MAX_TOKENS`, time-boxes web search
+  (`VOICE_WEB_SEARCH_TIMEOUT_SECONDS`), and the mobile client synthesizes the
+  reply sentence by sentence so playback starts before the whole text is ready.
 
-```env
-LLM_PROVIDER=huggingface
-HF_MODEL_ID=Qwen/Qwen2.5-7B-Instruct
-HF_API_BASE_URL=https://router.huggingface.co/v1
-HUGGINGFACE_HUB_TOKEN=hf_xxx
-```
+## Vision
 
-`LLM_PROVIDER=ollama` remains available as an optional local fallback.
+- Camera/gallery → `POST /api/vision/identify` → Google Gemini (`gemini-3.6-flash`)
+- Description is then enriched by the chat/RAG guide reply
 
-## Knowledge base / RAG
+## Conversation history
 
-`RAGService` loads curated JSON sites and Markdown documents from `data/`.
+- Port: `ConversationStore` (`start`, `get_messages`, `add_message`, `get_turns`,
+  `list_conversations`, `delete`)
+- `InMemoryConversationStore`: default, process-local, lost on restart
+- `SqlConversationStore`: Supabase / Postgres via SQLAlchemy async, selected by
+  `DATABASE_ENABLED=true`. Every call degrades to the in-memory store on
+  `SQLAlchemyError`, so a database outage never breaks the chat.
+- Tables: `conversations` (id, title, created_at, updated_at) and `messages`
+  (conversation_id, role, content, created_at), created on startup
+- HTTP: `GET /api/conversations`, `GET /api/conversations/{id}`,
+  `DELETE /api/conversations/{id}`
+- Mobile: last thread id in AsyncStorage, reopened on launch; the header clock
+  opens the history sheet
 
-`LocalRAGService` scores passages with lightweight TF-IDF (no embedding download).
-A later upgrade can call Hugging Face embeddings for dense retrieval.
+## Design
 
-```env
-RAG_ENABLED=true
-RAG_TOP_K=6
-```
-
-## Live web search
-
-`WebSearchService` enriches answers with public web snippets:
-
-- French / English Wikipedia extracts
-- DuckDuckGo Instant Answer API
-
-```env
-WEB_SEARCH_ENABLED=true
-WEB_SEARCH_MAX_RESULTS=4
-```
-
-Curated KB excerpts are preferred over web snippets when both cover the same place.
-
-## Conversation memory
-
-`InMemoryConversationStore` (lost on restart). PostgreSQL persistence comes later.
-
-## Later phases
-
-| Capability | Planned tool |
-| --- | --- |
-| Dense RAG | HF embedding endpoint + FAISS / pgvector |
-| STT | Whisper (HF) |
-| TTS | Piper / HF TTS |
-| Vision | HF vision model |
-| Maps | OpenStreetMap |
+- Palette from the Cameroon flag: green `#007A5E` for surfaces, yellow `#FCD116`
+  for highlights, red `#CE1126` as accent (errors, quit, flag stripe)
+- `mobile/constants/theme.ts` is the single source; `flagStripes` draws the
+  three-colour rule under headers

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,25 +11,49 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatHeader } from '../components/chat/ChatHeader';
 import { ChatInputBar } from '../components/chat/ChatInputBar';
 import { ChatMessage } from '../components/chat/ChatMessage';
+import { ConversationHistorySheet } from '../components/chat/ConversationHistorySheet';
 import { SuggestedPrompts } from '../components/chat/SuggestedPrompts';
 import { TypingIndicator } from '../components/chat/TypingIndicator';
 import { WelcomeCard } from '../components/chat/WelcomeCard';
+import { VoiceConversationMode } from '../components/voice/VoiceConversationMode';
 import { colors, spacing } from '../constants/theme';
 import { useChat } from '../hooks/useChat';
+import { useSpeechPlayback } from '../hooks/useSpeechPlayback';
 
 export function ChatScreen() {
-  const { messages, isSending, backendStatus, sendMessage, checkHealth } = useChat();
+  const {
+    messages,
+    conversationId,
+    isSending,
+    backendStatus,
+    sendMessage,
+    sendImage,
+    openConversation,
+    startNewConversation,
+    checkHealth,
+  } = useChat();
+  const { isSpeaking, speak, stop } = useSpeechPlayback();
+  const [voiceModeOpen, setVoiceModeOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const isEmpty = messages.length === 0;
 
   useEffect(() => {
     scrollRef.current?.scrollToEnd({ animated: true });
-  }, [messages, isSending]);
+  }, [messages, isSending, isSpeaking]);
 
   return (
     <View style={styles.root}>
       <SafeAreaView edges={['top']} style={styles.topSafe}>
-        <ChatHeader status={backendStatus} onStatusPress={() => void checkHealth()} />
+        <ChatHeader
+          status={backendStatus}
+          onStatusPress={() => void checkHealth()}
+          onOpenHistory={() => setHistoryOpen(true)}
+          onNewConversation={() => {
+            stop();
+            void startNewConversation();
+          }}
+        />
       </SafeAreaView>
 
       <KeyboardAvoidingView
@@ -42,25 +66,63 @@ export function ChatScreen() {
           style={styles.flex}
           contentContainerStyle={styles.thread}
           keyboardShouldPersistTaps="handled"
-          onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+          onContentSizeChange={() =>
+            scrollRef.current?.scrollToEnd({ animated: true })
+          }
         >
           {isEmpty && (
             <View style={styles.empty}>
               <WelcomeCard />
-              <SuggestedPrompts disabled={isSending} onSelect={(prompt) => void sendMessage(prompt)} />
+              <SuggestedPrompts
+                disabled={isSending}
+                onSelect={(prompt) => void sendMessage(prompt)}
+              />
             </View>
           )}
 
           {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+            <ChatMessage
+              key={message.id}
+              message={message}
+              onSpeak={(text) => void speak(text)}
+              onStopSpeaking={stop}
+              isSpeaking={isSpeaking}
+            />
           ))}
           {isSending && <TypingIndicator />}
         </ScrollView>
 
         <SafeAreaView edges={['bottom']} style={styles.composerSafe}>
-          <ChatInputBar disabled={isSending} onSend={(text) => void sendMessage(text)} />
+          <ChatInputBar
+            disabled={isSending}
+            onSend={(text) => void sendMessage(text)}
+            onSendImage={(uri) => void sendImage(uri)}
+            onOpenVoiceMode={() => setVoiceModeOpen(true)}
+          />
         </SafeAreaView>
       </KeyboardAvoidingView>
+
+      <ConversationHistorySheet
+        visible={historyOpen}
+        activeConversationId={conversationId}
+        onClose={() => setHistoryOpen(false)}
+        onOpenConversation={(id) => {
+          stop();
+          void openConversation(id);
+        }}
+        onNewConversation={() => {
+          stop();
+          void startNewConversation();
+        }}
+      />
+
+      <VoiceConversationMode
+        visible={voiceModeOpen}
+        onClose={() => setVoiceModeOpen(false)}
+        sendMessage={(text) => sendMessage(text, 'voice')}
+        speak={speak}
+        stopSpeaking={stop}
+      />
     </View>
   );
 }

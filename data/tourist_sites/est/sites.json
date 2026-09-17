@@ -1,0 +1,63 @@
+[
+  {
+    "id": "site-018",
+    "name": "Réserve de faune du Dja",
+    "slug": "reserve-de-faune-du-dja",
+    "region": "Est",
+    "city": "Dja",
+    "category": "UNESCO",
+    "latitude": null,
+    "longitude": null,
+    "description": "The Dja Faunal Reserve is a UNESCO World Heritage natural property inscribed in 1987. UNESCO describes it as part of the Congo Basin rainforests, covering about 526,000 ha, about 90% undisturbed, almost completely surrounded by the Dja River, and noted for biodiversity and primates. Globally threatened species cited by UNESCO include the western lowland gorilla, chimpanzee and forest elephant. The property lies in the South and East regions (Dja-et-Lobo and Haut-Nyong). It is managed by Dja Conservation Services. The Ministry of Tourism also lists the Dja Reserve as UNESCO-listed ecotourism heritage.",
+    "history": "Founded in 1950 according to UNESCO's site presentation. Inscribed on the World Heritage List in 1987.",
+    "culture": null,
+    "activities": ["nature visit", "biodiversity viewing"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["fr", "en"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Dja Faunal Reserve",
+        "organization": "UNESCO World Heritage Centre",
+        "url": "https://whc.unesco.org/en/list/407/",
+        "publication_date": "1987",
+        "verification_status": "official"
+      },
+      {
+        "title": "Écotourisme",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/ecotourisme/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "site-019",
+    "name": "Parc national de Lobéké",
+    "slug": "parc-national-de-lobeke",
+    "region": "Est",
+    "city": "Moloundou",
+    "category": "UNESCO",
+    "latitude": null,
+    "longitude": null,
+    "description": "Lobéké National Park in Cameroon is the Cameroonian component of Sangha Trinational, a UNESCO World Heritage natural property inscribed in 2012. UNESCO describes Sangha Trinational as three contiguous parks (about 746,309 ha) where Cameroon, the Central African Republic and the Republic of Congo meet: Lobéké (Cameroon), Dzanga-Ndoki (CAR) and Nouabalé-Ndoki (Congo). The forests include forest elephants, western lowland gorilla and chimpanzee. Access permits and fees are not stored here.",
+    "history": "Inscribed on the World Heritage List in 2012 as part of Sangha Trinational.",
+    "culture": null,
+    "activities": ["rainforest visit", "wildlife viewing"],
+    "opening_hours": null,
+    "price": null,
+    "languages": ["fr", "en"],
+    "images": [],
+    "sources": [
+      {
+        "title": "Sangha Trinational",
+        "organization": "UNESCO World Heritage Centre",
+        "url": "https://whc.unesco.org/en/list/1380/",
+        "publication_date": "2012",
+        "verification_status": "official"
+      }
+    ]
+  }
+]

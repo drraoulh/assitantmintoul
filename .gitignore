@@ -28,6 +28,7 @@ mobile/*.p12
 mobile/*.key
 mobile/*.mobileprovision
 mobile/.metro-health-check*
+mobile/.agents/
 
 # OS / editors
 .DS_Store
@@ -40,12 +41,13 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Generated / binary data caches (curated JSON + Markdown knowledge base is tracked)
+# Data and model caches (keep curated JSON; ignore generated indexes)
+data/documents/*
+!data/documents/.gitkeep
 data/images/*
 !data/images/.gitkeep
-data/**/*.faiss
-data/**/*.npy
-data/**/index/
+data/indexes/*
+!data/indexes/.gitkeep
 *.faiss
 /models/
 .cache/
