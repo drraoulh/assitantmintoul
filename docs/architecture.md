@@ -51,6 +51,18 @@ Mobile chat (+ voice + photo)
 - Mobile: last thread id in AsyncStorage, reopened on launch; the header clock
   opens the history sheet
 
+## Knowledge base / RAG (Supabase + files + web)
+
+- Curated tourism schema in Supabase: `places` (162+), `regions`, `cities`,
+  `categories`, `cultural_topics`, `phrases`, `sources`, `place_images`
+- Sync into `knowledge_chunks` with:
+  `python -m scripts.sync_knowledge_base` (from `backend/`)
+- RAG loads Supabase chunks first, then merges local `data/tourist_sites/**`
+- Live web search (Wikipedia + DuckDuckGo) stays enabled as a complement
+- Prompt rule: prefer the curated KB, use the web for missing / recent context
+- Site catalog (`GET /api/tourist-sites`) reads published Supabase places when
+  `DATABASE_ENABLED=true`
+
 ## Design
 
 - Palette from the Cameroon flag: green `#007A5E` for surfaces, yellow `#FCD116`

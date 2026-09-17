@@ -31,22 +31,38 @@ def _load_tourist_sites(directory: Path) -> list[KnowledgeChunk]:
         return []
 
     chunks: list[KnowledgeChunk] = []
-    for path in sorted(directory.glob("*.json")):
+    # Flat files: data/tourist_sites/*.json
+    paths = list(sorted(directory.glob("*.json")))
+    # Regional layout: data/tourist_sites/<region>/sites.json
+    paths.extend(sorted(directory.glob("*/sites.json")))
+
+    seen_ids: set[str] = set()
+    for path in paths:
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             logger.warning("Skipping tourist site file %s: %s", path, exc)
             continue
 
-        if not isinstance(payload, list):
-            logger.warning("Expected list in %s", path)
+        if isinstance(payload, dict):
+            items = payload.get("sites", [])
+        elif isinstance(payload, list):
+            items = payload
+        else:
+            logger.warning("Expected list or object in %s", path)
             continue
 
-        for item in payload:
+        relative = path.relative_to(directory).as_posix()
+        for item in items:
             if not isinstance(item, dict):
                 continue
-            chunk = _site_to_chunk(item, source=path.name)
+            site_id = str(item.get("id") or "").strip()
+            if site_id and site_id in seen_ids:
+                continue
+            chunk = _site_to_chunk(item, source=relative)
             if chunk is not None:
+                if site_id:
+                    seen_ids.add(site_id)
                 chunks.append(chunk)
     return chunks
 
@@ -57,14 +73,20 @@ def _site_to_chunk(item: dict, *, source: str) -> KnowledgeChunk | None:
     if not site_id or not name:
         return None
 
-    summary_fr = str(item.get("summary_fr") or "").strip()
+    summary_fr = str(item.get("summary_fr") or item.get("description") or "").strip()
     summary_en = str(item.get("summary_en") or "").strip()
     tips_fr = str(item.get("tips_fr") or "").strip()
     tips_en = str(item.get("tips_en") or "").strip()
+    history = str(item.get("history") or "").strip()
+    culture = str(item.get("culture") or "").strip()
     city = str(item.get("city") or "").strip() or None
     region = str(item.get("region") or "").strip() or None
     category = str(item.get("category") or "").strip() or None
-    tags = tuple(str(tag).strip() for tag in item.get("tags") or [] if str(tag).strip())
+    tags = tuple(
+        str(tag).strip()
+        for tag in (item.get("tags") or item.get("activities") or [])
+        if str(tag).strip()
+    )
 
     lines = [f"Site: {name}"]
     if city:
@@ -77,6 +99,10 @@ def _site_to_chunk(item: dict, *, source: str) -> KnowledgeChunk | None:
         lines.append(f"FR: {summary_fr}")
     if summary_en:
         lines.append(f"EN: {summary_en}")
+    if history:
+        lines.append(f"Histoire: {history}")
+    if culture:
+        lines.append(f"Culture: {culture}")
     if tips_fr:
         lines.append(f"Conseils FR: {tips_fr}")
     if tips_en:

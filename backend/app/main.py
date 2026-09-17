@@ -16,6 +16,13 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
     await init_database()
+    from app.services.tourism.factory import warm_tourism_knowledge
+
+    try:
+        stats = await warm_tourism_knowledge()
+        print(f"Tourism KB ready: {stats}")
+    except Exception as exc:  # noqa: BLE001 - chat must start even if KB sync fails
+        print(f"Tourism KB warm-up skipped: {exc}")
     yield
     await close_shared_clients()
 

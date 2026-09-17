@@ -277,13 +277,25 @@ The mobile app remembers the open thread, reopens it on launch, and the clock ic
 
 ## Rebuild the knowledge base
 
+Sync the curated Supabase tourism tables (`places`, culture, phrases…) into
+`knowledge_chunks` and refresh the RAG index used by chat:
+
 ```powershell
 cd "C:\Users\hp\git\assitant mintoul\backend"
 .\.venv\Scripts\Activate.ps1
+python -m scripts.sync_knowledge_base
+```
+
+Optional FAISS rebuild from local JSON only:
+
+```powershell
 python -m scripts.build_knowledge_base
 ```
 
-How to add sites: `data/tourist_sites/README.md`
+The assistant always prefers this curated Cameroon knowledge, and still runs
+Wikipedia + DuckDuckGo web search as a complement when useful.
+
+How to add local JSON sites: `data/tourist_sites/README.md`
 
 ## Files to inspect first
 

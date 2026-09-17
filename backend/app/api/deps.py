@@ -9,6 +9,7 @@ from app.services.rag.factory import get_rag_service as build_rag_service
 from app.services.speech.base import SpeechService
 from app.services.speech.factory import create_speech_service
 from app.services.tourism.catalog import SiteCatalog
+from app.services.tourism.factory import get_site_catalog as build_site_catalog
 from app.services.vision.base import VisionService
 from app.services.vision.factory import create_vision_service
 
@@ -38,6 +39,5 @@ def get_vision_service() -> VisionService:
     return create_vision_service()
 
 
-@lru_cache
 def get_site_catalog() -> SiteCatalog:
-    return SiteCatalog()
+    return build_site_catalog()
