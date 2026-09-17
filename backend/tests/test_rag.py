@@ -8,10 +8,26 @@ from app.services.tourism.local import LocalTourismService
 
 def test_knowledge_base_loads_curated_chunks() -> None:
     chunks = load_knowledge_chunks()
-    assert len(chunks) >= 40
+    assert len(chunks) >= 70
     sources = {chunk.source.split("/", maxsplit=1)[0] for chunk in chunks}
     assert "tourist_sites" in sources
     assert "documents" in sources
+
+
+@pytest.mark.asyncio
+async def test_local_rag_retrieves_monument() -> None:
+    rag = LocalRAGService()
+    chunks = await rag.retrieve_chunks(
+        "Monument de la Réunification et basilique à Yaoundé",
+        top_k=5,
+    )
+    assert chunks
+    joined = " ".join(chunk.text.lower() for chunk in chunks)
+    assert "yaound" in joined
+    assert any(
+        word in joined
+        for word in ("réunification", "reunification", "basilique", "monument", "musée", "musee")
+    )
 
 
 @pytest.mark.asyncio

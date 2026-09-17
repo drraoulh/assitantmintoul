@@ -64,6 +64,11 @@ class Settings(BaseSettings):
     web_search_enabled: bool = True
     web_search_max_results: int = 4
 
+    # Firebase / Firestore (cloud knowledge base). Local data/ remains the seed.
+    firebase_enabled: bool = False
+    firebase_project_id: str = ""
+    firebase_credentials_file: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         if self.cors_origins.strip() == "*":

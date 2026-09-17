@@ -35,6 +35,10 @@ _ALIASES: dict[str, set[str]] = {
     "food": {"cuisine", "manger", "plat", "restaurant"},
     "parc": {"park", "safari", "wildlife", "réserve", "reserve"},
     "park": {"parc", "safari", "wildlife"},
+    "monument": {"monuments", "patrimoine", "heritage", "palais", "statue"},
+    "musée": {"musee", "museum", "museums", "galerie"},
+    "museum": {"musée", "musee", "museums"},
+    "basilique": {"église", "eglise", "church", "cathédrale", "cathedral"},
 }
 
 

@@ -51,6 +51,7 @@ Dense embeddings / FAISS, Whisper, TTS playback, computer vision, GPS, maps, aut
 │   ├── app/services/ai/    Hugging Face + grounding + prompts
 │   ├── app/services/rag/   Local knowledge retrieval
 │   ├── app/services/search/  Wikipedia + DuckDuckGo
+│   ├── app/services/firebase/ Firestore knowledge store + seed
 │   ├── app/services/tourism/
 │   ├── app/services/conversation/
 │   └── tests/
@@ -224,6 +225,29 @@ WEB_SEARCH_MAX_RESULTS=4
 ```
 
 To enrich the assistant, add JSON sites or Markdown sections under `data/` and restart the backend.
+
+## Firebase (base cloud)
+
+La base cloud prévue est **Firebase Firestore**. Les fichiers `data/` restent la graine locale.
+
+```env
+FIREBASE_ENABLED=false
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_CREDENTIALS_FILE=C:\path\to\serviceAccount.json
+```
+
+Quand le projet Firebase est prêt :
+
+```powershell
+cd backend
+.\.venv\Scripts\Activate.ps1
+$env:FIREBASE_ENABLED="true"
+$env:FIREBASE_PROJECT_ID="your-project-id"
+$env:FIREBASE_CREDENTIALS_FILE="C:\path\to\serviceAccount.json"
+python -m app.services.firebase.cli_seed
+```
+
+Modèle de collections : `data/documents/firebase_data_model.md`.
 
 ## Optional PostgreSQL
 

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "yaounde-artisanat",
+    "name": "Centres d'artisanat et galeries de Yaoundé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "culture",
+    "summary_fr": "Galeries et centres d'artisanat de la capitale : sculptures, tableaux, objets du Cameroun. Complément culturel aux musées officiels.",
+    "summary_en": "Craft centres and galleries in the capital: sculpture, paintings, Cameroonian objects. Cultural complement to official museums.",
+    "tips_fr": "Comparez prix ; évitez ivoire et produits illégaux.",
+    "tips_en": "Compare prices; avoid ivory and illegal products.",
+    "tags": [
+      "yaoundé",
+      "artisanat",
+      "galerie",
+      "culture",
+      "shopping"
+    ]
+  },
+  {
+    "id": "douala-street-art",
+    "name": "Art contemporain et street art à Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "culture",
+    "summary_fr": "Douala a une scène d'art contemporain active (expositions, installations urbaines selon les années). Demandez le programme culturel du moment.",
+    "summary_en": "Douala has an active contemporary art scene (exhibitions, urban installations depending on the year). Ask for the current cultural programme.",
+    "tips_fr": "Les événements sont saisonniers — réseaux culturels locaux utiles.",
+    "tips_en": "Events are seasonal — local cultural networks help.",
+    "tags": [
+      "douala",
+      "art",
+      "street art",
+      "culture",
+      "exposition"
+    ]
+  },
+  {
+    "id": "bafoussam-chefferie",
+    "name": "Chefferie / patrimoine de Bafoussam",
+    "city": "Bafoussam",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Bafoussam, capitale de l'Ouest, est entourée de chefferies et d'un patrimoine bamiléké vivant. Base pour Bandjoun, Baham, Dschang.",
+    "summary_en": "Bafoussam, West Region capital, is surrounded by chiefdoms and living Bamileke heritage. Base for Bandjoun, Baham, Dschang.",
+    "tips_fr": "Louez un chauffeur pour enchaîner plusieurs chefferies en une journée.",
+    "tips_en": "Hire a driver to link several chiefdoms in one day.",
+    "tags": [
+      "bafoussam",
+      "chefferie",
+      "ouest",
+      "bamiléké",
+      "heritage"
+    ]
+  }
+]
