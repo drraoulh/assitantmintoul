@@ -86,16 +86,16 @@ class Settings(BaseSettings):
     rag_top_k: int = 6
     rag_data_dir: str = ""
 
-    # Live web enrichment (Wikipedia + DuckDuckGo).
+    # Live web enrichment: organic open web + Wikipedia + Instant Answer.
     web_search_enabled: bool = True
-    web_search_max_results: int = 4
+    web_search_max_results: int = 6
     # Hard budget for the web leg; the answer is generated without it on timeout.
     web_search_timeout_seconds: float = Field(
-        default=6,
+        default=8,
         validation_alias=AliasChoices("WEB_SEARCH_TIMEOUT_SECONDS"),
     )
     voice_web_search_timeout_seconds: float = Field(
-        default=2.5,
+        default=3.5,
         validation_alias=AliasChoices("VOICE_WEB_SEARCH_TIMEOUT_SECONDS"),
     )
 

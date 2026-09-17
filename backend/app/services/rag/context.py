@@ -51,10 +51,12 @@ def build_system_prompt(
     if web_context.strip():
         sections.append(
             "## Live web search results\n"
-            "These snippets were retrieved from the public web (Wikipedia / DuckDuckGo). "
+            "These snippets were retrieved from the open public web (tourism sites, blogs, "
+            "news, TripAdvisor, Facebook/Instagram pages that appear in search, Wikipedia, etc.). "
             "Use them to complement the local knowledge base for broader or more recent context. "
-            "Treat them as unverified secondary sources: prefer the curated knowledge base when "
-            "both cover the same place. Never invent URLs. If results conflict, say so briefly.\n\n"
+            "Treat social and unverified pages as secondary tips, not official facts. Prefer the "
+            "curated knowledge base when both cover the same place. Never invent URLs. If results "
+            "conflict, say so briefly.\n\n"
             f"{web_context.strip()}"
         )
 

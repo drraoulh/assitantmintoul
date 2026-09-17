@@ -5,19 +5,22 @@ import logging
 
 from app.services.search.base import WebSearchHit, WebSearchService
 from app.services.search.duckduckgo import DuckDuckGoSearchService
+from app.services.search.open_web import OpenWebSearchService
 from app.services.search.wikipedia import WikipediaSearchService
 
 logger = logging.getLogger(__name__)
 
 
 class CompositeWebSearchService(WebSearchService):
-    """Merge Wikipedia + DuckDuckGo results for broader coverage."""
+    """Broad open-web search first, then Wikipedia / Instant Answer extras."""
 
     def __init__(
         self,
         services: list[WebSearchService] | None = None,
     ) -> None:
         self._services = services or [
+            # Organic results across the public web (sites, blogs, social pages…).
+            OpenWebSearchService(),
             WikipediaSearchService(),
             DuckDuckGoSearchService(),
         ]
@@ -26,8 +29,13 @@ class CompositeWebSearchService(WebSearchService):
         if max_results <= 0:
             return []
 
+        # Give the open web most of the budget; keep a couple slots for wiki/IA.
+        open_budget = max(max_results, min(max_results + 2, 8))
         results = await asyncio.gather(
-            *[service.search(query, max_results=max_results) for service in self._services],
+            *[
+                service.search(query, max_results=open_budget)
+                for service in self._services
+            ],
             return_exceptions=True,
         )
 
