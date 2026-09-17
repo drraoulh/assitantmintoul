@@ -1,0 +1,52 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+mobile/.env
+mobile/.env.local
+
+# Python
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.ruff_cache/
+
+# Node / Expo
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
+mobile/.metro-health-check*
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Data and model caches (keep folder structure)
+data/tourist_sites/*
+!data/tourist_sites/.gitkeep
+data/documents/*
+!data/documents/.gitkeep
+data/images/*
+!data/images/.gitkeep
+*.faiss
+/models/
+.cache/
