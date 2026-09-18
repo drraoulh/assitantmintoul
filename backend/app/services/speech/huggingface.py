@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import base64
 import logging
 
 import httpx
@@ -84,21 +85,26 @@ class HuggingFaceSpeechService(SpeechService):
                 "with Inference Providers access, then set it in backend/.env."
             )
 
+        # HF ASR pipeline rejects top-level `language` / `task` query params
+        # ("unexpected keyword argument 'language'"). Force FR via generate_kwargs.
         content_type = normalize_hf_content_type(mime_type, filename)
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
-            "Content-Type": content_type,
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "inputs": base64.b64encode(audio_bytes).decode("ascii"),
+            "parameters": {
+                "generate_kwargs": {
+                    "language": "french",
+                    "task": "transcribe",
+                }
+            },
         }
 
         try:
-            response = await self._post(
-                headers=headers,
-                content=audio_bytes,
-                # Force French: without this, Whisper often mis-detects FR as
-                # Serbian/Cyrillic (or other languages) on short mobile clips.
-                params={"language": "fr", "task": "transcribe"},
-            )
+            response = await self._post_json(headers=headers, payload=payload)
         except httpx.TimeoutException as exc:
             raise TranscriptionFailedError(
                 "Hugging Face took too long to transcribe the audio."
@@ -114,14 +120,9 @@ class HuggingFaceSpeechService(SpeechService):
                 "Hugging Face rejected the token. Check HUGGINGFACE_HUB_TOKEN."
             )
         if response.status_code == 503:
-            # Cold start: retry once after a short wait
             await asyncio.sleep(2.0)
             try:
-                response = await self._post(
-                    headers=headers,
-                    content=audio_bytes,
-                    params={"language": "fr", "task": "transcribe"},
-                )
+                response = await self._post_json(headers=headers, payload=payload)
             except httpx.HTTPError as exc:
                 raise SpeechUnavailableError(
                     "Could not reach Hugging Face Inference API."
@@ -130,6 +131,24 @@ class HuggingFaceSpeechService(SpeechService):
                 raise SpeechUnavailableError(
                     "The Whisper model is loading on Hugging Face. Try again in a few seconds."
                 )
+
+        # Older routers may reject JSON+generate_kwargs — fall back to raw audio.
+        if response.status_code >= 400:
+            detail = _safe_error_message(response)
+            logger.warning(
+                "HF STT JSON path status=%s detail=%s; trying raw audio fallback",
+                response.status_code,
+                detail,
+            )
+            response = await self._post_raw(
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Accept": "application/json",
+                    "Content-Type": content_type,
+                },
+                content=audio_bytes,
+            )
+
         if response.status_code >= 400:
             detail = _safe_error_message(response)
             logger.warning(
@@ -157,12 +176,31 @@ class HuggingFaceSpeechService(SpeechService):
             "Text-to-speech is disabled. Set TTS_PROVIDER=fish and FISH_AUDIO_API_KEY."
         )
 
-    async def _post(
+    async def _post_json(
+        self,
+        *,
+        headers: dict[str, str],
+        payload: dict,
+    ) -> httpx.Response:
+        timeout = httpx.Timeout(
+            self._settings.hf_speech_timeout_seconds,
+            connect=10.0,
+        )
+        client = self._client or shared_async_client(
+            timeout_seconds=self._settings.hf_speech_timeout_seconds,
+        )
+        return await client.post(
+            self.endpoint,
+            headers=headers,
+            json=payload,
+            timeout=timeout,
+        )
+
+    async def _post_raw(
         self,
         *,
         headers: dict[str, str],
         content: bytes,
-        params: dict[str, str] | None = None,
     ) -> httpx.Response:
         timeout = httpx.Timeout(
             self._settings.hf_speech_timeout_seconds,
@@ -175,7 +213,6 @@ class HuggingFaceSpeechService(SpeechService):
             self.endpoint,
             headers=headers,
             content=content,
-            params=params,
             timeout=timeout,
         )
 

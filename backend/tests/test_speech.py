@@ -74,10 +74,11 @@ def test_transcribe_endpoint_empty_file() -> None:
 async def test_huggingface_speech_transcribe_success() -> None:
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.method == "POST"
-        assert b"fake-audio" in request.content
-        assert request.headers.get("content-type") == "audio/m4a"
-        assert "language=fr" in str(request.url)
-        assert "task=transcribe" in str(request.url)
+        assert request.headers.get("content-type", "").startswith("application/json")
+        body = request.read()
+        assert b"generate_kwargs" in body
+        assert b"french" in body
+        assert b"transcribe" in body
         return httpx.Response(200, json={"text": " Visiter le Mont Cameroun "})
 
     settings = Settings(
