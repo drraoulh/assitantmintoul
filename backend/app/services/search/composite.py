@@ -12,45 +12,61 @@ logger = logging.getLogger(__name__)
 
 
 class CompositeWebSearchService(WebSearchService):
-    """Broad open-web search first, then Wikipedia / Instant Answer extras."""
+    """Open-web first for speed; Wikipedia / Instant Answer only if needed."""
 
     def __init__(
         self,
         services: list[WebSearchService] | None = None,
+        *,
+        open_web: WebSearchService | None = None,
+        fillers: list[WebSearchService] | None = None,
     ) -> None:
-        self._services = services or [
-            # Organic results across the public web (sites, blogs, social pages…).
-            OpenWebSearchService(),
-            WikipediaSearchService(),
-            DuckDuckGoSearchService(),
-        ]
+        if services is not None:
+            self._open_web = services[0] if services else OpenWebSearchService()
+            self._fillers = services[1:]
+        else:
+            self._open_web = open_web or OpenWebSearchService()
+            self._fillers = fillers or [
+                WikipediaSearchService(),
+                DuckDuckGoSearchService(),
+            ]
 
     async def search(self, query: str, *, max_results: int = 5) -> list[WebSearchHit]:
         if max_results <= 0:
             return []
 
-        # Give the open web most of the budget; keep a couple slots for wiki/IA.
-        open_budget = max(max_results, min(max_results + 2, 8))
-        results = await asyncio.gather(
-            *[
-                service.search(query, max_results=open_budget)
-                for service in self._services
-            ],
-            return_exceptions=True,
-        )
-
         merged: list[WebSearchHit] = []
         seen: set[str] = set()
-        for result in results:
-            if isinstance(result, Exception):
-                logger.warning("Web search provider failed: %s", result)
-                continue
-            for hit in result:
+
+        def _absorb(hits: list[WebSearchHit] | BaseException) -> None:
+            if isinstance(hits, BaseException):
+                logger.warning("Web search provider failed: %s", hits)
+                return
+            for hit in hits:
                 key = (hit.url or hit.title).strip().casefold()
                 if not key or key in seen:
                     continue
                 seen.add(key)
                 merged.append(hit)
                 if len(merged) >= max_results:
-                    return merged
-        return merged
+                    return
+
+        try:
+            primary = await self._open_web.search(query, max_results=max_results)
+        except Exception as exc:
+            logger.warning("Open-web search failed: %s", exc)
+            primary = []
+        _absorb(primary)
+        if len(merged) >= max_results or not self._fillers:
+            return merged[:max_results]
+
+        remaining = max_results - len(merged)
+        filler_results = await asyncio.gather(
+            *[service.search(query, max_results=remaining) for service in self._fillers],
+            return_exceptions=True,
+        )
+        for result in filler_results:
+            _absorb(result)
+            if len(merged) >= max_results:
+                break
+        return merged[:max_results]

@@ -36,27 +36,36 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("LLM_PROVIDER", "AI_PROVIDER"),
     )
     llm_model: str = Field(
-        default="Qwen/Qwen3.5-9B",
+        default="Qwen/Qwen2.5-7B-Instruct",
         validation_alias=AliasChoices("LLM_MODEL", "OLLAMA_MODEL"),
     )
     ollama_base_url: str = "http://localhost:11434"
-    ollama_timeout_seconds: float = 120
+    ollama_timeout_seconds: float = 90
 
     hf_model_id: str = Field(
-        default="Qwen/Qwen3.5-9B:fastest",
+        default="Qwen/Qwen2.5-7B-Instruct:fastest",
         validation_alias=AliasChoices("HF_MODEL_ID", "LLM_MODEL"),
     )
     hf_api_base_url: str = "https://router.huggingface.co/v1"
-    hf_timeout_seconds: float = 120
+    hf_timeout_seconds: float = 60
 
-    # Generation budgets. Voice answers stay short: faster LLM, faster TTS.
+    # Generation budgets. Shorter answers = faster TTFT + TTS.
     llm_max_tokens: int = Field(
-        default=700,
+        default=380,
         validation_alias=AliasChoices("LLM_MAX_TOKENS"),
     )
     llm_voice_max_tokens: int = Field(
-        default=220,
+        default=160,
         validation_alias=AliasChoices("LLM_VOICE_MAX_TOKENS"),
+    )
+    # How many prior turns to send to the LLM (lower = faster).
+    llm_history_messages: int = Field(
+        default=8,
+        validation_alias=AliasChoices("LLM_HISTORY_MESSAGES"),
+    )
+    llm_voice_history_messages: int = Field(
+        default=4,
+        validation_alias=AliasChoices("LLM_VOICE_HISTORY_MESSAGES"),
     )
     hf_embedding_model_id: str = (
         "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
@@ -83,19 +92,19 @@ class Settings(BaseSettings):
 
     # Local tourism knowledge base (RAG). Lexical retrieval by default.
     rag_enabled: bool = True
-    rag_top_k: int = 6
+    rag_top_k: int = 4
     rag_data_dir: str = ""
 
-    # Live web enrichment: organic open web + Wikipedia + Instant Answer.
+    # Live web enrichment: organic open web first, wiki/IA only if needed.
     web_search_enabled: bool = True
-    web_search_max_results: int = 6
+    web_search_max_results: int = 3
     # Hard budget for the web leg; the answer is generated without it on timeout.
     web_search_timeout_seconds: float = Field(
-        default=8,
+        default=4.0,
         validation_alias=AliasChoices("WEB_SEARCH_TIMEOUT_SECONDS"),
     )
     voice_web_search_timeout_seconds: float = Field(
-        default=3.5,
+        default=2.5,
         validation_alias=AliasChoices("VOICE_WEB_SEARCH_TIMEOUT_SECONDS"),
     )
 

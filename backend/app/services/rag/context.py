@@ -2,7 +2,7 @@ from app.services.rag.chunk import KnowledgeChunk
 from app.services.search.base import WebSearchHit
 
 
-def format_knowledge_context(chunks: list[KnowledgeChunk]) -> str:
+def format_knowledge_context(chunks: list[KnowledgeChunk], *, max_chars: int = 520) -> str:
     """Format retrieved chunks for injection into the LLM prompt."""
     if not chunks:
         return ""
@@ -18,16 +18,22 @@ def format_knowledge_context(chunks: list[KnowledgeChunk]) -> str:
         if chunk.source:
             meta_bits.append(f"source={chunk.source}")
         meta = f" ({', '.join(meta_bits)})" if meta_bits else ""
-        blocks.append(f"{header}{meta}\n{chunk.text.strip()}")
+        body = chunk.text.strip()
+        if len(body) > max_chars:
+            body = body[: max_chars - 3].rstrip() + "..."
+        blocks.append(f"{header}{meta}\n{body}")
     return "\n\n".join(blocks)
 
 
-def format_web_context(hits: list[WebSearchHit]) -> str:
+def format_web_context(hits: list[WebSearchHit], *, max_chars: int = 320) -> str:
     if not hits:
         return ""
     blocks: list[str] = []
     for index, hit in enumerate(hits, start=1):
-        blocks.append(f"[W{index}] {hit.as_text()}")
+        text = hit.as_text()
+        if len(text) > max_chars:
+            text = text[: max_chars - 3].rstrip() + "..."
+        blocks.append(f"[W{index}] {text}")
     return "\n\n".join(blocks)
 
 

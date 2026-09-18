@@ -69,6 +69,8 @@ class OllamaAIService(AIService):
         self._client = client
         self._max_tokens = settings.llm_max_tokens
         self._voice_max_tokens = settings.llm_voice_max_tokens
+        self._history_n = settings.llm_history_messages
+        self._voice_history_n = settings.llm_voice_history_messages
         self._web_timeout = settings.web_search_timeout_seconds
         self._voice_web_timeout = settings.voice_web_search_timeout_seconds
 
@@ -81,12 +83,13 @@ class OllamaAIService(AIService):
     ) -> ChatResponse:
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
+        history_window = self._voice_history_n if brief else self._history_n
         system_prompt = await build_grounded_system_prompt(
             message,
             history,
             rag_service=self._rag,
             web_search_service=self._web,
-            rag_top_k=max(3, self._rag_top_k - 2) if brief else self._rag_top_k,
+            rag_top_k=max(2, self._rag_top_k - 1) if brief else self._rag_top_k,
             web_search_max_results=min(2, self._web_max) if brief else self._web_max,
             web_search_timeout_seconds=(
                 self._voice_web_timeout if brief else self._web_timeout
@@ -96,11 +99,10 @@ class OllamaAIService(AIService):
 
         payload_messages: list[dict[str, str]] = [
             {"role": "system", "content": system_prompt},
-            *(history[-6:] if brief else history),
+            *history[-history_window:],
             {"role": "user", "content": message},
         ]
         reply = await self._complete(payload_messages, brief=brief)
-
         await self._store.add_message(thread_id, "user", message)
         await self._store.add_message(thread_id, "assistant", reply)
 

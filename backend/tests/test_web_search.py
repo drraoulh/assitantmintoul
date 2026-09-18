@@ -34,6 +34,30 @@ async def test_composite_web_search_merges_and_dedupes() -> None:
     assert urls.count("https://example.com/kribi") == 1
 
 
+@pytest.mark.asyncio
+async def test_composite_skips_fillers_when_open_web_is_enough() -> None:
+    class Primary:
+        async def search(self, query: str, *, max_results: int = 5):
+            return [
+                WebSearchHit(f"Hit {i}", "body", f"https://example.com/{i}", "primary")
+                for i in range(max_results)
+            ]
+
+    class Filler:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        async def search(self, query: str, *, max_results: int = 5):
+            self.calls += 1
+            return [WebSearchHit("filler", "x", "https://example.com/filler", "filler")]
+
+    filler = Filler()
+    service = CompositeWebSearchService(services=[Primary(), filler])  # type: ignore[arg-type]
+    hits = await service.search("Kribi", max_results=3)
+    assert len(hits) == 3
+    assert filler.calls == 0
+
+
 def test_open_web_maps_organic_rows() -> None:
     hit = OpenWebSearchService._to_hit(
         {
