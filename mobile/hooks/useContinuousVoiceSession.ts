@@ -13,6 +13,7 @@ import {
   uriToBase64,
   type VoiceServerEvent,
 } from '../services/voiceSocket';
+import { Platform } from 'react-native';
 
 export type VoiceSessionPhase =
   | 'idle'
@@ -243,6 +244,10 @@ export function useContinuousVoiceSession({
   );
 
   const ensureSocket = useCallback(async (): Promise<VoiceSocket | null> => {
+    // Web Render API may not expose WS yet; HTTP+Fish TTS is the reliable path.
+    if (Platform.OS === 'web') {
+      return null;
+    }
     if (socketRef.current?.ready) {
       return socketRef.current;
     }

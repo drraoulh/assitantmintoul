@@ -6,6 +6,7 @@ import {
 } from 'expo-audio';
 import { File, Paths } from 'expo-file-system';
 import * as Speech from 'expo-speech';
+import { Platform } from 'react-native';
 
 import { synthesizeSpeech } from '../services/api';
 
@@ -71,10 +72,20 @@ export function useSpeechPlayback() {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const playerRef = useRef<AudioPlayer | null>(null);
   const cancelledRef = useRef(false);
+  const webAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const stop = useCallback(() => {
     cancelledRef.current = true;
     Speech.stop();
+    if (webAudioRef.current) {
+      try {
+        webAudioRef.current.pause();
+        webAudioRef.current.src = '';
+      } catch {
+        // ignore
+      }
+      webAudioRef.current = null;
+    }
     const player = playerRef.current;
     playerRef.current = null;
     if (player) {
@@ -89,6 +100,34 @@ export function useSpeechPlayback() {
   }, []);
 
   const playBytes = useCallback(async (audio: ArrayBuffer, index: number) => {
+    if (Platform.OS === 'web') {
+      const blob = new Blob([audio], { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      await new Promise<void>((resolve, reject) => {
+        const element = new Audio(url);
+        webAudioRef.current = element;
+        const cleanup = () => {
+          if (webAudioRef.current === element) {
+            webAudioRef.current = null;
+          }
+          URL.revokeObjectURL(url);
+        };
+        element.onended = () => {
+          cleanup();
+          resolve();
+        };
+        element.onerror = () => {
+          cleanup();
+          reject(new Error('Lecture audio impossible'));
+        };
+        void element.play().catch((error) => {
+          cleanup();
+          reject(error);
+        });
+      });
+      return;
+    }
+
     const file = new File(Paths.cache, `tts-${Date.now()}-${index}.mp3`);
     file.create({ overwrite: true });
     file.write(new Uint8Array(audio));
@@ -165,6 +204,15 @@ export function useSpeechPlayback() {
               : Promise.resolve(null);
 
           if (!audio) {
+            // On web, expo-speech is unreliable after async work — retry synth once.
+            if (Platform.OS === 'web') {
+              const retry = await synthesizeOrNull(segments[index]);
+              if (retry) {
+                await playBytes(retry, index);
+                played += 1;
+                continue;
+              }
+            }
             const remaining = segments.slice(index).join(' ');
             await speakOnDevice(remaining);
             return;
@@ -178,6 +226,17 @@ export function useSpeechPlayback() {
         }
       } catch {
         if (!cancelledRef.current && played === 0) {
+          if (Platform.OS === 'web') {
+            const retry = await synthesizeOrNull(cleaned);
+            if (retry) {
+              try {
+                await playBytes(retry, 0);
+                return;
+              } catch {
+                // fall through
+              }
+            }
+          }
           await speakOnDevice(cleaned);
         }
       } finally {
@@ -196,14 +255,12 @@ export function useSpeechPlayback() {
     [stop],
   );
 
-
   const playBase64Mp3 = useCallback(
     async (base64: string, index: number) => {
       const decode =
         typeof atob === 'function'
           ? (value: string) => atob(value)
           : (value: string) => {
-              // Minimal base64 decode for native fallbacks.
               const chars =
                 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
               const cleaned = value.replace(/=+$/, '');

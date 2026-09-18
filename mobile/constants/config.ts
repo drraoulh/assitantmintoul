@@ -36,4 +36,4 @@ function resolveApiBaseUrl(): string {
 
 export const API_BASE_URL = resolveApiBaseUrl();
 export const APP_NAME = 'Smartmboa Tour';
-export const APP_TAGLINE = 'Votre compagnon de voyage au Cameroun';
+export const APP_TAGLINE = 'Découvrez le Cameroun autrement';

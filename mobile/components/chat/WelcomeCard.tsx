@@ -6,11 +6,11 @@ export function WelcomeCard() {
   return (
     <View style={styles.card}>
       <Text style={styles.kicker}>Smartmboa Tour</Text>
-      <Text style={styles.title}>Bonjour, voyageur</Text>
+      <Text style={styles.title}>Découvrez le Cameroun autrement</Text>
       <Text style={styles.body}>
         Posez une question sur les villes, les parcs, la culture ou un
-        itinéraire au Cameroun. Ouvrez « Mode conversation » pour parler
-        en continu au guide : vous parlez, il répond, puis vous reparlez.
+        itinéraire. Ouvrez « Mode conversation » pour parler au guide :
+        vous parlez, il répond à voix haute, puis vous reparlez.
       </Text>
     </View>
   );
