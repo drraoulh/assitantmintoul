@@ -3,6 +3,7 @@ services:
     name: cameroon-ai-tour-guide-api
     runtime: docker
     plan: free
+    branch: master
     healthCheckPath: /api/health
     envVars:
       - key: APP_ENV
