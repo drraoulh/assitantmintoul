@@ -23,6 +23,12 @@ def test_sources_from_knowledge_includes_images() -> None:
             region="Centre",
         ),
         KnowledgeChunk(
+            id="doc:food:1",
+            title="Où manger",
+            text="Conseils repas",
+            source="documents/food_deep_dive.md",
+        ),
+        KnowledgeChunk(
             id="place:abc",
             title="Musée National",
             text="dup",

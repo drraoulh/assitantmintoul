@@ -13,12 +13,22 @@ def sources_from_knowledge(
     seen: set[str] = set()
     if not chunks:
         return unique
-    for chunk in chunks:
+
+    # Prefer concrete places (esp. with photos) over generic doc sections.
+    preferred = [
+        chunk
+        for chunk in chunks
+        if chunk.id.startswith(("place:", "site:")) or bool(chunk.images)
+    ]
+    ordered = preferred or list(chunks)
+
+    for chunk in ordered:
         key = (chunk.id or chunk.title).strip().casefold()
         if not key or key in seen:
             continue
-        # Skip thin region blurbs — prefer concrete places / topics.
         if chunk.id.startswith("region:"):
+            continue
+        if chunk.id.startswith("doc:") and not chunk.images:
             continue
         seen.add(key)
         image_url = next((url for url in chunk.images if url), None)

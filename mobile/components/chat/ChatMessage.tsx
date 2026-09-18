@@ -228,9 +228,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   sourceCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
     backgroundColor: 'rgba(0, 122, 94, 0.06)',
     borderRadius: radius.sm,
     overflow: 'hidden',
@@ -238,14 +235,13 @@ const styles = StyleSheet.create({
     borderColor: colors.line,
   },
   sourceImage: {
-    width: 64,
-    height: 64,
+    width: '100%',
+    height: 140,
     backgroundColor: 'rgba(0,0,0,0.08)',
   },
   sourceTextBlock: {
-    flex: 1,
+    paddingHorizontal: 10,
     paddingVertical: 8,
-    paddingRight: 10,
     gap: 2,
   },
   sourceTitle: {
