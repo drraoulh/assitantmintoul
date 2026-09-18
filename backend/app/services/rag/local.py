@@ -89,6 +89,10 @@ class LocalRAGService(RAGService):
     def chunk_count(self) -> int:
         return len(self._chunks)
 
+    @property
+    def chunks(self) -> list[KnowledgeChunk]:
+        return self._chunks
+
     async def retrieve(self, query: str, top_k: int = 5) -> list[str]:
         scored = await self.retrieve_chunks(query, top_k=top_k)
         return [chunk.text for chunk in scored]

@@ -25,6 +25,8 @@ interface VoiceConversationModeProps {
   sendMessage: (text: string) => Promise<string | null>;
   speak: (text: string) => Promise<void>;
   stopSpeaking: () => void;
+  playBase64Mp3?: (base64: string, index: number) => Promise<void>;
+  onExchange?: (userText: string, assistantText: string) => void;
 }
 
 function phaseCopy(
@@ -157,6 +159,8 @@ export function VoiceConversationMode({
   sendMessage,
   speak,
   stopSpeaking,
+  playBase64Mp3,
+  onExchange,
 }: VoiceConversationModeProps) {
   const pulse = useRef(new Animated.Value(1)).current;
   const fadeIn = useRef(new Animated.Value(0)).current;
@@ -177,6 +181,8 @@ export function VoiceConversationMode({
     sendMessage,
     speak,
     stopSpeaking,
+    playBase64Mp3,
+    onExchange,
   });
 
   const copy = fr(phase, isRecording);

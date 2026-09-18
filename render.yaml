@@ -10,7 +10,7 @@ services:
       - key: LLM_PROVIDER
         value: huggingface
       - key: HF_MODEL_ID
-        value: Qwen/Qwen2.5-7B-Instruct:fastest
+        value: Qwen/Qwen3.5-9B:fastest
       - key: HF_TIMEOUT_SECONDS
         value: "60"
       - key: LLM_MAX_TOKENS

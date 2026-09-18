@@ -28,11 +28,12 @@ export function ChatScreen() {
     backendStatus,
     sendMessage,
     sendImage,
+    appendExchange,
     openConversation,
     startNewConversation,
     checkHealth,
   } = useChat();
-  const { isSpeaking, speak, stop } = useSpeechPlayback();
+  const { isSpeaking, speak, stop, playBase64Mp3 } = useSpeechPlayback();
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
@@ -122,6 +123,8 @@ export function ChatScreen() {
         sendMessage={(text) => sendMessage(text, 'voice')}
         speak={speak}
         stopSpeaking={stop}
+        playBase64Mp3={playBase64Mp3}
+        onExchange={appendExchange}
       />
     </View>
   );

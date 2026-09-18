@@ -7,9 +7,11 @@ from pathlib import Path
 
 from app.core.config import get_settings
 from app.services.rag.base import PlaceholderRAGService, RAGService
+from app.services.rag.cache import RetrievalCache
 from app.services.rag.chunk import KnowledgeChunk
 from app.services.rag.loader import load_knowledge_chunks
 from app.services.rag.local import LocalRAGService
+from app.services.rag.vector_hf import HuggingFaceEmbeddingIndex, HybridVectorRAGService
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +24,23 @@ class HybridRAGService(RAGService):
         file_chunks: list[KnowledgeChunk],
         *,
         load_supabase: bool,
+        cache: RetrievalCache | None = None,
+        vector_enabled: bool = False,
     ) -> None:
         self._file_chunks = file_chunks
         self._load_supabase = load_supabase
+        self._cache = cache
+        self._vector_enabled = vector_enabled
+        self._vector_index: HuggingFaceEmbeddingIndex | None = None
         self._local = LocalRAGService(chunks=file_chunks)
+        self._hybrid = HybridVectorRAGService(
+            self._local,
+            vector_index=None,
+            cache=cache,
+        )
         self._ready = not load_supabase
         self._lock = asyncio.Lock()
+        self._vector_warm_task: asyncio.Task | None = None
 
     @property
     def chunk_count(self) -> int:
@@ -43,13 +56,15 @@ class HybridRAGService(RAGService):
         top_k: int = 5,
     ) -> list[KnowledgeChunk]:
         await self._ensure_loaded()
-        return await self._local.retrieve_chunks(query, top_k=top_k)
+        return await self._hybrid.retrieve_chunks(query, top_k=top_k)
 
     async def _ensure_loaded(self) -> None:
         if self._ready:
+            self._ensure_vector_warming()
             return
         async with self._lock:
             if self._ready:
+                self._ensure_vector_warming()
                 return
             db_chunks: list[KnowledgeChunk] = []
             try:
@@ -64,6 +79,11 @@ class HybridRAGService(RAGService):
                 )
             merged = _merge_chunks(db_chunks, self._file_chunks)
             self._local = LocalRAGService(chunks=merged or self._file_chunks)
+            self._hybrid = HybridVectorRAGService(
+                self._local,
+                vector_index=self._vector_index,
+                cache=self._cache,
+            )
             self._ready = True
             logger.info(
                 "RAG hydrated: %s chunks (supabase=%s, files=%s)",
@@ -71,6 +91,30 @@ class HybridRAGService(RAGService):
                 len(db_chunks),
                 len(self._file_chunks),
             )
+            self._ensure_vector_warming()
+
+    def _ensure_vector_warming(self) -> None:
+        if not self._vector_enabled or self._vector_index is not None:
+            return
+        if self._vector_warm_task and not self._vector_warm_task.done():
+            return
+
+        async def _warm() -> None:
+            index = HuggingFaceEmbeddingIndex(list(self._local.chunks))
+            await index.warm()
+            self._vector_index = index if index.ready else None
+            self._hybrid = HybridVectorRAGService(
+                self._local,
+                vector_index=self._vector_index,
+                cache=self._cache,
+            )
+
+        try:
+            loop = asyncio.get_running_loop()
+            self._vector_warm_task = loop.create_task(_warm())
+        except RuntimeError:
+            # No running loop during sync construction — warm on first retrieve.
+            pass
 
 
 def create_rag_service() -> RAGService:
@@ -81,9 +125,15 @@ def create_rag_service() -> RAGService:
     data_root = settings.rag_data_dir.strip()
     root = Path(data_root) if data_root else None
     file_chunks = load_knowledge_chunks(root)
+    cache = RetrievalCache(
+        ttl_seconds=settings.rag_cache_ttl_seconds,
+        redis_url=settings.redis_url,
+    )
     return HybridRAGService(
         file_chunks=file_chunks,
         load_supabase=settings.database_enabled,
+        cache=cache,
+        vector_enabled=settings.rag_vector_enabled,
     )
 
 

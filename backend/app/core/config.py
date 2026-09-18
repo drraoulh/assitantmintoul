@@ -36,14 +36,14 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("LLM_PROVIDER", "AI_PROVIDER"),
     )
     llm_model: str = Field(
-        default="Qwen/Qwen2.5-7B-Instruct",
+        default="Qwen/Qwen3.5-9B",
         validation_alias=AliasChoices("LLM_MODEL", "OLLAMA_MODEL"),
     )
     ollama_base_url: str = "http://localhost:11434"
     ollama_timeout_seconds: float = 90
 
     hf_model_id: str = Field(
-        default="Qwen/Qwen2.5-7B-Instruct:fastest",
+        default="Qwen/Qwen3.5-9B:fastest",
         validation_alias=AliasChoices("HF_MODEL_ID", "LLM_MODEL"),
     )
     hf_api_base_url: str = "https://router.huggingface.co/v1"
@@ -94,7 +94,19 @@ class Settings(BaseSettings):
     rag_enabled: bool = True
     rag_top_k: int = 4
     rag_data_dir: str = ""
-
+    # Optional HF remote embeddings merged with lexical (no local model).
+    rag_vector_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("RAG_VECTOR_ENABLED"),
+    )
+    rag_cache_ttl_seconds: float = Field(
+        default=300.0,
+        validation_alias=AliasChoices("RAG_CACHE_TTL_SECONDS"),
+    )
+    redis_url: str = Field(
+        default="",
+        validation_alias=AliasChoices("REDIS_URL"),
+    )
     # Live web enrichment: organic open web first, wiki/IA only if needed.
     web_search_enabled: bool = True
     web_search_max_results: int = 3

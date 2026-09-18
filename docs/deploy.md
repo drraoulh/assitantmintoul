@@ -25,7 +25,7 @@ Puis redémarre Expo / rebuild.
 ## Notes latence
 
 Le backend est réglé pour la vitesse :
-- modèle `Qwen/Qwen2.5-7B-Instruct:fastest`
+- modèle `Qwen/Qwen3.5-9B:fastest`
 - réponses plus courtes (`LLM_MAX_TOKENS=380`)
 - recherche web sautée si la knowledge base locale suffit
 - timeout web 4s max

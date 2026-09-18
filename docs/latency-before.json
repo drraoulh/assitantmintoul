@@ -1,0 +1,40 @@
+{
+  "label": "before",
+  "note": "Baseline from pre-optimisation architecture (sequential HTTP, non-streaming LLM/TTS, RAG on every turn). Approximate from production timings + code path; not a live re-run of the old binary.",
+  "results": [
+    {
+      "probe": "simple",
+      "message": "Bonjour",
+      "route": {
+        "kind": "grounded_always",
+        "skip_kb": false
+      },
+      "metrics": {
+        "phases_ms": {
+          "grounding": 800,
+          "llm_full": 3500,
+          "tts_full": 2800
+        },
+        "total_ms": 8500,
+        "notes": "RAG+web attempted even for greetings; no TTFT; TTS waited for full MP3"
+      }
+    },
+    {
+      "probe": "grounded",
+      "message": "Que visiter à Yaoundé en deux jours ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false
+      },
+      "metrics": {
+        "phases_ms": {
+          "grounding": 4500,
+          "llm_full": 5000,
+          "tts_full": 3500
+        },
+        "total_ms": 16000,
+        "notes": "Serial STT→LLM→TTS HTTP hops on top of these server phases"
+      }
+    }
+  ]
+}

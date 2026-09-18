@@ -68,17 +68,30 @@ async def build_grounded_system_prompt(
     web_search_max_results: int = 3,
     web_search_timeout_seconds: float = 4.0,
     brief: bool = False,
+    skip_kb: bool = False,
+    skip_web: bool = False,
 ) -> str:
     """Assemble system prompt with local KB + optional live web hits.
 
     RAG runs first. Web search is skipped when the KB already covers the query,
     otherwise it is hard time-boxed so slow providers cannot stall the answer.
+    Simple routed queries can skip both legs entirely.
     """
     started = time.perf_counter()
     query = build_retrieval_query(message, history)
     chunks: list[KnowledgeChunk] = []
     kb_text = ""
     web_text = ""
+
+    if skip_kb:
+        logger.info(
+            "Grounding: skipped (route=simple) (%.0fms)",
+            (time.perf_counter() - started) * 1000,
+        )
+        prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
+        if brief:
+            return f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
+        return prompt
 
     if not isinstance(rag_service, PlaceholderRAGService):
         try:
@@ -87,12 +100,13 @@ async def build_grounded_system_prompt(
         except Exception:
             logger.exception("RAG retrieval failed; continuing without KB context")
 
-    skip_web = (
-        web_search_max_results <= 0
+    skip_web_search = (
+        skip_web
+        or web_search_max_results <= 0
         or isinstance(web_search_service, PlaceholderWebSearchService)
         or knowledge_covers_query(query, chunks)
     )
-    if skip_web:
+    if skip_web_search:
         logger.info(
             "Grounding: kb=%s chunks, web=skipped (%.0fms)",
             len(chunks),

@@ -267,6 +267,26 @@ export function useChat() {
     [conversationId, isSending],
   );
 
+  const appendExchange = useCallback((userText: string, assistantText: string) => {
+    const now = new Date().toISOString();
+    setMessages((current) => [
+      ...current,
+      {
+        id: createId(),
+        role: 'user',
+        content: userText,
+        createdAt: now,
+      },
+      {
+        id: createId(),
+        role: 'assistant',
+        content: assistantText,
+        createdAt: now,
+      },
+    ]);
+    setBackendStatus('online');
+  }, []);
+
   return {
     messages,
     conversationId,
@@ -275,6 +295,7 @@ export function useChat() {
     backendStatus,
     sendMessage,
     sendImage,
+    appendExchange,
     openConversation,
     startNewConversation,
     checkHealth,

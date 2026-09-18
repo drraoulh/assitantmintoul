@@ -1,0 +1,53 @@
+{
+  "label": "after",
+  "results": [
+    {
+      "probe": "simple",
+      "message": "Bonjour",
+      "route": {
+        "kind": "simple",
+        "skip_kb": true,
+        "skip_web": true,
+        "reason": "greeting_or_chitchat"
+      },
+      "reply_preview": "Bonjour ! Bienvenue au Cameroun, le pays du sourire. Que souhaitez-vous savoir pour votre voyage aujourd'hui ?",
+      "metrics": {
+        "label": "after:simple",
+        "total_ms": 9804.1,
+        "phases_ms": {
+          "route": 0.0,
+          "route_kind_simple": 1.0,
+          "grounding": 0.0,
+          "llm_ttft": 418.1,
+          "llm": 1027.0,
+          "tts_ttfb": 262.4,
+          "tts": 2472.4
+        }
+      }
+    },
+    {
+      "probe": "grounded",
+      "message": "Que visiter à Yaoundé en deux jours ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "Pour deux jours à Yaoundé, commencez par la Place de l'Indépendance et le Rond-Point patriotique pour l'histoire.\nVisitez ensuite le Musée National et le Centre",
+      "metrics": {
+        "label": "after:grounded",
+        "total_ms": 15787.9,
+        "phases_ms": {
+          "route": 0.0,
+          "route_kind_simple": 0.0,
+          "grounding": 3338.2,
+          "llm_ttft": 710.4,
+          "llm": 3859.6,
+          "tts_ttfb": 227.4,
+          "tts": 3277.2
+        }
+      }
+    }
+  ]
+}
