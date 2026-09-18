@@ -41,9 +41,10 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Data and model caches (keep curated JSON; ignore generated indexes)
+# Data and model caches (keep curated markdown/JSON; ignore generated indexes)
 data/documents/*
 !data/documents/.gitkeep
+!data/documents/*.md
 data/images/*
 !data/images/.gitkeep
 data/indexes/*
