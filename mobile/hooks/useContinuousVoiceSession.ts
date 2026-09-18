@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert } from 'react-native';
 import {
   AudioModule,
   RecordingPresets,
@@ -224,9 +223,9 @@ export function useContinuousVoiceSession({
       if (!activeRef.current) {
         return;
       }
+      // Keep the error in the status line — Alert overlays badly on web Safari.
       setSessionPhase('idle', errorText(error));
       busyRef.current = false;
-      Alert.alert('Mode vocal', errorText(error));
       void armRecorder();
     } finally {
       busyRef.current = false;

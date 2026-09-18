@@ -42,6 +42,20 @@ function errorText(error: unknown): string {
   return 'Impossible de joindre le serveur. Vérifiez que FastAPI tourne sur le port 8000, puis réessayez.';
 }
 
+function isLikelyOffline(error: unknown): boolean {
+  if (error instanceof ApiError) {
+    return false;
+  }
+  const message = error instanceof Error ? error.message : String(error ?? '');
+  return /failed to fetch|network request failed|load failed|networkerror|econnrefused|enotfound/i.test(
+    message,
+  );
+}
+
+async function sleep(ms: number): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function mimeFromUri(uri: string): string {
   const lower = uri.toLowerCase();
   if (lower.includes('.png')) return 'image/png';
@@ -59,12 +73,22 @@ export function useChat() {
   const [backendStatus, setBackendStatus] = useState<BackendStatus>('checking');
 
   const checkHealth = useCallback(async () => {
-    try {
-      await fetchHealth();
-      setBackendStatus('online');
-    } catch {
-      setBackendStatus('offline');
+    setBackendStatus('checking');
+    // Render free tier can need a cold-start wake; retry before showing offline.
+    const delays = [0, 2500, 5000];
+    for (let attempt = 0; attempt < delays.length; attempt += 1) {
+      if (delays[attempt] > 0) {
+        await sleep(delays[attempt]);
+      }
+      try {
+        await fetchHealth();
+        setBackendStatus('online');
+        return;
+      } catch {
+        // keep trying
+      }
     }
+    setBackendStatus('offline');
   }, []);
 
   useEffect(() => {
@@ -80,7 +104,7 @@ export function useChat() {
       setBackendStatus('online');
       return true;
     } catch (error) {
-      if (!(error instanceof ApiError)) {
+      if (isLikelyOffline(error)) {
         setBackendStatus('offline');
       }
       return false;
@@ -154,7 +178,7 @@ export function useChat() {
         ]);
         return response.message;
       } catch (error) {
-        if (!(error instanceof ApiError)) {
+        if (isLikelyOffline(error)) {
           setBackendStatus('offline');
         }
         const message = errorText(error);
@@ -221,7 +245,7 @@ export function useChat() {
         ]);
         return response.message;
       } catch (error) {
-        if (!(error instanceof ApiError)) {
+        if (isLikelyOffline(error)) {
           setBackendStatus('offline');
         }
         const message = errorText(error);

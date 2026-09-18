@@ -4,6 +4,7 @@ import {
   Easing,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -247,7 +248,7 @@ export function VoiceConversationMode({
           ))}
         </View>
 
-        <SafeAreaView style={styles.safe}>
+        <SafeAreaView style={styles.safe} edges={['top', 'left', 'right', 'bottom']}>
           <Animated.View style={[styles.content, { opacity: fadeIn }]}>
             <View style={styles.topBar}>
               <View style={styles.brandBlock}>
@@ -265,73 +266,81 @@ export function VoiceConversationMode({
               </Pressable>
             </View>
 
-            <View style={styles.center}>
-              <Text style={styles.phase}>{copy.title}</Text>
-              <Text style={styles.hint}>{subtitle}</Text>
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={styles.scrollContent}
+              bounces={false}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.center}>
+                <Text style={styles.phase}>{copy.title}</Text>
+                <Text style={styles.hint}>{subtitle}</Text>
 
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={copy.action}
-                disabled={busy}
-                onPress={handleOrbPress}
-                style={styles.orbHit}
-              >
-                <Animated.View
-                  style={[
-                    styles.orb,
-                    live && styles.orbLive,
-                    busy && styles.orbBusy,
-                    { transform: [{ scale: pulse }] },
-                  ]}
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={copy.action}
+                  disabled={busy}
+                  onPress={handleOrbPress}
+                  style={styles.orbHit}
                 >
-                  <Ionicons
-                    name={
-                      phase === 'speaking'
-                        ? 'volume-high'
-                        : busy
-                          ? 'hourglass-outline'
-                          : 'mic'
-                    }
-                    size={40}
-                    color={colors.ivory}
-                  />
-                </Animated.View>
-              </Pressable>
+                  <Animated.View
+                    style={[
+                      styles.orb,
+                      live && styles.orbLive,
+                      busy && styles.orbBusy,
+                      { transform: [{ scale: pulse }] },
+                    ]}
+                  >
+                    <Ionicons
+                      name={
+                        phase === 'speaking'
+                          ? 'volume-high'
+                          : busy
+                            ? 'hourglass-outline'
+                            : 'mic'
+                      }
+                      size={36}
+                      color={colors.ivory}
+                    />
+                  </Animated.View>
+                </Pressable>
 
-              <VoiceWave active={live} />
-              <Text style={styles.actionHint}>{copy.action}</Text>
+                <VoiceWave active={live} />
+                <Text style={styles.actionHint}>{copy.action}</Text>
 
-              <Pressable
-                accessibilityRole="switch"
-                accessibilityState={{ checked: handsFree }}
-                accessibilityLabel="Mode mains libres"
-                onPress={() => {
-                  void Haptics.selectionAsync();
-                  toggleHandsFree();
-                }}
-                style={[styles.toggle, handsFree && styles.toggleOn]}
-              >
-                <Text style={[styles.toggleText, handsFree && styles.toggleTextOn]}>
-                  {handsFree ? 'Mains libres activ\u00e9' : 'Mains libres'}
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityState={{ checked: handsFree }}
+                  accessibilityLabel="Mode mains libres"
+                  onPress={() => {
+                    void Haptics.selectionAsync();
+                    toggleHandsFree();
+                  }}
+                  style={[styles.toggle, handsFree && styles.toggleOn]}
+                >
+                  <Text style={[styles.toggleText, handsFree && styles.toggleTextOn]}>
+                    {handsFree ? 'Mains libres activ\u00e9' : 'Mains libres'}
+                  </Text>
+                </Pressable>
+
+                {micReady && phase === 'idle' && !isRecording ? (
+                  <Text style={styles.readyText}>Micro pr\u00eat</Text>
+                ) : null}
+              </View>
+
+              <View style={styles.transcripts}>
+                <Text style={styles.lineLabel}>Vous</Text>
+                <Text style={styles.lineText} numberOfLines={2}>
+                  {lastUserText || 'Votre question appara\u00eetra ici.'}
                 </Text>
-              </Pressable>
-
-              {micReady && phase === 'idle' && !isRecording ? (
-                <Text style={styles.readyText}>Micro pr\u00eat</Text>
-              ) : null}
-            </View>
-
-            <View style={styles.transcripts}>
-              <Text style={styles.lineLabel}>Vous</Text>
-              <Text style={styles.lineText} numberOfLines={2}>
-                {lastUserText || 'Votre question appara\u00eetra ici.'}
-              </Text>
-              <View style={styles.divider} />
-              <Text style={styles.lineLabelGuide}>Smartmboa</Text>
-              <Text style={styles.lineText} numberOfLines={3}>
-                {lastAssistantText || 'La r\u00e9ponse du guide s\u2019affichera ici.'}
-              </Text>
-            </View>
+                <View style={styles.divider} />
+                <Text style={styles.lineLabelGuide}>Smartmboa</Text>
+                <Text style={styles.lineText} numberOfLines={3}>
+                  {lastAssistantText || 'La r\u00e9ponse du guide s\u2019affichera ici.'}
+                </Text>
+              </View>
+            </ScrollView>
 
             <Pressable
               accessibilityRole="button"
@@ -366,13 +375,16 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.lg,
+    paddingBottom: spacing.md,
   },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingTop: spacing.sm,
+    paddingBottom: spacing.sm,
+    backgroundColor: colors.sand,
+    zIndex: 2,
   },
   brandBlock: {
     flex: 1,
@@ -401,17 +413,26 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.line,
   },
-  center: {
+  scroll: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: spacing.md,
+  },
+  center: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: spacing.md,
     gap: spacing.sm,
+    minHeight: 320,
   },
   phase: {
     color: colors.ink,
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '700',
     textAlign: 'center',
+    paddingHorizontal: spacing.sm,
   },
   hint: {
     color: colors.muted,
@@ -422,15 +443,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   orbHit: {
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
   },
   orb: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 108,
+    height: 108,
+    borderRadius: 54,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.green,
@@ -526,6 +547,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: radius.md,
     backgroundColor: colors.ink,
+    marginTop: spacing.xs,
   },
   exitText: {
     color: colors.ivory,
