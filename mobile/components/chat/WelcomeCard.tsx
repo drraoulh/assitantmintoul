@@ -1,8 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { colors, radius, spacing } from '../../constants/theme';
 
-export function WelcomeCard() {
+interface WelcomeCardProps {
+  onOpenParlerLocal?: () => void;
+}
+
+export function WelcomeCard({ onOpenParlerLocal }: WelcomeCardProps) {
   return (
     <View style={styles.card}>
       <Text style={styles.kicker}>Smartmboa Tour</Text>
@@ -12,6 +17,23 @@ export function WelcomeCard() {
         Douala » — posez votre question. Envoyez une photo pour reconnaître
         un lieu ou un plat. Mode conversation pour parler au guide.
       </Text>
+
+      {onOpenParlerLocal ? (
+        <Pressable
+          accessibilityRole="button"
+          onPress={onOpenParlerLocal}
+          style={({ pressed }) => [styles.cta, pressed && styles.ctaPressed]}
+        >
+          <Ionicons name="chatbubbles-outline" size={18} color={colors.forestDeep} />
+          <View style={styles.ctaText}>
+            <Text style={styles.ctaTitle}>Parler local</Text>
+            <Text style={styles.ctaSub}>
+              Salutations et phrases utiles pour le voyage
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={colors.forest} />
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -42,5 +64,34 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     marginTop: spacing.xs,
+  },
+  cta: {
+    marginTop: spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.goldSoft,
+    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.yellow,
+  },
+  ctaPressed: {
+    opacity: 0.9,
+  },
+  ctaText: {
+    flex: 1,
+    gap: 2,
+  },
+  ctaTitle: {
+    color: colors.forestDeep,
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  ctaSub: {
+    color: colors.muted,
+    fontSize: 12,
+    lineHeight: 16,
   },
 });

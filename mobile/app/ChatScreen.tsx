@@ -20,7 +20,11 @@ import { colors, spacing } from '../constants/theme';
 import { useChat } from '../hooks/useChat';
 import { useSpeechPlayback } from '../hooks/useSpeechPlayback';
 
-export function ChatScreen() {
+interface ChatScreenProps {
+  onOpenParlerLocal?: () => void;
+}
+
+export function ChatScreen({ onOpenParlerLocal }: ChatScreenProps) {
   const {
     messages,
     conversationId,
@@ -74,7 +78,7 @@ export function ChatScreen() {
         >
           {isEmpty && (
             <View style={styles.empty}>
-              <WelcomeCard />
+              <WelcomeCard onOpenParlerLocal={onOpenParlerLocal} />
               <SuggestedPrompts
                 disabled={isSending}
                 onSelect={(prompt) => void sendMessage(prompt)}

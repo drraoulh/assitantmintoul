@@ -1,0 +1,1812 @@
+import type { CulturalZone, LanguageTrackId } from "@/lib/types";
+import { trackFromLanguage } from "@/lib/cultural-voice";
+
+export type SkillLevel = 1 | 2 | 3;
+
+export type MissionOption = {
+  id: string;
+  labelFr: string;
+  labelEn: string;
+};
+
+export type MissionStep = {
+  id: string;
+  speakerFr: string;
+  speakerEn: string;
+  phrase: string;
+  pronunciation: string;
+  promptFr: string;
+  promptEn: string;
+  options: MissionOption[];
+  correctId: string;
+  whenFr: string;
+  whenEn: string;
+  replyFr?: string;
+  replyEn?: string;
+};
+
+export type LocalMission = {
+  id: string;
+  areaId: CulturalZone;
+  langId?: LanguageTrackId;
+  language: string;
+  skill: SkillLevel;
+  scene: "market" | "greet" | "travel" | "respect";
+  codeFr: string;
+  codeEn: string;
+  titleFr: string;
+  titleEn: string;
+  settingFr: string;
+  settingEn: string;
+  steps: MissionStep[];
+};
+
+const o = (id: string, fr: string, en = fr): MissionOption => ({
+  id,
+  labelFr: fr,
+  labelEn: en,
+});
+
+export const SKILL_LEVELS: {
+  id: SkillLevel;
+  titleFr: string;
+  titleEn: string;
+  bodyFr: string;
+  bodyEn: string;
+}[] = [
+  {
+    id: 1,
+    titleFr: "Niveau 1 — Survie",
+    titleEn: "Level 1 — Survival",
+    bodyFr:
+      "Bonjour, merci, au revoir, oui / non, s’il vous plaît, combien, où, je ne comprends pas, aidez-moi.",
+    bodyEn:
+      "Hello, thank you, goodbye, yes / no, please, how much, where, I don’t understand, help me.",
+  },
+  {
+    id: 2,
+    titleFr: "Niveau 2 — Voyage",
+    titleEn: "Level 2 — Travel",
+    bodyFr: "Marché, restaurant, transport, hôtel, salutations, acheter.",
+    bodyEn: "Market, restaurant, transport, hotel, greetings, buying.",
+  },
+  {
+    id: 3,
+    titleFr: "Niveau 3 — Immersion",
+    titleEn: "Level 3 — Immersion",
+    bodyFr:
+      "Expressions locales, formules de respect, contextes — pas toute la langue.",
+    bodyEn:
+      "Local expressions, respect formulas, contexts — not the whole language.",
+  },
+];
+
+export const LANGUAGE_AREAS: {
+  id: LanguageTrackId;
+  areaId: CulturalZone;
+  language: string;
+  tagFr: string;
+  tagEn: string;
+}[] = [
+  {
+    id: "duala",
+    areaId: "Sawa",
+    language: "Duala",
+    tagFr: "Littoral · Douala, côte",
+    tagEn: "Littoral · Douala, coast",
+  },
+  {
+    id: "yemba",
+    areaId: "Grassfields",
+    language: "Yemba",
+    tagFr: "Ouest · Dschang, chefferies",
+    tagEn: "West · Dschang, chiefdoms",
+  },
+  {
+    id: "shupamom",
+    areaId: "Grassfields",
+    language: "Shüpamom",
+    tagFr: "Ouest · Foumban, palais Bamoun",
+    tagEn: "West · Foumban, Bamum palace",
+  },
+  {
+    id: "medumba",
+    areaId: "Grassfields",
+    language: "Medumba",
+    tagFr: "Ouest · Bangangté, Ndé (test locuteur)",
+    tagEn: "West · Bangangté, Ndé (speaker test)",
+  },
+  {
+    id: "mbouda",
+    areaId: "Grassfields",
+    language: "Mbouda",
+    tagFr: "Ouest · Mbouda, Ngiemboon (Bamboutos)",
+    tagEn: "West · Mbouda, Ngiemboon (Bamboutos)",
+  },
+  {
+    id: "ewondo",
+    areaId: "Fang-Beti",
+    language: "Ewondo",
+    tagFr: "Centre · Yaoundé, plateau",
+    tagEn: "Centre · Yaoundé, plateau",
+  },
+  {
+    id: "fulfulde",
+    areaId: "Sudano-Sahelian",
+    language: "Fulfulde",
+    tagFr: "Nord · Maroua, savane",
+    tagEn: "North · Maroua, savannah",
+  },
+];
+
+export const missions: LocalMission[] = [
+  {
+    id: "sawa-survival",
+    areaId: "Sawa",
+    language: "Duala",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 01",
+    codeEn: "SURVIVAL 01",
+    titleFr: "Les mots pour tenir à Douala",
+    titleEn: "The words that get you through Douala",
+    settingFr:
+      "Vous descendez à Douala. On ne vous demande pas de parler duala couramment — seulement les mots qui changent un échange.",
+    settingEn:
+      "You arrive in Douala. Nobody asks you to speak Duala fluently — only the words that change an exchange.",
+    steps: [
+      {
+        id: "ss-1",
+        speakerFr: "Un passant Sawa",
+        speakerEn: "A Sawa passer-by",
+        phrase: "Mbolo",
+        pronunciation: "mbo-lo",
+        promptFr: "Que vient-il de dire ?",
+        promptEn: "What did he just say?",
+        options: [
+          o("a", "Bonjour", "Hello"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Dites Mbolo en premier, partout : rue, marché, hôtel. C’est la clé de politesse Sawa.",
+        whenEn:
+          "Say Mbolo first, everywhere: street, market, hotel. It is the Sawa courtesy key.",
+        replyFr: "Répondez : Mbolo.",
+        replyEn: "Reply: Mbolo.",
+      },
+      {
+        id: "ss-2",
+        speakerFr: "La même personne",
+        speakerEn: "The same person",
+        phrase: "Nandé",
+        pronunciation: "nan-dé",
+        promptFr: "On vous tend un service. Que signifie « Nandé » ?",
+        promptEn: "Someone helps you. What does “Nandé” mean?",
+        options: [
+          o("a", "Merci", "Thank you"),
+          o("b", "Oui", "Yes"),
+          o("c", "Non", "No"),
+          o("d", "S’il vous plaît", "Please"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Après un taxi, un plat, une indication : Nandé. Plus fort qu’un simple sourire.",
+        whenEn:
+          "After a taxi, a meal, a direction: Nandé. Stronger than a smile alone.",
+        replyFr: "Vous aussi : Nandé.",
+        replyEn: "You too: Nandé.",
+      },
+      {
+        id: "ss-3",
+        speakerFr: "Un vendeur",
+        speakerEn: "A vendor",
+        phrase: "Ee",
+        pronunciation: "é-é",
+        promptFr: "Il dit « Ee ». C’est…",
+        promptEn: "He says “Ee”. That is…",
+        options: [
+          o("a", "Oui", "Yes"),
+          o("b", "Non", "No"),
+          o("c", "Combien ?", "How much?"),
+          o("d", "Je ne comprends pas", "I don’t understand"),
+        ],
+        correctId: "a",
+        whenFr: "Ee = oui. Te = non. Utile pour accepter ou refuser sans brusquer.",
+        whenEn: "Ee = yes. Te = no. Useful to accept or refuse without being abrupt.",
+      },
+      {
+        id: "ss-4",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Te",
+        pronunciation: "té",
+        promptFr: "Et « Te » ?",
+        promptEn: "And “Te”?",
+        options: [
+          o("a", "Non", "No"),
+          o("b", "Oui", "Yes"),
+          o("c", "Bonjour", "Hello"),
+          o("d", "Merci", "Thank you"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Pour refuser poliment : un sourire + Te. Pas besoin d’un discours.",
+        whenEn: "To refuse politely: a smile + Te. No speech required.",
+      },
+      {
+        id: "ss-5",
+        speakerFr: "Vous, au carrefour",
+        speakerEn: "You, at a junction",
+        phrase: "Mbolo… où est… ?",
+        pronunciation: "mbo-lo, où est",
+        promptFr: "Pour demander votre chemin à Douala, le plus utile est…",
+        promptEn: "To ask for directions in Douala, the most useful is…",
+        options: [
+          o("a", "Saluer (Mbolo) puis demander en français : « Où est… ? »", "Greet (Mbolo) then ask in French: “Where is…?”"),
+          o("b", "Crier uniquement en anglais", "Shout in English only"),
+          o("c", "Ne rien dire", "Say nothing"),
+          o("d", "Parler très vite", "Speak very fast"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Le duala de séjour n’est pas un dictionnaire. Mbolo ouvre ; le français (et souvent l’anglais) guide. « Je ne comprends pas » se dit clairement, sans honte.",
+        whenEn:
+          "Stay Duala is not a dictionary. Mbolo opens; French (and often English) guides. “I don’t understand” can be said plainly, without shame.",
+      },
+    ],
+  },
+  {
+    id: "sawa-market",
+    areaId: "Sawa",
+    language: "Duala",
+    skill: 2,
+    scene: "market",
+    codeFr: "MISSION 01 — LE MARCHÉ",
+    codeEn: "MISSION 01 — THE MARKET",
+    titleFr: "Tu es au marché",
+    titleEn: "You are at the market",
+    settingFr:
+      "Marché de Douala. Un vendeur Sawa vous interpelle. Écoutez, comprenez, répondez — ce sont les phrases dont vous aurez réellement besoin.",
+    settingEn:
+      "A Douala market. A Sawa vendor calls out to you. Listen, understand, answer — these are the phrases you will actually need.",
+    steps: [
+      {
+        id: "sm-1",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Mbolo !",
+        pronunciation: "mbo-lo",
+        promptFr: "🔊 Il vous interpelle. Que signifie-t-il ?",
+        promptEn: "🔊 He calls out to you. What does it mean?",
+        options: [
+          o("a", "Bonjour — il ouvre l’échange", "Hello — he is opening the exchange"),
+          o("b", "C’est trop cher", "That’s too expensive"),
+          o("c", "Partez", "Leave"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Au marché, on salue avant de regarder la marchandise. Un Mbolo change le prix et le sourire.",
+        whenEn:
+          "At the market, you greet before you look at the goods. A Mbolo changes the price and the smile.",
+        replyFr: "Répondez : Mbolo.",
+        replyEn: "Reply: Mbolo.",
+      },
+      {
+        id: "sm-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "Combien ça coûte ?",
+        pronunciation: "combien ça coûte",
+        promptFr: "Après le salut, pour le prix vous…",
+        promptEn: "After the greeting, for the price you…",
+        options: [
+          o("a", "Gardez Mbolo, puis demandez le prix en français — c’est compris partout", "Keep Mbolo, then ask the price in French — it is understood everywhere"),
+          o("b", "Partez sans parler", "Leave without speaking"),
+          o("c", "Parlez plus fort seulement", "Only speak louder"),
+          o("d", "Ignorez le vendeur", "Ignore the vendor"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Le but n’est pas d’apprendre tout le duala. Salut local + « Combien ça coûte ? » : le combo de séjour.",
+        whenEn:
+          "The goal is not to learn all of Duala. Local greeting + “How much?”: the stay combo.",
+      },
+      {
+        id: "sm-3",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Ee",
+        pronunciation: "é-é",
+        promptFr: "Vous montrez un poisson. Il dit « Ee ». Il…",
+        promptEn: "You point at a fish. He says “Ee”. He…",
+        options: [
+          o("a", "Accepte / dit oui", "Agrees / says yes"),
+          o("b", "Refuse", "Refuses"),
+          o("c", "Dit au revoir", "Says goodbye"),
+          o("d", "Demande de l’aide", "Asks for help"),
+        ],
+        correctId: "a",
+        whenFr: "Ee pour confirmer un choix. Te si ce n’est pas celui-là.",
+        whenEn: "Ee to confirm a choice. Te if it is not that one.",
+      },
+      {
+        id: "sm-4",
+        speakerFr: "Vous, après l’achat",
+        speakerEn: "You, after the purchase",
+        phrase: "Nandé",
+        pronunciation: "nan-dé",
+        promptFr: "L’échange est fini. Que dites-vous ?",
+        promptEn: "The exchange is over. What do you say?",
+        options: [
+          o("a", "Nandé — merci", "Nandé — thank you"),
+          o("b", "Te — non", "Te — no"),
+          o("c", "Rien", "Nothing"),
+          o("d", "Mbolo encore", "Mbolo again"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Nandé après le paiement, un conseil, un sachet. C’est le mot de sortie du marché.",
+        whenEn:
+          "Nandé after payment, a tip, a bag. It is the market’s exit word.",
+      },
+      {
+        id: "sm-5",
+        speakerFr: "Un autre étals",
+        speakerEn: "Another stall",
+        phrase: "S’il vous plaît… Nandé",
+        pronunciation: "s’il vous plaît, nan-dé",
+        promptFr: "« S’il vous plaît » au marché Sawa, le plus naturel est…",
+        promptEn: "“Please” at a Sawa market is most natural as…",
+        options: [
+          o("a", "Un ton calme + Mbolo, puis la demande en français", "A calm tone + Mbolo, then the request in French"),
+          o("b", "Frapper l’étal", "Hitting the stall"),
+          o("c", "Uniquement des gestes brusques", "Only abrupt gestures"),
+          o("d", "Parler sans salut", "Speaking with no greeting"),
+        ],
+        correctId: "a",
+        whenFr:
+          "La politesse Sawa passe par le salut. Le français porte le détail (s’il vous plaît, aidez-moi, je ne comprends pas).",
+        whenEn:
+          "Sawa politeness goes through the greeting. French carries the detail (please, help me, I don’t understand).",
+      },
+    ],
+  },
+  {
+    id: "sawa-immersion",
+    areaId: "Sawa",
+    language: "Duala",
+    skill: 3,
+    scene: "respect",
+    codeFr: "IMMERSION 01",
+    codeEn: "IMMERSION 01",
+    titleFr: "Respect sur le Wouri",
+    titleEn: "Respect on the Wouri",
+    settingFr:
+      "On ne vous apprend pas l’argot de tout Douala. Seulement quand un mot pèse : fête, aînés, kaba.",
+    settingEn:
+      "You are not learning all of Douala slang. Only when a word carries weight: festival, elders, kaba.",
+    steps: [
+      {
+        id: "si-1",
+        speakerFr: "Un aîné",
+        speakerEn: "An elder",
+        phrase: "Mbolo",
+        pronunciation: "mbo-lo",
+        promptFr: "Devant un aîné Sawa, Mbolo se dit…",
+        promptEn: "In front of a Sawa elder, Mbolo is said…",
+        options: [
+          o("a", "Plus posé, souvent en premier, avant toute question", "More calmly, often first, before any question"),
+          o("b", "En criant de loin", "By shouting from afar"),
+          o("c", "Seulement aux enfants", "Only to children"),
+          o("d", "Jamais", "Never"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Les générations : on salue les plus âgés d’abord. Le même mot, un autre tempo.",
+        whenEn:
+          "Generations: greet older people first. The same word, a different tempo.",
+      },
+      {
+        id: "si-2",
+        speakerFr: "Contexte Ngondo",
+        speakerEn: "Ngondo context",
+        phrase: "Ngondo",
+        pronunciation: "ngon-do",
+        promptFr: "Ngondo, c’est surtout…",
+        promptEn: "Ngondo is mainly…",
+        options: [
+          o("a", "La grande fête Sawa de Douala (décembre), pas un mot de marché", "The great Sawa festival of Douala (December), not a market word"),
+          o("b", "Un plat", "A dish"),
+          o("c", "Un taxi", "A taxi"),
+          o("d", "Un oui", "A yes"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Ne dites pas « Ngondo » pour saluer. Réservez-le à la fête, aux pirogues, au Wouri.",
+        whenEn:
+          "Do not say “Ngondo” as a greeting. Keep it for the festival, the canoes, the Wouri.",
+      },
+      {
+        id: "si-3",
+        speakerFr: "Une fête",
+        speakerEn: "A celebration",
+        phrase: "Kaba",
+        pronunciation: "ka-ba",
+        promptFr: "Le kaba est…",
+        promptEn: "The kaba is…",
+        options: [
+          o("a", "Une robe traditionnelle Sawa — un signe de respect visuel", "A traditional Sawa dress — a visual sign of respect"),
+          o("b", "Un remerciement", "A thank-you"),
+          o("c", "Un non", "A no"),
+          o("d", "Un marché", "A market"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Aux cérémonies, le kaba parle avant les mots. Complimenter la tenue est bienvenu.",
+        whenEn:
+          "At ceremonies, the kaba speaks before words. Complimenting the dress is welcome.",
+      },
+    ],
+  },
+  {
+    id: "grassfields-survival",
+    areaId: "Grassfields",
+    language: "Yemba",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 02",
+    codeEn: "SURVIVAL 02",
+    titleFr: "Tenir à Dschang",
+    titleEn: "Getting through Dschang",
+    settingFr:
+      "Hauts plateaux de l’Ouest. Le yemba de séjour : salut, merci, prix, oui / non.",
+    settingEn:
+      "Western highlands. Stay Yemba: greeting, thanks, price, yes / no.",
+    steps: [
+      {
+        id: "gs-1",
+        speakerFr: "Un habitant de Dschang",
+        speakerEn: "Someone in Dschang",
+        phrase: "mŋə́ tsà'tsɛ̀",
+        pronunciation: "m-nge tsa-tse",
+        promptFr: "Que signifie cette salutation yemba ?",
+        promptEn: "What does this Yemba greeting mean?",
+        options: [
+          o("a", "Bonjour", "Hello"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Non", "No"),
+          o("d", "Combien ?", "How much?"),
+        ],
+        correctId: "a",
+        whenFr: "Premier mot à Dschang, à la chefferie, au marché de Menoua.",
+        whenEn: "First word in Dschang, at the chiefdom, at the Menoua market.",
+        replyFr: "Répétez lentement : mŋə́ tsà'tsɛ̀.",
+        replyEn: "Repeat slowly: mŋə́ tsà'tsɛ̀.",
+      },
+      {
+        id: "gs-2",
+        speakerFr: "La même personne",
+        speakerEn: "The same person",
+        phrase: "Meŋ ea síakne",
+        pronunciation: "meng ea siak-ne",
+        promptFr: "« Meŋ ea síakne » veut dire…",
+        promptEn: "“Meŋ ea síakne” means…",
+        options: [
+          o("a", "Merci", "Thank you"),
+          o("b", "Au revoir", "Goodbye"),
+          o("c", "Oui", "Yes"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr: "Après un plat, un guide, un achat : c’est le merci yemba.",
+        whenEn: "After a meal, a guide, a purchase: this is the Yemba thank-you.",
+      },
+      {
+        id: "gs-3",
+        speakerFr: "Au marché",
+        speakerEn: "At the market",
+        phrase: "eɛ láa a?",
+        pronunciation: "eh la a",
+        promptFr: "Pour le prix en yemba :",
+        promptEn: "For the price in Yemba:",
+        options: [
+          o("a", "eɛ láa a? — Combien ça coûte ?", "eɛ láa a? — How much does it cost?"),
+          o("b", "Mm — oui", "Mm — yes"),
+          o("c", "ŋgāŋ — non", "ŋgāŋ — no"),
+          o("d", "Acʉʼ tetswhi — au revoir", "Acʉʼ tetswhi — goodbye"),
+        ],
+        correctId: "a",
+        whenFr: "Après le salut, au marché : la question-clé du séjour.",
+        whenEn: "After the greeting, at the market: the key stay question.",
+      },
+      {
+        id: "gs-4",
+        speakerFr: "Un vendeur",
+        speakerEn: "A vendor",
+        phrase: "Mm / ŋgāŋ",
+        pronunciation: "mm / nga-ng",
+        promptFr: "Mm et ŋgāŋ, c’est…",
+        promptEn: "Mm and ŋgāŋ are…",
+        options: [
+          o("a", "Oui / Non", "Yes / No"),
+          o("b", "Bonjour / Bonsoir", "Hello / Good evening"),
+          o("c", "Merci / S’il vous plaît", "Thank you / Please"),
+          o("d", "Où / Combien", "Where / How much"),
+        ],
+        correctId: "a",
+        whenFr: "Mm pour accepter. ŋgāŋ pour refuser. Apup = d’accord.",
+        whenEn: "Mm to accept. ŋgāŋ to refuse. Apup = okay.",
+      },
+      {
+        id: "gs-5",
+        speakerFr: "En partant",
+        speakerEn: "As you leave",
+        phrase: "Acʉʼ tetswhi",
+        pronunciation: "a-cu tet-shwi",
+        promptFr: "Pour dire au revoir :",
+        promptEn: "To say goodbye:",
+        options: [
+          o("a", "Acʉʼ tetswhi", "Acʉʼ tetswhi"),
+          o("b", "eɛ láa a?"),
+          o("c", "Mm"),
+          o("d", "Mbolo"),
+        ],
+        correctId: "a",
+        whenFr: "À la chefferie comme à l’hôtel : la formule de congé yemba.",
+        whenEn: "At the chiefdom as at the hotel: the Yemba farewell.",
+      },
+    ],
+  },
+  {
+    id: "grassfields-market",
+    areaId: "Grassfields",
+    language: "Yemba",
+    skill: 2,
+    scene: "market",
+    codeFr: "MISSION 01 — LE MARCHÉ",
+    codeEn: "MISSION 01 — THE MARKET",
+    titleFr: "Marché de Dschang",
+    titleEn: "Dschang market",
+    settingFr:
+      "Vous êtes au marché. Un vendeur vous parle en yemba. Comprenez, puis sachez quand le ressortir.",
+    settingEn:
+      "You are at the market. A vendor speaks Yemba. Understand, then know when to use it again.",
+    steps: [
+      {
+        id: "gm-1",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "mŋə́ tsà'tsɛ̀",
+        pronunciation: "m-nge tsa-tse",
+        promptFr: "🔊 Que vient-il de dire ?",
+        promptEn: "🔊 What did he just say?",
+        options: [
+          o("a", "Bonjour", "Hello"),
+          o("b", "C’est cher", "That’s expensive"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Non", "No"),
+        ],
+        correctId: "a",
+        whenFr: "Toujours saluer avant de toucher un objet ou de demander le prix.",
+        whenEn: "Always greet before touching an item or asking the price.",
+        replyFr: "Répondez : mŋə́ tsà'tsɛ̀.",
+        replyEn: "Reply: mŋə́ tsà'tsɛ̀.",
+      },
+      {
+        id: "gm-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "eɛ láa a?",
+        pronunciation: "eh la a",
+        promptFr: "Vous voulez acheter. Quelle phrase ?",
+        promptEn: "You want to buy. Which phrase?",
+        options: [
+          o("a", "eɛ láa a? — Combien ça coûte ?", "eɛ láa a? — How much?"),
+          o("b", "ŋgāŋ"),
+          o("c", "Acʉʼ tetswhi"),
+          o("d", "Mbolo"),
+        ],
+        correctId: "a",
+        whenFr:
+          "C’est LA phrase voyage : transport, restaurant, marché, artisanat.",
+        whenEn:
+          "This is THE travel phrase: transport, restaurant, market, crafts.",
+      },
+      {
+        id: "gm-3",
+        speakerFr: "Après l’achat",
+        speakerEn: "After the purchase",
+        phrase: "Meŋ ea síakne",
+        pronunciation: "meng ea siak-ne",
+        promptFr: "Vous payez. Vous dites…",
+        promptEn: "You pay. You say…",
+        options: [
+          o("a", "Meŋ ea síakne", "Meŋ ea síakne"),
+          o("b", "eɛ láa a?"),
+          o("c", "ŋgāŋ"),
+          o("d", "Jam na?"),
+        ],
+        correctId: "a",
+        whenFr: "Merci : hôtel, taxi, table, musée royal.",
+        whenEn: "Thank you: hotel, taxi, table, royal museum.",
+      },
+      {
+        id: "gm-4",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "zhɛ́ leshʉ́ʼ",
+        pronunciation: "zhe le-shu",
+        promptFr: "Il ajoute « zhɛ́ leshʉ́ʼ ». C’est…",
+        promptEn: "He adds “zhɛ́ leshʉ́ʼ”. That is…",
+        options: [
+          o("a", "Bienvenue", "Welcome"),
+          o("b", "Non", "No"),
+          o("c", "Combien ?", "How much?"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr: "On vous l’offre en arrivant : chefferie, maison, parfois l’étal.",
+        whenEn: "Offered as you arrive: chiefdom, home, sometimes the stall.",
+      },
+    ],
+  },
+  {
+    id: "grassfields-immersion",
+    areaId: "Grassfields",
+    language: "Yemba",
+    skill: 3,
+    scene: "respect",
+    codeFr: "IMMERSION 02",
+    codeEn: "IMMERSION 02",
+    titleFr: "Devant la chefferie",
+    titleEn: "At the chiefdom",
+    settingFr:
+      "Formules de respect Grassfields. Pas toute la langue : le tempo, les aînés, le palais.",
+    settingEn:
+      "Grassfields respect formulas. Not the whole language: tempo, elders, the palace.",
+    steps: [
+      {
+        id: "gi-1",
+        speakerFr: "À l’entrée d’une chefferie",
+        speakerEn: "At a chiefdom entrance",
+        phrase: "mŋə́ tsà'tsɛ̀",
+        pronunciation: "m-nge tsa-tse",
+        promptFr: "Devant une autorité traditionnelle, on…",
+        promptEn: "Before traditional authority, you…",
+        options: [
+          o("a", "Salue d’abord, plus posé qu’au marché", "Greet first, more calmly than at the market"),
+          o("b", "Demande le prix tout de suite", "Ask the price immediately"),
+          o("c", "Parle plus fort que tout le monde", "Speak louder than everyone"),
+          o("d", "Ignore le protocole", "Ignore protocol"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Même mot qu’en ville, autre contexte. Les générations : les aînés d’abord.",
+        whenEn:
+          "The same word as in town, another context. Generations: elders first.",
+      },
+      {
+        id: "gi-2",
+        speakerFr: "Un guide",
+        speakerEn: "A guide",
+        phrase: "zhɛ́ leshʉ́ʼ",
+        pronunciation: "zhe le-shu",
+        promptFr: "« Bienvenue » en chefferie se dit…",
+        promptEn: "“Welcome” at a chiefdom is…",
+        options: [
+          o("a", "zhɛ́ leshʉ́ʼ (parfois pɛ zhɛ́ leshʉ́ʼ)", "zhɛ́ leshʉ́ʼ (sometimes pɛ zhɛ́ leshʉ́ʼ)"),
+          o("b", "eɛ láa a?"),
+          o("c", "ŋgāŋ"),
+          o("d", "Nandé"),
+        ],
+        correctId: "a",
+        whenFr: "Répondez par un merci : Meŋ ea síakne.",
+        whenEn: "Answer with thank you: Meŋ ea síakne.",
+      },
+      {
+        id: "gi-3",
+        speakerFr: "Foumban / Bamoun",
+        speakerEn: "Foumban / Bamoun",
+        phrase: "Palais Bamoun",
+        pronunciation: "palais bamoun",
+        promptFr: "Le palais de Foumban appartient à quelle culture Grassfields ?",
+        promptEn: "Foumban palace belongs to which Grassfields culture?",
+        options: [
+          o("a", "Bamoun (sultanat)", "Bamoun (sultanate)"),
+          o("b", "Sawa du Wouri", "Sawa of the Wouri"),
+          o("c", "Lamidat du Nord seulement", "Northern lamidate only"),
+          o("d", "Fang-Beti", "Fang-Beti"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Yemba à Dschang, Bamoun à Foumban : même aire, autres paroles. Respecter la différence, c’est déjà l’immersion.",
+        whenEn:
+          "Yemba in Dschang, Bamoun in Foumban: same area, other words. Respecting the difference is already immersion.",
+      },
+    ],
+  },
+  {
+    id: "shupamom-survival",
+    areaId: "Grassfields",
+    langId: "shupamom",
+    language: "Shüpamom",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 05",
+    codeEn: "SURVIVAL 05",
+    titleFr: "Tenir à Foumban",
+    titleEn: "Getting through Foumban",
+    settingFr:
+      "Royaume Bamoun. Le shüpamom de séjour : salut de palais, merci, oui / non, prix — pas toute la langue du sultan Njoya.",
+    settingEn:
+      "Bamum kingdom. Stay Shüpamom: palace greeting, thanks, yes / no, price — not all of Sultan Njoya’s language.",
+    steps: [
+      {
+        id: "sp-1",
+        speakerFr: "Un passant à Foumban",
+        speakerEn: "Someone in Foumban",
+        phrase: "Me sha’ashe",
+        pronunciation: "me, sha, ah, she",
+        promptFr: "« Me sha’ashe » veut dire…",
+        promptEn: "“Me sha’ashe” means…",
+        options: [
+          o("a", "Bonjour / je vous salue", "Hello / I greet you"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Combien ?", "How much?"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Premier mot à Foumban, au marché comme au palais. L’apostrophe est une coupe : sha / she, pas « chassé ».",
+        whenEn:
+          "First word in Foumban, market or palace. The apostrophe is a cut: sha / she, not “chassé”.",
+        replyFr: "Répondez : Me sha’ashe.",
+        replyEn: "Reply: Me sha’ashe.",
+      },
+      {
+        id: "sp-2",
+        speakerFr: "La même personne",
+        speakerEn: "The same person",
+        phrase: "Nyinyi fa kee Ayue",
+        pronunciation: "nyi-nyi, fa, keh, ah-yweh",
+        promptFr: "Pour remercier en shüpamom :",
+        promptEn: "To thank someone in Shüpamom:",
+        options: [
+          o("a", "Nyinyi fa kee Ayue (on vous répond Ayue)", "Nyinyi fa kee Ayue (they reply Ayue)"),
+          o("b", "Me sha’ashe"),
+          o("c", "Mbey"),
+          o("d", "Nandé"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Après un taxi, un plat, le musée royal. On vous répond souvent : Ayue.",
+        whenEn:
+          "After a taxi, a meal, the royal museum. The usual reply is: Ayue.",
+        replyFr: "On vous répond : Ayue.",
+        replyEn: "They reply: Ayue.",
+      },
+      {
+        id: "sp-3",
+        speakerFr: "Un vendeur",
+        speakerEn: "A vendor",
+        phrase: "Hmhm / Mbey",
+        pronunciation: "mm-hmm / mbay",
+        promptFr: "Hmhm et Mbey, c’est…",
+        promptEn: "Hmhm and Mbey are…",
+        options: [
+          o("a", "Oui / Non", "Yes / No"),
+          o("b", "Bonjour / Bonsoir", "Hello / Good evening"),
+          o("c", "Merci / S’il vous plaît", "Thank you / Please"),
+          o("d", "Où / Combien", "Where / How much"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Hmhm est un oui nasal, pas un « oui » français. Mbey pour refuser sans brusquer.",
+        whenEn:
+          "Hmhm is a nasal yes, not a French “oui”. Mbey to refuse without being abrupt.",
+      },
+      {
+        id: "sp-4",
+        speakerFr: "Au marché",
+        speakerEn: "At the market",
+        phrase: "A mbe sue?",
+        pronunciation: "ah, mbeh, sweh",
+        promptFr: "Pour le prix :",
+        promptEn: "For the price:",
+        options: [
+          o("a", "A mbe sue? — Combien ça coûte ?", "A mbe sue? — How much is this?"),
+          o("b", "Pa sa’a ne? — Comment allez-vous ?", "Pa sa’a ne? — How are you?"),
+          o("c", "Gha-ma! — Au secours", "Gha-ma! — Help"),
+          o("d", "Tuem — Pardon", "Tuem — Sorry"),
+        ],
+        correctId: "a",
+        whenFr: "Après le salut, à l’artisanat de Foumban : la question-clé du séjour.",
+        whenEn: "After the greeting, at Foumban crafts: the key stay question.",
+      },
+      {
+        id: "sp-5",
+        speakerFr: "Vous ne suivez plus",
+        speakerEn: "You are lost in the sentence",
+        phrase: "Maa njuh-a",
+        pronunciation: "ma, nju, ah",
+        promptFr: "« Maa njuh-a » signifie…",
+        promptEn: "“Maa njuh-a” means…",
+        options: [
+          o("a", "Je ne comprends pas", "I don’t understand"),
+          o("b", "Oui", "Yes"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "S’il vous plaît", "Please"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Sans honte. On peut ajouter : Pe shiket mejet mejet — parlez plus lentement.",
+        whenEn:
+          "No shame. You can add: Pe shiket mejet mejet — please speak more slowly.",
+      },
+    ],
+  },
+  {
+    id: "medumba-survival",
+    areaId: "Grassfields",
+    langId: "medumba",
+    language: "Medumba",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 06",
+    codeEn: "SURVIVAL 06",
+    titleFr: "Tenir à Bangangté",
+    titleEn: "Getting through Bangangté",
+    settingFr:
+      "Ndé, chefferie Bangangté. Le medumba de séjour : salut, réponse culturelle, où, au revoir. Le locuteur dicte le ton — pas un TTS.",
+    settingEn:
+      "Ndé, Bangangté chiefdom. Stay Medumba: greeting, cultural reply, where, goodbye. The speaker dictates the tone — not TTS.",
+    steps: [
+      {
+        id: "md-1",
+        speakerFr: "Un passant à Bangangté",
+        speakerEn: "Someone in Bangangté",
+        phrase: "O zi à?",
+        pronunciation: "o, zi, a",
+        promptFr: "« O zi à ? » veut dire…",
+        promptEn: "“O zi à?” means…",
+        options: [
+          o("a", "Bonjour (à une personne)", "Hello (to one person)"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Où ?", "Where?"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Salut-question, pas un « bonjour » français. Une personne. Tons : o / zi / à.",
+        whenEn:
+          "A greeting-question, not a French “bonjour”. One person. Tones: o / zi / à.",
+        replyFr: "Répondez : O zi à ?",
+        replyEn: "Reply: O zi à?",
+      },
+      {
+        id: "md-2",
+        speakerFr: "La même personne",
+        speakerEn: "The same person",
+        phrase: "Njʉ yα̌lαnə",
+        pronunciation: "nju, ya-la-ne",
+        promptFr: "La réponse culturelle au salut, c’est…",
+        promptEn: "The cultural reply to the greeting is…",
+        options: [
+          o("a", "Njʉ yα̌lαnə — il fait jour", "Njʉ yα̌lαnə — it is daytime"),
+          o("b", "O zi à ? — encore bonjour", "O zi à? — hello again"),
+          o("c", "Ɔ̂ ghɔ — au revoir", "Ɔ̂ ghɔ — goodbye"),
+          o("d", "À bə α̂ wə ? — où ?", "À bə α̂ wə? — where?"),
+        ],
+        correctId: "a",
+        whenFr:
+          "On remercie le jour, on ne « répond » pas comme en français. Le locuteur confirme les tons.",
+        whenEn:
+          "Thanks the day; it is not a French-style reply. The speaker confirms the tones.",
+        replyFr: "On vous répond : Njʉ yα̌lαnə.",
+        replyEn: "They reply: Njʉ yα̌lαnə.",
+      },
+      {
+        id: "md-3",
+        speakerFr: "Devant des aînés",
+        speakerEn: "Before elders",
+        phrase: "Bǐn zi à?",
+        pronunciation: "bin, zi, a",
+        promptFr: "Pour saluer plusieurs personnes / plus de respect :",
+        promptEn: "To greet several people / more respect:",
+        options: [
+          o("a", "Bǐn zi à ?", "Bǐn zi à?"),
+          o("b", "O zi à ? seulement", "O zi à? only"),
+          o("c", "Ɔ̂ ghɔ", "Ɔ̂ ghɔ"),
+          o("d", "Me sha’ashe (shüpamom)", "Me sha’ashe (Shüpamom)"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Chefferie, marché, aînés. Ce n’est pas le shüpamom de Foumban, ni le yemba de Dschang.",
+        whenEn:
+          "Chiefdom, market, elders. This is not Foumban Shüpamom, nor Dschang Yemba.",
+      },
+      {
+        id: "md-4",
+        speakerFr: "Vous cherchez un lieu",
+        speakerEn: "You are looking for a place",
+        phrase: "À bə α̂ wə?",
+        pronunciation: "a, be, we",
+        promptFr: "Pour demander où :",
+        promptEn: "To ask where:",
+        options: [
+          o("a", "À bə α̂ wə ? — Où ?", "À bə α̂ wə? — Where?"),
+          o("b", "O zi à ? — Bonjour", "O zi à? — Hello"),
+          o("c", "Ɔ̂ ghɔ — Au revoir", "Ɔ̂ ghɔ — Goodbye"),
+          o("d", "Njʉ yα̌lαnə — Il fait jour", "Njʉ yα̌lαnə — It is daytime"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Question de séjour. Le locuteur peut dicter la forme courte Â wə ?",
+        whenEn:
+          "Stay question. The speaker may dictate the short form Â wə?",
+      },
+      {
+        id: "md-5",
+        speakerFr: "Vous partez",
+        speakerEn: "You are leaving",
+        phrase: "Ɔ̂ ghɔ",
+        pronunciation: "aw, gho",
+        promptFr: "« Ɔ̂ ghɔ » signifie…",
+        promptEn: "“Ɔ̂ ghɔ” means…",
+        options: [
+          o("a", "Au revoir", "Goodbye"),
+          o("b", "Bonjour", "Hello"),
+          o("c", "Merci", "Thank you"),
+          o("d", "Oui", "Yes"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Congé simple. Plus chaleureux : Ɔ̂ ghɔ mbὰ. Ɔ̂ est un o ouvert, pas un o français fermé.",
+        whenEn:
+          "Simple farewell. Warmer: Ɔ̂ ghɔ mbὰ. Ɔ̂ is an open o, not a closed French o.",
+      },
+    ],
+  },
+  {
+    id: "mbouda-survival",
+    areaId: "Grassfields",
+    langId: "mbouda",
+    language: "Mbouda",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 07",
+    codeEn: "SURVIVAL 07",
+    titleFr: "Tenir à Mbouda",
+    titleEn: "Getting through Mbouda",
+    settingFr:
+      "Bamboutos, Mbouda. Ngiemboon de séjour : réveil, repas, donner, partir. Le locuteur dicte le ton — pas un TTS. On n’invente pas l’orthographe.",
+    settingEn:
+      "Bamboutos, Mbouda. Stay Ngiemboon: waking, meals, giving, leaving. The speaker dictates the tone — not TTS. We do not invent the spelling.",
+    steps: [
+      {
+        id: "mbd-1",
+        speakerFr: "Le matin à Mbouda",
+        speakerEn: "Morning in Mbouda",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "Le locuteur demande si tu t’es réveillé. Ça veut dire…",
+        promptEn: "The speaker asks if you are awake. That means…",
+        options: [
+          o("a", "Tu t’es réveillé ?", "Are you awake?"),
+          o("b", "As-tu mangé ?", "Have you eaten?"),
+          o("c", "Bon appétit", "Enjoy your meal"),
+          o("d", "Tu pars où ?", "Where are you going?"),
+        ],
+        correctId: "a",
+        whenFr: "Salut du matin. Écoute le fichier, ne colle pas un français.",
+        whenEn: "Morning greeting. Listen to the file; do not paste in French.",
+      },
+      {
+        id: "mbd-2",
+        speakerFr: "À table",
+        speakerEn: "At the table",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "Question de politesse autour du repas :",
+        promptEn: "A courtesy question around the meal:",
+        options: [
+          o("a", "As-tu mangé ?", "Have you eaten?"),
+          o("b", "Donne-moi", "Give me"),
+          o("c", "Je pars à l’école", "I’m going to school"),
+          o("d", "Tu t’es réveillé ?", "Are you awake?"),
+        ],
+        correctId: "a",
+        whenFr: "Souvent plus fort qu’un simple « ça va ».",
+        whenEn: "Often stronger than a plain “how are you”.",
+      },
+      {
+        id: "mbd-3",
+        speakerFr: "On sert le plat",
+        speakerEn: "Food is served",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "Avant de manger, le locuteur dit…",
+        promptEn: "Before eating, the speaker says…",
+        options: [
+          o("a", "Bon appétit", "Enjoy your meal"),
+          o("b", "Tu pars où ?", "Where are you going?"),
+          o("c", "Donne-moi", "Give me"),
+          o("d", "As-tu mangé ?", "Have you eaten?"),
+        ],
+        correctId: "a",
+        whenFr: "À table, à Mbouda. Même usage qu’en français, autre ton.",
+        whenEn: "At the table, in Mbouda. Same use as in French, another tone.",
+      },
+      {
+        id: "mbd-4",
+        speakerFr: "On demande",
+        speakerEn: "A request",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "Pour demander qu’on te tende quelque chose :",
+        promptEn: "To ask someone to hand you something:",
+        options: [
+          o("a", "Donne-moi", "Give me"),
+          o("b", "Bon appétit", "Enjoy your meal"),
+          o("c", "Je pars à l’école", "I’m going to school"),
+          o("d", "Tu t’es réveillé ?", "Are you awake?"),
+        ],
+        correctId: "a",
+        whenFr: "Demande directe. Le locuteur confirme le ton.",
+        whenEn: "A direct request. The speaker confirms the tone.",
+      },
+      {
+        id: "mbd-5",
+        speakerFr: "Dans la rue",
+        speakerEn: "In the street",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "On te demande où tu vas :",
+        promptEn: "Someone asks where you are going:",
+        options: [
+          o("a", "Tu pars où ?", "Where are you going?"),
+          o("b", "As-tu mangé ?", "Have you eaten?"),
+          o("c", "Bon appétit", "Enjoy your meal"),
+          o("d", "Donne-moi", "Give me"),
+        ],
+        correctId: "a",
+        whenFr: "Question de séjour. Rue, marché, concession.",
+        whenEn: "Stay question. Street, market, compound.",
+      },
+      {
+        id: "mbd-6",
+        speakerFr: "Réponse de trajet",
+        speakerEn: "A travel reply",
+        phrase: "Écoute le locuteur",
+        pronunciation: "",
+        promptFr: "« Je pars à l’école », en ngiemboon de Mbouda, c’est cette piste. La traduction :",
+        promptEn: "“I’m going to school”, in Mbouda Ngiemboon, is this take. The meaning:",
+        options: [
+          o("a", "Je pars à l’école", "I’m going to school"),
+          o("b", "Tu pars où ?", "Where are you going?"),
+          o("c", "As-tu mangé ?", "Have you eaten?"),
+          o("d", "Tu t’es réveillé ?", "Are you awake?"),
+        ],
+        correctId: "a",
+        whenFr: "Réponse de matin. Enfants, route, école.",
+        whenEn: "A morning reply. Children, the road, school.",
+      },
+    ],
+  },
+  {
+    id: "shupamom-market",
+    areaId: "Grassfields",
+    langId: "shupamom",
+    language: "Shüpamom",
+    skill: 2,
+    scene: "market",
+    codeFr: "MISSION 05 — LE MARCHÉ",
+    codeEn: "MISSION 05 — THE MARKET",
+    titleFr: "Marché de Foumban",
+    titleEn: "Foumban market",
+    settingFr:
+      "Artisanat royal, perles, bronze. On vous parle shüpamom : saluez, demandez le prix, remerciez.",
+    settingEn:
+      "Royal crafts, beads, bronze. Someone speaks Shüpamom: greet, ask the price, thank.",
+    steps: [
+      {
+        id: "sm-1",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Poket pe zee kut",
+        pronunciation: "po-ket, pe, ze, kut",
+        promptFr: "Il dit « Poket pe zee kut ». C’est…",
+        promptEn: "He says “Poket pe zee kut”. That is…",
+        options: [
+          o("a", "Bienvenue (litt. « attention à vos pas »)", "Welcome (lit. “watch your steps”)"),
+          o("b", "C’est trop cher", "That’s too expensive"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Parlez plus fort", "Speak louder"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Formule d’accueil bamoun. On veille sur vos pas — au palais comme à l’étal.",
+        whenEn:
+          "Bamum welcome. They watch over your steps — at the palace as at the stall.",
+        replyFr: "Répondez : Me sha’ashe.",
+        replyEn: "Reply: Me sha’ashe.",
+      },
+      {
+        id: "sm-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "A mbe sue?",
+        pronunciation: "ah, mbeh, sweh",
+        promptFr: "Vous voulez acheter. Quelle phrase ?",
+        promptEn: "You want to buy. Which phrase?",
+        options: [
+          o("a", "A mbe sue?", "A mbe sue?"),
+          o("b", "Mbey"),
+          o("c", "Pwo shi’a famju"),
+          o("d", "Mbolo"),
+        ],
+        correctId: "a",
+        whenFr: "Bronze, perles, tissu : toujours après le salut, jamais avant.",
+        whenEn: "Bronze, beads, cloth: always after the greeting, never before.",
+      },
+      {
+        id: "sm-3",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "Me kwat mbuo",
+        pronunciation: "me, kwat, m-bwo",
+        promptFr: "Pour dire s’il vous plaît :",
+        promptEn: "To say please:",
+        options: [
+          o("a", "Me kwat mbuo", "Me kwat mbuo"),
+          o("b", "Hmhm"),
+          o("c", "Gha-ma!"),
+          o("d", "Jam na?"),
+        ],
+        correctId: "a",
+        whenFr: "Négociation posée : please d’abord, le prix ensuite.",
+        whenEn: "Calm bargaining: please first, then the price.",
+      },
+      {
+        id: "sm-4",
+        speakerFr: "Après l’achat",
+        speakerEn: "After the purchase",
+        phrase: "Nyinyi fa kee Ayue",
+        pronunciation: "nyi-nyi, fa, keh, ah-yweh",
+        promptFr: "Vous payez. Vous dites…",
+        promptEn: "You pay. You say…",
+        options: [
+          o("a", "Nyinyi fa kee Ayue", "Nyinyi fa kee Ayue"),
+          o("b", "A mbe sue?"),
+          o("c", "Mbey"),
+          o("d", "Meŋ ea síakne"),
+        ],
+        correctId: "a",
+        whenFr: "Le merci bamoun n’est pas le merci yemba. Ici : Nyinyi fa kee Ayue.",
+        whenEn: "The Bamum thank-you is not the Yemba one. Here: Nyinyi fa kee Ayue.",
+      },
+    ],
+  },
+  {
+    id: "shupamom-immersion",
+    areaId: "Grassfields",
+    langId: "shupamom",
+    language: "Shüpamom",
+    skill: 3,
+    scene: "respect",
+    codeFr: "IMMERSION 05",
+    codeEn: "IMMERSION 05",
+    titleFr: "Devant le palais Bamoun",
+    titleEn: "At the Bamum palace",
+    settingFr:
+      "Foumban : écriture shü-mom, sultanat, musée. Le ton est plus grave qu’au marché — respect, pas précipitation.",
+    settingEn:
+      "Foumban: shü-mom script, sultanate, museum. The tone is lower than at the market — respect, not haste.",
+    steps: [
+      {
+        id: "si-1",
+        speakerFr: "À l’entrée du palais",
+        speakerEn: "At the palace entrance",
+        phrase: "Me sha’ashe",
+        pronunciation: "me, sha, ah, she",
+        promptFr: "Devant le palais, on…",
+        promptEn: "Before the palace, you…",
+        options: [
+          o("a", "Salue plus posé qu’au marché, voix plus grave", "Greet more calmly than at the market, lower voice"),
+          o("b", "Demande le prix tout de suite", "Ask the price immediately"),
+          o("c", "Parle comme en yemba de Dschang", "Speak as in Dschang Yemba"),
+          o("d", "Ignore le protocole", "Ignore protocol"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Même mot qu’en ville, autre hauteur. Le palais n’est pas un étal.",
+        whenEn:
+          "The same word as in town, another pitch. The palace is not a stall.",
+      },
+      {
+        id: "si-2",
+        speakerFr: "Un guide du musée",
+        speakerEn: "A museum guide",
+        phrase: "U yi shu shüpamom?",
+        pronunciation: "u, yi, shu, shu-pa-mom",
+        promptFr: "On vous demande : « U yi shu shüpamom ? »",
+        promptEn: "They ask: “U yi shu shüpamom?”",
+        options: [
+          o("a", "Parlez-vous shüpamom ?", "Do you speak Shüpamom?"),
+          o("b", "Où est le palais ?", "Where is the palace?"),
+          o("c", "Combien ça coûte ?", "How much is it?"),
+          o("d", "Au revoir", "Goodbye"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Réponse honnête : Hmhm, meyet — oui, un peu. Shu = langue ; shüpamom = langue des Bamoun.",
+        whenEn:
+          "Honest reply: Hmhm, meyet — yes, a little. Shu = language; shüpamom = language of the Bamum.",
+        replyFr: "Répondez : Hmhm, meyet.",
+        replyEn: "Reply: Hmhm, meyet.",
+      },
+      {
+        id: "si-3",
+        speakerFr: "En partant",
+        speakerEn: "As you leave",
+        phrase: "Pwo shi’a famju",
+        pronunciation: "pwo, shi, ah, fam-ju",
+        promptFr: "Pour se quitter :",
+        promptEn: "To part:",
+        options: [
+          o("a", "Pwo shi’a famju — à demain / au revoir", "Pwo shi’a famju — see you tomorrow / goodbye"),
+          o("b", "A mbe sue?"),
+          o("c", "Gha-ma!"),
+          o("d", "Acʉʼ tetswhi"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Formule de congé bamoun. Ce n’est pas Acʉʼ tetswhi (yemba). Ici, autre royaume, autres paroles.",
+        whenEn:
+          "Bamum farewell. This is not Acʉʼ tetswhi (Yemba). Here: another kingdom, other words.",
+      },
+    ],
+  },
+  {
+    id: "fang-beti-survival",
+    areaId: "Fang-Beti",
+    language: "Ewondo",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 03",
+    codeEn: "SURVIVAL 03",
+    titleFr: "Ewondo de séjour à Yaoundé",
+    titleEn: "Stay Ewondo in Yaoundé",
+    settingFr:
+      "Centre : les mots Beti dont vous aurez besoin — pas un cours complet.",
+    settingEn:
+      "Centre: the Beti words you will need — not a full course.",
+    steps: [
+      {
+        id: "fs-1",
+        speakerFr: "Un Yaoundéen",
+        speakerEn: "Someone in Yaoundé",
+        phrase: "Mbolo",
+        pronunciation: "mbo-lo",
+        promptFr: "En ewondo, Mbolo signifie…",
+        promptEn: "In Ewondo, Mbolo means…",
+        options: [
+          o("a", "Bonjour", "Hello"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Où est… ?", "Where is…?"),
+          o("d", "Non", "No"),
+        ],
+        correctId: "a",
+        whenFr: "Même son qu’en duala : un pont entre Centre et côte.",
+        whenEn: "The same sound as in Duala: a bridge between Centre and coast.",
+      },
+      {
+        id: "fs-2",
+        speakerFr: "Après un service",
+        speakerEn: "After a service",
+        phrase: "Akiba",
+        pronunciation: "a-ki-ba",
+        promptFr: "Akiba, c’est…",
+        promptEn: "Akiba is…",
+        options: [
+          o("a", "Merci", "Thank you"),
+          o("b", "Au revoir", "Goodbye"),
+          o("c", "Oui", "Yes"),
+          o("d", "S’il vous plaît", "Please"),
+        ],
+        correctId: "a",
+        whenFr: "Taxi, restaurant, hôtel, aide dans la rue : Akiba.",
+        whenEn: "Taxi, restaurant, hotel, help in the street: Akiba.",
+      },
+      {
+        id: "fs-3",
+        speakerFr: "En partant",
+        speakerEn: "As you leave",
+        phrase: "Ayei",
+        pronunciation: "a-yei",
+        promptFr: "Ayei signifie…",
+        promptEn: "Ayei means…",
+        options: [
+          o("a", "Au revoir", "Goodbye"),
+          o("b", "Bonjour", "Hello"),
+          o("c", "Combien ?", "How much?"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr: "Formule de congé simple, à l’hôtel comme chez l’habitant.",
+        whenEn: "A simple farewell, at the hotel as in someone’s home.",
+      },
+      {
+        id: "fs-4",
+        speakerFr: "Au marché",
+        speakerEn: "At the market",
+        phrase: "A ne nde?",
+        pronunciation: "a né ndé",
+        promptFr: "Pour demander le prix :",
+        promptEn: "To ask the price:",
+        options: [
+          o("a", "A ne nde?", "A ne nde?"),
+          o("b", "Ayei"),
+          o("c", "Akeva"),
+          o("d", "Mbolo"),
+        ],
+        correctId: "a",
+        whenFr: "Marché, artisanat, parfois un taxi informel.",
+        whenEn: "Market, crafts, sometimes an informal taxi.",
+      },
+      {
+        id: "fs-5",
+        speakerFr: "Perdu en ville",
+        speakerEn: "Lost in town",
+        phrase: "Vé ve… ?",
+        pronunciation: "vé vé",
+        promptFr: "« Vé ve… ? » sert à…",
+        promptEn: "“Vé ve…?” is for…",
+        options: [
+          o("a", "Demander où se trouve un lieu", "Asking where a place is"),
+          o("b", "Dire merci", "Saying thank you"),
+          o("c", "Dire non", "Saying no"),
+          o("d", "Commander à table", "Ordering at table"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Vé ve + le nom du lieu. Si l’on parle trop vite : « Je ne comprends pas » en français, sans honte, après un Mbolo.",
+        whenEn:
+          "Vé ve + the place name. If people speak too fast: “I don’t understand” in French, without shame, after a Mbolo.",
+      },
+    ],
+  },
+  {
+    id: "fang-beti-market",
+    areaId: "Fang-Beti",
+    language: "Ewondo",
+    skill: 2,
+    scene: "market",
+    codeFr: "MISSION 01 — LE MARCHÉ",
+    codeEn: "MISSION 01 — THE MARKET",
+    titleFr: "Marché de Yaoundé",
+    titleEn: "Yaoundé market",
+    settingFr:
+      "Un vendeur vous parle. Mission locale : comprendre, répondre, retenir quand l’utiliser.",
+    settingEn:
+      "A vendor speaks to you. Local mission: understand, answer, remember when to use it.",
+    steps: [
+      {
+        id: "fm-1",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Mbolo",
+        pronunciation: "mbo-lo",
+        promptFr: "🔊 Que vient-il de dire ?",
+        promptEn: "🔊 What did he just say?",
+        options: [
+          o("a", "Bonjour", "Hello"),
+          o("b", "C’est donné", "It’s free"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Non", "No"),
+        ],
+        correctId: "a",
+        whenFr: "Salut d’abord, même pressé. C’est le ticket d’entrée du marché.",
+        whenEn: "Greet first, even if you are in a hurry. It is the market’s entry ticket.",
+      },
+      {
+        id: "fm-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "A ne nde?",
+        pronunciation: "a né ndé",
+        promptFr: "Pour acheter, vous demandez…",
+        promptEn: "To buy, you ask…",
+        options: [
+          o("a", "A ne nde? — Combien ça coûte ?", "A ne nde? — How much?"),
+          o("b", "Ayei"),
+          o("c", "Akeva"),
+          o("d", "Ye oa ne?"),
+        ],
+        correctId: "a",
+        whenFr: "Restaurant (addition), marché, artisanat : même question.",
+        whenEn: "Restaurant (the bill), market, crafts: the same question.",
+      },
+      {
+        id: "fm-3",
+        speakerFr: "Le vendeur, plus posé",
+        speakerEn: "The vendor, more calmly",
+        phrase: "Ye oa ne?",
+        pronunciation: "yé oa né",
+        promptFr: "« Ye oa ne ? » c’est…",
+        promptEn: "“Ye oa ne?” is…",
+        options: [
+          o("a", "Comment allez-vous ? — pour faire connaissance", "How are you? — to get acquainted"),
+          o("b", "Combien ça coûte ?", "How much?"),
+          o("c", "Où est l’hôtel ?", "Where is the hotel?"),
+          o("d", "Au revoir", "Goodbye"),
+        ],
+        correctId: "a",
+        whenFr:
+          "Niveau voyage : salutations + faire connaissance. Pas obligatoire à chaque étal, précieux chez l’habitant.",
+        whenEn:
+          "Travel level: greetings + getting acquainted. Not required at every stall, precious in someone’s home.",
+      },
+      {
+        id: "fm-4",
+        speakerFr: "Vous partez",
+        speakerEn: "You leave",
+        phrase: "Akiba · Ayei",
+        pronunciation: "a-ki-ba, a-yei",
+        promptFr: "Combo de sortie du marché :",
+        promptEn: "Market exit combo:",
+        options: [
+          o("a", "Akiba (merci) puis Ayei (au revoir)", "Akiba (thanks) then Ayei (goodbye)"),
+          o("b", "Seulement Vé ve… ?"),
+          o("c", "Seulement A ne nde?"),
+          o("d", "Rien"),
+        ],
+        correctId: "a",
+        whenFr: "Hôtel le matin, restaurant le soir : le même duo.",
+        whenEn: "Hotel in the morning, restaurant in the evening: the same pair.",
+      },
+    ],
+  },
+  {
+    id: "fang-beti-immersion",
+    areaId: "Fang-Beti",
+    language: "Ewondo",
+    skill: 3,
+    scene: "respect",
+    codeFr: "IMMERSION 03",
+    codeEn: "IMMERSION 03",
+    titleFr: "Accueil Beti",
+    titleEn: "Beti welcome",
+    settingFr: "Akeva, bikutsi, mémoire des aînés — le contexte, pas le dictionnaire.",
+    settingEn: "Akeva, bikutsi, memory of elders — context, not the dictionary.",
+    steps: [
+      {
+        id: "fi-1",
+        speakerFr: "On vous reçoit",
+        speakerEn: "You are welcomed",
+        phrase: "Akeva",
+        pronunciation: "a-ké-va",
+        promptFr: "Akeva signifie…",
+        promptEn: "Akeva means…",
+        options: [
+          o("a", "Bienvenue", "Welcome"),
+          o("b", "Combien ?", "How much?"),
+          o("c", "Non", "No"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr: "Chez quelqu’un, à un événement familial. Répondez Akiba.",
+        whenEn: "In someone’s home, at a family event. Reply Akiba.",
+      },
+      {
+        id: "fi-2",
+        speakerFr: "Musique",
+        speakerEn: "Music",
+        phrase: "Bikutsi",
+        pronunciation: "bi-kut-si",
+        promptFr: "Le bikutsi est…",
+        promptEn: "Bikutsi is…",
+        options: [
+          o("a", "Une musique-danse Beti — pas une salutation", "A Beti music-and-dance — not a greeting"),
+          o("b", "Un bonjour", "A hello"),
+          o("c", "Un plat du Nord", "A northern dish"),
+          o("d", "Un taxi", "A taxi"),
+        ],
+        correctId: "a",
+        whenFr: "On en parle à une fête, pas pour demander son chemin.",
+        whenEn: "You mention it at a party, not to ask for directions.",
+      },
+      {
+        id: "fi-3",
+        speakerFr: "Un aîné",
+        speakerEn: "An elder",
+        phrase: "Mbolo · Ye oa ne?",
+        pronunciation: "mbo-lo, yé oa né",
+        promptFr: "Avec un aîné Beti, l’ordre naturel est…",
+        promptEn: "With a Beti elder, the natural order is…",
+        options: [
+          o("a", "Saluer (Mbolo), puis prendre des nouvelles (Ye oa ne ?)", "Greet (Mbolo), then ask how they are (Ye oa ne?)"),
+          o("b", "Demander le prix d’abord", "Ask the price first"),
+          o("c", "Parler d’argent tout de suite", "Talk money immediately"),
+          o("d", "Tourner le dos", "Turn your back"),
+        ],
+        correctId: "a",
+        whenFr: "Les contextes changent le même mot. Les jeunes entre eux : plus court. Les aînés : plus posé.",
+        whenEn: "Context changes the same word. Young people together: shorter. Elders: calmer.",
+      },
+    ],
+  },
+  {
+    id: "sahel-survival",
+    areaId: "Sudano-Sahelian",
+    language: "Fulfulde",
+    skill: 1,
+    scene: "greet",
+    codeFr: "SURVIE 04",
+    codeEn: "SURVIVAL 04",
+    titleFr: "Jam na ? — tenir dans le Nord",
+    titleEn: "Jam na? — getting through the North",
+    settingFr: "Maroua, Garoua, Ngaoundéré : paix, merci, tenue quotidienne.",
+    settingEn: "Maroua, Garoua, Ngaoundéré: peace, thanks, everyday footing.",
+    steps: [
+      {
+        id: "hs-1",
+        speakerFr: "Un passant à Maroua",
+        speakerEn: "A passer-by in Maroua",
+        phrase: "Jam na?",
+        pronunciation: "djam na",
+        promptFr: "Que signifie « Jam na ? »",
+        promptEn: "What does “Jam na?” mean?",
+        options: [
+          o("a", "Bonjour / Ça va ?", "Hello / How are you?"),
+          o("b", "Combien ?", "How much?"),
+          o("c", "Au revoir", "Goodbye"),
+          o("d", "Non", "No"),
+        ],
+        correctId: "a",
+        whenFr: "Jam = paix. C’est le salut du Grand Nord, plus qu’un « hi ».",
+        whenEn: "Jam = peace. It is the Far North greeting, more than a “hi”.",
+        replyFr: "Répondez : Jam tun (je vais bien).",
+        replyEn: "Reply: Jam tun (I am well).",
+      },
+      {
+        id: "hs-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "Jam tun",
+        pronunciation: "djam tun",
+        promptFr: "« Jam tun » veut dire…",
+        promptEn: "“Jam tun” means…",
+        options: [
+          o("a", "Je vais bien / en paix", "I am well / at peace"),
+          o("b", "Merci", "Thank you"),
+          o("c", "Où est… ?", "Where is…?"),
+          o("d", "Aidez-moi", "Help me"),
+        ],
+        correctId: "a",
+        whenFr: "Réponse naturelle à Jam na ? Ne restez pas silencieux.",
+        whenEn: "The natural reply to Jam na? Do not stay silent.",
+      },
+      {
+        id: "hs-3",
+        speakerFr: "Un guide à Waza",
+        speakerEn: "A guide at Waza",
+        phrase: "Usoko",
+        pronunciation: "ou-so-ko",
+        promptFr: "Usoko, c’est…",
+        promptEn: "Usoko is…",
+        options: [
+          o("a", "Merci", "Thank you"),
+          o("b", "Bonjour", "Hello"),
+          o("c", "Non", "No"),
+          o("d", "S’il vous plaît", "Please"),
+        ],
+        correctId: "a",
+        whenFr: "Après le safari, le thé, une indication : Usoko.",
+        whenEn: "After the safari, tea, a direction: Usoko.",
+      },
+      {
+        id: "hs-4",
+        speakerFr: "Au marché de Maroua",
+        speakerEn: "At Maroua market",
+        phrase: "Jam na? · Combien ?",
+        pronunciation: "djam na, combien",
+        promptFr: "Pour le prix dans le Nord, le combo de séjour est…",
+        promptEn: "For prices in the North, the stay combo is…",
+        options: [
+          o("a", "Jam na ? puis « Combien ça coûte ? » (français largement compris)", "Jam na? then “How much?” (French widely understood)"),
+          o("b", "Crier Usoko en boucle", "Shouting Usoko on loop"),
+          o("c", "Ne pas saluer", "Not greeting"),
+          o("d", "Parler seulement anglais très vite", "Speaking English very fast only"),
+        ],
+        correctId: "a",
+        whenFr:
+          "On n’apprend pas tout le fulfulde. On apprend à ouvrir (jam) et à conclure (usoko).",
+        whenEn:
+          "You are not learning all of Fulfulde. You learn to open (jam) and to close (usoko).",
+      },
+      {
+        id: "hs-5",
+        speakerFr: "Si vous êtes perdu",
+        speakerEn: "If you are lost",
+        phrase: "Jam na? · Aidez-moi",
+        pronunciation: "djam na, aidez-moi",
+        promptFr: "Pour « aidez-moi » / « je ne comprends pas » :",
+        promptEn: "For “help me” / “I don’t understand”:",
+        options: [
+          o("a", "Saluer (Jam na ?) puis le dire clairement en français", "Greet (Jam na?) then say it clearly in French"),
+          o("b", "Rester muet", "Stay silent"),
+          o("c", "Fuir", "Run away"),
+          o("d", "Inventer des mots", "Invent words"),
+        ],
+        correctId: "a",
+        whenFr: "La politesse locale + la clarté : le vrai réflexe de survie.",
+        whenEn: "Local courtesy + clarity: the real survival reflex.",
+      },
+    ],
+  },
+  {
+    id: "sahel-market",
+    areaId: "Sudano-Sahelian",
+    language: "Fulfulde",
+    skill: 2,
+    scene: "market",
+    codeFr: "MISSION 01 — LE MARCHÉ",
+    codeEn: "MISSION 01 — THE MARKET",
+    titleFr: "Marché de Maroua",
+    titleEn: "Maroua market",
+    settingFr: "Le vendeur parle. Écoutez jam, répondez, remerciez.",
+    settingEn: "The vendor speaks. Hear jam, answer, give thanks.",
+    steps: [
+      {
+        id: "hm-1",
+        speakerFr: "Le vendeur",
+        speakerEn: "The vendor",
+        phrase: "Jam na?",
+        pronunciation: "djam na",
+        promptFr: "🔊 Que vient-il de dire ?",
+        promptEn: "🔊 What did he just say?",
+        options: [
+          o("a", "Bonjour / Ça va ?", "Hello / How are you?"),
+          o("b", "C’est trop cher", "That’s too expensive"),
+          o("c", "Partez", "Leave"),
+          o("d", "Au revoir", "Goodbye"),
+        ],
+        correctId: "a",
+        whenFr: "Au marché du Nord, on prend des nouvelles avant l’argent.",
+        whenEn: "At a northern market, you ask how someone is before talking money.",
+        replyFr: "Jam tun.",
+        replyEn: "Jam tun.",
+      },
+      {
+        id: "hm-2",
+        speakerFr: "Vous",
+        speakerEn: "You",
+        phrase: "Jam tun",
+        pronunciation: "djam tun",
+        promptFr: "Votre réponse de voyage :",
+        promptEn: "Your travel reply:",
+        options: [
+          o("a", "Jam tun", "Jam tun"),
+          o("b", "Mbolo"),
+          o("c", "Akiba"),
+          o("d", "Ayei"),
+        ],
+        correctId: "a",
+        whenFr: "Faire connaissance : ce petit échange vaut plus qu’un prix cassé.",
+        whenEn: "Getting acquainted: this short exchange is worth more than a cut price.",
+      },
+      {
+        id: "hm-3",
+        speakerFr: "Après l’achat",
+        speakerEn: "After the purchase",
+        phrase: "Usoko",
+        pronunciation: "ou-so-ko",
+        promptFr: "Vous payez. Vous dites…",
+        promptEn: "You pay. You say…",
+        options: [
+          o("a", "Usoko", "Usoko"),
+          o("b", "Nandé"),
+          o("c", "Akiba"),
+          o("d", "Te"),
+        ],
+        correctId: "a",
+        whenFr: "Restaurant, hôtel, pisteur de Waza : le même Usoko.",
+        whenEn: "Restaurant, hotel, Waza tracker: the same Usoko.",
+      },
+    ],
+  },
+  {
+    id: "sahel-immersion",
+    areaId: "Sudano-Sahelian",
+    language: "Fulfulde",
+    skill: 3,
+    scene: "respect",
+    codeFr: "IMMERSION 04",
+    codeEn: "IMMERSION 04",
+    titleFr: "Paix et lamidats",
+    titleEn: "Peace and lamidates",
+    settingFr: "Jam n’est pas un gadget. Lamidats, aînés, savane.",
+    settingEn: "Jam is not a gadget. Lamidates, elders, savannah.",
+    steps: [
+      {
+        id: "hi-1",
+        speakerFr: "Un aîné",
+        speakerEn: "An elder",
+        phrase: "Jam na?",
+        pronunciation: "djam na",
+        promptFr: "Devant un aîné ou à l’entrée d’un lamidat, Jam na ? se dit…",
+        promptEn: "Before an elder or at a lamidate, Jam na? is said…",
+        options: [
+          o("a", "Posément, en premier, comme une vraie prise de nouvelles", "Calmly, first, as a real check-in"),
+          o("b", "En courant", "While running"),
+          o("c", "Seulement aux enfants", "Only to children"),
+          o("d", "À la place de usoko", "Instead of usoko"),
+        ],
+        correctId: "a",
+        whenFr: "Le mot jam porte la paix. On ne le jette pas.",
+        whenEn: "The word jam carries peace. You do not toss it away.",
+      },
+      {
+        id: "hi-2",
+        speakerFr: "Contexte",
+        speakerEn: "Context",
+        phrase: "Lamidat",
+        pronunciation: "la-mi-dat",
+        promptFr: "Un lamidat, c’est…",
+        promptEn: "A lamidate is…",
+        options: [
+          o("a", "Une chefferie du Nord / Adamaoua", "A chiefdom of the North / Adamawa"),
+          o("b", "Un plat Sawa", "A Sawa dish"),
+          o("c", "Un salut ewondo", "An Ewondo greeting"),
+          o("d", "Une plage de Kribi", "A Kribi beach"),
+        ],
+        correctId: "a",
+        whenFr: "On y entre comme en chefferie : salut, respect, guide local.",
+        whenEn: "You enter as at a chiefdom: greeting, respect, local guide.",
+      },
+      {
+        id: "hi-3",
+        speakerFr: "Waza",
+        speakerEn: "Waza",
+        phrase: "Usoko",
+        pronunciation: "ou-so-ko",
+        promptFr: "Au parc, Usoko s’adresse surtout…",
+        promptEn: "At the park, Usoko is mainly for…",
+        options: [
+          o("a", "Au pisteur / guide qui vous accompagne", "The tracker / guide with you"),
+          o("b", "Aux éléphants", "The elephants"),
+          o("c", "Au volcan", "The volcano"),
+          o("d", "Au Ngondo", "Ngondo"),
+        ],
+        correctId: "a",
+        whenFr: "L’immersion, c’est remercier la bonne personne, au bon endroit.",
+        whenEn: "Immersion is thanking the right person, in the right place.",
+      },
+    ],
+  },
+];
+
+export function trackIdOf(mission: LocalMission): LanguageTrackId {
+  return mission.langId ?? trackFromLanguage(mission.language);
+}
+
+export function missionsFor(trackId: LanguageTrackId, skill: SkillLevel) {
+  return missions.filter((m) => trackIdOf(m) === trackId && m.skill === skill);
+}
+
+export function missionById(id: string) {
+  return missions.find((m) => m.id === id);
+}
+
+export function survivalMissionId(trackId: LanguageTrackId) {
+  return missions.find((m) => trackIdOf(m) === trackId && m.skill === 1)?.id;
+}
+
+export function travelMissionId(trackId: LanguageTrackId) {
+  return missions.find((m) => trackIdOf(m) === trackId && m.skill === 2)?.id;
+}
