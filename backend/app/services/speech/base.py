@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator
 
 from app.core.exceptions import SpeechUnavailableError
 
@@ -22,6 +23,15 @@ class SpeechService(ABC):
     @abstractmethod
     async def synthesize(self, text: str) -> bytes:
         """Convert assistant text into audio bytes."""
+
+    async def synthesize_stream(self, text: str) -> AsyncIterator[bytes]:
+        """Yield audio bytes as soon as the TTS provider streams them.
+
+        Default: buffer the full synthesize() result as a single chunk.
+        """
+        audio = await self.synthesize(text)
+        if audio:
+            yield audio
 
 
 class PlaceholderSpeechService(SpeechService):

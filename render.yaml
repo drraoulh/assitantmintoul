@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: cameroon-ai-tour-guide-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: LLM_PROVIDER
+        value: huggingface
+      - key: HF_MODEL_ID
+        value: Qwen/Qwen3.5-9B:fastest
+      - key: HF_TIMEOUT_SECONDS
+        value: "60"
+      - key: LLM_MAX_TOKENS
+        value: "380"
+      - key: LLM_VOICE_MAX_TOKENS
+        value: "160"
+      - key: RAG_ENABLED
+        value: "true"
+      - key: RAG_TOP_K
+        value: "4"
+      - key: WEB_SEARCH_ENABLED
+        value: "true"
+      - key: WEB_SEARCH_MAX_RESULTS
+        value: "3"
+      - key: WEB_SEARCH_TIMEOUT_SECONDS
+        value: "4"
+      - key: DATABASE_ENABLED
+        value: "false"
+      - key: HUGGINGFACE_HUB_TOKEN
+        sync: false
+      - key: CORS_ORIGINS
+        value: "*"

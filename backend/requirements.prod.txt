@@ -1,0 +1,13 @@
+# Production/runtime deps for Render (no local Whisper / sentence-transformers).
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pydantic==2.11.3
+pydantic-settings==2.9.1
+sqlalchemy==2.0.40
+asyncpg==0.30.0
+python-dotenv==1.1.0
+httpx==0.28.1
+greenlet==3.2.1
+python-multipart==0.0.20
+ddgs==9.16.0
+redis==5.2.1

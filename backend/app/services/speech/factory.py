@@ -33,9 +33,10 @@ def _create_tts_service() -> SpeechService | None:
     )
 
 
-def create_speech_service() -> SpeechService:
-    # Fresh settings each call so .env token updates apply under --reload
-    get_settings.cache_clear()
+def create_speech_service(*, refresh_settings: bool = False) -> SpeechService:
+    # Optional refresh so --reload / secret rotation can pick up .env changes.
+    if refresh_settings:
+        get_settings.cache_clear()
     stt = _create_stt_service()
     tts = _create_tts_service()
     if tts is None:

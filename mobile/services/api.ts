@@ -1,4 +1,5 @@
 import { File, UploadType } from 'expo-file-system';
+import { Platform } from 'react-native';
 
 import { API_BASE_URL } from '../constants/config';
 import type {
@@ -58,6 +59,75 @@ function parseJsonBody<T>(body: string, status: number): T {
     throw new ApiError(readErrorDetail(payload) ?? `HTTP ${status}`, status);
   }
   return payload as T;
+}
+
+function extensionForMime(mimeType: string, fallback: string): string {
+  const normalized = mimeType.toLowerCase().split(';')[0]?.trim() ?? '';
+  const map: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/jpg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+    'image/gif': 'gif',
+    'image/heic': 'heic',
+    'image/heif': 'heif',
+    'audio/mp4': 'm4a',
+    'audio/m4a': 'm4a',
+    'audio/mpeg': 'mp3',
+    'audio/mp3': 'mp3',
+    'audio/wav': 'wav',
+    'audio/webm': 'webm',
+    'audio/ogg': 'ogg',
+  };
+  return map[normalized] ?? fallback;
+}
+
+async function uploadMultipart<T>(
+  path: string,
+  uri: string,
+  mimeType: string,
+  fileName: string,
+  signal: AbortSignal,
+): Promise<T> {
+  // expo-file-system File.upload calls validatePath(), which is undefined on web
+  // and crashes with "this.validatePath is not a function".
+  if (Platform.OS === 'web') {
+    const blobResponse = await fetch(uri, { signal });
+    if (!blobResponse.ok) {
+      throw new ApiError(
+        `Impossible de lire le fichier local (HTTP ${blobResponse.status}).`,
+        blobResponse.status,
+      );
+    }
+    const blob = await blobResponse.blob();
+    const form = new FormData();
+    form.append('file', blob, fileName);
+
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method: 'POST',
+      signal,
+      headers: {
+        Accept: 'application/json',
+      },
+      body: form,
+    });
+    return parseJsonResponse<T>(response);
+  }
+
+  // Expo SDK 57 rejects React Native's { uri, name, type } FormData parts
+  // ("Unsupported FormDataPart implementation"). File.upload is the supported path.
+  const file = new File(uri);
+  const result = await file.upload(`${API_BASE_URL}${path}`, {
+    httpMethod: 'POST',
+    uploadType: UploadType.MULTIPART,
+    fieldName: 'file',
+    mimeType,
+    headers: {
+      Accept: 'application/json',
+    },
+    signal,
+  });
+  return parseJsonBody<T>(result.body, result.status);
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -129,22 +199,16 @@ export async function transcribeAudio(
 ): Promise<TranscriptionResponse> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const fileName = `audio.${extensionForMime(mimeType, 'm4a')}`;
 
   try {
-    // Expo SDK 57 rejects React Native's { uri, name, type } FormData parts
-    // ("Unsupported FormDataPart implementation"). File.upload is the supported path.
-    const file = new File(uri);
-    const result = await file.upload(`${API_BASE_URL}/api/speech/transcribe`, {
-      httpMethod: 'POST',
-      uploadType: UploadType.MULTIPART,
-      fieldName: 'file',
+    return await uploadMultipart<TranscriptionResponse>(
+      '/api/speech/transcribe',
+      uri,
       mimeType,
-      headers: {
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-    return parseJsonBody<TranscriptionResponse>(result.body, result.status);
+      fileName,
+      controller.signal,
+    );
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -201,20 +265,16 @@ export async function identifyImage(
 ): Promise<VisionIdentifyResponse> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const fileName = `photo.${extensionForMime(mimeType, 'jpg')}`;
 
   try {
-    const file = new File(uri);
-    const result = await file.upload(`${API_BASE_URL}/api/vision/identify`, {
-      httpMethod: 'POST',
-      uploadType: UploadType.MULTIPART,
-      fieldName: 'file',
+    return await uploadMultipart<VisionIdentifyResponse>(
+      '/api/vision/identify',
+      uri,
       mimeType,
-      headers: {
-        Accept: 'application/json',
-      },
-      signal: controller.signal,
-    });
-    return parseJsonBody<VisionIdentifyResponse>(result.body, result.status);
+      fileName,
+      controller.signal,
+    );
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

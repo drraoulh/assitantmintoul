@@ -1,0 +1,19 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PORT=8000
+
+COPY backend/requirements.prod.txt /app/backend/requirements.prod.txt
+RUN pip install -r /app/backend/requirements.prod.txt
+
+COPY backend /app/backend
+COPY data /app/data
+
+WORKDIR /app/backend
+EXPOSE 8000
+
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]

@@ -228,7 +228,9 @@ async def test_huggingface_prompt_includes_rag_and_web() -> None:
         web_search_max_results=2,
     )
 
-    response = await service.generate_response("Que voir à Kribi ?")
+    response = await service.generate_response(
+        "Quels sont les tarifs et horaires à Kribi aujourd'hui ?"
+    )
     assert "Kribi" in response.message
     assert response.provider == "huggingface"
     payload = json.loads(captured["body"].decode())

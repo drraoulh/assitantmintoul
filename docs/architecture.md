@@ -1,4 +1,4 @@
-# Architecture — Cameroon AI Tour Guide
+# Architecture — Smartmboa Tour
 
 ## Current flow
 
@@ -16,7 +16,9 @@ Mobile chat (+ voice + photo)
 
 - Default LLM: Hugging Face Inference Providers (`LLM_PROVIDER=huggingface`)
 - Local RAG: curated files under `data/tourist_sites/` and `data/documents/`
-- Live enrichment: Wikipedia + DuckDuckGo (`WEB_SEARCH_ENABLED=true`)
+- Live web enrichment: organic open-web results first (tourism sites, blogs,
+  news, TripAdvisor, Facebook/Instagram pages that appear in search…), then
+  Wikipedia + DuckDuckGo Instant Answer (`WEB_SEARCH_ENABLED=true`)
 
 ## Voice
 
@@ -50,6 +52,20 @@ Mobile chat (+ voice + photo)
   `DELETE /api/conversations/{id}`
 - Mobile: last thread id in AsyncStorage, reopened on launch; the header clock
   opens the history sheet
+
+## Knowledge base / RAG (Supabase + files + web)
+
+- Curated tourism schema in Supabase: `places` (162+), `regions`, `cities`,
+  `categories`, `cultural_topics`, `phrases`, `sources`, `place_images`
+- Sync into `knowledge_chunks` with:
+  `python -m scripts.sync_knowledge_base` (from `backend/`)
+- RAG loads Supabase chunks first, then merges local `data/tourist_sites/**`
+- Live web search stays enabled as a complement: organic open-web results
+  (sites, blogs, news, TripAdvisor, Facebook/Instagram pages that appear in
+  search…), plus Wikipedia / Instant Answer
+- Prompt rule: prefer the curated KB, use the web for missing / recent context
+- Site catalog (`GET /api/tourist-sites`) reads published Supabase places when
+  `DATABASE_ENABLED=true`
 
 ## Design
 

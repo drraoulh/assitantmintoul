@@ -196,9 +196,51 @@ export function useSpeechPlayback() {
     [stop],
   );
 
+
+  const playBase64Mp3 = useCallback(
+    async (base64: string, index: number) => {
+      const decode =
+        typeof atob === 'function'
+          ? (value: string) => atob(value)
+          : (value: string) => {
+              // Minimal base64 decode for native fallbacks.
+              const chars =
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+              const cleaned = value.replace(/=+$/, '');
+              let output = '';
+              for (let i = 0; i < cleaned.length; i += 4) {
+                const enc1 = chars.indexOf(cleaned.charAt(i));
+                const enc2 = chars.indexOf(cleaned.charAt(i + 1));
+                const enc3 = chars.indexOf(cleaned.charAt(i + 2));
+                const enc4 = chars.indexOf(cleaned.charAt(i + 3));
+                const bits = (enc1 << 18) | (enc2 << 12) | (enc3 << 6) | enc4;
+                output += String.fromCharCode((bits >> 16) & 255);
+                if (enc3 !== -1 && cleaned.charAt(i + 2) !== '') {
+                  output += String.fromCharCode((bits >> 8) & 255);
+                }
+                if (enc4 !== -1 && cleaned.charAt(i + 3) !== '') {
+                  output += String.fromCharCode(bits & 255);
+                }
+              }
+              return output;
+            };
+      const binary = decode(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      await playBytes(
+        bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
+        index,
+      );
+    },
+    [playBytes],
+  );
+
   return {
     isSpeaking,
     speak,
     stop,
+    playBase64Mp3,
   };
 }

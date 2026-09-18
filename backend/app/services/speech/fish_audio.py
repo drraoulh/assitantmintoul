@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
 
 import httpx
 
@@ -40,7 +41,7 @@ class FishAudioTTSService(SpeechService):
             "Fish Audio is TTS-only. Set SPEECH_PROVIDER=huggingface or whisper for STT."
         )
 
-    async def synthesize(self, text: str) -> bytes:
+    def _prepare(self, text: str) -> tuple[dict[str, object], dict[str, str]]:
         cleaned = (text or "").strip()
         if not cleaned:
             raise SynthesisFailedError("Empty text for speech synthesis.")
@@ -60,7 +61,6 @@ class FishAudioTTSService(SpeechService):
             "format": "mp3",
             "mp3_bitrate": 128,
             "normalize": True,
-            # "balanced" starts streaming much sooner than "normal".
             "latency": "balanced",
             "prosody": {
                 "speed": 1.0,
@@ -78,9 +78,57 @@ class FishAudioTTSService(SpeechService):
             "model": self._settings.fish_audio_model.strip() or "s2.1-pro-free",
             "Accept": "*/*",
         }
+        return payload, headers
+
+    async def synthesize(self, text: str) -> bytes:
+        chunks: list[bytes] = []
+        async for chunk in self.synthesize_stream(text):
+            chunks.append(chunk)
+        audio = b"".join(chunks)
+        if not audio:
+            raise SynthesisFailedError("Fish Audio returned empty audio.")
+        return audio
+
+    async def synthesize_stream(self, text: str) -> AsyncIterator[bytes]:
+        payload, headers = self._prepare(text)
+        timeout = httpx.Timeout(
+            self._settings.fish_audio_timeout_seconds,
+            connect=10.0,
+        )
+        client = self._client or shared_async_client(
+            timeout_seconds=self._settings.fish_audio_timeout_seconds,
+        )
 
         try:
-            response = await self._post(headers=headers, payload=payload)
+            async with client.stream(
+                "POST",
+                self.endpoint,
+                headers=headers,
+                json=payload,
+                timeout=timeout,
+            ) as response:
+                if response.status_code == 401:
+                    raise SpeechUnavailableError(
+                        "Fish Audio rejected the API key. Check FISH_AUDIO_API_KEY."
+                    )
+                if response.status_code == 402:
+                    raise SpeechUnavailableError(
+                        "Fish Audio credits are exhausted. Top up or switch TTS_PROVIDER=none."
+                    )
+                if response.status_code >= 400:
+                    detail = await response.aread()
+                    logger.warning(
+                        "Fish Audio TTS error status=%s detail=%s",
+                        response.status_code,
+                        detail[:300],
+                    )
+                    raise SynthesisFailedError(
+                        "Fish Audio could not synthesize speech."
+                    )
+
+                async for chunk in response.aiter_bytes(chunk_size=4096):
+                    if chunk:
+                        yield chunk
         except httpx.TimeoutException as exc:
             raise SynthesisFailedError(
                 "Fish Audio took too long to synthesize speech."
@@ -90,60 +138,3 @@ class FishAudioTTSService(SpeechService):
             raise SpeechUnavailableError(
                 "Could not reach Fish Audio TTS API."
             ) from exc
-
-        if response.status_code == 401:
-            raise SpeechUnavailableError(
-                "Fish Audio rejected the API key. Check FISH_AUDIO_API_KEY."
-            )
-        if response.status_code == 402:
-            raise SpeechUnavailableError(
-                "Fish Audio credits are exhausted. Top up or switch TTS_PROVIDER=none."
-            )
-        if response.status_code >= 400:
-            detail = _safe_error_message(response)
-            logger.warning(
-                "Fish Audio TTS error status=%s detail=%s",
-                response.status_code,
-                detail,
-            )
-            raise SynthesisFailedError(
-                detail or "Fish Audio could not synthesize speech."
-            )
-
-        audio = response.content
-        if not audio:
-            raise SynthesisFailedError("Fish Audio returned empty audio.")
-        return audio
-
-    async def _post(
-        self,
-        *,
-        headers: dict[str, str],
-        payload: dict[str, object],
-    ) -> httpx.Response:
-        timeout = httpx.Timeout(
-            self._settings.fish_audio_timeout_seconds,
-            connect=10.0,
-        )
-        client = self._client or shared_async_client(
-            timeout_seconds=self._settings.fish_audio_timeout_seconds,
-        )
-        return await client.post(
-            self.endpoint,
-            headers=headers,
-            json=payload,
-            timeout=timeout,
-        )
-
-
-def _safe_error_message(response: httpx.Response) -> str | None:
-    try:
-        payload = response.json()
-    except ValueError:
-        text = response.text.strip()
-        return text[:300] if text else None
-    if isinstance(payload, dict):
-        message = payload.get("message") or payload.get("error")
-        if isinstance(message, str) and message.strip():
-            return message.strip()
-    return None

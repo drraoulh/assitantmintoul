@@ -28,3 +28,29 @@ class KnowledgeChunk:
             self.source,
         ]
         return " ".join(part for part in parts if part)
+
+    def to_cache_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "title": self.title,
+            "text": self.text,
+            "source": self.source,
+            "city": self.city,
+            "region": self.region,
+            "category": self.category,
+            "tags": list(self.tags),
+        }
+
+    @classmethod
+    def from_cache_dict(cls, data: dict) -> KnowledgeChunk:
+        tags = data.get("tags") or []
+        return cls(
+            id=str(data.get("id") or ""),
+            title=str(data.get("title") or ""),
+            text=str(data.get("text") or ""),
+            source=str(data.get("source") or ""),
+            city=data.get("city"),
+            region=data.get("region"),
+            category=data.get("category"),
+            tags=tuple(str(tag) for tag in tags),
+        )

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+
 from app.core.exceptions import SpeechUnavailableError
 from app.services.speech.base import SpeechService
 
@@ -34,3 +36,12 @@ class CompositeSpeechService(SpeechService):
                 "Set TTS_PROVIDER=fish and FISH_AUDIO_API_KEY."
             )
         return await self._tts.synthesize(text)
+
+    async def synthesize_stream(self, text: str) -> AsyncIterator[bytes]:
+        if self._tts is None:
+            raise SpeechUnavailableError(
+                "Text-to-speech is disabled. "
+                "Set TTS_PROVIDER=fish and FISH_AUDIO_API_KEY."
+            )
+        async for chunk in self._tts.synthesize_stream(text):
+            yield chunk

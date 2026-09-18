@@ -40,6 +40,13 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
 };
 
 function runAfterUiSettles(task: () => Promise<void>) {
+  // Web: browsers only allow the file picker inside a direct user gesture.
+  // Delaying (or awaiting a modal close) blocks the input[type=file] click.
+  if (Platform.OS === 'web') {
+    void task();
+    return;
+  }
+
   InteractionManager.runAfterInteractions(() => {
     // iOS needs the previous modal fully dismissed before UIImagePickerController.
     setTimeout(() => {
@@ -80,14 +87,16 @@ export function ChatInputBar({
 
   const pickFromLibrary = async () => {
     try {
-      await prepareForPicker();
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) {
-        Alert.alert(
-          'Photos',
-          "Autorisez l'accès à la galerie pour analyser une image.",
-        );
-        return;
+      if (Platform.OS !== 'web') {
+        await prepareForPicker();
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+          Alert.alert(
+            'Photos',
+            "Autorisez l'accès à la galerie pour analyser une image.",
+          );
+          return;
+        }
       }
 
       const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
@@ -106,14 +115,16 @@ export function ChatInputBar({
 
   const takePhoto = async () => {
     try {
-      await prepareForPicker();
-      const permission = await ImagePicker.requestCameraPermissionsAsync();
-      if (!permission.granted) {
-        Alert.alert(
-          'Caméra',
-          "Autorisez l'accès à la caméra pour photographier un site.",
-        );
-        return;
+      if (Platform.OS !== 'web') {
+        await prepareForPicker();
+        const permission = await ImagePicker.requestCameraPermissionsAsync();
+        if (!permission.granted) {
+          Alert.alert(
+            'Caméra',
+            "Autorisez l'accès à la caméra pour photographier un site.",
+          );
+          return;
+        }
       }
 
       const result = await ImagePicker.launchCameraAsync(PICKER_OPTIONS);
@@ -216,8 +227,10 @@ export function ChatInputBar({
             <Pressable
               accessibilityRole="button"
               onPress={() => {
-                setPhotoMenuOpen(false);
+                // Close sheet after starting picker so the web file dialog stays
+                // tied to this click (user-gesture).
                 runAfterUiSettles(takePhoto);
+                setPhotoMenuOpen(false);
               }}
               style={({ pressed }) => [
                 styles.sheetAction,
@@ -231,8 +244,8 @@ export function ChatInputBar({
             <Pressable
               accessibilityRole="button"
               onPress={() => {
-                setPhotoMenuOpen(false);
                 runAfterUiSettles(pickFromLibrary);
+                setPhotoMenuOpen(false);
               }}
               style={({ pressed }) => [
                 styles.sheetAction,

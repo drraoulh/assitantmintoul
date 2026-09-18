@@ -5,7 +5,7 @@ node_modules/
 
 # Expo
 .expo/
-dist/
+# dist/ tracked for Render static hosting (jury web app)
 web-build/
 expo-env.d.ts
 
