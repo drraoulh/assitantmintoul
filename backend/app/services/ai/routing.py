@@ -49,13 +49,16 @@ _SIMPLE_PREFIX = re.compile(
 _TOURISM_HINT = re.compile(
     r"\b("
     r"visiter|visite|yaounde|douala|kribi|limbe|limbé|waza|dja|"
-    r"plage|parc|hotel|restaurant|itinéraire|itineraire|prix|tarif|"
+    r"plage|parc|hotel|hôtel|restaurant|itinéraire|itineraire|prix|tarif|"
     r"monument|musee|musée|voyage|tourisme|region|région|ville|"
-    r"comment aller|ou manger|où manger|que faire|que visiter"
+    r"comment aller|ou manger|où manger|que faire|que visiter|"
+    r"transport|taxi|bus|train|avion|horaire|ouvert|ticket|billet|"
+    r"securite|sécurité|arnaque|escroquerie|conseil|recommande|"
+    r"nature|histoire|gastronomie|nourriture|ndole|ndolé|culture|"
+    r"deux jours|2 jours|week-?end|camfranglais|pidgin|how far|abeg"
     r")\b",
     re.IGNORECASE,
 )
-
 
 @dataclass(frozen=True)
 class QueryRoute:

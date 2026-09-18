@@ -7,7 +7,7 @@ import time
 import unicodedata
 from dataclasses import dataclass, field
 
-from app.services.ai.prompts import SYSTEM_PROMPT, VOICE_STYLE_PROMPT
+from app.services.ai.prompts import SYSTEM_PROMPT, TEXT_STYLE_PROMPT, VOICE_STYLE_PROMPT
 from app.services.rag.base import PlaceholderRAGService, RAGService
 from app.services.rag.chunk import KnowledgeChunk
 from app.services.rag.context import build_system_prompt, format_knowledge_context, format_web_context
@@ -98,6 +98,8 @@ async def build_grounded_system_prompt(
         prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
         if brief:
             prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
+        else:
+            prompt = f"{prompt.rstrip()}\n\n{TEXT_STYLE_PROMPT}\n"
         return GroundingResult(system_prompt=prompt, chunks=[])
 
     if not isinstance(rag_service, PlaceholderRAGService):
@@ -143,4 +145,6 @@ async def build_grounded_system_prompt(
     prompt = build_system_prompt(SYSTEM_PROMPT, kb_text, web_text)
     if brief:
         prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
+    else:
+        prompt = f"{prompt.rstrip()}\n\n{TEXT_STYLE_PROMPT}\n"
     return GroundingResult(system_prompt=prompt, chunks=chunks)
