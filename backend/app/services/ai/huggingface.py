@@ -16,8 +16,9 @@ from app.core.exceptions import (
     HuggingFaceUnavailableError,
 )
 from app.core.http import shared_async_client
-from app.schemas.chat import ChatResponse
+from app.schemas.chat import ChatResponse, ChatSource
 from app.services.ai.base import AIService
+from app.services.ai.context import sources_from_knowledge
 from app.services.ai.grounding import build_grounded_system_prompt
 from app.services.ai.routing import route_query
 from app.services.conversation.base import ConversationStore
@@ -104,14 +105,28 @@ class HuggingFaceAIService(AIService):
                 full += str(event.get("text") or "")
             elif event.get("type") == "done":
                 timer.log()
+                raw_sources = event.get("sources") or []
+                sources = [
+                    item if isinstance(item, ChatSource) else ChatSource.model_validate(item)
+                    for item in raw_sources
+                ]
                 return ChatResponse(
                     conversation_id=str(event.get("conversation_id")),
                     role="assistant",
                     message=str(event.get("text") or full),
                     provider="huggingface",
+                    sources=sources,
                 )
             elif event.get("type") == "error":
-                raise GenerationFailedError(str(event.get("message") or "LLM failed"))
+                code = str(event.get("code") or "")
+                detail = str(event.get("message") or "LLM failed")
+                if code in {"hf_auth", "HuggingFaceAuthError"}:
+                    raise HuggingFaceAuthError(detail)
+                if code in {"HuggingFaceUnavailableError", "hf_unavailable"}:
+                    raise HuggingFaceUnavailableError(detail)
+                if code in {"GenerationTimeoutError", "timeout"}:
+                    raise GenerationTimeoutError(detail)
+                raise GenerationFailedError(detail)
         raise GenerationFailedError()
 
     async def stream_response(
@@ -142,7 +157,7 @@ class HuggingFaceAIService(AIService):
             }
 
             with timer.phase("grounding"):
-                system_prompt = await build_grounded_system_prompt(
+                grounding = await build_grounded_system_prompt(
                     message,
                     history,
                     rag_service=self._rag,
@@ -158,9 +173,10 @@ class HuggingFaceAIService(AIService):
                     skip_kb=route.skip_kb,
                     skip_web=route.skip_web,
                 )
+            sources = sources_from_knowledge(grounding.chunks)
 
             payload_messages: list[dict[str, str]] = [
-                {"role": "system", "content": system_prompt},
+                {"role": "system", "content": grounding.system_prompt},
                 *history[-history_window:],
                 {"role": "user", "content": message},
             ]
@@ -194,6 +210,7 @@ class HuggingFaceAIService(AIService):
                 "type": "done",
                 "conversation_id": thread_id,
                 "text": reply,
+                "sources": [source.model_dump() for source in sources],
                 "metrics": timer.as_dict(),
             }
         except (
@@ -264,6 +281,21 @@ class HuggingFaceAIService(AIService):
                 fallback = dict(body)
                 fallback["stream"] = False
                 non_stream = await self._post("/chat/completions", fallback)
+                text = self._parse_response(non_stream)
+                if text:
+                    yield text
+                return
+
+            content_type = (response.headers.get("content-type") or "").lower()
+            # Mock / providers sometimes reply with a full JSON body instead of SSE.
+            if "text/event-stream" not in content_type and "json" in content_type:
+                raw = await response.aread()
+                non_stream = httpx.Response(
+                    response.status_code,
+                    content=raw,
+                    headers=response.headers,
+                    request=response.request,
+                )
                 text = self._parse_response(non_stream)
                 if text:
                     yield text

@@ -15,6 +15,7 @@ class KnowledgeChunk:
     region: str | None = None
     category: str | None = None
     tags: tuple[str, ...] = field(default_factory=tuple)
+    images: tuple[str, ...] = field(default_factory=tuple)
 
     @property
     def searchable_text(self) -> str:
@@ -39,11 +40,13 @@ class KnowledgeChunk:
             "region": self.region,
             "category": self.category,
             "tags": list(self.tags),
+            "images": list(self.images),
         }
 
     @classmethod
     def from_cache_dict(cls, data: dict) -> KnowledgeChunk:
         tags = data.get("tags") or []
+        images = data.get("images") or []
         return cls(
             id=str(data.get("id") or ""),
             title=str(data.get("title") or ""),
@@ -53,4 +56,5 @@ class KnowledgeChunk:
             region=data.get("region"),
             category=data.get("category"),
             tags=tuple(str(tag) for tag in tags),
+            images=tuple(str(url) for url in images if str(url).strip()),
         )

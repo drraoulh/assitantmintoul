@@ -5,6 +5,7 @@ import logging
 import re
 import time
 import unicodedata
+from dataclasses import dataclass, field
 
 from app.services.ai.prompts import SYSTEM_PROMPT, VOICE_STYLE_PROMPT
 from app.services.rag.base import PlaceholderRAGService, RAGService
@@ -21,6 +22,12 @@ _LIVE_NEED = re.compile(
     r")\b",
     re.IGNORECASE,
 )
+
+
+@dataclass
+class GroundingResult:
+    system_prompt: str
+    chunks: list[KnowledgeChunk] = field(default_factory=list)
 
 
 def build_retrieval_query(message: str, history: list[dict[str, str]]) -> str:
@@ -70,7 +77,7 @@ async def build_grounded_system_prompt(
     brief: bool = False,
     skip_kb: bool = False,
     skip_web: bool = False,
-) -> str:
+) -> GroundingResult:
     """Assemble system prompt with local KB + optional live web hits.
 
     RAG runs first. Web search is skipped when the KB already covers the query,
@@ -90,8 +97,8 @@ async def build_grounded_system_prompt(
         )
         prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
         if brief:
-            return f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
-        return prompt
+            prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
+        return GroundingResult(system_prompt=prompt, chunks=[])
 
     if not isinstance(rag_service, PlaceholderRAGService):
         try:
@@ -135,5 +142,5 @@ async def build_grounded_system_prompt(
 
     prompt = build_system_prompt(SYSTEM_PROMPT, kb_text, web_text)
     if brief:
-        return f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
-    return prompt
+        prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
+    return GroundingResult(system_prompt=prompt, chunks=chunks)

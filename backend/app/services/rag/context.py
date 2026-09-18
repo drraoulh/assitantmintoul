@@ -15,8 +15,12 @@ def format_knowledge_context(chunks: list[KnowledgeChunk], *, max_chars: int = 5
             meta_bits.append(f"city={chunk.city}")
         if chunk.region:
             meta_bits.append(f"region={chunk.region}")
+        if chunk.category:
+            meta_bits.append(f"category={chunk.category}")
         if chunk.source:
             meta_bits.append(f"source={chunk.source}")
+        if chunk.images:
+            meta_bits.append(f"image={chunk.images[0]}")
         meta = f" ({', '.join(meta_bits)})" if meta_bits else ""
         body = chunk.text.strip()
         if len(body) > max_chars:

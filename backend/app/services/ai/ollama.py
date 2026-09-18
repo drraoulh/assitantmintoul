@@ -14,6 +14,7 @@ from app.core.exceptions import (
 )
 from app.schemas.chat import ChatResponse
 from app.services.ai.base import AIService
+from app.services.ai.context import sources_from_knowledge
 from app.services.ai.grounding import build_grounded_system_prompt
 from app.services.conversation.base import ConversationStore
 from app.services.conversation.memory import InMemoryConversationStore
@@ -84,7 +85,7 @@ class OllamaAIService(AIService):
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
         history_window = self._voice_history_n if brief else self._history_n
-        system_prompt = await build_grounded_system_prompt(
+        grounding = await build_grounded_system_prompt(
             message,
             history,
             rag_service=self._rag,
@@ -98,7 +99,7 @@ class OllamaAIService(AIService):
         )
 
         payload_messages: list[dict[str, str]] = [
-            {"role": "system", "content": system_prompt},
+            {"role": "system", "content": grounding.system_prompt},
             *history[-history_window:],
             {"role": "user", "content": message},
         ]
@@ -111,6 +112,7 @@ class OllamaAIService(AIService):
             role="assistant",
             message=reply,
             provider="ollama",
+            sources=sources_from_knowledge(grounding.chunks),
         )
 
     async def _complete(

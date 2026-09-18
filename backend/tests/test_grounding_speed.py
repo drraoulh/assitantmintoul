@@ -41,7 +41,7 @@ async def test_grounding_skips_web_when_kb_covers() -> None:
             return [WebSearchHit("should-not-run", "x", "https://example.com", "web")]
 
     web = TrackingWeb()
-    prompt = await build_grounded_system_prompt(
+    result = await build_grounded_system_prompt(
         "Que voir à Kribi ?",
         [],
         rag_service=LocalRAGService(),
@@ -50,9 +50,10 @@ async def test_grounding_skips_web_when_kb_covers() -> None:
         web_search_max_results=3,
         web_search_timeout_seconds=4,
     )
-    assert "Curated knowledge base excerpts" in prompt
-    assert "Live web search results" not in prompt
+    assert "Curated knowledge base excerpts" in result.system_prompt
+    assert "Live web search results" not in result.system_prompt
     assert web.calls == 0
+    assert result.chunks
 
 
 @pytest.mark.asyncio
@@ -77,4 +78,4 @@ async def test_grounding_uses_web_when_kb_empty() -> None:
         web_search_max_results=3,
         web_search_timeout_seconds=4,
     )
-    assert "Live web search results" in prompt
+    assert "Live web search results" in prompt.system_prompt
