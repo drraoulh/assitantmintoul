@@ -84,6 +84,8 @@ class WhisperSpeechService(SpeechService):
                     temp_path,
                     beam_size=1,
                     vad_filter=True,
+                    language="fr",
+                    task="transcribe",
                 )
                 text = " ".join(segment.text.strip() for segment in segments).strip()
                 language = getattr(info, "language", None)

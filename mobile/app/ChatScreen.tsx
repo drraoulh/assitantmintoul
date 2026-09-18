@@ -33,7 +33,8 @@ export function ChatScreen() {
     startNewConversation,
     checkHealth,
   } = useChat();
-  const { isSpeaking, speak, stop, playBase64Mp3 } = useSpeechPlayback();
+  const { isSpeaking, speak, stop, playBase64Mp3, unlockWebAudio } =
+    useSpeechPlayback();
   const [voiceModeOpen, setVoiceModeOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
@@ -98,7 +99,10 @@ export function ChatScreen() {
             disabled={isSending}
             onSend={(text) => void sendMessage(text)}
             onSendImage={(uri) => void sendImage(uri)}
-            onOpenVoiceMode={() => setVoiceModeOpen(true)}
+            onOpenVoiceMode={() => {
+              void unlockWebAudio();
+              setVoiceModeOpen(true);
+            }}
           />
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -124,6 +128,7 @@ export function ChatScreen() {
         speak={speak}
         stopSpeaking={stop}
         playBase64Mp3={playBase64Mp3}
+        unlockWebAudio={unlockWebAudio}
         onExchange={appendExchange}
       />
     </View>

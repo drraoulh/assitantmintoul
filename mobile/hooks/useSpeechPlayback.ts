@@ -14,6 +14,10 @@ import { synthesizeSpeech } from '../services/api';
 // sentence starts playing while the rest is still being synthesized.
 const MAX_SEGMENT_CHARS = 180;
 
+// Tiny silent WAV — played inside a user gesture to unlock Safari/Chrome autoplay.
+const SILENT_WAV =
+  'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+
 function cleanForSpeech(text: string): string {
   return text
     .replace(/\*\*/g, '')
@@ -73,6 +77,8 @@ export function useSpeechPlayback() {
   const playerRef = useRef<AudioPlayer | null>(null);
   const cancelledRef = useRef(false);
   const webAudioRef = useRef<HTMLAudioElement | null>(null);
+  const webUnlockedRef = useRef(false);
+  const pendingBlobUrlRef = useRef<string | null>(null);
 
   const stop = useCallback(() => {
     cancelledRef.current = true;
@@ -80,11 +86,15 @@ export function useSpeechPlayback() {
     if (webAudioRef.current) {
       try {
         webAudioRef.current.pause();
-        webAudioRef.current.src = '';
+        webAudioRef.current.removeAttribute('src');
+        webAudioRef.current.load();
       } catch {
         // ignore
       }
-      webAudioRef.current = null;
+    }
+    if (pendingBlobUrlRef.current) {
+      URL.revokeObjectURL(pendingBlobUrlRef.current);
+      pendingBlobUrlRef.current = null;
     }
     const player = playerRef.current;
     playerRef.current = null;
@@ -99,31 +109,99 @@ export function useSpeechPlayback() {
     setIsSpeaking(false);
   }, []);
 
+  /** Must be called during a click/tap so later TTS autoplay is allowed. */
+  const unlockWebAudio = useCallback(async () => {
+    if (Platform.OS !== 'web') {
+      return;
+    }
+    try {
+      const AudioCtor = (globalThis as { Audio?: typeof Audio }).Audio;
+      if (!AudioCtor) {
+        return;
+      }
+      if (!webAudioRef.current) {
+        webAudioRef.current = new AudioCtor();
+        webAudioRef.current.preload = 'auto';
+      }
+      const element = webAudioRef.current;
+      // Keep a near-silent loop alive so Safari still allows later src swaps.
+      element.loop = true;
+      element.src = SILENT_WAV;
+      element.volume = 0.001;
+      await element.play();
+      webUnlockedRef.current = true;
+    } catch {
+      // Autoplay policies vary; speak() will still try.
+    }
+  }, []);
+
   const playBytes = useCallback(async (audio: ArrayBuffer, index: number) => {
     if (Platform.OS === 'web') {
+      const AudioCtor = (globalThis as { Audio?: typeof Audio }).Audio;
+      if (!AudioCtor) {
+        throw new Error('Audio non disponible');
+      }
+      if (!webAudioRef.current) {
+        webAudioRef.current = new AudioCtor();
+        webAudioRef.current.preload = 'auto';
+      }
+      const element = webAudioRef.current;
+      if (pendingBlobUrlRef.current) {
+        URL.revokeObjectURL(pendingBlobUrlRef.current);
+        pendingBlobUrlRef.current = null;
+      }
       const blob = new Blob([audio], { type: 'audio/mpeg' });
       const url = URL.createObjectURL(blob);
+      pendingBlobUrlRef.current = url;
+
       await new Promise<void>((resolve, reject) => {
-        const element = new Audio(url);
-        webAudioRef.current = element;
         const cleanup = () => {
-          if (webAudioRef.current === element) {
-            webAudioRef.current = null;
+          element.onended = null;
+          element.onerror = null;
+          element.loop = false;
+          if (pendingBlobUrlRef.current === url) {
+            URL.revokeObjectURL(url);
+            pendingBlobUrlRef.current = null;
           }
-          URL.revokeObjectURL(url);
         };
         element.onended = () => {
           cleanup();
+          // Re-arm silent loop so the next sentence can autoplay too.
+          try {
+            element.loop = true;
+            element.src = SILENT_WAV;
+            element.volume = 0.001;
+            void element.play();
+          } catch {
+            // ignore
+          }
           resolve();
         };
         element.onerror = () => {
           cleanup();
           reject(new Error('Lecture audio impossible'));
         };
-        void element.play().catch((error) => {
-          cleanup();
-          reject(error);
-        });
+        element.loop = false;
+        element.volume = 1;
+        element.src = url;
+        const playAttempt = element.play();
+        if (playAttempt && typeof playAttempt.then === 'function') {
+          playAttempt.catch(async (error) => {
+            try {
+              element.loop = true;
+              element.src = SILENT_WAV;
+              element.volume = 0.001;
+              await element.play();
+              element.loop = false;
+              element.volume = 1;
+              element.src = url;
+              await element.play();
+            } catch {
+              cleanup();
+              reject(error);
+            }
+          });
+        }
       });
       return;
     }
@@ -190,6 +268,7 @@ export function useSpeechPlayback() {
           allowsRecording: false,
         });
 
+        // Warm the first Fish request ASAP so playback starts sooner.
         let pending = synthesizeOrNull(segments[0]);
         for (let index = 0; index < segments.length; index += 1) {
           const audio = await pending;
@@ -197,14 +276,12 @@ export function useSpeechPlayback() {
             return;
           }
 
-          // Start the next synthesis before playing the current chunk.
           pending =
             index + 1 < segments.length
               ? synthesizeOrNull(segments[index + 1])
               : Promise.resolve(null);
 
           if (!audio) {
-            // On web, expo-speech is unreliable after async work — retry synth once.
             if (Platform.OS === 'web') {
               const retry = await synthesizeOrNull(segments[index]);
               if (retry) {
@@ -299,5 +376,6 @@ export function useSpeechPlayback() {
     speak,
     stop,
     playBase64Mp3,
+    unlockWebAudio,
   };
 }

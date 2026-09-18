@@ -92,7 +92,13 @@ class HuggingFaceSpeechService(SpeechService):
         }
 
         try:
-            response = await self._post(headers=headers, content=audio_bytes)
+            response = await self._post(
+                headers=headers,
+                content=audio_bytes,
+                # Force French: without this, Whisper often mis-detects FR as
+                # Serbian/Cyrillic (or other languages) on short mobile clips.
+                params={"language": "fr", "task": "transcribe"},
+            )
         except httpx.TimeoutException as exc:
             raise TranscriptionFailedError(
                 "Hugging Face took too long to transcribe the audio."
@@ -111,7 +117,11 @@ class HuggingFaceSpeechService(SpeechService):
             # Cold start: retry once after a short wait
             await asyncio.sleep(2.0)
             try:
-                response = await self._post(headers=headers, content=audio_bytes)
+                response = await self._post(
+                    headers=headers,
+                    content=audio_bytes,
+                    params={"language": "fr", "task": "transcribe"},
+                )
             except httpx.HTTPError as exc:
                 raise SpeechUnavailableError(
                     "Could not reach Hugging Face Inference API."
@@ -140,7 +150,7 @@ class HuggingFaceSpeechService(SpeechService):
             raise TranscriptionFailedError(
                 "No speech detected. Hold the mic and speak clearly, then stop."
             )
-        return text, None
+        return text, "fr"
 
     async def synthesize(self, text: str) -> bytes:
         raise SpeechUnavailableError(
@@ -152,6 +162,7 @@ class HuggingFaceSpeechService(SpeechService):
         *,
         headers: dict[str, str],
         content: bytes,
+        params: dict[str, str] | None = None,
     ) -> httpx.Response:
         timeout = httpx.Timeout(
             self._settings.hf_speech_timeout_seconds,
@@ -164,6 +175,7 @@ class HuggingFaceSpeechService(SpeechService):
             self.endpoint,
             headers=headers,
             content=content,
+            params=params,
             timeout=timeout,
         )
 

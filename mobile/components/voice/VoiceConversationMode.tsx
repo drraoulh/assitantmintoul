@@ -26,6 +26,7 @@ interface VoiceConversationModeProps {
   speak: (text: string) => Promise<void>;
   stopSpeaking: () => void;
   playBase64Mp3?: (base64: string, index: number) => Promise<void>;
+  unlockWebAudio?: () => Promise<void>;
   onExchange?: (userText: string, assistantText: string) => void;
 }
 
@@ -160,6 +161,7 @@ export function VoiceConversationMode({
   speak,
   stopSpeaking,
   playBase64Mp3,
+  unlockWebAudio,
   onExchange,
 }: VoiceConversationModeProps) {
   const pulse = useRef(new Animated.Value(1)).current;
@@ -196,13 +198,15 @@ export function VoiceConversationMode({
       fadeIn.setValue(0);
       return;
     }
+    // Opening the modal is a user gesture — unlock web audio autoplay now.
+    void unlockWebAudio?.();
     Animated.timing(fadeIn, {
       toValue: 1,
       duration: 280,
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     }).start();
-  }, [visible, fadeIn]);
+  }, [visible, fadeIn, unlockWebAudio]);
 
   useEffect(() => {
     if (!visible || !live) {
@@ -236,6 +240,8 @@ export function VoiceConversationMode({
 
   const handleOrbPress = () => {
     if (busy) return;
+    // Keep autoplay unlocked across the long STT→LLM→TTS async chain.
+    void unlockWebAudio?.();
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     void onOrbPress();
   };

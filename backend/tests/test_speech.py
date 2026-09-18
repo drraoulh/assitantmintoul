@@ -76,6 +76,8 @@ async def test_huggingface_speech_transcribe_success() -> None:
         assert request.method == "POST"
         assert b"fake-audio" in request.content
         assert request.headers.get("content-type") == "audio/m4a"
+        assert "language=fr" in str(request.url)
+        assert "task=transcribe" in str(request.url)
         return httpx.Response(200, json={"text": " Visiter le Mont Cameroun "})
 
     settings = Settings(
@@ -93,7 +95,7 @@ async def test_huggingface_speech_transcribe_success() -> None:
             filename="voice.m4a",
         )
     assert text == "Visiter le Mont Cameroun"
-    assert language is None
+    assert language == "fr"
 
 
 @pytest.mark.asyncio
