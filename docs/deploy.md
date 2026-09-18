@@ -1,23 +1,41 @@
 # Déploiement en ligne (jury)
 
-Objectif : une API permanente, sans tunnel Cloudflare temporaire.
+Objectif : une API permanente + une app web, sans tunnel Cloudflare temporaire.
 
-## Backend (Render)
+## Services Render (`render.yaml`)
 
-1. Crée un compte sur https://render.com
-2. New → Blueprint → connecte le repo `assitantmintoul`
-3. Sélectionne `render.yaml` (service `cameroon-ai-tour-guide-api`)
-4. Ajoute le secret `HUGGINGFACE_HUB_TOKEN` (Inference Providers)
-5. Deploy
+| Service | URL |
+|---------|-----|
+| **smartmboa-tour** (static, `mobile/dist`) | https://smartmboa-tour.onrender.com |
+| **cameroon-ai-tour-guide-api** (Docker) | https://cameroon-ai-tour-guide-api.onrender.com |
 
-Health check : `https://TON-SERVICE.onrender.com/api/health`
+### Première fois
 
-## Mobile
+1. Compte sur https://render.com
+2. New → Blueprint → repo `assitantmintoul` → `render.yaml`
+3. Secret API : `HUGGINGFACE_HUB_TOKEN`
+4. Deploy
 
-Dans `mobile/.env` (ou variables EAS) :
+### Mettre à jour l’app web (Parler local, UI…)
+
+```powershell
+cd mobile
+$env:EXPO_PUBLIC_API_URL="https://cameroon-ai-tour-guide-api.onrender.com"
+npm run export:web
+cd ..
+git add mobile/dist render.yaml
+git commit -m "Rebuild smartmboa web for Render"
+git push origin master
+```
+
+Puis sur https://dashboard.render.com → service **smartmboa-tour** → **Manual Deploy** → **Deploy latest commit** (si Auto-Deploy n’a pas encore tourné).
+
+Health API : https://cameroon-ai-tour-guide-api.onrender.com/api/health
+
+## Mobile local / Expo
 
 ```env
-EXPO_PUBLIC_API_URL=https://TON-SERVICE.onrender.com
+EXPO_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com
 ```
 
 Puis redémarre Expo / rebuild.

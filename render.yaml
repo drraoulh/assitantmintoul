@@ -1,4 +1,18 @@
 services:
+  # Web app (jury) — https://smartmboa-tour.onrender.com
+  - type: web
+    name: smartmboa-tour
+    runtime: static
+    plan: free
+    branch: master
+    buildCommand: "echo 'Using committed mobile/dist'"
+    staticPublishPath: mobile/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # API — https://cameroon-ai-tour-guide-api.onrender.com
   - type: web
     name: cameroon-ai-tour-guide-api
     runtime: docker
