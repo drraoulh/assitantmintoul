@@ -14,6 +14,10 @@ def test_tourism_queries_need_grounding():
         "Que visiter à Yaoundé ?",
         "Prix d'entrée du monument de la réunification",
         "Plages à Kribi",
+        "J'ai deux jours à Douala, tu me conseilles quoi ?",
+        "Comment aller de Douala à Kribi en bus ?",
+        "Quelles arnaques éviter en taxi ?",
+        "How far, tu fit where pour chop ndolé à Douala ?",
     ):
         route = route_query(text)
         assert route.skip_kb is False

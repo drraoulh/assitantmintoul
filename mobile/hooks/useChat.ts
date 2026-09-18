@@ -222,10 +222,10 @@ export function useChat() {
         setBackendStatus('online');
 
         const guidePrompt =
-          `L'utilisateur a envoyé une photo. Voici l'analyse visuelle :\n` +
+          `Photo voyageur. Analyse visuelle :\n` +
           `${vision.description}\n\n` +
-          `En tant que guide touristique du Cameroun, confirme ou précise le lieu/objet ` +
-          `si possible, ajoute un contexte culturel utile, et donne 2–3 conseils pratiques.`;
+          `En guide Smartmboa Tour : confirme lieu/plat si possible, ` +
+          `1 nuance culturelle, 2 conseils pratiques. Réponse courte et chaleureuse.`;
 
         const response = await sendChatMessage({
           message: guidePrompt,

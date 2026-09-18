@@ -28,7 +28,7 @@ services:
       - key: WEB_SEARCH_TIMEOUT_SECONDS
         value: "4"
       - key: DATABASE_ENABLED
-        value: "false"
+        value: "true"
       - key: HUGGINGFACE_HUB_TOKEN
         sync: false
       - key: CORS_ORIGINS

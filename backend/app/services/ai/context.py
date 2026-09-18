@@ -1,10 +1,53 @@
 from collections.abc import Sequence
 
 from app.schemas.chat import ChatSource
+from app.services.rag.chunk import KnowledgeChunk
 from app.services.rag.types import RetrievedChunk
 
 
+def sources_from_knowledge(
+    chunks: Sequence[KnowledgeChunk] | None,
+) -> list[ChatSource]:
+    """Build chat source cards from HybridRAG / KB chunks (incl. place images)."""
+    unique: list[ChatSource] = []
+    seen: set[str] = set()
+    if not chunks:
+        return unique
+
+    # Prefer concrete places (esp. with photos) over generic doc sections.
+    preferred = [
+        chunk
+        for chunk in chunks
+        if chunk.id.startswith(("place:", "site:")) or bool(chunk.images)
+    ]
+    ordered = preferred or list(chunks)
+
+    for chunk in ordered:
+        key = (chunk.id or chunk.title).strip().casefold()
+        if not key or key in seen:
+            continue
+        if chunk.id.startswith("region:"):
+            continue
+        if chunk.id.startswith("doc:") and not chunk.images:
+            continue
+        seen.add(key)
+        image_url = next((url for url in chunk.images if url), None)
+        unique.append(
+            ChatSource(
+                title=chunk.title,
+                city=chunk.city,
+                region=chunk.region,
+                category=chunk.category,
+                organization=chunk.source or None,
+                url=None,
+                image_url=image_url,
+            )
+        )
+    return unique
+
+
 def sources_from_chunks(chunks: Sequence[RetrievedChunk] | None) -> list[ChatSource]:
+    """Legacy FAISS RetrievedChunk path."""
     unique: list[ChatSource] = []
     seen: set[tuple[str, str | None]] = set()
     if not chunks:

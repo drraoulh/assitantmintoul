@@ -87,6 +87,11 @@ def _site_to_chunk(item: dict, *, source: str) -> KnowledgeChunk | None:
         for tag in (item.get("tags") or item.get("activities") or [])
         if str(tag).strip()
     )
+    images = tuple(
+        str(url).strip()
+        for url in (item.get("images") or [])
+        if str(url).strip().startswith(("http://", "https://"))
+    )
 
     lines = [f"Site: {name}"]
     if city:
@@ -107,6 +112,8 @@ def _site_to_chunk(item: dict, *, source: str) -> KnowledgeChunk | None:
         lines.append(f"Conseils FR: {tips_fr}")
     if tips_en:
         lines.append(f"Tips EN: {tips_en}")
+    if images:
+        lines.append(f"Image: {images[0]}")
 
     return KnowledgeChunk(
         id=f"site:{site_id}",
@@ -117,6 +124,7 @@ def _site_to_chunk(item: dict, *, source: str) -> KnowledgeChunk | None:
         region=region,
         category=category,
         tags=tags,
+        images=images,
     )
 
 

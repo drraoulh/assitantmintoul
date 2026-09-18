@@ -2,8 +2,12 @@ export type ChatRole = 'user' | 'assistant';
 
 export interface ChatSource {
   title: string;
+  city?: string | null;
+  region?: string | null;
+  category?: string | null;
   organization?: string | null;
   url?: string | null;
+  image_url?: string | null;
 }
 
 export interface ChatMessage {

@@ -27,11 +27,22 @@ class ChatRequest(BaseModel):
         return cleaned or None
 
 
+class ChatSource(BaseModel):
+    title: str
+    city: str | None = None
+    region: str | None = None
+    category: str | None = None
+    organization: str | None = None
+    url: str | None = None
+    image_url: str | None = None
+
+
 class ChatResponse(BaseModel):
     conversation_id: str
     message: str
     role: Literal["assistant"] = "assistant"
     provider: str
+    sources: list[ChatSource] = Field(default_factory=list)
 
 
 class ConversationTurn(BaseModel):

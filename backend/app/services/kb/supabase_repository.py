@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from dataclasses import replace
 from typing import Any
 from uuid import uuid4
 
@@ -12,6 +13,14 @@ from app.schemas.tourism import SourceRecord, TouristSiteRecord
 from app.services.rag.chunk import KnowledgeChunk
 
 logger = logging.getLogger(__name__)
+
+
+def _image_url(row: dict[str, Any]) -> str | None:
+    for key in ("original_url", "storage_path"):
+        value = str(row.get(key) or "").strip()
+        if value.startswith(("http://", "https://")):
+            return value
+    return None
 
 
 class SupabaseKnowledgeRepository:
@@ -78,6 +87,7 @@ class SupabaseKnowledgeRepository:
                     "region": chunk.region,
                     "category": chunk.category,
                     "tags": list(chunk.tags),
+                    "images": list(chunk.images),
                     "source": chunk.source,
                     "legacy_id": chunk.id,
                 }
@@ -150,6 +160,9 @@ class SupabaseKnowledgeRepository:
                 )
             ).mappings().all()
 
+        images_by_place = await self._load_images_by_place(
+            [str(row["id"]) for row in rows]
+        )
         records: list[TouristSiteRecord] = []
         for row in rows:
             sources: list[SourceRecord] = []
@@ -173,9 +186,10 @@ class SupabaseKnowledgeRepository:
             if row.get("best_period"):
                 activities.append(f"meilleure période: {row['best_period']}")
 
+            place_id = str(row["id"])
             records.append(
                 TouristSiteRecord(
-                    id=str(row["id"]),
+                    id=place_id,
                     name=str(row["name"]),
                     slug=str(row["slug"]),
                     region=str(row["region"]),
@@ -190,7 +204,7 @@ class SupabaseKnowledgeRepository:
                     opening_hours=None,
                     price=price,
                     languages=["fr", "en"],
-                    images=[],
+                    images=images_by_place.get(place_id, []),
                     sources=sources,
                 )
             )
@@ -221,6 +235,9 @@ class SupabaseKnowledgeRepository:
             tags = meta.get("tags") or []
             if not isinstance(tags, list):
                 tags = []
+            images = meta.get("images") or []
+            if not isinstance(images, list):
+                images = []
             legacy_id = str(meta.get("legacy_id") or "").strip()
             chunk_id = legacy_id or f"{row['source_type']}:{row['id']}"
             chunks.append(
@@ -233,9 +250,85 @@ class SupabaseKnowledgeRepository:
                     region=meta.get("region"),
                     category=meta.get("category"),
                     tags=tuple(str(tag) for tag in tags if str(tag).strip()),
+                    images=tuple(str(url) for url in images if str(url).strip()),
                 )
             )
-        return chunks
+        return await self._enrich_place_images(chunks)
+
+    async def _load_images_by_place(
+        self,
+        place_ids: list[str],
+    ) -> dict[str, list[str]]:
+        """Map place_id → ordered image URLs from `place_images`."""
+        ids = [pid for pid in place_ids if pid]
+        if not ids:
+            return {}
+        async with self._session_factory() as session:
+            rows = (
+                await session.execute(
+                    text(
+                        """
+                        select
+                            place_id::text as place_id,
+                            original_url,
+                            storage_path,
+                            coalesce(is_primary, false) as is_primary
+                        from place_images
+                        where place_id::text = any(:ids)
+                        order by coalesce(is_primary, false) desc, created_at nulls last
+                        """
+                    ),
+                    {"ids": ids},
+                )
+            ).mappings().all()
+
+        by_place: dict[str, list[str]] = {}
+        for row in rows:
+            url = _image_url(dict(row))
+            if not url:
+                continue
+            place_id = str(row["place_id"])
+            bucket = by_place.setdefault(place_id, [])
+            if url not in bucket:
+                bucket.append(url)
+        return by_place
+
+    async def _enrich_place_images(
+        self,
+        chunks: list[KnowledgeChunk],
+    ) -> list[KnowledgeChunk]:
+        """Attach live `place_images` URLs when chunk metadata has none yet."""
+        need: list[str] = []
+        for chunk in chunks:
+            if chunk.images:
+                continue
+            if not chunk.id.startswith("place:"):
+                continue
+            place_id = chunk.id.partition(":")[2]
+            if place_id:
+                need.append(place_id)
+        if not need:
+            return chunks
+
+        images_by_place = await self._load_images_by_place(need)
+        if not images_by_place:
+            return chunks
+
+        enriched: list[KnowledgeChunk] = []
+        for chunk in chunks:
+            if chunk.images or not chunk.id.startswith("place:"):
+                enriched.append(chunk)
+                continue
+            place_id = chunk.id.partition(":")[2]
+            urls = tuple(images_by_place.get(place_id, []))
+            if not urls:
+                enriched.append(chunk)
+                continue
+            text = chunk.text
+            if "Image:" not in text:
+                text = f"{text}\nImage: {urls[0]}"
+            enriched.append(replace(chunk, images=urls, text=text))
+        return enriched
 
     async def _place_chunks(self, session: AsyncSession) -> list[KnowledgeChunk]:
         rows = (
@@ -273,6 +366,9 @@ class SupabaseKnowledgeRepository:
             )
         ).mappings().all()
 
+        images_by_place = await self._load_images_by_place(
+            [str(row["id"]) for row in rows]
+        )
         chunks: list[KnowledgeChunk] = []
         for row in rows:
             lines = [
@@ -311,9 +407,13 @@ class SupabaseKnowledgeRepository:
             if row.get("source_name"):
                 lines.append(f"Source: {row['source_name']}")
 
+            place_id = str(row["id"])
+            image_urls = tuple(images_by_place.get(place_id, []))
+            if image_urls:
+                lines.append(f"Image: {image_urls[0]}")
             chunks.append(
                 KnowledgeChunk(
-                    id=f"place:{row['id']}",
+                    id=f"place:{place_id}",
                     title=str(row["name"]),
                     text="\n".join(lines),
                     source="supabase/places",
@@ -321,6 +421,7 @@ class SupabaseKnowledgeRepository:
                     region=row.get("region"),
                     category=row.get("category"),
                     tags=(row.get("slug") or "", row.get("category") or ""),
+                    images=image_urls,
                 )
             )
         return chunks

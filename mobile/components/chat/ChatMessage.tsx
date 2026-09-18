@@ -1,14 +1,59 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, radius, spacing } from '../../constants/theme';
-import type { ChatMessage as ChatMessageType } from '../../types/chat';
+import type { ChatMessage as ChatMessageType, ChatSource } from '../../types/chat';
 
 interface ChatMessageProps {
   message: ChatMessageType;
   onSpeak?: (text: string) => void;
   onStopSpeaking?: () => void;
   isSpeaking?: boolean;
+}
+
+function SourceCard({ source }: { source: ChatSource }) {
+  const meta = [source.city, source.region, source.category]
+    .filter(Boolean)
+    .join(' · ');
+
+  const body = (
+    <>
+      {source.image_url ? (
+        <Image
+          source={{ uri: source.image_url }}
+          style={styles.sourceImage}
+          resizeMode="cover"
+          accessibilityLabel={`Photo de ${source.title}`}
+        />
+      ) : null}
+      <View style={styles.sourceTextBlock}>
+        <Text style={styles.sourceTitle} numberOfLines={2}>
+          {source.title}
+        </Text>
+        {meta ? (
+          <Text style={styles.sourceMeta} numberOfLines={1}>
+            {meta}
+          </Text>
+        ) : null}
+      </View>
+    </>
+  );
+
+  if (source.url) {
+    return (
+      <Pressable
+        accessibilityRole="link"
+        onPress={() => {
+          void Linking.openURL(source.url!);
+        }}
+        style={styles.sourceCard}
+      >
+        {body}
+      </Pressable>
+    );
+  }
+
+  return <View style={styles.sourceCard}>{body}</View>;
 }
 
 export function ChatMessage({
@@ -18,6 +63,7 @@ export function ChatMessage({
   isSpeaking = false,
 }: ChatMessageProps) {
   const isUser = message.role === 'user';
+  const sources = message.sources?.filter((s) => s.title?.trim()) ?? [];
 
   return (
     <View style={[styles.row, isUser ? styles.right : styles.left]}>
@@ -50,9 +96,17 @@ export function ChatMessage({
         {message.imageUri && message.content === 'Photo envoyée' ? (
           <Text style={[styles.caption, isUser && styles.userText]}>Photo</Text>
         ) : null}
-        {!isUser && !message.isError && message.sources && message.sources.length > 0 && (
-          <Text style={styles.sourcesHint}>Sources</Text>
-        )}
+        {!isUser && !message.isError && sources.length > 0 ? (
+          <View style={styles.sourcesBlock}>
+            <Text style={styles.sourcesHint}>Lieux cités</Text>
+            {sources.slice(0, 4).map((source, index) => (
+              <SourceCard
+                key={`${source.title}-${source.image_url ?? index}`}
+                source={source}
+              />
+            ))}
+          </View>
+        ) : null}
         {!isUser && !message.isError && onSpeak && (
           <Pressable
             accessibilityRole="button"
@@ -162,12 +216,41 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
+  sourcesBlock: {
+    marginTop: 12,
+    gap: 8,
+  },
   sourcesHint: {
-    marginTop: 10,
     color: colors.muted,
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 0.6,
     textTransform: 'uppercase',
+  },
+  sourceCard: {
+    backgroundColor: 'rgba(0, 122, 94, 0.06)',
+    borderRadius: radius.sm,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.line,
+  },
+  sourceImage: {
+    width: '100%',
+    height: 140,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+  },
+  sourceTextBlock: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 2,
+  },
+  sourceTitle: {
+    color: colors.ink,
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  sourceMeta: {
+    color: colors.muted,
+    fontSize: 11,
   },
 });

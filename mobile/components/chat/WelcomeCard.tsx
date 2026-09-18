@@ -8,9 +8,9 @@ export function WelcomeCard() {
       <Text style={styles.kicker}>Smartmboa Tour</Text>
       <Text style={styles.title}>Découvrez le Cameroun autrement</Text>
       <Text style={styles.body}>
-        Posez une question sur les villes, les parcs, la culture ou un
-        itinéraire. Ouvrez « Mode conversation » pour parler au guide :
-        vous parlez, il répond à voix haute, puis vous reparlez.
+        Itinéraires, transport, restos, culture, sécurité, ou « 2 jours à
+        Douala » — posez votre question. Envoyez une photo pour reconnaître
+        un lieu ou un plat. Mode conversation pour parler au guide.
       </Text>
     </View>
   );
