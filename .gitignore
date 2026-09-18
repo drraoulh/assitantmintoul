@@ -20,7 +20,7 @@ backend/.ruff_cache/
 # Node / Expo
 mobile/node_modules/
 mobile/.expo/
-mobile/dist/
+# mobile/dist/ is committed for jury static hosting on Render
 mobile/web-build/
 mobile/*.jks
 mobile/*.p8

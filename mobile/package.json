@@ -1,5 +1,5 @@
 {
-  "name": "cameroon-ai-tour-guide",
+  "name": "smartmboa-tour",
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
@@ -30,7 +30,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "export:web": "expo export --platform web"
   },
   "private": true
 }

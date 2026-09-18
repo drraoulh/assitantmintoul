@@ -1,8 +1,8 @@
 ﻿{
   "expo": {
-    "name": "Cameroon AI Tour Guide",
-    "slug": "cameroon-ai-tour-guide",
-    "version": "0.1.0",
+    "name": "Smartmboa Tour",
+    "slug": "smartmboa-tour",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -14,9 +14,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "Allow Cameroon AI Tour Guide to use the microphone so you can ask travel questions by voice.",
-        "NSCameraUsageDescription": "Allow Cameroon AI Tour Guide to take photos of tourist sites for identification.",
-        "NSPhotoLibraryUsageDescription": "Allow Cameroon AI Tour Guide to analyze photos of tourist sites from your library."
+        "NSMicrophoneUsageDescription": "Allow Smartmboa Tour to use the microphone so you can ask travel questions by voice.",
+        "NSCameraUsageDescription": "Allow Smartmboa Tour to take photos of tourist sites for identification.",
+        "NSPhotoLibraryUsageDescription": "Allow Smartmboa Tour to analyze photos of tourist sites from your library."
       }
     },
     "android": {
@@ -35,20 +35,25 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single",
+      "name": "Smartmboa Tour",
+      "shortName": "Smartmboa",
+      "description": "Guide touristique intelligent du Cameroun"
     },
     "plugins": [
       [
         "expo-audio",
         {
-          "microphonePermission": "Allow Cameroon AI Tour Guide to use the microphone so you can ask travel questions by voice."
+          "microphonePermission": "Allow Smartmboa Tour to use the microphone so you can ask travel questions by voice."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow Cameroon AI Tour Guide to analyze photos of tourist sites from your library.",
-          "cameraPermission": "Allow Cameroon AI Tour Guide to take photos of tourist sites for identification."
+          "photosPermission": "Allow Smartmboa Tour to analyze photos of tourist sites from your library.",
+          "cameraPermission": "Allow Smartmboa Tour to take photos of tourist sites for identification."
         }
       ]
     ]

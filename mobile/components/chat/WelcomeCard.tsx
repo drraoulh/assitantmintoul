@@ -5,7 +5,7 @@ import { colors, radius, spacing } from '../../constants/theme';
 export function WelcomeCard() {
   return (
     <View style={styles.card}>
-      <Text style={styles.kicker}>Guide intelligent</Text>
+      <Text style={styles.kicker}>Smartmboa Tour</Text>
       <Text style={styles.title}>Bonjour, voyageur</Text>
       <Text style={styles.body}>
         Posez une question sur les villes, les parcs, la culture ou un

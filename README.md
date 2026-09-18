@@ -1,4 +1,4 @@
-# Cameroon AI Tour Guide
+# Smartmboa Tour
 
 Intelligent tourist assistant dedicated to Cameroon.
 
@@ -37,7 +37,7 @@ Then:
 - or scan the QR code with **Expo Go** on your phone
 - or press **`a`** for Android emulator
 
-The screen you should see: header **Cameroon AI Tour Guide**, welcome card, suggested prompts, text field, mic, camera, send.
+The screen you should see: header **Smartmboa Tour**, welcome card, suggested prompts, text field, mic, camera, send.
 
 Without Ollama, set `LLM_PROVIDER=placeholder` in `backend/.env` so answers quote the knowledge base instead of returning 503.
 
@@ -236,7 +236,7 @@ Restart Expo after changing `mobile/.env`. Allow inbound TCP **8000** in Windows
 2. FastAPI is running on port 8000.
 3. Open the app. Header shows **Connecté**.
 4. Type `Bonjour` and send.
-5. You should see **Cameroon Guide is thinking...**, then a real Qwen reply.
+5. You should see **Smartmboa Tour réfléchit...**, then a real Qwen reply.
 6. Send `Je suis à Yaoundé.` then `Que puis-je visiter ?` — the second answer should use Yaoundé from context.
 
 ## Troubleshooting Ollama

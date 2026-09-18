@@ -1,4 +1,4 @@
-# Architecture — Cameroon AI Tour Guide
+# Architecture — Smartmboa Tour
 
 ## Current flow
 

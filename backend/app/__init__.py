@@ -1,1 +1,1 @@
-"""Cameroon AI Tour Guide backend."""
+"""Smartmboa Tour backend."""

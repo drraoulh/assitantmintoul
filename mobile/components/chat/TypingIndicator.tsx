@@ -10,7 +10,7 @@ export function TypingIndicator() {
         <View style={[styles.dot, styles.mid]} />
         <View style={styles.dot} />
       </View>
-      <Text style={styles.label}>Cameroon Guide is thinking...</Text>
+      <Text style={styles.label}>Smartmboa Tour réfléchit...</Text>
     </View>
   );
 }

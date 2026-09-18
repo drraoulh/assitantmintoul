@@ -14,7 +14,7 @@ class Settings(BaseSettings):
         populate_by_name=True,
     )
 
-    app_name: str = "Cameroon AI Tour Guide"
+    app_name: str = "Smartmboa Tour"
     app_env: str = "development"
     api_host: str = "0.0.0.0"
     api_port: int = 8000

@@ -266,7 +266,7 @@ export function VoiceConversationMode({
           <Animated.View style={[styles.content, { opacity: fadeIn }]}>
             <View style={styles.topBar}>
               <View style={styles.brandBlock}>
-                <Text style={styles.kicker}>Cameroon AI Tour Guide</Text>
+                <Text style={styles.kicker}>Smartmboa Tour</Text>
                 <Text style={styles.brand}>Conversation vocale</Text>
               </View>
               <Pressable
