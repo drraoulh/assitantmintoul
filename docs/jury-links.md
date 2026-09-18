@@ -1,18 +1,16 @@
 # Smartmboa Tour — liens jury
 
-## Application web (interface)
-Déployée en static site Render après `npm run export:web`.
+## 1. Application web (à envoyer au jury)
+https://smartmboa-tour.onrender.com
 
-## API backend
+## 2. API backend
 https://cameroon-ai-tour-guide-api.onrender.com
 
-Health: https://cameroon-ai-tour-guide-api.onrender.com/api/health  
-Docs: https://cameroon-ai-tour-guide-api.onrender.com/docs
+- Health: https://cameroon-ai-tour-guide-api.onrender.com/api/health
+- Docs: https://cameroon-ai-tour-guide-api.onrender.com/docs
 
-Dans `mobile/.env` / build web :
+## Config
+`EXPO_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com`
 
-```env
-EXPO_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com
-```
+Ajoute `HUGGINGFACE_HUB_TOKEN` sur le service API Render pour que le chat fonctionne.
 
-N'oublie pas `HUGGINGFACE_HUB_TOKEN` sur le service API Render pour que le chat réponde.
