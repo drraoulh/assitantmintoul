@@ -20,6 +20,7 @@ from app.schemas.chat import ChatResponse, ChatSource
 from app.services.ai.base import AIService
 from app.services.ai.context import sources_from_knowledge
 from app.services.ai.grounding import build_grounded_system_prompt
+from app.services.ai.prompts import locale_user_suffix
 from app.services.ai.routing import route_query
 from app.services.conversation.base import ConversationStore
 from app.services.conversation.memory import InMemoryConversationStore
@@ -182,7 +183,7 @@ class HuggingFaceAIService(AIService):
             payload_messages: list[dict[str, str]] = [
                 {"role": "system", "content": grounding.system_prompt},
                 *history[-history_window:],
-                {"role": "user", "content": message},
+                {"role": "user", "content": f"{message}{locale_user_suffix(locale)}"},
             ]
 
             reply_parts: list[str] = []

@@ -102,12 +102,13 @@ async def build_grounded_system_prompt(
             (time.perf_counter() - started) * 1000,
         )
         prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
-        locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
-        prompt = f"{prompt.rstrip()}\n\n{locale_block}"
         if brief:
             prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
         else:
             prompt = f"{prompt.rstrip()}\n\n{TEXT_STYLE_PROMPT}\n"
+        locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
+        # Locale hard rule last — models weight the final instruction most.
+        prompt = f"{prompt.rstrip()}\n\n{locale_block}"
         return GroundingResult(system_prompt=prompt, chunks=[])
 
     if not isinstance(rag_service, PlaceholderRAGService):
@@ -151,10 +152,11 @@ async def build_grounded_system_prompt(
             logger.exception("Web search failed; continuing without web context")
 
     prompt = build_system_prompt(SYSTEM_PROMPT, kb_text, web_text)
-    locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
-    prompt = f"{prompt.rstrip()}\n\n{locale_block}"
     if brief:
         prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
     else:
         prompt = f"{prompt.rstrip()}\n\n{TEXT_STYLE_PROMPT}\n"
+    locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
+    # Locale hard rule last — models weight the final instruction most.
+    prompt = f"{prompt.rstrip()}\n\n{locale_block}"
     return GroundingResult(system_prompt=prompt, chunks=chunks)
