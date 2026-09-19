@@ -89,6 +89,9 @@ Obey Preferred UI language for the whole reply.
 def locale_user_suffix(locale: str) -> str:
     """Short reminder appended to the user turn for the LLM only (not stored)."""
     if locale == "en":
-        return "\n\n[App language: English — answer in English only.]"
+        return (
+            "\n\n[App language: English — answer in English only. "
+            "Do not use Bonsoir/Bonjour; say Good evening/Hello.]"
+        )
     return "\n\n[Langue de l'appli : français — réponds uniquement en français.]"
 
