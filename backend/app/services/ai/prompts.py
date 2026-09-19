@@ -51,15 +51,19 @@ LOCALE_PROMPTS = {
     "en": (
         "## Preferred UI language — HARD RULE (final)\n"
         "The traveler chose English in the app.\n"
-        "You MUST write your entire reply in clear English — every sentence.\n"
-        "Even if the user speaks or writes in French (e.g. « Bonsoir », « mon frère »), "
-        "answer in English. Do not switch to French unless they explicitly ask "
+        "You MUST write your entire reply in clear English — every sentence, including greetings.\n"
+        "Even if the user speaks or writes in French (e.g. « Bonsoir », « Bonjour », « mon frère »), "
+        "answer in English. Translate their intent; do not echo French words.\n"
+        "Forbidden in English mode: Bonsoir, Bonjour, Bienvenue au Cameroun (French phrasing), "
+        "Comment puis-je, aujourd'hui (as French filler). "
+        "Use: Good evening / Hello / Welcome to Cameroon…\n"
+        "Do not switch to French unless they explicitly ask "
         "« réponds en français » / \"answer in French\".\n"
         "If earlier assistant messages in this chat were in French, "
         "ignore that and answer in English now.\n"
-        "Greetings: reply in English. Present Cameroon as “Africa in miniature” "
+        "Present Cameroon as “Africa in miniature” "
         "(landscapes and cultural diversity) — never “land of smiles” / « pays du sourire ».\n"
-        "OUTPUT LANGUAGE: English only.\n"
+        "OUTPUT LANGUAGE: English only. Zero French words.\n"
     ),
 }
 
