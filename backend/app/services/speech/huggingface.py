@@ -9,6 +9,7 @@ import httpx
 from app.core.config import Settings, get_settings
 from app.core.exceptions import SpeechUnavailableError, TranscriptionFailedError
 from app.core.http import shared_async_client
+from app.services.speech.audio_convert import convert_to_wav
 from app.services.speech.base import SpeechService
 
 logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 _CONTENT_TYPE_ALIASES = {
     "audio/mp4": "audio/m4a",
     "video/mp4": "audio/m4a",
+    "video/webm": "audio/webm",
     "audio/x-caf": "audio/wav",
     "audio/caf": "audio/wav",
     "application/octet-stream": "audio/m4a",
@@ -85,16 +87,24 @@ class HuggingFaceSpeechService(SpeechService):
                 "with Inference Providers access, then set it in backend/.env."
             )
 
+        # Convert webm/m4a/mp3/… → WAV so HF soundfile never sees unsupported containers.
+        wav_bytes = await convert_to_wav(
+            audio_bytes,
+            mime_type=mime_type,
+            filename=filename,
+        )
+        content_type = "audio/wav"
+        upload_name = "audio.wav"
+
         # HF ASR pipeline rejects top-level `language` / `task` query params
         # ("unexpected keyword argument 'language'"). Force FR via generate_kwargs.
-        content_type = normalize_hf_content_type(mime_type, filename)
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
         payload = {
-            "inputs": base64.b64encode(audio_bytes).decode("ascii"),
+            "inputs": base64.b64encode(wav_bytes).decode("ascii"),
             "parameters": {
                 "generate_kwargs": {
                     "language": "french",
@@ -132,13 +142,14 @@ class HuggingFaceSpeechService(SpeechService):
                     "The Whisper model is loading on Hugging Face. Try again in a few seconds."
                 )
 
-        # Older routers may reject JSON+generate_kwargs — fall back to raw audio.
+        # Older routers may reject JSON+generate_kwargs — fall back to raw WAV bytes.
         if response.status_code >= 400:
             detail = _safe_error_message(response)
             logger.warning(
-                "HF STT JSON path status=%s detail=%s; trying raw audio fallback",
+                "HF STT JSON path status=%s detail=%s; trying raw wav fallback (%s)",
                 response.status_code,
                 detail,
+                upload_name,
             )
             response = await self._post_raw(
                 headers={
@@ -146,7 +157,7 @@ class HuggingFaceSpeechService(SpeechService):
                     "Accept": "application/json",
                     "Content-Type": content_type,
                 },
-                content=audio_bytes,
+                content=wav_bytes,
             )
 
         if response.status_code >= 400:

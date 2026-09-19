@@ -9,6 +9,7 @@ import {
 } from 'expo-audio';
 
 import { ApiError, transcribeAudio } from '../services/api';
+import { mimeFromRecordingUri } from '../utils/audioMime';
 
 export type VoicePhase =
   | 'idle'
@@ -25,23 +26,6 @@ function errorText(error: unknown): string {
     return error.message;
   }
   return "Impossible d'utiliser le micro pour le moment.";
-}
-
-function mimeFromUri(uri: string | null): string {
-  const lower = (uri ?? '').toLowerCase();
-  if (lower.includes('.webm')) {
-    return 'audio/webm';
-  }
-  if (lower.includes('.wav')) {
-    return 'audio/wav';
-  }
-  if (lower.includes('.mp3')) {
-    return 'audio/mpeg';
-  }
-  if (lower.includes('.caf')) {
-    return 'audio/wav';
-  }
-  return 'audio/m4a';
 }
 
 interface UseVoiceConversationOptions {
@@ -75,7 +59,7 @@ export function useVoiceConversation({
         }
 
         setPhase('transcribing');
-        const result = await transcribeAudio(uri, mimeFromUri(uri));
+        const result = await transcribeAudio(uri, mimeFromRecordingUri(uri));
         const text = result.text.trim();
         if (!text || text === '.') {
           setPhase('idle');

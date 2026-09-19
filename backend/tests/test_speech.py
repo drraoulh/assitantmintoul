@@ -87,13 +87,19 @@ async def test_huggingface_speech_transcribe_success() -> None:
         huggingface_hub_token="hf_test_token",
         hf_inference_base_url="https://router.huggingface.co/hf-inference",
     )
+    # Already-WAV bytes so convert_to_wav is a no-op (no ffmpeg needed in unit test).
+    wav = (
+        b"RIFF$\x00\x00\x00WAVEfmt "
+        b"\x10\x00\x00\x00\x01\x00\x01\x00\x80>\x00\x00\x00}\x00\x00"
+        b"\x02\x00\x10\x00data\x00\x00\x00\x00"
+    )
     transport = httpx.MockTransport(handler)
     async with httpx.AsyncClient(transport=transport) as client:
         service = HuggingFaceSpeechService(settings=settings, client=client)
         text, language = await service.transcribe(
-            b"fake-audio",
-            mime_type="audio/mp4",
-            filename="voice.m4a",
+            wav,
+            mime_type="audio/wav",
+            filename="voice.wav",
         )
     assert text == "Visiter le Mont Cameroun"
     assert language == "fr"
