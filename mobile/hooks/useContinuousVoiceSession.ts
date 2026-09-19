@@ -14,6 +14,7 @@ import {
   type VoiceServerEvent,
 } from '../services/voiceSocket';
 import { Platform } from 'react-native';
+import { mimeFromRecordingUri } from '../utils/audioMime';
 
 export type VoiceSessionPhase =
   | 'idle'
@@ -32,14 +33,6 @@ function errorText(error: unknown): string {
     return error.message;
   }
   return "Impossible d'utiliser le micro pour le moment.";
-}
-
-function mimeFromUri(uri: string | null): string {
-  const lower = (uri ?? '').toLowerCase();
-  if (lower.includes('.webm')) return 'audio/webm';
-  if (lower.includes('.wav')) return 'audio/wav';
-  if (lower.includes('.mp3')) return 'audio/mpeg';
-  return 'audio/m4a';
 }
 
 interface UseContinuousVoiceSessionOptions {
@@ -377,7 +370,7 @@ export function useContinuousVoiceSession({
     }
 
     setSessionPhase('transcribing', 'Je comprends votre question\u2026');
-    const result = await transcribeAudio(uri, mimeFromUri(uri));
+    const result = await transcribeAudio(uri, mimeFromRecordingUri(uri));
     const text = result.text.trim();
 
     if (!activeRef.current) {
@@ -438,7 +431,7 @@ export function useContinuousVoiceSession({
         turnRejectRef.current = reject;
       });
 
-      socket.sendAudioBase64(audioBase64, mimeFromUri(uri));
+      socket.sendAudioBase64(audioBase64, mimeFromRecordingUri(uri));
       await turnPromise;
 
       if (!activeRef.current) {

@@ -11,6 +11,7 @@ import type {
 } from '../types/chat';
 import type { TranscriptionResponse } from '../types/speech';
 import type { VisionIdentifyResponse } from '../types/vision';
+import { extensionForAudioMime } from '../utils/audioMime';
 
 const REQUEST_TIMEOUT_MS = 180000;
 
@@ -63,7 +64,7 @@ function parseJsonBody<T>(body: string, status: number): T {
 
 function extensionForMime(mimeType: string, fallback: string): string {
   const normalized = mimeType.toLowerCase().split(';')[0]?.trim() ?? '';
-  const map: Record<string, string> = {
+  const imageMap: Record<string, string> = {
     'image/jpeg': 'jpg',
     'image/jpg': 'jpg',
     'image/png': 'png',
@@ -71,15 +72,11 @@ function extensionForMime(mimeType: string, fallback: string): string {
     'image/gif': 'gif',
     'image/heic': 'heic',
     'image/heif': 'heif',
-    'audio/mp4': 'm4a',
-    'audio/m4a': 'm4a',
-    'audio/mpeg': 'mp3',
-    'audio/mp3': 'mp3',
-    'audio/wav': 'wav',
-    'audio/webm': 'webm',
-    'audio/ogg': 'ogg',
   };
-  return map[normalized] ?? fallback;
+  if (normalized in imageMap) {
+    return imageMap[normalized];
+  }
+  return extensionForAudioMime(mimeType, fallback);
 }
 
 async function uploadMultipart<T>(
@@ -100,8 +97,15 @@ async function uploadMultipart<T>(
       );
     }
     const blob = await blobResponse.blob();
+    // Prefer the blob's real type (webm) over a guessed m4a from blob: URIs.
+    const resolvedMime = (blob.type || mimeType || 'application/octet-stream')
+      .split(';')[0]
+      .trim();
+    const resolvedName = `audio.${extensionForAudioMime(resolvedMime, 'webm')}`;
+    const typedBlob =
+      blob.type === resolvedMime ? blob : new Blob([blob], { type: resolvedMime });
     const form = new FormData();
-    form.append('file', blob, fileName);
+    form.append('file', typedBlob, resolvedName);
 
     const response = await fetch(`${API_BASE_URL}${path}`, {
       method: 'POST',

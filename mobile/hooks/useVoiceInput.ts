@@ -9,6 +9,7 @@ import {
 } from 'expo-audio';
 
 import { ApiError, transcribeAudio } from '../services/api';
+import { mimeFromRecordingUri } from '../utils/audioMime';
 
 function errorText(error: unknown): string {
   if (error instanceof ApiError) {
@@ -18,25 +19,6 @@ function errorText(error: unknown): string {
     return error.message;
   }
   return "Impossible d'utiliser le micro pour le moment.";
-}
-
-function mimeFromUri(uri: string | null): string {
-  const lower = (uri ?? '').toLowerCase();
-  if (lower.includes('.webm')) {
-    return 'audio/webm';
-  }
-  if (lower.includes('.wav')) {
-    return 'audio/wav';
-  }
-  if (lower.includes('.mp3')) {
-    return 'audio/mpeg';
-  }
-  if (lower.includes('.caf')) {
-    return 'audio/wav';
-  }
-  // Expo HIGH_QUALITY is usually AAC in an m4a container.
-  // Hugging Face rejects audio/mp4 but accepts audio/m4a.
-  return 'audio/m4a';
 }
 
 export function useVoiceInput(onTranscribed: (text: string) => void) {
@@ -59,7 +41,7 @@ export function useVoiceInput(onTranscribed: (text: string) => void) {
         }
 
         setIsTranscribing(true);
-        const result = await transcribeAudio(uri, mimeFromUri(uri));
+        const result = await transcribeAudio(uri, mimeFromRecordingUri(uri));
         const text = result.text.trim();
         if (!text) {
           Alert.alert('Micro', 'Aucune parole détectée. Réessayez.');
