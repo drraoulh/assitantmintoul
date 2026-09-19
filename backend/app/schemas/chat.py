@@ -9,6 +9,9 @@ class ChatRequest(BaseModel):
     conversation_id: str | None = None
     # "voice" asks for a short spoken answer (faster generation + faster TTS).
     mode: Literal["text", "voice"] = "text"
+    # Preferred UI language (Cameroon bilingual FR/EN). Guides reply language
+    # when the user message does not clearly signal another language.
+    locale: Literal["fr", "en"] = "fr"
 
     @field_validator("message")
     @classmethod

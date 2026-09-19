@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { SUGGESTED_PROMPTS } from '../../constants/prompts';
 import { colors, radius, spacing } from '../../constants/theme';
+import { SUGGESTED_PROMPT_KEYS, useLocale } from '../../i18n';
 
 interface SuggestedPromptsProps {
   onSelect: (prompt: string) => void;
@@ -9,25 +9,30 @@ interface SuggestedPromptsProps {
 }
 
 export function SuggestedPrompts({ onSelect, disabled = false }: SuggestedPromptsProps) {
+  const { t } = useLocale();
+
   return (
     <View style={styles.wrap}>
-      <Text style={styles.label}>Suggestions</Text>
+      <Text style={styles.label}>{t('suggestions')}</Text>
       <View style={styles.list}>
-        {SUGGESTED_PROMPTS.map((prompt) => (
-          <Pressable
-            key={prompt}
-            accessibilityRole="button"
-            disabled={disabled}
-            onPress={() => onSelect(prompt)}
-            style={({ pressed }) => [
-              styles.chip,
-              pressed && styles.pressed,
-              disabled && styles.disabled,
-            ]}
-          >
-            <Text style={styles.chipText}>{prompt}</Text>
-          </Pressable>
-        ))}
+        {SUGGESTED_PROMPT_KEYS.map((key) => {
+          const prompt = t(key);
+          return (
+            <Pressable
+              key={key}
+              accessibilityRole="button"
+              disabled={disabled}
+              onPress={() => onSelect(prompt)}
+              style={({ pressed }) => [
+                styles.chip,
+                pressed && styles.pressed,
+                disabled && styles.disabled,
+              ]}
+            >
+              <Text style={styles.chipText}>{prompt}</Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );

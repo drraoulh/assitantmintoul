@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ChatScreen } from './app/ChatScreen';
 import { ParlerLocalScreen } from './app/ParlerLocalScreen';
+import { LocaleProvider } from './i18n';
 
 type Screen = 'chat' | 'parler-local';
 
@@ -12,12 +13,14 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
-      {screen === 'parler-local' ? (
-        <ParlerLocalScreen onBack={() => setScreen('chat')} />
-      ) : (
-        <ChatScreen onOpenParlerLocal={() => setScreen('parler-local')} />
-      )}
+      <LocaleProvider>
+        <StatusBar style="light" />
+        {screen === 'parler-local' ? (
+          <ParlerLocalScreen onBack={() => setScreen('chat')} />
+        ) : (
+          <ChatScreen onOpenParlerLocal={() => setScreen('parler-local')} />
+        )}
+      </LocaleProvider>
     </SafeAreaProvider>
   );
 }

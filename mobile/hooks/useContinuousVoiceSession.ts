@@ -7,6 +7,7 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 
+import { useLocale } from '../i18n';
 import { ApiError, transcribeAudio } from '../services/api';
 import {
   VoiceSocket,
@@ -22,18 +23,6 @@ export type VoiceSessionPhase =
   | 'transcribing'
   | 'thinking'
   | 'speaking';
-
-const IDLE_HINT = 'Appuyez sur le micro pour parler';
-
-function errorText(error: unknown): string {
-  if (error instanceof ApiError) {
-    return error.message;
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return "Impossible d'utiliser le micro pour le moment.";
-}
 
 interface UseContinuousVoiceSessionOptions {
   active: boolean;
@@ -52,13 +41,27 @@ export function useContinuousVoiceSession({
   playBase64Mp3,
   onExchange,
 }: UseContinuousVoiceSessionOptions) {
+  const { locale, t } = useLocale();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder);
 
   const [phase, setPhase] = useState<VoiceSessionPhase>('idle');
   const [lastUserText, setLastUserText] = useState('');
   const [lastAssistantText, setLastAssistantText] = useState('');
-  const [statusHint, setStatusHint] = useState(IDLE_HINT);
+  const [statusHint, setStatusHint] = useState(() => t('voice.idleHint'));
+
+  const errorText = useCallback(
+    (error: unknown): string => {
+      if (error instanceof ApiError) {
+        return error.message;
+      }
+      if (error instanceof Error && error.message) {
+        return error.message;
+      }
+      return t('mic.unavailable');
+    },
+    [t],
+  );
   const [handsFree, setHandsFree] = useState(false);
   const [micReady, setMicReady] = useState(false);
 
@@ -365,11 +368,11 @@ export function useContinuousVoiceSession({
   const processUtteranceHttp = useCallback(async () => {
     const uri = recorder.uri;
     if (!uri) {
-      await finishTurn('Enregistrement introuvable. Appuyez pour r\u00e9essayer');
+      await finishTurn(t('voice.recordingMissing'));
       return;
     }
 
-    setSessionPhase('transcribing', 'Je comprends votre question\u2026');
+    setSessionPhase('transcribing', t('voice.understanding'));
     const result = await transcribeAudio(uri, mimeFromRecordingUri(uri));
     const text = result.text.trim();
 
@@ -378,12 +381,12 @@ export function useContinuousVoiceSession({
     }
 
     if (!text || text === '.') {
-      await finishTurn('Je n\u2019ai rien entendu. Appuyez pour r\u00e9essayer');
+      await finishTurn(t('voice.nothingHeard'));
       return;
     }
 
     setLastUserText(text);
-    setSessionPhase('thinking', 'Je r\u00e9fl\u00e9chis\u2026');
+    setSessionPhase('thinking', t('voice.thinkingShort'));
     const reply = await sendMessage(text);
 
     if (!activeRef.current) {
@@ -391,15 +394,12 @@ export function useContinuousVoiceSession({
     }
 
     if (!reply) {
-      await finishTurn('Pas de r\u00e9ponse. Appuyez pour r\u00e9essayer');
+      await finishTurn(t('voice.noReply'));
       return;
     }
 
     setLastAssistantText(reply);
-    setSessionPhase(
-      'speaking',
-      'Je vous r\u00e9ponds\u2026 appuyez pour m\u2019interrompre',
-    );
+    setSessionPhase('speaking', t('voice.speakingInterrupt'));
     busyRef.current = false;
     await speak(reply);
 
@@ -407,14 +407,14 @@ export function useContinuousVoiceSession({
       return;
     }
 
-    await finishTurn(IDLE_HINT);
-  }, [finishTurn, recorder.uri, sendMessage, setSessionPhase, speak]);
+    await finishTurn(t('voice.idleHint'));
+  }, [finishTurn, recorder.uri, sendMessage, setSessionPhase, speak, t]);
 
   const processUtteranceWs = useCallback(
     async (socket: VoiceSocket) => {
       const uri = recorder.uri;
       if (!uri) {
-        await finishTurn('Enregistrement introuvable. Appuyez pour r\u00e9essayer');
+        await finishTurn(t('voice.recordingMissing'));
         return;
       }
 
@@ -423,7 +423,7 @@ export function useContinuousVoiceSession({
       assistantAccRef.current = '';
       userTextRef.current = '';
       setLastAssistantText('');
-      setSessionPhase('transcribing', 'Je comprends votre question\u2026');
+      setSessionPhase('transcribing', t('voice.understanding'));
 
       const audioBase64 = await uriToBase64(uri);
       const turnPromise = new Promise<void>((resolve, reject) => {
@@ -431,7 +431,7 @@ export function useContinuousVoiceSession({
         turnRejectRef.current = reject;
       });
 
-      socket.sendAudioBase64(audioBase64, mimeFromRecordingUri(uri));
+      socket.sendAudioBase64(audioBase64, mimeFromRecordingUri(uri), locale);
       await turnPromise;
 
       if (!activeRef.current) {
@@ -441,9 +441,9 @@ export function useContinuousVoiceSession({
       if (!activeRef.current) {
         return;
       }
-      await finishTurn(IDLE_HINT);
+      await finishTurn(t('voice.idleHint'));
     },
-    [finishTurn, recorder.uri, setSessionPhase],
+    [finishTurn, locale, recorder.uri, setSessionPhase, t],
   );
 
   const processUtterance = useCallback(async () => {
@@ -475,7 +475,7 @@ export function useContinuousVoiceSession({
           setStatusHint(
             error instanceof Error
               ? error.message
-              : 'Bascule vers le mode compatible\u2026',
+              : t('voice.fallbackMode'),
           );
         }
       }
@@ -500,6 +500,7 @@ export function useContinuousVoiceSession({
     recorder,
     recorderState.isRecording,
     setSessionPhase,
+    t,
   ]);
 
   const onOrbPress = useCallback(async () => {
@@ -510,7 +511,7 @@ export function useContinuousVoiceSession({
     if (phaseRef.current === 'speaking') {
       stopSpeaking();
       socketRef.current?.interrupt();
-      setSessionPhase('idle', IDLE_HINT);
+      setSessionPhase('idle', t('voice.idleHint'));
       await startListeningRef.current();
       return;
     }
@@ -528,7 +529,7 @@ export function useContinuousVoiceSession({
     }
 
     await startListeningRef.current();
-  }, [processUtterance, recorderState.isRecording, setSessionPhase, stopSpeaking]);
+  }, [processUtterance, recorderState.isRecording, setSessionPhase, stopSpeaking, t]);
 
   const toggleHandsFree = useCallback(() => {
     setHandsFree((current) => {
@@ -546,7 +547,7 @@ export function useContinuousVoiceSession({
       return;
     }
 
-    setSessionPhase('idle', IDLE_HINT);
+    setSessionPhase('idle', t('voice.idleHint'));
     void armRecorder();
     void ensureSocket();
 

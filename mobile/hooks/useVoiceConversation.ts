@@ -8,6 +8,7 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 
+import { useLocale } from '../i18n';
 import { ApiError, transcribeAudio } from '../services/api';
 import { mimeFromRecordingUri } from '../utils/audioMime';
 
@@ -17,16 +18,6 @@ export type VoicePhase =
   | 'transcribing'
   | 'thinking'
   | 'speaking';
-
-function errorText(error: unknown): string {
-  if (error instanceof ApiError) {
-    return error.message;
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return "Impossible d'utiliser le micro pour le moment.";
-}
 
 interface UseVoiceConversationOptions {
   disabled?: boolean;
@@ -39,9 +30,23 @@ export function useVoiceConversation({
   onStopSpeaking,
   onVoiceTurn,
 }: UseVoiceConversationOptions) {
+  const { t } = useLocale();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder);
   const [phase, setPhase] = useState<VoicePhase>('idle');
+
+  const errorText = useCallback(
+    (error: unknown): string => {
+      if (error instanceof ApiError) {
+        return error.message;
+      }
+      if (error instanceof Error && error.message) {
+        return error.message;
+      }
+      return t('mic.unavailable');
+    },
+    [t],
+  );
 
   const toggleVoiceTurn = useCallback(async () => {
     if (disabled || phase === 'transcribing' || phase === 'thinking') {
@@ -54,7 +59,7 @@ export function useVoiceConversation({
         const uri = recorder.uri;
         if (!uri) {
           setPhase('idle');
-          Alert.alert('Micro', "L'enregistrement audio est introuvable.");
+          Alert.alert(t('mic.title'), t('mic.missing'));
           return;
         }
 
@@ -63,7 +68,7 @@ export function useVoiceConversation({
         const text = result.text.trim();
         if (!text || text === '.') {
           setPhase('idle');
-          Alert.alert('Micro', 'Aucune parole détectée. Réessayez.');
+          Alert.alert(t('mic.title'), t('mic.empty'));
           return;
         }
 
@@ -72,7 +77,7 @@ export function useVoiceConversation({
         setPhase('idle');
       } catch (error) {
         setPhase('idle');
-        Alert.alert('Micro', errorText(error));
+        Alert.alert(t('mic.title'), errorText(error));
       }
       return;
     }
@@ -81,10 +86,7 @@ export function useVoiceConversation({
       onStopSpeaking?.();
       const permission = await AudioModule.requestRecordingPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert(
-          'Micro',
-          "Autorisez l'accès au microphone pour poser une question à voix haute.",
-        );
+        Alert.alert(t('mic.title'), t('mic.permission'));
         return;
       }
 
@@ -97,15 +99,17 @@ export function useVoiceConversation({
       setPhase('listening');
     } catch (error) {
       setPhase('idle');
-      Alert.alert('Micro', errorText(error));
+      Alert.alert(t('mic.title'), errorText(error));
     }
   }, [
     disabled,
+    errorText,
     onStopSpeaking,
     onVoiceTurn,
     phase,
     recorder,
     recorderState.isRecording,
+    t,
   ]);
 
   return {

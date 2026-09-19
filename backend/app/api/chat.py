@@ -16,4 +16,5 @@ async def chat(
         message=payload.message,
         conversation_id=payload.conversation_id,
         brief=payload.mode == "voice",
+        locale=payload.locale,
     )

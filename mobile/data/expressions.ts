@@ -340,6 +340,5 @@ export const EXPRESSIONS: Expression[] = [
 ];
 
 export const EXPRESSION_LANGUAGES = [
-  'Toutes',
   ...Array.from(new Set(EXPRESSIONS.map((item) => item.language))),
 ];

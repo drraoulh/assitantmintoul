@@ -1,8 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 
 export function TypingIndicator() {
+  const { t } = useLocale();
+
   return (
     <View style={styles.wrap}>
       <View style={styles.dots}>
@@ -10,7 +13,7 @@ export function TypingIndicator() {
         <View style={[styles.dot, styles.mid]} />
         <View style={styles.dot} />
       </View>
-      <Text style={styles.label}>Smartmboa Tour réfléchit...</Text>
+      <Text style={styles.label}>{t('typing')}</Text>
     </View>
   );
 }

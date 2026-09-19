@@ -81,6 +81,7 @@ class OllamaAIService(AIService):
         conversation_id: str | None = None,
         *,
         brief: bool = False,
+        locale: str = "fr",
     ) -> ChatResponse:
         thread_id = await self._store.start(conversation_id)
         history = await self._store.get_messages(thread_id)
@@ -96,6 +97,7 @@ class OllamaAIService(AIService):
                 self._voice_web_timeout if brief else self._web_timeout
             ),
             brief=brief,
+            locale=locale,
         )
 
         payload_messages: list[dict[str, str]] = [

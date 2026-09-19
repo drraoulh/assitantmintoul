@@ -17,6 +17,7 @@ import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 
 import { colors, radius, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 import { IconCircleButton } from '../ui/IconCircleButton';
 
 interface ChatInputBarProps {
@@ -61,6 +62,7 @@ export function ChatInputBar({
   onSendImage,
   onOpenVoiceMode,
 }: ChatInputBarProps) {
+  const { t } = useLocale();
   const [value, setValue] = useState('');
   const [photoMenuOpen, setPhotoMenuOpen] = useState(false);
 
@@ -91,10 +93,7 @@ export function ChatInputBar({
         await prepareForPicker();
         const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permission.granted) {
-          Alert.alert(
-            'Photos',
-            "Autorisez l'accès à la galerie pour analyser une image.",
-          );
+          Alert.alert(t('photo.permTitle'), t('photo.permBody'));
           return;
         }
       }
@@ -105,10 +104,8 @@ export function ChatInputBar({
       }
     } catch (error) {
       Alert.alert(
-        'Galerie',
-        error instanceof Error
-          ? error.message
-          : "Impossible d'ouvrir la galerie.",
+        t('photo.permTitle'),
+        error instanceof Error ? error.message : t('gallery.error'),
       );
     }
   };
@@ -119,10 +116,7 @@ export function ChatInputBar({
         await prepareForPicker();
         const permission = await ImagePicker.requestCameraPermissionsAsync();
         if (!permission.granted) {
-          Alert.alert(
-            'Caméra',
-            "Autorisez l'accès à la caméra pour photographier un site.",
-          );
+          Alert.alert(t('camera.permTitle'), t('camera.permBody'));
           return;
         }
       }
@@ -133,10 +127,8 @@ export function ChatInputBar({
       }
     } catch (error) {
       Alert.alert(
-        'Caméra',
-        error instanceof Error
-          ? error.message
-          : "Impossible d'ouvrir l'appareil photo.",
+        t('camera.permTitle'),
+        error instanceof Error ? error.message : t('camera.error'),
       );
     }
   };
@@ -154,7 +146,7 @@ export function ChatInputBar({
     <View style={styles.stack}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Ouvrir le mode conversation vocale"
+        accessibilityLabel={t('a11y.voiceMode')}
         disabled={disabled}
         onPress={() => {
           void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -170,8 +162,8 @@ export function ChatInputBar({
           <Ionicons name="mic" size={18} color={colors.forestDeep} />
         </View>
         <View style={styles.voiceCopy}>
-          <Text style={styles.voiceTitle}>Mode conversation</Text>
-          <Text style={styles.voiceSubtitle}>Parler au guide en continu</Text>
+          <Text style={styles.voiceTitle}>{t('voice.modeTitle')}</Text>
+          <Text style={styles.voiceSubtitle}>{t('voice.modeSub')}</Text>
         </View>
         <Ionicons name="chevron-forward" size={18} color={colors.canopy} />
       </Pressable>
@@ -179,14 +171,14 @@ export function ChatInputBar({
       <View style={styles.wrap}>
         <IconCircleButton
           name="camera-outline"
-          accessibilityLabel="Joindre une photo"
+          accessibilityLabel={t('a11y.attachPhoto')}
           disabled={disabled}
           onPress={openPhotoOptions}
         />
         <TextInput
           value={value}
           onChangeText={setValue}
-          placeholder="Écrire un message…"
+          placeholder={t('input.placeholder')}
           placeholderTextColor={colors.muted}
           multiline
           editable={!disabled}
@@ -199,7 +191,7 @@ export function ChatInputBar({
         <IconCircleButton
           name="send"
           variant="solid"
-          accessibilityLabel="Envoyer"
+          accessibilityLabel={t('a11y.send')}
           disabled={disabled || value.trim().length === 0}
           onPress={submit}
         />
@@ -219,10 +211,8 @@ export function ChatInputBar({
             style={styles.sheet}
             onPress={(event) => event.stopPropagation()}
           >
-            <Text style={styles.sheetTitle}>Joindre une photo</Text>
-            <Text style={styles.sheetSubtitle}>
-              Photographiez un site ou choisissez une image à analyser.
-            </Text>
+            <Text style={styles.sheetTitle}>{t('photo.title')}</Text>
+            <Text style={styles.sheetSubtitle}>{t('photo.subtitle')}</Text>
 
             <Pressable
               accessibilityRole="button"
@@ -238,7 +228,7 @@ export function ChatInputBar({
               ]}
             >
               <Ionicons name="camera" size={20} color={colors.forest} />
-              <Text style={styles.sheetActionLabel}>Prendre une photo</Text>
+              <Text style={styles.sheetActionLabel}>{t('photo.take')}</Text>
             </Pressable>
 
             <Pressable
@@ -253,7 +243,7 @@ export function ChatInputBar({
               ]}
             >
               <Ionicons name="images" size={20} color={colors.forest} />
-              <Text style={styles.sheetActionLabel}>Choisir dans la galerie</Text>
+              <Text style={styles.sheetActionLabel}>{t('photo.library')}</Text>
             </Pressable>
 
             <Pressable
@@ -261,7 +251,7 @@ export function ChatInputBar({
               onPress={() => setPhotoMenuOpen(false)}
               style={styles.sheetCancel}
             >
-              <Text style={styles.sheetCancelLabel}>Annuler</Text>
+              <Text style={styles.sheetCancelLabel}>{t('photo.cancel')}</Text>
             </Pressable>
           </Pressable>
         </Pressable>

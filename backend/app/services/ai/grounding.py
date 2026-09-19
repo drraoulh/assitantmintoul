@@ -7,7 +7,12 @@ import time
 import unicodedata
 from dataclasses import dataclass, field
 
-from app.services.ai.prompts import SYSTEM_PROMPT, TEXT_STYLE_PROMPT, VOICE_STYLE_PROMPT
+from app.services.ai.prompts import (
+    LOCALE_PROMPTS,
+    SYSTEM_PROMPT,
+    TEXT_STYLE_PROMPT,
+    VOICE_STYLE_PROMPT,
+)
 from app.services.rag.base import PlaceholderRAGService, RAGService
 from app.services.rag.chunk import KnowledgeChunk
 from app.services.rag.context import build_system_prompt, format_knowledge_context, format_web_context
@@ -77,6 +82,7 @@ async def build_grounded_system_prompt(
     brief: bool = False,
     skip_kb: bool = False,
     skip_web: bool = False,
+    locale: str = "fr",
 ) -> GroundingResult:
     """Assemble system prompt with local KB + optional live web hits.
 
@@ -96,6 +102,8 @@ async def build_grounded_system_prompt(
             (time.perf_counter() - started) * 1000,
         )
         prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
+        locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
+        prompt = f"{prompt.rstrip()}\n\n{locale_block}"
         if brief:
             prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
         else:
@@ -143,6 +151,8 @@ async def build_grounded_system_prompt(
             logger.exception("Web search failed; continuing without web context")
 
     prompt = build_system_prompt(SYSTEM_PROMPT, kb_text, web_text)
+    locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
+    prompt = f"{prompt.rstrip()}\n\n{locale_block}"
     if brief:
         prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
     else:

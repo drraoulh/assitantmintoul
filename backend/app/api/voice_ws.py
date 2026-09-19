@@ -86,7 +86,13 @@ async def voice_session(websocket: WebSocket) -> None:
         turn_task = None
         await _send(websocket, {"type": "interrupted"})
 
-    async def run_turn(*, text: str | None = None, audio_b64: str | None = None, mime: str = "audio/m4a") -> None:
+    async def run_turn(
+        *,
+        text: str | None = None,
+        audio_b64: str | None = None,
+        mime: str = "audio/m4a",
+        locale: str = "fr",
+    ) -> None:
         nonlocal conversation_id
         interrupt_event.clear()
         timer = PhaseTimer("voice_ws")
@@ -118,7 +124,9 @@ async def voice_session(websocket: WebSocket) -> None:
                     {
                         "type": "error",
                         "code": "empty_transcript",
-                        "message": "Aucune parole détectée.",
+                        "message": "Aucune parole détectée."
+                        if locale != "en"
+                        else "No speech detected.",
                         "recoverable": True,
                     },
                 )
@@ -136,6 +144,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         user_text,
                         conversation_id,
                         brief=True,
+                        locale=locale,
                     )
                 conversation_id = response.conversation_id
                 await _send(websocket, {"type": "assistant_text", "text": response.message})
@@ -159,6 +168,7 @@ async def voice_session(websocket: WebSocket) -> None:
                     user_text,
                     conversation_id,
                     brief=True,
+                    locale=locale,
                     timer=timer,
                 ):
                     if interrupt_event.is_set():
@@ -248,10 +258,13 @@ async def voice_session(websocket: WebSocket) -> None:
                 interrupt_event.clear()
 
                 async def _runner(payload: dict[str, Any] = message) -> None:
+                    raw_locale = str(payload.get("locale") or "fr").lower()
+                    turn_locale = "en" if raw_locale.startswith("en") else "fr"
                     await run_turn(
                         text=payload.get("text"),
                         audio_b64=payload.get("audio_base64") or payload.get("data"),
                         mime=str(payload.get("mime_type") or payload.get("mime") or "audio/m4a"),
+                        locale=turn_locale,
                     )
 
                 turn_task = asyncio.create_task(_runner())

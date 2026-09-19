@@ -8,6 +8,7 @@ import { File, Paths } from 'expo-file-system';
 import * as Speech from 'expo-speech';
 import { Platform } from 'react-native';
 
+import { useLocale } from '../i18n';
 import { synthesizeSpeech } from '../services/api';
 
 // Fish Audio synthesis time grows with the text, so speak in chunks: the first
@@ -51,10 +52,10 @@ function splitForSpeech(text: string): string[] {
   return segments.length > 0 ? segments : [text];
 }
 
-function speakOnDevice(cleaned: string): Promise<void> {
+function speakOnDevice(cleaned: string, language: string): Promise<void> {
   return new Promise<void>((resolve) => {
     Speech.speak(cleaned, {
-      language: 'fr-FR',
+      language,
       rate: 0.96,
       pitch: 1.0,
       onDone: () => resolve(),
@@ -73,6 +74,7 @@ async function synthesizeOrNull(text: string): Promise<ArrayBuffer | null> {
 }
 
 export function useSpeechPlayback() {
+  const { speechLanguage } = useLocale();
   const [isSpeaking, setIsSpeaking] = useState(false);
   const playerRef = useRef<AudioPlayer | null>(null);
   const cancelledRef = useRef(false);
@@ -291,7 +293,7 @@ export function useSpeechPlayback() {
               }
             }
             const remaining = segments.slice(index).join(' ');
-            await speakOnDevice(remaining);
+            await speakOnDevice(remaining, speechLanguage);
             return;
           }
 
@@ -314,7 +316,7 @@ export function useSpeechPlayback() {
               }
             }
           }
-          await speakOnDevice(cleaned);
+          await speakOnDevice(cleaned, speechLanguage);
         }
       } finally {
         if (!cancelledRef.current) {
@@ -322,7 +324,7 @@ export function useSpeechPlayback() {
         }
       }
     },
-    [playBytes, stop],
+    [playBytes, speechLanguage, stop],
   );
 
   useEffect(

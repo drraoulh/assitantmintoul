@@ -1,8 +1,9 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-import { APP_NAME, APP_TAGLINE } from '../../constants/config';
+import { APP_NAME } from '../../constants/config';
 import { colors, flagStripes, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 import type { BackendStatus } from '../../types/chat';
 
 interface ChatHeaderProps {
@@ -12,18 +13,21 @@ interface ChatHeaderProps {
   onNewConversation: () => void;
 }
 
-const STATUS_LABEL: Record<BackendStatus, string> = {
-  checking: 'Connexion…',
-  online: 'Connecté',
-  offline: 'Hors ligne',
-};
-
 export function ChatHeader({
   status,
   onStatusPress,
   onOpenHistory,
   onNewConversation,
 }: ChatHeaderProps) {
+  const { t, locale, toggleLocale } = useLocale();
+
+  const statusLabel =
+    status === 'checking'
+      ? t('status.checking')
+      : status === 'online'
+        ? t('status.online')
+        : t('status.offline');
+
   return (
     <View style={styles.wrap}>
       <View style={styles.brandRow}>
@@ -32,11 +36,20 @@ export function ChatHeader({
         </View>
         <View style={styles.titles}>
           <Text style={styles.name}>{APP_NAME}</Text>
-          <Text style={styles.tagline}>{APP_TAGLINE}</Text>
+          <Text style={styles.tagline}>{t('tagline')}</Text>
         </View>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Ouvrir l’historique des conversations"
+          accessibilityLabel={t('a11y.language')}
+          hitSlop={10}
+          onPress={toggleLocale}
+          style={styles.langBtn}
+        >
+          <Text style={styles.langText}>{locale === 'fr' ? 'FR' : 'EN'}</Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.history')}
           hitSlop={10}
           onPress={onOpenHistory}
           style={styles.iconBtn}
@@ -45,7 +58,7 @@ export function ChatHeader({
         </Pressable>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Nouvelle conversation"
+          accessibilityLabel={t('a11y.newChat')}
           hitSlop={10}
           onPress={onNewConversation}
           style={[styles.iconBtn, styles.iconBtnAccent]}
@@ -55,12 +68,12 @@ export function ChatHeader({
       </View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Vérifier la connexion au serveur"
+        accessibilityLabel={t('a11y.checkServer')}
         onPress={onStatusPress}
         style={styles.statusChip}
       >
         <View style={[styles.dot, styles[status]]} />
-        <Text style={styles.statusText}>{STATUS_LABEL[status]}</Text>
+        <Text style={styles.statusText}>{statusLabel}</Text>
       </Pressable>
 
       <View style={styles.stripes}>
@@ -114,6 +127,23 @@ const styles = StyleSheet.create({
     color: colors.goldSoft,
     fontSize: 12,
     marginTop: 2,
+  },
+  langBtn: {
+    minWidth: 38,
+    height: 38,
+    borderRadius: 19,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 253, 247, 0.2)',
+    borderWidth: 1,
+    borderColor: colors.gold,
+  },
+  langText: {
+    color: colors.gold,
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.6,
   },
   iconBtn: {
     width: 38,

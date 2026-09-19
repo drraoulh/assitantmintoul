@@ -8,23 +8,28 @@ import {
   useAudioRecorderState,
 } from 'expo-audio';
 
+import { useLocale } from '../i18n';
 import { ApiError, transcribeAudio } from '../services/api';
 import { mimeFromRecordingUri } from '../utils/audioMime';
 
-function errorText(error: unknown): string {
-  if (error instanceof ApiError) {
-    return error.message;
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return "Impossible d'utiliser le micro pour le moment.";
-}
-
 export function useVoiceInput(onTranscribed: (text: string) => void) {
+  const { t } = useLocale();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder);
   const [isTranscribing, setIsTranscribing] = useState(false);
+
+  const errorText = useCallback(
+    (error: unknown): string => {
+      if (error instanceof ApiError) {
+        return error.message;
+      }
+      if (error instanceof Error && error.message) {
+        return error.message;
+      }
+      return t('mic.unavailable');
+    },
+    [t],
+  );
 
   const toggleRecording = useCallback(async () => {
     if (isTranscribing) {
@@ -36,7 +41,7 @@ export function useVoiceInput(onTranscribed: (text: string) => void) {
         await recorder.stop();
         const uri = recorder.uri;
         if (!uri) {
-          Alert.alert('Micro', "L'enregistrement audio est introuvable.");
+          Alert.alert(t('mic.title'), t('mic.missing'));
           return;
         }
 
@@ -44,12 +49,12 @@ export function useVoiceInput(onTranscribed: (text: string) => void) {
         const result = await transcribeAudio(uri, mimeFromRecordingUri(uri));
         const text = result.text.trim();
         if (!text) {
-          Alert.alert('Micro', 'Aucune parole détectée. Réessayez.');
+          Alert.alert(t('mic.title'), t('mic.empty'));
           return;
         }
         onTranscribed(text);
       } catch (error) {
-        Alert.alert('Micro', errorText(error));
+        Alert.alert(t('mic.title'), errorText(error));
       } finally {
         setIsTranscribing(false);
       }
@@ -59,10 +64,7 @@ export function useVoiceInput(onTranscribed: (text: string) => void) {
     try {
       const permission = await AudioModule.requestRecordingPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert(
-          'Micro',
-          "Autorisez l'accès au microphone pour poser une question à voix haute.",
-        );
+        Alert.alert(t('mic.title'), t('mic.permission'));
         return;
       }
 
@@ -73,9 +75,16 @@ export function useVoiceInput(onTranscribed: (text: string) => void) {
       await recorder.prepareToRecordAsync();
       recorder.record();
     } catch (error) {
-      Alert.alert('Micro', errorText(error));
+      Alert.alert(t('mic.title'), errorText(error));
     }
-  }, [isTranscribing, onTranscribed, recorder, recorderState.isRecording]);
+  }, [
+    errorText,
+    isTranscribing,
+    onTranscribed,
+    recorder,
+    recorderState.isRecording,
+    t,
+  ]);
 
   return {
     isRecording: recorderState.isRecording,

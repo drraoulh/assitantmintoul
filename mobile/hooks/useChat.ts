@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useLocale } from '../i18n';
 import {
   ApiError,
   fetchConversation,
@@ -32,16 +33,6 @@ function toChatMessages(turns: ConversationTurn[]): ChatMessage[] {
   }));
 }
 
-function errorText(error: unknown): string {
-  if (error instanceof ApiError) {
-    return error.message;
-  }
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-  return 'Impossible de joindre le serveur. Vérifiez que FastAPI tourne sur le port 8000, puis réessayez.';
-}
-
 function isLikelyOffline(error: unknown): boolean {
   if (error instanceof ApiError) {
     return false;
@@ -66,11 +57,25 @@ function mimeFromUri(uri: string): string {
 }
 
 export function useChat() {
+  const { locale, t } = useLocale();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [conversationId, setConversationId] = useState<string | undefined>();
   const [isSending, setIsSending] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [backendStatus, setBackendStatus] = useState<BackendStatus>('checking');
+
+  const errorText = useCallback(
+    (error: unknown): string => {
+      if (error instanceof ApiError) {
+        return error.message;
+      }
+      if (error instanceof Error && error.message) {
+        return error.message;
+      }
+      return t('error.server');
+    },
+    [t],
+  );
 
   const checkHealth = useCallback(async () => {
     setBackendStatus('checking');
@@ -162,6 +167,7 @@ export function useChat() {
           message: trimmed,
           conversation_id: conversationId,
           mode,
+          locale,
         });
 
         setConversationId(response.conversation_id);
@@ -197,7 +203,7 @@ export function useChat() {
         setIsSending(false);
       }
     },
-    [conversationId, isSending],
+    [conversationId, errorText, isSending, locale],
   );
 
   const sendImage = useCallback(
@@ -209,7 +215,7 @@ export function useChat() {
       const userMessage: ChatMessage = {
         id: createId(),
         role: 'user',
-        content: 'Photo envoyée',
+        content: t('photoSent'),
         imageUri: uri,
         createdAt: new Date().toISOString(),
       };
@@ -221,15 +227,15 @@ export function useChat() {
         const vision = await identifyImage(uri, mimeFromUri(uri));
         setBackendStatus('online');
 
-        const guidePrompt =
-          `Photo voyageur. Analyse visuelle :\n` +
-          `${vision.description}\n\n` +
-          `En guide Smartmboa Tour : confirme lieu/plat si possible, ` +
-          `1 nuance culturelle, 2 conseils pratiques. Réponse courte et chaleureuse.`;
+        const guidePrompt = t('photo.guidePrompt').replace(
+          '{{description}}',
+          vision.description,
+        );
 
         const response = await sendChatMessage({
           message: guidePrompt,
           conversation_id: conversationId,
+          locale,
         });
 
         setConversationId(response.conversation_id);
@@ -264,7 +270,7 @@ export function useChat() {
         setIsSending(false);
       }
     },
-    [conversationId, isSending],
+    [conversationId, errorText, isSending, locale, t],
   );
 
   const appendExchange = useCallback((userText: string, assistantText: string) => {

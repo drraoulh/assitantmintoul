@@ -17,6 +17,7 @@ class FakeAIService(AIService):
         retrieved_context: Sequence[RetrievedChunk] | None = None,
         *,
         brief: bool = False,
+        locale: str = "fr",
     ) -> ChatResponse:
         extra = ""
         if retrieved_context:

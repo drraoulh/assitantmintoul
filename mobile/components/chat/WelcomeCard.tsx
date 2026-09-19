@@ -2,21 +2,20 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, radius, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 
 interface WelcomeCardProps {
   onOpenParlerLocal?: () => void;
 }
 
 export function WelcomeCard({ onOpenParlerLocal }: WelcomeCardProps) {
+  const { t } = useLocale();
+
   return (
     <View style={styles.card}>
       <Text style={styles.kicker}>Smartmboa Tour</Text>
-      <Text style={styles.title}>Découvrez le Cameroun autrement</Text>
-      <Text style={styles.body}>
-        Itinéraires, transport, restos, culture, sécurité, ou « 2 jours à
-        Douala » — posez votre question. Envoyez une photo pour reconnaître
-        un lieu ou un plat. Mode conversation pour parler au guide.
-      </Text>
+      <Text style={styles.title}>{t('tagline')}</Text>
+      <Text style={styles.body}>{t('welcome.body')}</Text>
 
       {onOpenParlerLocal ? (
         <Pressable
@@ -26,10 +25,8 @@ export function WelcomeCard({ onOpenParlerLocal }: WelcomeCardProps) {
         >
           <Ionicons name="chatbubbles-outline" size={18} color={colors.forestDeep} />
           <View style={styles.ctaText}>
-            <Text style={styles.ctaTitle}>Parler local</Text>
-            <Text style={styles.ctaSub}>
-              Salutations et phrases utiles pour le voyage
-            </Text>
+            <Text style={styles.ctaTitle}>{t('welcome.localTitle')}</Text>
+            <Text style={styles.ctaSub}>{t('welcome.localSub')}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color={colors.forest} />
         </Pressable>

@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, flagStripes, radius, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 import { deleteConversation, listConversations } from '../../services/api';
 import type { ConversationSummary } from '../../types/chat';
 
@@ -24,7 +25,11 @@ interface ConversationHistorySheetProps {
   onNewConversation: () => void;
 }
 
-function formatUpdatedAt(value?: string | null): string {
+function formatUpdatedAt(
+  value: string | null | undefined,
+  todayLabel: string,
+  dateLocale: string,
+): string {
   if (!value) {
     return '';
   }
@@ -35,12 +40,12 @@ function formatUpdatedAt(value?: string | null): string {
   const today = new Date();
   const sameDay = date.toDateString() === today.toDateString();
   if (sameDay) {
-    return `Aujourd’hui ${date.toLocaleTimeString('fr-FR', {
+    return `${todayLabel} ${date.toLocaleTimeString(dateLocale, {
       hour: '2-digit',
       minute: '2-digit',
     })}`;
   }
-  return date.toLocaleDateString('fr-FR', {
+  return date.toLocaleDateString(dateLocale, {
     day: '2-digit',
     month: 'short',
     hour: '2-digit',
@@ -55,6 +60,7 @@ export function ConversationHistorySheet({
   onOpenConversation,
   onNewConversation,
 }: ConversationHistorySheetProps) {
+  const { t, dateLocale } = useLocale();
   const [items, setItems] = useState<ConversationSummary[]>([]);
   const [persistent, setPersistent] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -68,11 +74,11 @@ export function ConversationHistorySheet({
       setItems(response.items);
       setPersistent(response.persistent);
     } catch {
-      setError("Impossible de charger l'historique. Vérifiez le serveur.");
+      setError(t('history.error'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (visible) {
@@ -81,32 +87,28 @@ export function ConversationHistorySheet({
   }, [visible, load]);
 
   const confirmDelete = (item: ConversationSummary) => {
-    Alert.alert(
-      'Supprimer',
-      `Supprimer « ${item.title} » ?`,
-      [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Supprimer',
-          style: 'destructive',
-          onPress: () => {
-            void (async () => {
-              try {
-                await deleteConversation(item.id);
-                setItems((current) =>
-                  current.filter((entry) => entry.id !== item.id),
-                );
-                if (item.id === activeConversationId) {
-                  onNewConversation();
-                }
-              } catch {
-                Alert.alert('Historique', 'La suppression a échoué.');
+    Alert.alert(t('history.deleteTitle'), `${t('history.deleteBody')}\n« ${item.title} »`, [
+      { text: t('history.cancel'), style: 'cancel' },
+      {
+        text: t('history.delete'),
+        style: 'destructive',
+        onPress: () => {
+          void (async () => {
+            try {
+              await deleteConversation(item.id);
+              setItems((current) =>
+                current.filter((entry) => entry.id !== item.id),
+              );
+              if (item.id === activeConversationId) {
+                onNewConversation();
               }
-            })();
-          },
+            } catch {
+              Alert.alert(t('history.title'), t('history.error'));
+            }
+          })();
         },
-      ],
-    );
+      },
+    ]);
   };
 
   return (
@@ -120,12 +122,12 @@ export function ConversationHistorySheet({
         <SafeAreaView edges={['top']} style={styles.headerSafe}>
           <View style={styles.header}>
             <View style={styles.headerCopy}>
-              <Text style={styles.kicker}>Historique</Text>
-              <Text style={styles.title}>Vos conversations</Text>
+              <Text style={styles.kicker}>{t('history.title')}</Text>
+              <Text style={styles.title}>{t('history.title')}</Text>
             </View>
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Fermer l’historique"
+              accessibilityLabel={t('history.close')}
               hitSlop={12}
               onPress={onClose}
               style={styles.closeBtn}
@@ -155,15 +157,11 @@ export function ConversationHistorySheet({
             <View style={styles.newIcon}>
               <Ionicons name="add" size={20} color={colors.greenDeep} />
             </View>
-            <Text style={styles.newLabel}>Nouvelle conversation</Text>
+            <Text style={styles.newLabel}>{t('a11y.newChat')}</Text>
           </Pressable>
 
           {!persistent && (
-            <Text style={styles.notice}>
-              Base de données désactivée : l’historique est gardé en mémoire et
-              disparaît au redémarrage du serveur. Activez Supabase avec
-              DATABASE_ENABLED=true.
-            </Text>
+            <Text style={styles.notice}>{t('history.ephemeral')}</Text>
           )}
 
           {loading && (
@@ -175,9 +173,7 @@ export function ConversationHistorySheet({
           {error && <Text style={styles.error}>{error}</Text>}
 
           {!loading && !error && items.length === 0 && (
-            <Text style={styles.empty}>
-              Aucune conversation enregistrée pour le moment.
-            </Text>
+            <Text style={styles.empty}>{t('history.empty')}</Text>
           )}
 
           {items.map((item) => {
@@ -201,8 +197,8 @@ export function ConversationHistorySheet({
                   <Text style={styles.rowMeta}>
                     {item.message_count} message
                     {item.message_count > 1 ? 's' : ''}
-                    {formatUpdatedAt(item.updated_at)
-                      ? ` · ${formatUpdatedAt(item.updated_at)}`
+                    {formatUpdatedAt(item.updated_at, t('history.today'), dateLocale)
+                      ? ` · ${formatUpdatedAt(item.updated_at, t('history.today'), dateLocale)}`
                       : ''}
                   </Text>
                 </Pressable>

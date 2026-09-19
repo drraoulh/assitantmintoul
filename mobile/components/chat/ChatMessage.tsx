@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, radius, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 import type { ChatMessage as ChatMessageType, ChatSource } from '../../types/chat';
 
 interface ChatMessageProps {
@@ -62,8 +63,15 @@ export function ChatMessage({
   onStopSpeaking,
   isSpeaking = false,
 }: ChatMessageProps) {
+  const { t } = useLocale();
   const isUser = message.role === 'user';
   const sources = message.sources?.filter((s) => s.title?.trim()) ?? [];
+  const isPhotoMessage = Boolean(
+    message.imageUri &&
+      (message.content === 'Photo envoyée' ||
+        message.content === 'Photo sent' ||
+        message.content === t('photoSent')),
+  );
 
   return (
     <View style={[styles.row, isUser ? styles.right : styles.left]}>
@@ -85,20 +93,22 @@ export function ChatMessage({
             source={{ uri: message.imageUri }}
             style={styles.image}
             resizeMode="cover"
-            accessibilityLabel="Photo envoyée"
+            accessibilityLabel={t('photoSent')}
           />
         ) : null}
-        {message.content && !(message.imageUri && message.content === 'Photo envoyée') ? (
+        {message.content && !isPhotoMessage ? (
           <Text selectable style={[styles.text, isUser && styles.userText]}>
             {message.content}
           </Text>
         ) : null}
-        {message.imageUri && message.content === 'Photo envoyée' ? (
-          <Text style={[styles.caption, isUser && styles.userText]}>Photo</Text>
+        {isPhotoMessage ? (
+          <Text style={[styles.caption, isUser && styles.userText]}>
+            {t('photoCaption')}
+          </Text>
         ) : null}
         {!isUser && !message.isError && sources.length > 0 ? (
           <View style={styles.sourcesBlock}>
-            <Text style={styles.sourcesHint}>Lieux cités</Text>
+            <Text style={styles.sourcesHint}>{t('sources')}</Text>
             {sources.slice(0, 4).map((source, index) => (
               <SourceCard
                 key={`${source.title}-${source.image_url ?? index}`}
@@ -110,7 +120,7 @@ export function ChatMessage({
         {!isUser && !message.isError && onSpeak && (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={isSpeaking ? 'Arrêter la lecture' : 'Écouter la réponse'}
+            accessibilityLabel={isSpeaking ? t('a11y.stop') : t('a11y.listen')}
             onPress={() => {
               if (isSpeaking) {
                 onStopSpeaking?.();
@@ -126,7 +136,7 @@ export function ChatMessage({
               color={colors.canopy}
             />
             <Text style={styles.speakLabel}>
-              {isSpeaking ? 'Stop' : 'Écouter'}
+              {isSpeaking ? t('stop') : t('listen')}
             </Text>
           </Pressable>
         )}

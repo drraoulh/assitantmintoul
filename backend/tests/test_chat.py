@@ -61,6 +61,7 @@ def test_ollama_unavailable_returns_503() -> None:
             conversation_id: str | None = None,
             *,
             brief: bool = False,
+            locale: str = "fr",
         ):
             raise OllamaUnavailableError()
 
@@ -79,6 +80,7 @@ def test_huggingface_auth_error_returns_401() -> None:
             conversation_id: str | None = None,
             *,
             brief: bool = False,
+            locale: str = "fr",
         ):
             raise HuggingFaceAuthError()
 
@@ -96,6 +98,7 @@ def test_ai_service_error_returns_502() -> None:
             conversation_id: str | None = None,
             *,
             brief: bool = False,
+            locale: str = "fr",
         ):
             raise GenerationFailedError()
 

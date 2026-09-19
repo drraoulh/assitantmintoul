@@ -21,11 +21,13 @@ export interface ChatMessage {
 }
 
 export type ChatMode = 'text' | 'voice';
+export type ChatLocale = 'fr' | 'en';
 
 export interface ChatRequest {
   message: string;
   conversation_id?: string;
   mode?: ChatMode;
+  locale?: ChatLocale;
 }
 
 export interface ChatResponse {

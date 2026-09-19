@@ -14,6 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, flagStripes, radius, spacing } from '../../constants/theme';
+import { useLocale } from '../../i18n';
 import {
   type VoiceSessionPhase,
   useContinuousVoiceSession,
@@ -30,81 +31,44 @@ interface VoiceConversationModeProps {
   onExchange?: (userText: string, assistantText: string) => void;
 }
 
-function phaseCopy(
+function phaseLabels(
   phase: VoiceSessionPhase,
   isRecording: boolean,
+  t: (key: import('../../i18n').TranslationKey) => string,
 ): { title: string; subtitle: string; action: string } {
   if (phase === 'listening' || isRecording) {
     return {
-      title: 'Je vous ecoute',
-      subtitle: 'Parlez naturellement, comme a un guide.',
-      action: 'Appuyer pour envoyer',
+      title: t('voice.listeningTitle'),
+      subtitle: t('voice.listeningSub'),
+      action: t('voice.listeningAction'),
     };
   }
   if (phase === 'transcribing') {
     return {
-      title: 'Je comprends...',
-      subtitle: 'Lecture de votre question.',
-      action: 'Patientez',
+      title: t('voice.transcribingTitle'),
+      subtitle: t('voice.transcribingSub'),
+      action: t('voice.wait'),
     };
   }
   if (phase === 'thinking') {
     return {
-      title: 'Je prepare la reponse',
-      subtitle: 'Consultation du guide Smartmboa Tour.',
-      action: 'Patientez',
+      title: t('voice.thinkingTitle'),
+      subtitle: t('voice.thinkingSub'),
+      action: t('voice.wait'),
     };
   }
   if (phase === 'speaking') {
     return {
-      title: 'Reponse en cours',
-      subtitle: 'Ecoutez le guide, ou appuyez pour reparler.',
-      action: 'Appuyer pour interrompre',
+      title: t('voice.speakingTitle'),
+      subtitle: t('voice.speakingSub'),
+      action: t('voice.interrupt'),
     };
   }
   return {
-    title: 'Pret a vous ecouter',
-    subtitle: 'Appuyez sur le micro pour commencer.',
-    action: 'Appuyer pour parler',
+    title: t('voice.readyTitle'),
+    subtitle: t('voice.readySub'),
+    action: t('voice.readyAction'),
   };
-}
-
-/** Proper French labels (accents) for display — kept as unicode escapes so the file stays ASCII-safe. */
-function fr(phase: VoiceSessionPhase, isRecording: boolean) {
-  const base = phaseCopy(phase, isRecording);
-  const map: Record<string, { title: string; subtitle: string }> = {
-    listening: {
-      title: 'Je vous \u00e9coute',
-      subtitle: 'Parlez naturellement, comme \u00e0 un guide.',
-    },
-    transcribing: {
-      title: 'Je comprends\u2026',
-      subtitle: 'Lecture de votre question.',
-    },
-    thinking: {
-      title: 'Je pr\u00e9pare la r\u00e9ponse',
-      subtitle: 'Consultation du guide Smartmboa Tour.',
-    },
-    speaking: {
-      title: 'R\u00e9ponse en cours',
-      subtitle: '\u00c9coutez le guide, ou appuyez pour reparler.',
-    },
-    idle: {
-      title: 'Pr\u00eat \u00e0 vous \u00e9couter',
-      subtitle: 'Appuyez sur le micro pour commencer.',
-    },
-  };
-  const key =
-    phase === 'listening' || isRecording
-      ? 'listening'
-      : phase === 'transcribing'
-        ? 'transcribing'
-        : phase === 'thinking'
-          ? 'thinking'
-          : phase === 'speaking'
-            ? 'speaking'
-            : 'idle';
-  return { ...base, ...map[key] };
 }
 
 function VoiceWave({ active }: { active: boolean }) {
@@ -164,6 +128,7 @@ export function VoiceConversationMode({
   unlockWebAudio,
   onExchange,
 }: VoiceConversationModeProps) {
+  const { t } = useLocale();
   const pulse = useRef(new Animated.Value(1)).current;
   const fadeIn = useRef(new Animated.Value(0)).current;
 
@@ -187,7 +152,7 @@ export function VoiceConversationMode({
     onExchange,
   });
 
-  const copy = fr(phase, isRecording);
+  const copy = phaseLabels(phase, isRecording, t);
   const subtitle =
     phase === 'idle' && !isRecording ? statusHint : copy.subtitle;
   const live = phase === 'listening' || phase === 'speaking' || isRecording;
@@ -265,11 +230,11 @@ export function VoiceConversationMode({
             <View style={styles.topBar}>
               <View style={styles.brandBlock}>
                 <Text style={styles.kicker}>Smartmboa Tour</Text>
-                <Text style={styles.brand}>Mode vocal</Text>
+                <Text style={styles.brand}>{t('voice.modeBrand')}</Text>
               </View>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel="Fermer"
+                accessibilityLabel={t('voice.close')}
                 hitSlop={16}
                 onPress={handleClose}
                 style={styles.closeBtn}
@@ -324,7 +289,7 @@ export function VoiceConversationMode({
                 <Pressable
                   accessibilityRole="switch"
                   accessibilityState={{ checked: handsFree }}
-                  accessibilityLabel="Mode mains libres"
+                  accessibilityLabel={t('voice.handsFree')}
                   onPress={() => {
                     void Haptics.selectionAsync();
                     toggleHandsFree();
@@ -332,35 +297,35 @@ export function VoiceConversationMode({
                   style={[styles.toggle, handsFree && styles.toggleOn]}
                 >
                   <Text style={[styles.toggleText, handsFree && styles.toggleTextOn]}>
-                    {handsFree ? 'Mains libres activ\u00e9' : 'Mains libres'}
+                    {handsFree ? t('voice.handsFreeOn') : t('voice.handsFree')}
                   </Text>
                 </Pressable>
 
                 {micReady && phase === 'idle' && !isRecording ? (
-                  <Text style={styles.readyText}>Micro pr\u00eat</Text>
+                  <Text style={styles.readyText}>{t('voice.micReady')}</Text>
                 ) : null}
               </View>
 
               <View style={styles.transcripts}>
-                <Text style={styles.lineLabel}>Vous</Text>
+                <Text style={styles.lineLabel}>{t('voice.you')}</Text>
                 <Text style={styles.lineText} numberOfLines={2}>
-                  {lastUserText || 'Votre question appara\u00eetra ici.'}
+                  {lastUserText || t('voice.yourQuestion')}
                 </Text>
                 <View style={styles.divider} />
                 <Text style={styles.lineLabelGuide}>Smartmboa</Text>
                 <Text style={styles.lineText} numberOfLines={3}>
-                  {lastAssistantText || 'La r\u00e9ponse du guide s\u2019affichera ici.'}
+                  {lastAssistantText || t('voice.guideReply')}
                 </Text>
               </View>
             </ScrollView>
 
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Quitter"
+              accessibilityLabel={t('voice.quit')}
               onPress={handleClose}
               style={styles.exitBtn}
             >
-              <Text style={styles.exitText}>Quitter</Text>
+              <Text style={styles.exitText}>{t('voice.quit')}</Text>
             </Pressable>
           </Animated.View>
         </SafeAreaView>

@@ -92,6 +92,7 @@ class HuggingFaceAIService(AIService):
         conversation_id: str | None = None,
         *,
         brief: bool = False,
+        locale: str = "fr",
     ) -> ChatResponse:
         timer = PhaseTimer("chat")
         full = ""
@@ -99,6 +100,7 @@ class HuggingFaceAIService(AIService):
             message,
             conversation_id,
             brief=brief,
+            locale=locale,
             timer=timer,
         ):
             if event.get("type") == "token":
@@ -135,6 +137,7 @@ class HuggingFaceAIService(AIService):
         conversation_id: str | None = None,
         *,
         brief: bool = False,
+        locale: str = "fr",
         timer: PhaseTimer | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Yield route / token / done / error events for voice or SSE clients."""
@@ -172,6 +175,7 @@ class HuggingFaceAIService(AIService):
                     brief=brief,
                     skip_kb=route.skip_kb,
                     skip_web=route.skip_web,
+                    locale=locale,
                 )
             sources = sources_from_knowledge(grounding.chunks)
 

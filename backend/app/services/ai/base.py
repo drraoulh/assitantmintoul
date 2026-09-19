@@ -18,8 +18,10 @@ class AIService(ABC):
         conversation_id: str | None = None,
         *,
         brief: bool = False,
+        locale: str = "fr",
     ) -> ChatResponse:
         """Return an assistant reply for the given user message.
 
         `brief` requests a short spoken-style answer (voice mode).
+        `locale` is the preferred UI language (`fr` or `en`).
         """

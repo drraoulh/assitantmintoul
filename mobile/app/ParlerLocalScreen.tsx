@@ -18,6 +18,7 @@ import * as Speech from 'expo-speech';
 
 import { EXPRESSION_LANGUAGES, EXPRESSIONS } from '../data/expressions';
 import { colors, radius, spacing } from '../constants/theme';
+import { useLocale } from '../i18n';
 import { useSpeechPlayback } from '../hooks/useSpeechPlayback';
 import type { Expression } from '../types/culture';
 
@@ -25,19 +26,24 @@ interface ParlerLocalScreenProps {
   onBack: () => void;
 }
 
+const ALL = '__all__';
+
 export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
-  const [language, setLanguage] = useState('Toutes');
+  const { t, locale } = useLocale();
+  const [language, setLanguage] = useState(ALL);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const playerRef = useRef<AudioPlayer | null>(null);
   const { speak, stop: stopTts, unlockWebAudio } = useSpeechPlayback();
 
   const phrases = useMemo(
     () =>
-      language === 'Toutes'
+      language === ALL
         ? EXPRESSIONS
         : EXPRESSIONS.filter((item) => item.language === language),
     [language],
   );
+
+  const filters = useMemo(() => [ALL, ...EXPRESSION_LANGUAGES], []);
 
   const stopNative = useCallback(() => {
     try {
@@ -143,7 +149,7 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
         <View style={styles.header}>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Retour"
+            accessibilityLabel={t('local.back')}
             onPress={() => {
               stopAll();
               onBack();
@@ -154,7 +160,7 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
           </Pressable>
           <View style={styles.headerText}>
             <Text style={styles.kicker}>Culture</Text>
-            <Text style={styles.title}>Parler local</Text>
+            <Text style={styles.title}>{t('local.title')}</Text>
           </View>
         </View>
       </SafeAreaView>
@@ -164,18 +170,16 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.intro}>
-          Salutations et phrases utiles — écoutez la voix locale (Medumba,
-          Mbouda) ou le guide pour les autres langues.
-        </Text>
+        <Text style={styles.intro}>{t('local.subtitle')}</Text>
 
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.filters}
         >
-          {EXPRESSION_LANGUAGES.map((lang) => {
+          {filters.map((lang) => {
             const active = lang === language;
+            const label = lang === ALL ? t('local.all') : lang;
             return (
               <Pressable
                 key={lang}
@@ -183,7 +187,7 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
                 style={[styles.chip, active && styles.chipActive]}
               >
                 <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                  {lang}
+                  {label}
                 </Text>
               </Pressable>
             );
@@ -194,17 +198,24 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
           {phrases.map((item) => {
             const isPlaying = playingId === item.id;
             const hasNative = item.audio != null;
+            const meaning =
+              locale === 'en'
+                ? item.translationEn || item.translationFr
+                : item.translationFr;
+            const context =
+              locale === 'en' ? item.contextEn || item.contextFr : item.contextFr;
             return (
               <View key={item.id} style={styles.card}>
                 <View style={styles.cardTop}>
                   <Text style={styles.language}>{item.language}</Text>
-                  <Text style={styles.meaning}>{item.translationFr}</Text>
+                  <Text style={styles.meaning}>{meaning}</Text>
                 </View>
                 <Text style={styles.phrase}>{item.phrase}</Text>
                 <Text style={styles.pronunciation}>
-                  Prononciation : {item.pronunciation}
+                  {t('local.pronunciation')} :{' '}
+                  {item.pronunciation}
                 </Text>
-                <Text style={styles.context}>{item.contextFr}</Text>
+                <Text style={styles.context}>{context}</Text>
                 <Pressable
                   accessibilityRole="button"
                   onPress={() => void playPhrase(item)}
@@ -221,10 +232,10 @@ export function ParlerLocalScreen({ onBack }: ParlerLocalScreenProps) {
                   />
                   <Text style={styles.listenText}>
                     {isPlaying
-                      ? 'Arrêter'
+                      ? t('stop')
                       : hasNative
-                        ? 'Écouter (voix locale)'
-                        : 'Écouter (guide)'}
+                        ? t('local.listenNative')
+                        : t('local.listenGuide')}
                   </Text>
                 </Pressable>
               </View>
