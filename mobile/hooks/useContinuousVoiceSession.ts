@@ -79,6 +79,12 @@ export function useContinuousVoiceSession({
   const assistantAccRef = useRef('');
   const userTextRef = useRef('');
 
+  useEffect(() => {
+    if (phaseRef.current === 'idle') {
+      setStatusHint(t('voice.idleHint'));
+    }
+  }, [locale, t]);
+
   const decodeBase64ToBytes = useCallback((value: string): Uint8Array => {
     const binary =
       typeof atob === 'function'
@@ -138,18 +144,15 @@ export function useContinuousVoiceSession({
       switch (event.type) {
         case 'status': {
           if (event.phase === 'transcribing') {
-            setSessionPhase('transcribing', 'Je comprends votre question\u2026');
+            setSessionPhase('transcribing', t('voice.understanding'));
           } else if (
             event.phase === 'thinking' ||
             event.phase === 'retrieving' ||
             event.phase === 'generating'
           ) {
-            setSessionPhase('thinking', 'Je r\u00e9fl\u00e9chis\u2026');
+            setSessionPhase('thinking', t('voice.thinkingShort'));
           } else if (event.phase === 'speaking') {
-            setSessionPhase(
-              'speaking',
-              'Je vous r\u00e9ponds\u2026 appuyez pour m\u2019interrompre',
-            );
+            setSessionPhase('speaking', t('voice.speakingInterrupt'));
             busyRef.current = false;
           }
           break;
@@ -194,10 +197,7 @@ export function useContinuousVoiceSession({
             break;
           }
           const base64 = bytesToBase64(parts);
-          setSessionPhase(
-            'speaking',
-            'Je vous r\u00e9ponds\u2026 appuyez pour m\u2019interrompre',
-          );
+          setSessionPhase('speaking', t('voice.speakingInterrupt'));
           busyRef.current = false;
           playChainRef.current = playChainRef.current
             .then(async () => {
@@ -236,7 +236,7 @@ export function useContinuousVoiceSession({
           break;
       }
     },
-    [bytesToBase64, decodeBase64ToBytes, onExchange, playBase64Mp3, setSessionPhase],
+    [bytesToBase64, decodeBase64ToBytes, onExchange, playBase64Mp3, setSessionPhase, t],
   );
 
   const ensureSocket = useCallback(async (): Promise<VoiceSocket | null> => {
@@ -294,8 +294,8 @@ export function useContinuousVoiceSession({
     socketRef.current = null;
     await stopRecorderSafe();
     setMicReady(false);
-    setSessionPhase('idle', 'Mode conversation ferm\u00e9');
-  }, [setSessionPhase, stopRecorderSafe, stopSpeaking]);
+    setSessionPhase('idle', t('voice.closed'));
+  }, [setSessionPhase, stopRecorderSafe, stopSpeaking, t]);
 
   const armRecorder = useCallback(async (): Promise<boolean> => {
     if (preparedRef.current) {
@@ -304,7 +304,7 @@ export function useContinuousVoiceSession({
 
     const permission = await AudioModule.requestRecordingPermissionsAsync();
     if (!permission.granted) {
-      setSessionPhase('idle', 'Micro non autoris\u00e9');
+      setSessionPhase('idle', t('voice.micDenied'));
       return false;
     }
     if (!activeRef.current) {
@@ -319,7 +319,7 @@ export function useContinuousVoiceSession({
     preparedRef.current = true;
     setMicReady(true);
     return true;
-  }, [recorder, setSessionPhase]);
+  }, [recorder, setSessionPhase, t]);
 
   const startListening = useCallback(async () => {
     if (!activeRef.current || busyRef.current) {
@@ -335,7 +335,7 @@ export function useContinuousVoiceSession({
       }
 
       recorder.record();
-      setSessionPhase('listening', 'Je vous \u00e9coute\u2026 appuyez pour envoyer');
+      setSessionPhase('listening', t('voice.listeningAction'));
     } catch (error) {
       if (!activeRef.current) {
         return;
@@ -343,7 +343,7 @@ export function useContinuousVoiceSession({
       preparedRef.current = false;
       setSessionPhase('idle', errorText(error));
     }
-  }, [armRecorder, recorder, setSessionPhase, stopSpeaking]);
+  }, [armRecorder, errorText, recorder, setSessionPhase, stopSpeaking, t]);
 
   useEffect(() => {
     startListeningRef.current = startListening;

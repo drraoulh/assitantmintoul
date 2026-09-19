@@ -128,13 +128,12 @@ export function VoiceConversationMode({
   unlockWebAudio,
   onExchange,
 }: VoiceConversationModeProps) {
-  const { t } = useLocale();
+  const { t, locale, toggleLocale } = useLocale();
   const pulse = useRef(new Animated.Value(1)).current;
   const fadeIn = useRef(new Animated.Value(0)).current;
 
   const {
     phase,
-    statusHint,
     lastUserText,
     lastAssistantText,
     isRecording,
@@ -153,8 +152,6 @@ export function VoiceConversationMode({
   });
 
   const copy = phaseLabels(phase, isRecording, t);
-  const subtitle =
-    phase === 'idle' && !isRecording ? statusHint : copy.subtitle;
   const live = phase === 'listening' || phase === 'speaking' || isRecording;
   const busy = phase === 'transcribing' || phase === 'thinking';
 
@@ -234,6 +231,18 @@ export function VoiceConversationMode({
               </View>
               <Pressable
                 accessibilityRole="button"
+                accessibilityLabel={t('a11y.language')}
+                hitSlop={12}
+                onPress={() => {
+                  void Haptics.selectionAsync();
+                  toggleLocale();
+                }}
+                style={styles.langBtn}
+              >
+                <Text style={styles.langText}>{locale === 'fr' ? 'FR' : 'EN'}</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
                 accessibilityLabel={t('voice.close')}
                 hitSlop={16}
                 onPress={handleClose}
@@ -252,7 +261,7 @@ export function VoiceConversationMode({
             >
               <View style={styles.center}>
                 <Text style={styles.phase}>{copy.title}</Text>
-                <Text style={styles.hint}>{subtitle}</Text>
+                <Text style={styles.hint}>{copy.subtitle}</Text>
 
                 <Pressable
                   accessibilityRole="button"
@@ -379,6 +388,22 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     marginTop: 2,
+  },
+  langBtn: {
+    minWidth: 44,
+    height: 36,
+    paddingHorizontal: 10,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.forest,
+    marginRight: spacing.xs,
+  },
+  langText: {
+    color: colors.ivory,
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.6,
   },
   closeBtn: {
     width: 44,

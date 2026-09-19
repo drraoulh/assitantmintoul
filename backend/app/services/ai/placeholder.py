@@ -18,7 +18,8 @@ class PlaceholderAIService(AIService):
         thread_id = conversation_id or str(uuid4())
         if locale == "en":
             reply = (
-                "Welcome. I am Smartmboa Tour, Cameroon's intelligent tourist guide.\n\n"
+                "Welcome. I am Smartmboa Tour, your guide to Cameroon — "
+                "Africa in miniature.\n\n"
                 "The AI engine is not connected yet (phase 1 — foundation). "
                 f"I received your message: “{message.strip()}”.\n\n"
                 "In later steps I will suggest sites, itineraries and cultural "
@@ -26,7 +27,8 @@ class PlaceholderAIService(AIService):
             )
         else:
             reply = (
-                "Bienvenue. Je suis Smartmboa Tour, le guide touristique intelligent du Cameroun.\n\n"
+                "Bienvenue. Je suis Smartmboa Tour, le guide touristique du Cameroun — "
+                "l'Afrique en miniature.\n\n"
                 "Le moteur d'IA n'est pas encore connecté (phase 1 — fondation). "
                 f"J'ai bien reçu votre message : « {message.strip()} ».\n\n"
                 "Lors des prochaines étapes, je pourrai proposer des sites, "

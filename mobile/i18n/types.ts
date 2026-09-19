@@ -84,6 +84,8 @@ export type TranslationKey =
   | 'voice.thinkingShort'
   | 'voice.speakingInterrupt'
   | 'voice.fallbackMode'
+  | 'voice.closed'
+  | 'voice.micDenied'
   | 'local.title'
   | 'local.subtitle'
   | 'local.all'

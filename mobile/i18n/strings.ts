@@ -86,6 +86,8 @@ const fr: Record<TranslationKey, string> = {
   'voice.thinkingShort': 'Je réfléchis…',
   'voice.speakingInterrupt': 'Je vous réponds… appuyez pour m’interrompre',
   'voice.fallbackMode': 'Bascule vers le mode compatible…',
+  'voice.closed': 'Mode conversation fermé',
+  'voice.micDenied': 'Micro non autorisé',
   'local.title': 'Parler local',
   'local.subtitle':
     'Salutations et phrases utiles — écoutez la voix locale (Medumba, Mbouda) ou le guide pour les autres langues.',
@@ -195,6 +197,8 @@ const en: Record<TranslationKey, string> = {
   'voice.thinkingShort': 'Thinking…',
   'voice.speakingInterrupt': 'Answering… tap to interrupt',
   'voice.fallbackMode': 'Switching to compatible mode…',
+  'voice.closed': 'Conversation mode closed',
+  'voice.micDenied': 'Microphone not allowed',
   'local.title': 'Speak local',
   'local.subtitle':
     'Useful greetings and phrases — hear local voices (Medumba, Mbouda) or the guide for other languages.',

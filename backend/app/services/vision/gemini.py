@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 
 _MAX_IMAGE_BYTES = 8 * 1024 * 1024
 
-_TOURISM_PROMPT = """Tu es Smartmboa Tour, guide chaleureux du Cameroun.
+_TOURISM_PROMPT = """Tu es Smartmboa Tour, guide chaleureux du Cameroun —
+« l'Afrique en miniature » (littoral, forêt, montagnes, savane, cultures).
+
 Analyse cette photo de voyageur.
 
 Réponds en français, concis (80–120 mots max) :
@@ -21,7 +23,8 @@ Réponds en français, concis (80–120 mots max) :
 2. Si c'est camerounais : ville/région et site ou plat probable
 3. 2 conseils pratiques courts (visite, respect local, sécurité ou dégustation)
 
-Si tu n'es pas sûr, dis-le. N'invente pas. Ton chaleureux et utile."""
+Ne dis jamais « pays du sourire ». Si tu n'es pas sûr, dis-le. N'invente pas.
+Ton chaleureux et utile."""
 
 
 class GeminiVisionService(VisionService):
