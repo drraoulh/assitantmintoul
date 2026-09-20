@@ -236,27 +236,54 @@ export function fetchConversation(
 }
 
 export async function deleteConversation(conversationId: string): Promise<void> {
+  const id = conversationId.trim().replace(/\/+$/, '');
+  if (!id) {
+    throw new ApiError('Conversation invalide.', 400);
+  }
+
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const url = `${API_BASE_URL}/api/conversations/${encodeURIComponent(id)}`;
+
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/conversations/${encodeURIComponent(conversationId)}`,
-      {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      signal: controller.signal,
+      redirect: 'follow',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    // 204 No Content is success; some proxies also return 200.
+    if (response.ok || response.status === 204) {
+      return;
+    }
+
+    // If a trailing-slash redirect left us on a non-OK response, retry once
+    // against the canonical no-slash URL.
+    if (response.status === 307 || response.status === 308) {
+      const retry = await fetch(url.replace(/\/$/, ''), {
         method: 'DELETE',
         signal: controller.signal,
-        headers: {
-          Accept: 'application/json',
-        },
-      },
-    );
-    // 204 No Content is success; some proxies also return 200.
-    if (!response.ok && response.status !== 204) {
-      const payload = await response.json().catch(() => null);
+        redirect: 'manual',
+        headers: { Accept: 'application/json' },
+      });
+      if (retry.ok || retry.status === 204) {
+        return;
+      }
+      const payload = await retry.json().catch(() => null);
       throw new ApiError(
-        readErrorDetail(payload) ?? `HTTP ${response.status}`,
-        response.status,
+        readErrorDetail(payload) ?? `HTTP ${retry.status}`,
+        retry.status,
       );
     }
+
+    const payload = await response.json().catch(() => null);
+    throw new ApiError(
+      readErrorDetail(payload) ?? `HTTP ${response.status}`,
+      response.status,
+    );
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

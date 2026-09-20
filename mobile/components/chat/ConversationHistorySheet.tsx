@@ -223,6 +223,7 @@ export function ConversationHistorySheet({
 
           {filtered.map((item) => {
             const isActive = item.id === activeConversationId;
+            const isPending = pendingDelete?.id === item.id;
             const when = formatUpdatedAt(
               item.updated_at,
               t('history.today'),
@@ -231,11 +232,16 @@ export function ConversationHistorySheet({
             return (
               <View
                 key={item.id}
-                style={[styles.row, isActive && styles.rowActive]}
+                style={[
+                  styles.row,
+                  isActive && styles.rowActive,
+                  isPending && styles.rowPending,
+                ]}
               >
                 <Pressable
                   accessibilityRole="button"
                   style={styles.rowMain}
+                  disabled={isPending}
                   onPress={() => {
                     onOpenConversation(item.id);
                     onClose();
@@ -252,81 +258,70 @@ export function ConversationHistorySheet({
                     {when ? ` · ${when}` : ''}
                   </Text>
                 </Pressable>
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t('a11y.deleteConversation')}
-                  hitSlop={10}
-                  onPress={() => {
-                    setDeleteError(null);
-                    setPendingDelete(item);
-                  }}
-                  style={styles.deleteBtn}
-                >
-                  <Ionicons name="trash-outline" size={18} color={colors.red} />
-                </Pressable>
+                {isPending ? (
+                  <View style={styles.inlineConfirm}>
+                    <Text style={styles.inlineHint}>{t('history.deleteBody')}</Text>
+                    <View style={styles.inlineActions}>
+                      <Pressable
+                        accessibilityRole="button"
+                        disabled={deleting}
+                        onPress={() => {
+                          setPendingDelete(null);
+                          setDeleteError(null);
+                        }}
+                        style={({ pressed }) => [
+                          styles.inlineBtn,
+                          styles.inlineCancel,
+                          pressed && styles.pressed,
+                        ]}
+                      >
+                        <Text style={styles.inlineCancelText}>
+                          {t('history.cancel')}
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        accessibilityRole="button"
+                        disabled={deleting}
+                        onPress={() => void runDelete()}
+                        style={({ pressed }) => [
+                          styles.inlineBtn,
+                          styles.inlineDelete,
+                          pressed && styles.pressed,
+                          deleting && styles.disabled,
+                        ]}
+                      >
+                        {deleting ? (
+                          <ActivityIndicator color={colors.ivory} size="small" />
+                        ) : (
+                          <Text style={styles.inlineDeleteText}>
+                            {t('history.delete')}
+                          </Text>
+                        )}
+                      </Pressable>
+                    </View>
+                  </View>
+                ) : (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t('a11y.deleteConversation')}
+                    hitSlop={10}
+                    onPress={() => {
+                      setDeleteError(null);
+                      setPendingDelete(item);
+                    }}
+                    style={styles.deleteBtn}
+                  >
+                    <Ionicons name="trash-outline" size={18} color={colors.red} />
+                  </Pressable>
+                )}
               </View>
             );
           })}
-        </ScrollView>
 
-        <Modal
-          visible={pendingDelete != null}
-          transparent
-          animationType="fade"
-          onRequestClose={() => {
-            if (!deleting) {
-              setPendingDelete(null);
-            }
-          }}
-        >
-          <View style={styles.confirmBackdrop}>
-            <View style={styles.confirmCard}>
-              <Text style={styles.confirmTitle}>{t('history.deleteTitle')}</Text>
-              <Text style={styles.confirmBody}>
-                {t('history.deleteBody')}
-                {pendingDelete ? `\n« ${pendingDelete.title} »` : ''}
-              </Text>
-              {deleteError ? (
-                <Text style={styles.error}>{deleteError}</Text>
-              ) : null}
-              <View style={styles.confirmActions}>
-                <Pressable
-                  accessibilityRole="button"
-                  disabled={deleting}
-                  onPress={() => setPendingDelete(null)}
-                  style={({ pressed }) => [
-                    styles.confirmBtn,
-                    styles.confirmCancel,
-                    pressed && styles.pressed,
-                  ]}
-                >
-                  <Text style={styles.confirmCancelText}>
-                    {t('history.cancel')}
-                  </Text>
-                </Pressable>
-                <Pressable
-                  accessibilityRole="button"
-                  disabled={deleting}
-                  onPress={() => void runDelete()}
-                  style={({ pressed }) => [
-                    styles.confirmBtn,
-                    styles.confirmDelete,
-                    pressed && styles.pressed,
-                    deleting && styles.disabled,
-                  ]}
-                >
-                  {deleting ? (
-                    <ActivityIndicator color={colors.ivory} />
-                  ) : (
-                    <Text style={styles.confirmDeleteText}>
-                      {t('history.delete')}
-                    </Text>
-                  )}
-                </Pressable>
-              </View>
-            </View>
-          </View>
-        </Modal>
+          {deleteError ? (
+            <Text style={styles.error}>{deleteError}</Text>
+          ) : null}
+        </ScrollView>
       </View>
     </Modal>
   );
@@ -474,6 +469,12 @@ const styles = StyleSheet.create({
     borderColor: colors.green,
     backgroundColor: 'rgba(0, 122, 94, 0.06)',
   },
+  rowPending: {
+    borderColor: colors.red,
+    backgroundColor: colors.redSoft,
+    flexWrap: 'wrap',
+    paddingBottom: 10,
+  },
   rowMain: {
     flex: 1,
     paddingVertical: 14,
@@ -490,66 +491,51 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   deleteBtn: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  confirmBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(22, 26, 24, 0.45)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.lg,
-  },
-  confirmCard: {
+  inlineConfirm: {
     width: '100%',
-    maxWidth: 420,
-    backgroundColor: colors.ivory,
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.line,
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingBottom: 4,
   },
-  confirmTitle: {
-    color: colors.ink,
-    fontSize: 18,
-    fontWeight: '700',
+  inlineHint: {
+    color: colors.redDeep,
+    fontSize: 12,
+    fontWeight: '600',
   },
-  confirmBody: {
-    color: colors.muted,
-    fontSize: 14,
-    lineHeight: 21,
-  },
-  confirmActions: {
+  inlineActions: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    marginTop: spacing.sm,
+    gap: 8,
   },
-  confirmBtn: {
+  inlineBtn: {
     flex: 1,
-    minHeight: 44,
-    borderRadius: radius.md,
+    minHeight: 40,
+    borderRadius: radius.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 10,
   },
-  confirmCancel: {
-    backgroundColor: colors.sand,
+  inlineCancel: {
+    backgroundColor: colors.ivory,
     borderWidth: 1,
     borderColor: colors.line,
   },
-  confirmCancelText: {
+  inlineCancelText: {
     color: colors.ink,
     fontWeight: '700',
+    fontSize: 13,
   },
-  confirmDelete: {
+  inlineDelete: {
     backgroundColor: colors.red,
   },
-  confirmDeleteText: {
+  inlineDeleteText: {
     color: colors.ivory,
     fontWeight: '700',
+    fontSize: 13,
   },
   disabled: {
     opacity: 0.6,
