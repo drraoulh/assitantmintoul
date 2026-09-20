@@ -27,7 +27,7 @@ interface ChatInputBarProps {
     uri: string;
     mimeType?: string;
     fileName?: string | null;
-    file?: File | null;
+    file?: Blob | null;
     base64?: string | null;
   }) => void;
   onOpenVoiceMode: () => void;

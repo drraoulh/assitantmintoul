@@ -85,7 +85,7 @@ async function uploadMultipart<T>(
   mimeType: string,
   fileName: string,
   signal: AbortSignal,
-  source?: Blob | File | null,
+  source?: Blob | null,
 ): Promise<T> {
   // expo-file-system File.upload calls validatePath(), which is undefined on web
   // and crashes with "this.validatePath is not a function".
@@ -121,16 +121,15 @@ async function uploadMultipart<T>(
       }
     }
 
-    const resolvedMime = (
-      (source instanceof File && source.type) ||
-      blob.type ||
-      mimeType ||
-      'application/octet-stream'
-    )
+    const browserFile =
+      typeof globalThis.File !== 'undefined' && source instanceof globalThis.File
+        ? source
+        : null;
+    const resolvedMime = (browserFile?.type || blob.type || mimeType || 'application/octet-stream')
       .split(';')[0]
       .trim();
     const resolvedName =
-      (source instanceof File && source.name) ||
+      browserFile?.name ||
       fileName ||
       `upload.${extensionForMime(resolvedMime, 'bin')}`;
     const typedBlob =
@@ -178,8 +177,8 @@ export type ImageUploadInput = {
   uri: string;
   mimeType?: string;
   fileName?: string | null;
-  /** Web-only File from expo-image-picker — avoids Safari "Load failed" on blob URIs. */
-  file?: File | null;
+  /** Web-only browser File from expo-image-picker — avoids Safari "Load failed". */
+  file?: Blob | null;
   base64?: string | null;
 };
 
@@ -237,12 +236,37 @@ export function fetchConversation(
 }
 
 export async function deleteConversation(conversationId: string): Promise<void> {
-  const response = await fetch(
-    `${API_BASE_URL}/api/conversations/${encodeURIComponent(conversationId)}`,
-    { method: 'DELETE' },
-  );
-  if (!response.ok) {
-    throw new ApiError(`HTTP ${response.status}`, response.status);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/conversations/${encodeURIComponent(conversationId)}`,
+      {
+        method: 'DELETE',
+        signal: controller.signal,
+        headers: {
+          Accept: 'application/json',
+        },
+      },
+    );
+    // 204 No Content is success; some proxies also return 200.
+    if (!response.ok && response.status !== 204) {
+      const payload = await response.json().catch(() => null);
+      throw new ApiError(
+        readErrorDetail(payload) ?? `HTTP ${response.status}`,
+        response.status,
+      );
+    }
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new ApiError('La suppression a pris trop de temps. Réessayez.', 504);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -329,7 +353,7 @@ export async function identifyImage(
     asset.fileName?.trim() ||
     `photo.${extensionForMime(resolvedMime, 'jpg')}`;
 
-  let source: Blob | File | null = asset.file ?? null;
+  let source: Blob | null = asset.file ?? null;
   if (!source && asset.base64) {
     source = blobFromBase64(asset.base64, resolvedMime);
   }

@@ -78,7 +78,11 @@ export function ChatScreen({ onOpenParlerLocal }: ChatScreenProps) {
         >
           {isEmpty && (
             <View style={styles.empty}>
-              <WelcomeCard onOpenParlerLocal={onOpenParlerLocal} />
+              <WelcomeCard
+                onOpenParlerLocal={onOpenParlerLocal}
+                disabled={isSending}
+                onSelectTheme={(prompt) => void sendMessage(prompt)}
+              />
               <SuggestedPrompts
                 disabled={isSending}
                 onSelect={(prompt) => void sendMessage(prompt)}

@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, radius, spacing } from '../../constants/theme';
 import { useLocale } from '../../i18n';
 import type { ChatMessage as ChatMessageType, ChatSource } from '../../types/chat';
+import { copyOrShareText } from '../../utils/shareText';
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -24,7 +26,7 @@ function SourceCard({ source }: { source: ChatSource }) {
           source={{ uri: source.image_url }}
           style={styles.sourceImage}
           resizeMode="cover"
-          accessibilityLabel={`Photo de ${source.title}`}
+          accessibilityLabel={source.title}
         />
       ) : null}
       <View style={styles.sourceTextBlock}>
@@ -64,6 +66,7 @@ export function ChatMessage({
   isSpeaking = false,
 }: ChatMessageProps) {
   const { t } = useLocale();
+  const [copied, setCopied] = useState(false);
   const isUser = message.role === 'user';
   const sources = message.sources?.filter((s) => s.title?.trim()) ?? [];
   const isPhotoMessage = Boolean(
@@ -72,6 +75,16 @@ export function ChatMessage({
         message.content === 'Photo sent' ||
         message.content === t('photoSent')),
   );
+
+  const handleCopy = async () => {
+    try {
+      await copyOrShareText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      // ignore — share sheet cancel is common
+    }
+  };
 
   return (
     <View style={[styles.row, isUser ? styles.right : styles.left]}>
@@ -117,29 +130,48 @@ export function ChatMessage({
             ))}
           </View>
         ) : null}
-        {!isUser && !message.isError && onSpeak && (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={isSpeaking ? t('a11y.stop') : t('a11y.listen')}
-            onPress={() => {
-              if (isSpeaking) {
-                onStopSpeaking?.();
-                return;
-              }
-              onSpeak(message.content);
-            }}
-            style={styles.speak}
-          >
-            <Ionicons
-              name={isSpeaking ? 'stop-circle-outline' : 'volume-high-outline'}
-              size={16}
-              color={colors.canopy}
-            />
-            <Text style={styles.speakLabel}>
-              {isSpeaking ? t('stop') : t('listen')}
-            </Text>
-          </Pressable>
-        )}
+        {!isUser && !message.isError && message.content ? (
+          <View style={styles.actions}>
+            {onSpeak ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={isSpeaking ? t('a11y.stop') : t('a11y.listen')}
+                onPress={() => {
+                  if (isSpeaking) {
+                    onStopSpeaking?.();
+                    return;
+                  }
+                  onSpeak(message.content);
+                }}
+                style={styles.actionBtn}
+              >
+                <Ionicons
+                  name={isSpeaking ? 'stop-circle-outline' : 'volume-high-outline'}
+                  size={16}
+                  color={colors.canopy}
+                />
+                <Text style={styles.actionLabel}>
+                  {isSpeaking ? t('stop') : t('listen')}
+                </Text>
+              </Pressable>
+            ) : null}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.copy')}
+              onPress={() => void handleCopy()}
+              style={styles.actionBtn}
+            >
+              <Ionicons
+                name={copied ? 'checkmark-circle-outline' : 'copy-outline'}
+                size={16}
+                color={colors.canopy}
+              />
+              <Text style={styles.actionLabel}>
+                {copied ? t('copied') : t('copy')}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -149,7 +181,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     marginBottom: spacing.md,
-    maxWidth: '85%',
+    maxWidth: '92%',
   },
   left: {
     alignSelf: 'flex-start',
@@ -214,14 +246,18 @@ const styles = StyleSheet.create({
   userText: {
     color: colors.ivory,
   },
-  speak: {
+  actions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 10,
+  },
+  actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    marginTop: 10,
-    alignSelf: 'flex-start',
   },
-  speakLabel: {
+  actionLabel: {
     color: colors.canopy,
     fontSize: 12,
     fontWeight: '600',

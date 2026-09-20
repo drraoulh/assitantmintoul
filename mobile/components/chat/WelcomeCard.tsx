@@ -2,13 +2,31 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, radius, spacing } from '../../constants/theme';
-import { useLocale } from '../../i18n';
+import { useLocale, type TranslationKey } from '../../i18n';
 
 interface WelcomeCardProps {
   onOpenParlerLocal?: () => void;
+  onSelectTheme?: (prompt: string) => void;
+  disabled?: boolean;
 }
 
-export function WelcomeCard({ onOpenParlerLocal }: WelcomeCardProps) {
+const THEMES: {
+  key: TranslationKey;
+  promptKey: TranslationKey;
+  icon: keyof typeof Ionicons.glyphMap;
+}[] = [
+  { key: 'theme.nature', promptKey: 'prompt.nature', icon: 'leaf-outline' },
+  { key: 'theme.beaches', promptKey: 'prompt.beaches', icon: 'water-outline' },
+  { key: 'theme.food', promptKey: 'prompt.food', icon: 'restaurant-outline' },
+  { key: 'theme.culture', promptKey: 'prompt.culture', icon: 'color-palette-outline' },
+  { key: 'theme.mountains', promptKey: 'prompt.mountains', icon: 'trail-sign-outline' },
+];
+
+export function WelcomeCard({
+  onOpenParlerLocal,
+  onSelectTheme,
+  disabled = false,
+}: WelcomeCardProps) {
   const { t } = useLocale();
 
   return (
@@ -16,6 +34,30 @@ export function WelcomeCard({ onOpenParlerLocal }: WelcomeCardProps) {
       <Text style={styles.kicker}>Smartmboa Tour</Text>
       <Text style={styles.title}>{t('tagline')}</Text>
       <Text style={styles.body}>{t('welcome.body')}</Text>
+
+      {onSelectTheme ? (
+        <View style={styles.themes}>
+          <Text style={styles.themesLabel}>{t('welcome.themes')}</Text>
+          <View style={styles.themeRow}>
+            {THEMES.map((theme) => (
+              <Pressable
+                key={theme.key}
+                accessibilityRole="button"
+                disabled={disabled}
+                onPress={() => onSelectTheme(t(theme.promptKey))}
+                style={({ pressed }) => [
+                  styles.themeChip,
+                  pressed && styles.themePressed,
+                  disabled && styles.disabled,
+                ]}
+              >
+                <Ionicons name={theme.icon} size={14} color={colors.forestDeep} />
+                <Text style={styles.themeText}>{t(theme.key)}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       {onOpenParlerLocal ? (
         <Pressable
@@ -61,6 +103,44 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     marginTop: spacing.xs,
+  },
+  themes: {
+    marginTop: spacing.md,
+    gap: spacing.sm,
+  },
+  themesLabel: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  themeRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  themeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(0, 122, 94, 0.08)',
+    borderRadius: radius.pill,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 122, 94, 0.18)',
+  },
+  themeText: {
+    color: colors.forestDeep,
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  themePressed: {
+    backgroundColor: colors.goldSoft,
+  },
+  disabled: {
+    opacity: 0.5,
   },
   cta: {
     marginTop: spacing.md,
