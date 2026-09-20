@@ -103,6 +103,8 @@ const fr: Record<TranslationKey, string> = {
   'error.sttTimeout': 'La transcription a pris trop de temps. Réessayez.',
   'error.ttsTimeout': 'La synthèse vocale a pris trop de temps. Réessayez.',
   'error.visionTimeout': "L'analyse d'image a pris trop de temps. Réessayez.",
+  'error.imageLoad':
+    "Impossible de lire l'image. Réessayez depuis la galerie.",
   'mic.title': 'Micro',
   'mic.missing': "L'enregistrement audio est introuvable.",
   'mic.empty': 'Aucune parole détectée. Réessayez.',
@@ -213,6 +215,7 @@ const en: Record<TranslationKey, string> = {
   'error.sttTimeout': 'Transcription took too long. Try again.',
   'error.ttsTimeout': 'Speech synthesis took too long. Try again.',
   'error.visionTimeout': 'Image analysis took too long. Try again.',
+  'error.imageLoad': 'Could not read the image. Try again from the gallery.',
   'mic.title': 'Mic',
   'mic.missing': 'Recording not found.',
   'mic.empty': 'No speech detected. Try again.',

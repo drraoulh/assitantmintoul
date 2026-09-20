@@ -23,7 +23,13 @@ import { IconCircleButton } from '../ui/IconCircleButton';
 interface ChatInputBarProps {
   disabled?: boolean;
   onSend: (message: string) => void;
-  onSendImage: (uri: string) => void;
+  onSendImage: (asset: {
+    uri: string;
+    mimeType?: string;
+    fileName?: string | null;
+    file?: File | null;
+    base64?: string | null;
+  }) => void;
   onOpenVoiceMode: () => void;
 }
 
@@ -32,6 +38,8 @@ const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
   quality: 0.7,
   allowsEditing: false,
   exif: false,
+  // Needed on web when blob URI fetch fails (Safari "Load failed").
+  base64: Platform.OS === 'web',
   ...(Platform.OS === 'ios'
     ? {
         presentationStyle:
@@ -100,7 +108,14 @@ export function ChatInputBar({
 
       const result = await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS);
       if (!result.canceled && result.assets[0]?.uri) {
-        onSendImage(result.assets[0].uri);
+        const asset = result.assets[0];
+        onSendImage({
+          uri: asset.uri,
+          mimeType: asset.mimeType ?? undefined,
+          fileName: asset.fileName,
+          file: asset.file ?? null,
+          base64: asset.base64 ?? null,
+        });
       }
     } catch (error) {
       Alert.alert(
@@ -123,7 +138,14 @@ export function ChatInputBar({
 
       const result = await ImagePicker.launchCameraAsync(PICKER_OPTIONS);
       if (!result.canceled && result.assets[0]?.uri) {
-        onSendImage(result.assets[0].uri);
+        const asset = result.assets[0];
+        onSendImage({
+          uri: asset.uri,
+          mimeType: asset.mimeType ?? undefined,
+          fileName: asset.fileName,
+          file: asset.file ?? null,
+          base64: asset.base64 ?? null,
+        });
       }
     } catch (error) {
       Alert.alert(

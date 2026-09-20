@@ -7,6 +7,7 @@ import {
   fetchHealth,
   identifyImage,
   sendChatMessage,
+  type ImageUploadInput,
 } from '../services/api';
 import {
   clearLastConversationId,
@@ -45,15 +46,6 @@ function isLikelyOffline(error: unknown): boolean {
 
 async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function mimeFromUri(uri: string): string {
-  const lower = uri.toLowerCase();
-  if (lower.includes('.png')) return 'image/png';
-  if (lower.includes('.webp')) return 'image/webp';
-  if (lower.includes('.gif')) return 'image/gif';
-  if (lower.includes('.heic') || lower.includes('.heif')) return 'image/heic';
-  return 'image/jpeg';
 }
 
 export function useChat() {
@@ -207,8 +199,10 @@ export function useChat() {
   );
 
   const sendImage = useCallback(
-    async (uri: string): Promise<string | null> => {
-      if (!uri || isSending) {
+    async (input: string | ImageUploadInput): Promise<string | null> => {
+      const asset: ImageUploadInput =
+        typeof input === 'string' ? { uri: input } : input;
+      if (!asset.uri || isSending) {
         return null;
       }
 
@@ -216,7 +210,7 @@ export function useChat() {
         id: createId(),
         role: 'user',
         content: t('photoSent'),
-        imageUri: uri,
+        imageUri: asset.uri,
         createdAt: new Date().toISOString(),
       };
 
@@ -224,7 +218,7 @@ export function useChat() {
       setIsSending(true);
 
       try {
-        const vision = await identifyImage(uri, mimeFromUri(uri));
+        const vision = await identifyImage(asset);
         setBackendStatus('online');
 
         const guidePrompt = t('photo.guidePrompt').replace(

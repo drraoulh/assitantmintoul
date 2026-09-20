@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import base64
 import logging
 
@@ -93,6 +94,13 @@ class GeminiVisionService(VisionService):
 
         try:
             response = await self._post(headers=headers, payload=payload)
+            # Transient Gemini overload — one quick retry.
+            if response.status_code in {429, 503} or (
+                response.status_code == 502
+                and "high demand" in (response.text or "").lower()
+            ):
+                await asyncio.sleep(1.2)
+                response = await self._post(headers=headers, payload=payload)
         except httpx.TimeoutException as exc:
             raise VisionFailedError(
                 "Gemini took too long to analyze the image."
@@ -123,6 +131,11 @@ class GeminiVisionService(VisionService):
                 response.status_code,
                 detail,
             )
+            # Friendlier copy for the common overload message.
+            if detail and "high demand" in detail.lower():
+                raise VisionFailedError(
+                    "Image analysis is busy right now. Please try again in a moment."
+                )
             raise VisionFailedError(
                 detail or "Gemini could not analyze the image."
             )

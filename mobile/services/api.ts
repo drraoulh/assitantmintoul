@@ -85,23 +85,54 @@ async function uploadMultipart<T>(
   mimeType: string,
   fileName: string,
   signal: AbortSignal,
+  source?: Blob | File | null,
 ): Promise<T> {
   // expo-file-system File.upload calls validatePath(), which is undefined on web
   // and crashes with "this.validatePath is not a function".
   if (Platform.OS === 'web') {
-    const blobResponse = await fetch(uri, { signal });
-    if (!blobResponse.ok) {
-      throw new ApiError(
-        `Impossible de lire le fichier local (HTTP ${blobResponse.status}).`,
-        blobResponse.status,
-      );
+    let blob: Blob;
+    if (source) {
+      blob = source;
+    } else {
+      // Safari often throws "Load failed" on some picker URIs — callers should
+      // pass asset.file / base64 when possible.
+      try {
+        const blobResponse = await fetch(uri, { signal });
+        if (!blobResponse.ok) {
+          throw new ApiError(
+            `Impossible de lire le fichier local (HTTP ${blobResponse.status}).`,
+            blobResponse.status,
+          );
+        }
+        blob = await blobResponse.blob();
+      } catch (error) {
+        if (error instanceof ApiError) {
+          throw error;
+        }
+        const message =
+          error instanceof Error ? error.message : String(error ?? '');
+        if (/load failed|failed to fetch|networkerror/i.test(message)) {
+          throw new ApiError(
+            "Impossible de lire l'image. Réessayez depuis la galerie.",
+            0,
+          );
+        }
+        throw error;
+      }
     }
-    const blob = await blobResponse.blob();
-    // Prefer the blob's real type (webm) over a guessed m4a from blob: URIs.
-    const resolvedMime = (blob.type || mimeType || 'application/octet-stream')
+
+    const resolvedMime = (
+      (source instanceof File && source.type) ||
+      blob.type ||
+      mimeType ||
+      'application/octet-stream'
+    )
       .split(';')[0]
       .trim();
-    const resolvedName = `audio.${extensionForAudioMime(resolvedMime, 'webm')}`;
+    const resolvedName =
+      (source instanceof File && source.name) ||
+      fileName ||
+      `upload.${extensionForMime(resolvedMime, 'bin')}`;
     const typedBlob =
       blob.type === resolvedMime ? blob : new Blob([blob], { type: resolvedMime });
     const form = new FormData();
@@ -133,6 +164,24 @@ async function uploadMultipart<T>(
   });
   return parseJsonBody<T>(result.body, result.status);
 }
+
+function blobFromBase64(base64: string, mimeType: string): Blob {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new Blob([bytes], { type: mimeType });
+}
+
+export type ImageUploadInput = {
+  uri: string;
+  mimeType?: string;
+  fileName?: string | null;
+  /** Web-only File from expo-image-picker — avoids Safari "Load failed" on blob URIs. */
+  file?: File | null;
+  base64?: string | null;
+};
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const controller = new AbortController();
@@ -203,7 +252,7 @@ export async function transcribeAudio(
 ): Promise<TranscriptionResponse> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  const fileName = `audio.${extensionForMime(mimeType, 'm4a')}`;
+  const fileName = `audio.${extensionForAudioMime(mimeType, 'm4a')}`;
 
   try {
     return await uploadMultipart<TranscriptionResponse>(
@@ -264,20 +313,35 @@ export async function synthesizeSpeech(text: string): Promise<ArrayBuffer> {
 }
 
 export async function identifyImage(
-  uri: string,
+  input: string | ImageUploadInput,
   mimeType = 'image/jpeg',
 ): Promise<VisionIdentifyResponse> {
+  const asset: ImageUploadInput =
+    typeof input === 'string' ? { uri: input, mimeType } : input;
+  const resolvedMime =
+    asset.mimeType ||
+    asset.file?.type ||
+    mimeType ||
+    'image/jpeg';
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  const fileName = `photo.${extensionForMime(mimeType, 'jpg')}`;
+  const fileName =
+    asset.fileName?.trim() ||
+    `photo.${extensionForMime(resolvedMime, 'jpg')}`;
+
+  let source: Blob | File | null = asset.file ?? null;
+  if (!source && asset.base64) {
+    source = blobFromBase64(asset.base64, resolvedMime);
+  }
 
   try {
     return await uploadMultipart<VisionIdentifyResponse>(
       '/api/vision/identify',
-      uri,
-      mimeType,
+      asset.uri,
+      resolvedMime,
       fileName,
       controller.signal,
+      source,
     );
   } catch (error) {
     if (error instanceof ApiError) {

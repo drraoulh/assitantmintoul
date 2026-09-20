@@ -102,7 +102,7 @@ export function ChatScreen({ onOpenParlerLocal }: ChatScreenProps) {
           <ChatInputBar
             disabled={isSending}
             onSend={(text) => void sendMessage(text)}
-            onSendImage={(uri) => void sendImage(uri)}
+            onSendImage={(asset) => void sendImage(asset)}
             onOpenVoiceMode={() => {
               void unlockWebAudio();
               setVoiceModeOpen(true);

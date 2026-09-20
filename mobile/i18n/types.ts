@@ -99,6 +99,7 @@ export type TranslationKey =
   | 'error.sttTimeout'
   | 'error.ttsTimeout'
   | 'error.visionTimeout'
+  | 'error.imageLoad'
   | 'mic.title'
   | 'mic.missing'
   | 'mic.empty'
