@@ -52,3 +52,4 @@ data/indexes/*
 *.faiss
 /models/
 .cache/
+exports/
