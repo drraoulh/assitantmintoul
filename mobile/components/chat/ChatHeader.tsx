@@ -24,9 +24,11 @@ export function ChatHeader({
   const statusLabel =
     status === 'checking'
       ? t('status.checking')
-      : status === 'online'
-        ? t('status.online')
-        : t('status.offline');
+      : status === 'waking'
+        ? t('status.waking')
+        : status === 'online'
+          ? t('status.online')
+          : t('status.offline');
 
   return (
     <View style={styles.wrap}>
@@ -172,6 +174,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   checking: {
+    backgroundColor: colors.yellow,
+  },
+  waking: {
     backgroundColor: colors.yellow,
   },
   online: {

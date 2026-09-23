@@ -68,4 +68,4 @@ export interface HealthResponse {
   service: string;
 }
 
-export type BackendStatus = 'checking' | 'online' | 'offline';
+export type BackendStatus = 'checking' | 'waking' | 'online' | 'offline';

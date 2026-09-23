@@ -71,18 +71,21 @@ export function useChat() {
 
   const checkHealth = useCallback(async () => {
     setBackendStatus('checking');
-    // Render free tier can need a cold-start wake; retry before showing offline.
-    const delays = [0, 2500, 5000];
+    // Render free tier cold-start can take ~30–60s; keep pinging before offline.
+    const delays = [0, 2000, 4000, 8000, 12000, 15000, 20000];
     for (let attempt = 0; attempt < delays.length; attempt += 1) {
       if (delays[attempt] > 0) {
         await sleep(delays[attempt]);
+      }
+      if (attempt >= 1) {
+        setBackendStatus('waking');
       }
       try {
         await fetchHealth();
         setBackendStatus('online');
         return;
       } catch {
-        // keep trying
+        // keep trying while the free instance wakes up
       }
     }
     setBackendStatus('offline');
@@ -91,6 +94,18 @@ export function useChat() {
   useEffect(() => {
     void checkHealth();
   }, [checkHealth]);
+
+  // Keep the free Render API warm while the jury tab stays open.
+  useEffect(() => {
+    const id = setInterval(() => {
+      void fetchHealth()
+        .then(() => setBackendStatus('online'))
+        .catch(() => {
+          // Soft fail — next user action / checkHealth can recover.
+        });
+    }, 4 * 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const openConversation = useCallback(async (id: string) => {
     setIsLoadingHistory(true);

@@ -3,6 +3,7 @@ export type AppLocale = 'fr' | 'en';
 export type TranslationKey =
   | 'tagline'
   | 'status.checking'
+  | 'status.waking'
   | 'status.online'
   | 'status.offline'
   | 'a11y.history'
