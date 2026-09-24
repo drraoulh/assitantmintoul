@@ -373,5 +373,14 @@ def is_geo_simple_query(query: str) -> bool:
         r"bafoussam.{0,30}ouest",
         r"lac\s+baleng\s+(est\s+)?o[uù]",
         r"where\s+is\s+(?:lake\s+)?baleng",
+        r"(?:lac|mont|lake|mount)?\s*mbapit",
+        r"o[uù]\s+est\s+(?:le\s+|la\s+|l['’])?(?:lac|mont|lake|mount)?\s*mbapit",
+        r"where\s+is\s+(?:lake\s+|mount\s+)?mbapit",
     )
-    return any(re.search(p, q) for p in patterns)
+    if any(re.search(p, q) for p in patterns):
+        return True
+    # "Où est … ?" / "where is …" for entities we can answer from the geo graph
+    if re.search(r"\b(?:o[uù]\s+est|where\s+is|se\s+trouve|localisation)\b", q):
+        if answer_geo_query(query):
+            return True
+    return False

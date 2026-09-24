@@ -63,9 +63,12 @@ def score_place(
         score += 0.18
         reasons.append("city_partial")
 
-    if region and place.region and fold(region) in fold(place.region):
-        score += 0.15
-        reasons.append("region_match")
+    if region and place.region:
+        from app.services.agents.knowledge.place_retriever import region_matches
+
+        if region_matches(region, place.region):
+            score += 0.15
+            reasons.append("region_match")
 
     # Category / eco / culture
     cat_blob = fold(" ".join(place.categories))
@@ -172,10 +175,17 @@ def passes_hard_filter(place: PlaceRecord, intent: str, query: str) -> bool:
 
     if intent == "FOOD":
         # Prefer knowledge; places only if food-related.
+        # Use word-ish checks — bare "plat" must not match "plateaux".
+        import re
+
+        blob = f"{cat} {desc} {name}"
+        # Hotels are not restaurants for FOOD intent (even if they mention a restaurant).
+        if any(k in cat or k in name for k in ("hotel", "hôtel", "lodg", "resort", "auberge", "camping")):
+            return False
         return any(
-            k in cat or k in desc or k in name
-            for k in ("food", "cuisine", "gastr", "restaurant", "plat", "ndole", "marché", "market")
-        )
+            k in blob
+            for k in ("food", "cuisine", "gastr", "restaurant", "ndole", "ndolé", "marché", "market", "achu", "koki")
+        ) or bool(re.search(r"\bplats?\b", blob))
 
     if intent in {"HOTEL", "BOOKING"}:
         return any(k in cat or k in desc or k in name for k in ("hotel", "hôtel", "lodg", "resort", "auberge"))

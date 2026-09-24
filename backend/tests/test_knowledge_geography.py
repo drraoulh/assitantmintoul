@@ -256,6 +256,27 @@ def test_intent_extracts_bandjoun_and_mbouda():
     assert extract_slots("Bangangté ce week-end").city == "Bangangté"
 
 
+def test_ou_est_does_not_mean_est_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    slots = extract_slots("Où est le lac Mbapit ?")
+    assert slots.region != "Est"
+    assert slots.place_name == "Lac Mbapit"
+
+
+def test_bamoun_sets_ouest_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    slots = extract_slots("Parle-moi des traditions Bamoun")
+    assert slots.region == "Ouest"
+
+
+def test_mbapit_is_geo_simple():
+    from app.services.agents.knowledge.geography import is_geo_simple_query
+
+    assert is_geo_simple_query("Où est le lac Mbapit ?")
+
+
 @pytest.mark.asyncio
 async def test_visit_foumban_returns_palace(geo_on):
     orch = AgentOrchestrator(

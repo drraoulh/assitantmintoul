@@ -51,23 +51,41 @@ _REGIONS: dict[str, str] = {
     "ouest": "Ouest",
     "west": "Ouest",
     "west region": "Ouest",
-    "sud": "Sud",
-    "est": "Est",
-    "nord": "Nord",
+    "sud-ouest": "Sud-Ouest",
+    "sud ouest": "Sud-Ouest",
+    "south-west": "Sud-Ouest",
+    "southwest": "Sud-Ouest",
+    "nord-ouest": "Nord-Ouest",
+    "nord ouest": "Nord-Ouest",
+    "north-west": "Nord-Ouest",
+    "northwest": "Nord-Ouest",
     "extreme-nord": "Extrême-Nord",
     "extreme nord": "Extrême-Nord",
     "far north": "Extrême-Nord",
     "adamaoua": "Adamaoua",
     "adamawa": "Adamaoua",
-    "nord-ouest": "Nord-Ouest",
-    "nord ouest": "Nord-Ouest",
-    "north-west": "Nord-Ouest",
-    "northwest": "Nord-Ouest",
-    "sud-ouest": "Sud-Ouest",
-    "sud ouest": "Sud-Ouest",
-    "south-west": "Sud-Ouest",
-    "southwest": "Sud-Ouest",
+    "sud": "Sud",
+    "south": "Sud",
+    "nord": "Nord",
+    "north": "Nord",
+    "est": "Est",
+    "east": "Est",
 }
+
+# Bare "est" is also the French verb — never match it with a plain substring.
+_REGION_SAFE_SUBSTRING = {
+    "est": re.compile(
+        r"(?:\bl['’]est\b|\br[eé]gion\s+(?:de\s+l['’])?est\b|\beast(?:\s+region)?\b|"
+        r"\bdans\s+l['’]est\b|\bvers\s+l['’]est\b)",
+        re.IGNORECASE,
+    ),
+}
+
+# Cultural area cues → Ouest (no city invented).
+_OUEST_CULTURE = re.compile(
+    r"\b(bamoun|bamum|bamil[eé]k[eé]|grassfields|chefferies?\s+de\s+l['’]?ouest)\b",
+    re.IGNORECASE,
+)
 
 # Named places often asked about specifically (PLACE_DETAILS).
 _KNOWN_PLACES: dict[str, str] = {
@@ -168,28 +186,35 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
     if locale in {"fr", "en"}:
         slots.language = locale
 
-    # Cities / regions — require word boundary style presence in folded text.
-    for key, label in _CITIES.items():
+    for key, label in sorted(_CITIES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if re.search(rf"\b{re.escape(key)}\b", folded):
             slots.city = label
             slots.location = label
             break
 
-    for key, label in _REGIONS.items():
-        if key in folded:
-            # Prefer region only when no city, or keep both.
-            slots.region = label
-            if slots.location is None:
-                slots.location = label
-            break
+    for key, label in sorted(_REGIONS.items(), key=lambda kv: len(kv[0]), reverse=True):
+        safe = _REGION_SAFE_SUBSTRING.get(key)
+        if safe is not None:
+            if not safe.search(folded):
+                continue
+        elif key not in folded:
+            continue
+        slots.region = label
+        if slots.location is None:
+            slots.location = label
+        break
 
-    for key, label in _KNOWN_PLACES.items():
+    if slots.region is None and _OUEST_CULTURE.search(raw):
+        slots.region = "Ouest"
+        if slots.location is None:
+            slots.location = "Ouest"
+
+    for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:
             slots.place_name = label
             if slots.location is None:
                 slots.location = label
             break
-
     if _WEEK.search(raw):
         slots.duration_days = 7
     else:

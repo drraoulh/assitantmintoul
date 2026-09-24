@@ -8,7 +8,11 @@
     "bafoussam_region_ouest": true,
     "geo_no_planner": true,
     "around_has_places": true,
-    "ouest_regional": true
+    "ouest_regional": true,
+    "ouest_food_mentions_achu": true,
+    "ouest_culture_evidence": true,
+    "mbapit_located": true,
+    "dschang_hotel_or_soft": true
   },
   "turns": [
     {
@@ -41,7 +45,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 32.8
+      "ms": 37.6
     },
     {
       "query": "C’est tout ?",
@@ -56,7 +60,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Pouvez-vous préciser un peu ce que vous recherchez ?",
-      "ms": 2.7
+      "ms": 4.4
     },
     {
       "query": "La région de l’Ouest c’est Bafoussam nor ?",
@@ -72,7 +76,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Ouest est une région du Cameroun, et Bafoussam en est le chef-lieu.",
-      "ms": 4.7
+      "ms": 4.6
     },
     {
       "query": "Bafoussam est dans quelle région ?",
@@ -88,7 +92,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bafoussam se trouve dans la région de l’Ouest du Cameroun.",
-      "ms": 3.2
+      "ms": 3.8
     },
     {
       "query": "Que visiter autour de Bafoussam ?",
@@ -120,7 +124,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 4.3
+      "ms": 5.5
     },
     {
       "query": "Je veux visiter l’Ouest du Cameroun.",
@@ -132,8 +136,23 @@
       ],
       "places": [
         {
-          "name": "Lac Baleng",
-          "city": "Baleng",
+          "name": "Chutes De Nsem-Tsa",
+          "city": "Dschang",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "La Falaise De Foreke",
+          "city": "Dschang",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "La Grotte De Demvoh",
+          "city": "Dschang",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Palais royal de Foumban",
+          "city": "Foumban",
           "scope": "IN_REGION"
         },
         {
@@ -142,33 +161,18 @@
           "scope": "IN_REGION"
         },
         {
-          "name": "Buea Town & pied du Mont Cameroun",
-          "city": "Buea",
+          "name": "Base Nautique De Dschang",
+          "city": "Dschang",
           "scope": "IN_REGION"
         },
         {
-          "name": "Jardin botanique de Limbé",
-          "city": "Limbé",
+          "name": "Cascades De Dschang",
+          "city": "Dschang",
           "scope": "IN_REGION"
         },
         {
-          "name": "Plages de sable noir de Limbé",
-          "city": "Limbé",
-          "scope": "IN_REGION"
-        },
-        {
-          "name": "Route des artisans (Bafoussam)",
-          "city": "Bafoussam",
-          "scope": "IN_REGION"
-        },
-        {
-          "name": "Grottes de Ndessi / Nekang (Bamougoum)",
-          "city": "Bamougoum",
-          "scope": "IN_REGION"
-        },
-        {
-          "name": "Bamenda Station Hill",
-          "city": "Bamenda",
+          "name": "Centre Climatique De Dschang",
+          "city": "Dschang",
           "scope": "IN_REGION"
         }
       ],
@@ -176,12 +180,93 @@
       "verified_places_count": 8,
       "geo_facts": 0,
       "planner": false,
-      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Lac Baleng\n- Chefferie de Bafoussam\n- Buea Town & pied du Mont Cameroun\n- Jardin botanique de Limbé\n- Plages de sable noir de Limbé\n- Route des artisans (Bafoussam)\n- Grottes de Ndessi / Nekang (Bamougoum)\n- Bamenda Station Hill",
-      "ms": 5.5
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Chutes De Nsem-Tsa\n- La Falaise De Foreke\n- La Grotte De Demvoh\n- Palais royal de Foumban\n- Chefferie de Bafoussam\n- Base Nautique De Dschang\n- Cascades De Dschang\n- Centre Climatique De Dschang",
+      "ms": 8.0
+    },
+    {
+      "query": "Quels plats typiques de l’Ouest ?",
+      "intent": "FOOD",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "LOW",
+      "verified_places_count": 0,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Plats typiques de l’Ouest / Grassfields documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts",
+      "ms": 7.4
+    },
+    {
+      "query": "Parle-moi des traditions bamiléké et Bamoun",
+      "intent": "CULTURE",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Royal Museum Of Batoufam-Mrb",
+          "city": "Batoufam",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Route des artisans (Bafoussam)",
+          "city": "Bafoussam",
+          "scope": "IN_REGION"
+        }
+      ],
+      "completeness": "MEDIUM",
+      "verified_places_count": 2,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés pour l’Ouest :\n- Protocole des chefferies",
+      "ms": 7.9
+    },
+    {
+      "query": "Où est le lac Mbapit ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban (département du Noun, région de l’Ouest).",
+      "ms": 4.2
+    },
+    {
+      "query": "Hôtel à Dschang ?",
+      "intent": "HOTEL",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Adys Hotel Dschang Officiel",
+          "city": "Dschang",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "LOW",
+      "verified_places_count": 1,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 1 lieu(x) vérifié(s) autour de Dschang dans ma base :\n- Adys Hotel Dschang Officiel\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
+      "ms": 4.5
     }
   ],
-  "total_conversation_ms": 53.4,
-  "pytest": "220 passed, 1 warning in 1.39s",
+  "total_conversation_ms": 87.9,
+  "pytest": "230 passed, 1 warning in 1.58s",
   "flags_default": {
     "KNOWLEDGE_GEOGRAPHY_ENABLED": false,
     "WEB_KNOWLEDGE_FALLBACK_ENABLED": false

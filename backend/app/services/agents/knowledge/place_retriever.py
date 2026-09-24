@@ -35,6 +35,41 @@ _NOT_BAFOUSSAM = {
     "noun",
 }
 
+_REGION_ALIASES = {
+    "west": "ouest",
+    "east": "est",
+    "north": "nord",
+    "south": "sud",
+    "adamawa": "adamaoua",
+    "far north": "extreme-nord",
+    "extreme nord": "extreme-nord",
+    "north-west": "nord-ouest",
+    "northwest": "nord-ouest",
+    "nord ouest": "nord-ouest",
+    "south-west": "sud-ouest",
+    "southwest": "sud-ouest",
+    "sud ouest": "sud-ouest",
+}
+
+
+def _norm_region(value: str | None) -> str:
+    raw = fold(value or "").replace("é", "e")
+    raw = raw.replace(" ", "-")
+    return _REGION_ALIASES.get(raw, raw)
+
+
+def region_matches(wanted: str | None, place_region: str | None) -> bool:
+    """Exact region match — 'Ouest' must not match 'Nord-Ouest' / 'Sud-Ouest'."""
+    w = _norm_region(wanted)
+    p = _norm_region(place_region)
+    if not w or not p:
+        return False
+    if w == p:
+        return True
+    # Multi-label place regions e.g. "Sud / Est"
+    parts = [ _norm_region(part) for part in (place_region or "").replace("/", ",").split(",") ]
+    return w in parts
+
 
 class PlaceRetriever:
     """Search published places only. Never invents place_id / costs / activities."""
@@ -96,6 +131,8 @@ class PlaceRetriever:
             "NATURE",
             "TOURISM_INFO",
             "CULTURE",
+            "FOOD",
+            "HOTEL",
         }
 
         candidates: list[tuple[float, list[str], PlaceRecord, str]] = []
@@ -126,17 +163,10 @@ class PlaceRetriever:
                     continue
 
             if region_only and intent.intent in region_filter_intents:
-                if not place.region or fold(region or "") not in fold(place.region):
-                    # EN "West" → Ouest
-                    if geo_on and fold(region or "") in {"west", "ouest"} and fold(place.region or "") in {
-                        "ouest",
-                        "west",
-                    }:
-                        scope = "IN_REGION"
-                    else:
-                        continue
-                else:
+                if region_matches(region, place.region):
                     scope = "IN_REGION"
+                else:
+                    continue
 
             if not passes_hard_filter(place, intent.intent, query):
                 continue

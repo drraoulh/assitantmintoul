@@ -29,8 +29,18 @@ def render_deterministic(
     geo_chunks = [
         k for k in knowledge.knowledge if (k.chunk_id or "").startswith("geo-")
     ]
-    if geo_chunks and intent.intent in {"SIMPLE_QA", "TOURISM_INFO"}:
+    if geo_chunks and intent.intent in {"SIMPLE_QA", "TOURISM_INFO", "PLACE_DETAILS"}:
         return geo_chunks[0].content.split(" (source:")[0].strip()
+
+    culture_chunks = [
+        k for k in knowledge.knowledge if (k.source_id or "") == "culture:ouest"
+    ]
+    if intent.intent == "FOOD" and culture_chunks:
+        return _render_culture_food(culture_chunks, knowledge, lang=lang, voice=voice)
+    if intent.intent == "CULTURE" and culture_chunks:
+        return _render_culture_traditions(
+            culture_chunks, knowledge, lang=lang, voice=voice
+        )
 
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
@@ -278,6 +288,83 @@ def _missing_sentence(missing: list[str], lang: str) -> str:
     if lang == "en":
         return f"Not listed in my verified data: {joined}."
     return f"Non renseigné dans mes données vérifiées : {joined}."
+
+
+def _render_culture_food(
+    culture_chunks,
+    knowledge: KnowledgeResult,
+    *,
+    lang: str,
+    voice: bool,
+) -> str:
+    dishes = [
+        k
+        for k in culture_chunks
+        if (k.chunk_id or "").startswith("culture-dish-")
+        or (k.title and k.title.casefold() in {"achu", "koki", "café des hauts plateaux", "highland coffee"})
+    ]
+    if not dishes:
+        dishes = [k for k in culture_chunks if "dish" in (k.chunk_id or "")]
+    policy = [k for k in culture_chunks if "resto-policy" in (k.chunk_id or "")]
+    parts: list[str] = []
+    if lang == "en":
+        parts.append("Typical West / Grassfields dishes documented in my knowledge base:")
+    else:
+        parts.append("Plats typiques de l’Ouest / Grassfields documentés dans ma base :")
+    for d in dishes[:5]:
+        title = d.title or "Plat"
+        body = (d.content or "").strip()
+        parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
+    if policy:
+        parts.append(policy[0].content.strip())
+    hotels = [
+        p
+        for p in knowledge.places
+        if "hotel" in (p.category or "").casefold() or "hôtel" in (p.name or "").casefold()
+    ]
+    if hotels and lang == "fr":
+        parts.append(
+            f"Hébergement documenté avec restauration mentionnée : {hotels[0].name}."
+        )
+    elif hotels:
+        parts.append(f"Documented lodging with mentioned dining: {hotels[0].name}.")
+    text = "\n".join(parts) if not voice else " ".join(parts)
+    return text.strip()
+
+
+def _render_culture_traditions(
+    culture_chunks,
+    knowledge: KnowledgeResult,
+    *,
+    lang: str,
+    voice: bool,
+) -> str:
+    trads = [k for k in culture_chunks if (k.chunk_id or "").startswith("culture-trad-")]
+    overview = [k for k in culture_chunks if (k.chunk_id or "") == "culture-overview-ouest"]
+    parts: list[str] = []
+    if overview:
+        parts.append(overview[0].content.strip())
+    if lang == "en":
+        parts.append("Documented cultural notes for the West:")
+    else:
+        parts.append("Repères culturels documentés pour l’Ouest :")
+    for t in (trads or culture_chunks)[:5]:
+        title = t.title or "Culture"
+        body = (t.content or "").strip()
+        if overview and t.chunk_id == "culture-overview-ouest":
+            continue
+        parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
+    ouest_places = [
+        p for p in knowledge.places if (p.region or "").casefold() in {"ouest", "west"}
+    ][:4]
+    if ouest_places:
+        names = ", ".join(p.name for p in ouest_places)
+        if lang == "en":
+            parts.append(f"Related verified places: {names}.")
+        else:
+            parts.append(f"Lieux vérifiés associés : {names}.")
+    text = "\n".join(parts) if not voice else " ".join(parts)
+    return text.strip()
 
 
 def _render_place_details(place, *, lang: str, voice: bool) -> str:
