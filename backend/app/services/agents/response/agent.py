@@ -1,4 +1,4 @@
-"""AGENT 4 — Response Generator orchestrator."""
+"""AGENT 4 — Response Generator orchestrator (Phase 2.7 grounding)."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from app.core.config import get_settings
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
@@ -18,7 +19,15 @@ from app.services.agents.response.context import (
     map_response_type,
     resolve_language,
 )
+from app.services.agents.response.evidence import (
+    build_allowed_evidence,
+    evidence_is_insufficient_for_llm,
+)
 from app.services.agents.response.fallback import render_deterministic
+from app.services.agents.response.grounding_enforcement import (
+    catalog_place_names,
+    validate_grounding,
+)
 from app.services.agents.response.models import FinalResponse, SourceReference
 from app.services.agents.response.prompts import agent4_system_prompt
 
@@ -62,6 +71,8 @@ class ResponseGenerator:
         )
         language = resolve_language(intent_result, locale)
         response_type = map_response_type(intent_result, tourism_plan)
+        settings = get_settings()
+        enforce = bool(settings.grounding_enforcement_enabled)
 
         t_prompt = time.perf_counter()
         context = build_structured_context(
@@ -86,8 +97,22 @@ class ResponseGenerator:
         llm_ttft_ms: float | None = None
         llm_generation_ms: float | None = None
         text: str
+        grounding_report = None
 
-        use_llm = self._llm is not None and not self._prefer_deterministic
+        skip_llm = enforce and evidence_is_insufficient_for_llm(
+            intent_result, knowledge_result, tourism_plan, user_query=user_query
+        )
+        use_llm = (
+            self._llm is not None
+            and not self._prefer_deterministic
+            and not skip_llm
+        )
+        if skip_llm:
+            logger.info(
+                "[GROUNDING] skip_llm insufficient_evidence intent=%s",
+                intent_result.intent,
+            )
+
         if use_llm:
             try:
                 t_llm = time.perf_counter()
@@ -116,11 +141,43 @@ class ResponseGenerator:
                 language=language,
                 response_mode=response_mode,
             )
-            fallback_used = self._llm is not None  # had LLM but preferred deterministic
+            fallback_used = self._llm is not None or skip_llm
 
         # Voice cleanup: strip residual markdown if any
         if response_mode == "voice":
             text = _voice_sanitize(text)
+
+        # Post-generation deterministic grounding (complete path — may replace text)
+        evidence = build_allowed_evidence(intent_result, knowledge_result, tourism_plan)
+        grounding_report = validate_grounding(
+            text,
+            evidence,
+            catalog_names=catalog_place_names() if enforce else set(),
+            enforcement_enabled=enforce,
+        )
+        if enforce and grounding_report.critical and use_llm and not fallback_used:
+            logger.warning(
+                "[GROUNDING] critical_violation replacing_with_fallback kinds=%s",
+                [v.kind for v in grounding_report.violations[:6]],
+            )
+            text = render_deterministic(
+                user_query,
+                intent_result,
+                knowledge_result,
+                tourism_plan,
+                language=language,
+                response_mode=response_mode,
+            )
+            if response_mode == "voice":
+                text = _voice_sanitize(text)
+            fallback_used = True
+            # Re-validate fallback (should be clean)
+            grounding_report = validate_grounding(
+                text,
+                evidence,
+                catalog_names=set(),
+                enforcement_enabled=enforce,
+            )
 
         sources = [
             SourceReference(source_id=s.source_id, name=s.name, url=s.url)
@@ -133,10 +190,11 @@ class ResponseGenerator:
                 + (list(tourism_plan.warnings)[:4] if tourism_plan else [])
             )
         )
+        if grounding_report and not grounding_report.ok:
+            warnings.append("grounding_violation")
         confidence = _response_confidence(intent_result, knowledge_result, tourism_plan)
 
         total_ms = (time.perf_counter() - started) * 1000.0
-        # Keep reference to messages size for potential diagnostics (no PII log of full text)
         _ = len(messages)
 
         result = FinalResponse(
@@ -153,12 +211,21 @@ class ResponseGenerator:
             llm_ttft_ms=round(llm_ttft_ms, 3) if llm_ttft_ms is not None else None,
             llm_generation_ms=round(llm_generation_ms, 3) if llm_generation_ms is not None else None,
             total_agent4_ms=round(total_ms, 3),
+            grounding_ok=None if grounding_report is None else grounding_report.ok,
+            grounding_validation_ms=(
+                None
+                if grounding_report is None
+                else round(grounding_report.validation_ms, 3)
+            ),
+            grounding_violations=[
+                f"{v.kind}:{v.detail}" for v in (grounding_report.violations if grounding_report else [])[:8]
+            ],
         )
-        # Soft check for diagnostics
         allowed = allowed_place_names(knowledge_result, tourism_plan)
         result_meta = {
             **result.observability(),
             "allowed_places_count": len(allowed),
+            "grounding_enforcement": enforce,
         }
         logger.info("response_generator %s", result_meta)
         return result

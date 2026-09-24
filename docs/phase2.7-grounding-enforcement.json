@@ -1,0 +1,161 @@
+{
+  "phase": "2.7",
+  "status": "PASS",
+  "grounding_status": "PASS",
+  "place_whitelist": "PASS",
+  "restaurant": "PASS",
+  "hotel": "PASS",
+  "price": "PASS",
+  "hours": "PASS",
+  "activity": "PASS",
+  "distance": "PASS",
+  "itinerary": "PASS",
+  "web": "PASS",
+  "slogan": "PASS",
+  "fallback": "PASS",
+  "streaming": "PASS",
+  "regression": "FAIL",
+  "pytest": "6 failed, 199 passed, 1 warning in 1.19s",
+  "local": {
+    "scenario_c_fish": {
+      "intent": "CLARIFICATION",
+      "places_count": 0,
+      "skip_llm_pre_gate": true,
+      "llm_calls": 0,
+      "invented_restaurant": false,
+      "assistant_preview": "Could you tell me a bit more about what you are looking for?",
+      "grounding_ok": true,
+      "pass": true
+    },
+    "scenario_d_foumban": {
+      "intent": "ITINERARY",
+      "plan_places": [
+        "site-005",
+        "foumban-palais-sultan"
+      ],
+      "knowledge_places": [
+        "Palais des Rois Bamoun",
+        "Palais du Sultan (Foumban)"
+      ],
+      "llm_calls": 1,
+      "mentions_mbingo": false,
+      "mentions_kimbi": false,
+      "assistant_preview": "Voici un programme sur 5 jours à partir de lieux vérifiés.\n### Jour 1 — Foumban\n- Palais des Rois Bamoun\n- Palais du Sultan (Foumban)\nLes coûts actuellement documentés représentent 0 FCFA. Le total ne peut donc pas être confirmé.\nNon rensei",
+      "grounding_ok": true,
+      "fallback_used": true,
+      "pass": true
+    },
+    "scenario_g_unknown": {
+      "places_count": 0,
+      "assistant_preview": "Pouvez-vous préciser un peu ce que vous recherchez ?",
+      "pass": true
+    },
+    "raw_hallucination_blocked": {
+      "ok": false,
+      "critical": true,
+      "violations": [
+        "unauthorized_place"
+      ],
+      "pass": true
+    },
+    "intent_router_smoke": {
+      "intent_fish": "CLARIFICATION"
+    }
+  },
+  "voice": {
+    "valid": true,
+    "ttfa_ms": 1197.8,
+    "first_text_chunk_ms": 565.0,
+    "qwen_ttft_ms": 516.7,
+    "qwen_total_ms": 5414.0,
+    "grounding_validation_ms": 1.683,
+    "llm_calls": 1,
+    "skipped_insufficient": null,
+    "first_audio_before_qwen_finished": true,
+    "audio_chunks": 145,
+    "assistant_preview": "En une journée à Yaoundé, vous pouvez visiter le Monument de la Réunification et le Musée National du Cameroun pour l'histoire et la culture. Pour la nature, le Mont Fébé offre des points de vue et des promenades. Vous pouvez aussi découvri",
+    "grounding": {
+      "ok": true,
+      "critical": false,
+      "enforcement_enabled": true,
+      "validation_ms": 1.683,
+      "violations": [],
+      "violation_count": 0
+    },
+    "orchestrator": {
+      "request_id": "e604f2014b",
+      "intent": "PLACE_SEARCH",
+      "mode": "voice",
+      "agents_called": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "intent_ms": 0.578,
+      "knowledge_ms": 13.391,
+      "planner_ms": null,
+      "streaming": true,
+      "grounding_enforcement": true,
+      "llm": {
+        "use_llm_flag": true,
+        "streaming": true,
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "calls": 1,
+        "http_status": 200,
+        "ttft_ms": 516.7,
+        "total_ms": 5414.0,
+        "fallback_used": false,
+        "qwen_finished": true,
+        "text_token_events": 131,
+        "grounding": {
+          "ok": true,
+          "critical": false,
+          "enforcement_enabled": true,
+          "validation_ms": 1.683,
+          "violations": [],
+          "violation_count": 0
+        }
+      },
+      "response_type": "PLACE_LIST"
+    },
+    "phases_ms": {
+      "store_prepare_skip_db_new_thread": 0.0,
+      "store_prepare_total": 1.0,
+      "orchestrator_prepare": 14.0,
+      "agent_orchestrator": 14.0,
+      "intent_router": 0.6,
+      "knowledge_agent": 13.4,
+      "rag": 0.0,
+      "web": 0.0,
+      "prompt": 0.0,
+      "cache_hit": 0.0,
+      "llm_ttft": 516.7,
+      "app_ttft": 563.9,
+      "tts_ttfb": 562.7,
+      "first_audio": 1197.1,
+      "time_to_first_audio": 1197.1,
+      "tts_first": 1014.4,
+      "tts_1": 2482.6,
+      "tts_2": 1327.6,
+      "llm": 5414.0,
+      "response_agent": 5414.0,
+      "text_chunks_count": 131.0,
+      "grounding": 1.7,
+      "tts_3": 2504.2,
+      "tts_4": 2609.2,
+      "tts_5": 1751.7,
+      "tts_6": 2573.8,
+      "tts_7": 2069.1,
+      "tts_8": 2580.2,
+      "tts_requests": 9.0
+    },
+    "previous_ttfa_ms": 1091
+  },
+  "conclusion": "Grounding enforcement blocks invented restaurants/places (fish llm_calls=0); streaming TTFA 1197.8 ms near Phase 2.6 (~1091 ms).",
+  "defaults": {
+    "GROUNDING_ENFORCEMENT_ENABLED": false,
+    "AGENT_ORCHESTRATOR_ENABLED": false,
+    "AGENT_ORCHESTRATOR_USE_LLM": false,
+    "VOICE_LLM_STREAMING_ENABLED": false
+  }
+}

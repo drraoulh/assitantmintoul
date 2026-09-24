@@ -264,6 +264,13 @@ class Settings(BaseSettings):
         default=0,
         validation_alias=AliasChoices("VOICE_STREAM_MAX_CHARS"),
     )
+    # Phase 2.7 — deterministic grounding enforcement (Agent 4). Default OFF.
+    # When true: skip LLM on empty fact-heavy evidence; post-check replies;
+    # streaming keeps TTS overlap (validation is non-blocking after tokens).
+    grounding_enforcement_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("GROUNDING_ENFORCEMENT_ENABLED"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

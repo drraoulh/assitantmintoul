@@ -822,6 +822,22 @@ class HuggingFaceAIService(AIService):
         knowledge = ctx.knowledge
         plan = ctx.plan
 
+        from app.core.config import get_settings as _gs
+        from app.services.agents.response.evidence import (
+            build_allowed_evidence,
+            evidence_is_insufficient_for_llm,
+        )
+        from app.services.agents.response.grounding_enforcement import (
+            catalog_place_names,
+            validate_grounding,
+        )
+
+        settings = _gs()
+        enforce = bool(settings.grounding_enforcement_enabled)
+        skip_llm = enforce and evidence_is_insufficient_for_llm(
+            intent, knowledge, plan, user_query=message
+        )
+
         orch_obs: dict[str, Any] = {
             "request_id": ctx.request_id,
             "intent": intent.intent,
@@ -831,11 +847,13 @@ class HuggingFaceAIService(AIService):
             "knowledge_ms": ctx.timings.knowledge_ms,
             "planner_ms": ctx.timings.planner_ms,
             "streaming": True,
+            "grounding_enforcement": enforce,
             "llm": {
                 "use_llm_flag": True,
                 "streaming": True,
                 "model": self._model,
                 "calls": 0,
+                "skipped_insufficient_evidence": skip_llm,
             },
         }
         trace.set_meta(agent_orchestrator=orch_obs)
@@ -851,6 +869,65 @@ class HuggingFaceAIService(AIService):
             "intent": intent.observability(),
             "orchestrator": orch_obs,
         }
+
+        # Phase 2.7 — empty fact-heavy evidence: deterministic only (0 LLM calls)
+        if skip_llm:
+            language = resolve_language(intent, locale)
+            text = render_deterministic(
+                message,
+                intent,
+                knowledge,
+                plan,
+                language=language,
+                response_mode="voice" if brief else "text",
+            )
+            logger.info("[GROUNDING] stream_skip_llm insufficient_evidence")
+            reply_parts: list[str] = []
+            for i, word in enumerate(text.split(" ")):
+                piece = word if i == 0 else f" {word}"
+                reply_parts.append(piece)
+                yield {"type": "token", "text": piece}
+            evidence = build_allowed_evidence(intent, knowledge, plan)
+            g_report = validate_grounding(
+                text, evidence, catalog_names=set(), enforcement_enabled=enforce
+            )
+            timer.mark("grounding", g_report.validation_ms)
+            timer.mark("llm", 0.0)
+            timer.mark("llm_ttft", 0.0)
+            timer.mark("response_agent", g_report.validation_ms)
+            self._last_agent4_llm = {
+                "calls": 0,
+                "http_status": None,
+                "ttft_ms": None,
+                "total_ms": 0.0,
+                "model": self._model,
+                "streaming": True,
+                "skipped_insufficient_evidence": True,
+            }
+            orch_obs["llm"] = {
+                "use_llm_flag": True,
+                "streaming": True,
+                "model": self._model,
+                "calls": 0,
+                "skipped_insufficient_evidence": True,
+                "fallback_used": True,
+                "grounding": g_report.as_dict(),
+            }
+            await self._store.add_messages(
+                thread_id,
+                [("user", message), ("assistant", text.strip())],
+            )
+            trace.note_llm_end()
+            yield {
+                "type": "done",
+                "conversation_id": thread_id,
+                "text": text.strip(),
+                "sources": [],
+                "metrics": timer.as_dict(),
+                "llm_trace": trace.as_dict(),
+                "orchestrator": orch_obs,
+            }
+            return
 
         generator = ResponseGenerator(prefer_deterministic=True)
         messages = generator.build_messages(
@@ -879,7 +956,7 @@ class HuggingFaceAIService(AIService):
             "chat_template_kwargs": {"enable_thinking": False},
         }
 
-        reply_parts: list[str] = []
+        reply_parts = []
         fallback_used = False
         qwen_finished = False
         first_token = True
@@ -889,7 +966,6 @@ class HuggingFaceAIService(AIService):
         timer.mark("rag", 0.0)
         timer.mark("web", float(ctx.timings.web_ms or 0.0))
         timer.mark("prompt", 0.0)
-        timer.mark("grounding", 0.0)
         timer.mark("cache_hit", 0.0)
         trace.set_meta(orchestrator_enabled=True, voice_llm_streaming=True)
 
@@ -950,6 +1026,21 @@ class HuggingFaceAIService(AIService):
         if not reply:
             raise GenerationFailedError("Orchestrator stream returned an empty answer.")
 
+        # Phase 2.7 — non-blocking post-stream grounding (does NOT rewind TTS/audio)
+        evidence = build_allowed_evidence(intent, knowledge, plan)
+        g_report = validate_grounding(
+            reply,
+            evidence,
+            catalog_names=catalog_place_names() if enforce else set(),
+            enforcement_enabled=enforce,
+        )
+        timer.mark("grounding", g_report.validation_ms)
+        if not g_report.ok:
+            logger.warning(
+                "[GROUNDING] stream_post_check violations=%s (audio already may have started)",
+                [v.kind for v in g_report.violations[:6]],
+            )
+
         language = resolve_language(intent, locale)
         response_type = map_response_type(intent, plan)
         sources = [
@@ -963,13 +1054,19 @@ class HuggingFaceAIService(AIService):
             response_type=response_type,
             response_mode="voice" if brief else "text",
             sources=sources,
-            warnings=list(knowledge.missing_information)[:4],
+            warnings=list(knowledge.missing_information)[:4]
+            + (["grounding_violation"] if not g_report.ok else []),
             confidence=0.7,
             fallback_used=fallback_used,
             request_id=ctx.request_id,
             llm_ttft_ms=self._last_agent4_llm.get("ttft_ms"),
             llm_generation_ms=self._last_agent4_llm.get("total_ms"),
             total_agent4_ms=self._last_agent4_llm.get("total_ms"),
+            grounding_ok=g_report.ok,
+            grounding_validation_ms=round(g_report.validation_ms, 3),
+            grounding_violations=[
+                f"{v.kind}:{v.detail}" for v in g_report.violations[:8]
+            ],
         )
 
         orch_obs["response_type"] = final.response_type
@@ -984,6 +1081,7 @@ class HuggingFaceAIService(AIService):
             "fallback_used": fallback_used,
             "qwen_finished": qwen_finished,
             "text_token_events": text_chunks_emitted,
+            "grounding": g_report.as_dict(),
         }
         orch_obs["agents_called"] = agents_called
         trace.set_meta(agent_orchestrator=orch_obs)
