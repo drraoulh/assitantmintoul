@@ -166,6 +166,25 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "soya",
         "brochette",
     ),
+    "adamaoua": (
+        "adamaoua",
+        "adamawa",
+        "ngaoundere",
+        "ngaoundéré",
+        "banyo",
+        "meiganga",
+        "tibati",
+        "tignere",
+        "tignère",
+        "lamido",
+        "lamidat",
+        "lac tison",
+        "ngan-ha",
+        "ngan ha",
+        "lancrenon",
+        "hotel oasis",
+        "hôtel oasis",
+    ),
 }
 
 

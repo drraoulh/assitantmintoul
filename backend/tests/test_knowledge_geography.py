@@ -863,3 +863,89 @@ async def test_extreme_nord_food_query_injects_culture(geo_on):
         locale="fr",
     )
     assert any((k.source_id or "") == "culture:extreme-nord" for k in result.knowledge.knowledge)
+
+
+def test_adamaoua_admin_and_ngaoundere():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Ngaoundéré")
+    assert chain is not None
+    assert chain["region"] == "Adamaoua"
+    assert chain["is_region_capital"] is True
+    assert chain["division"] == "Vina"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "adamaoua"]) == 5
+
+
+def test_adamaoua_not_ngaoundere():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région de l’Adamaoua c’est Ngaoundéré nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_lac_tison_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le lac Tison ?", language="fr")
+    assert facts
+    assert "Ngaoundéré" in facts[0].text_fr or "Adamaoua" in facts[0].text_fr
+
+
+def test_adamaoua_culture_and_hotel(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+        _load_pack,
+    )
+
+    clear_culture_cache()
+    pack = _load_pack("adamaoua")
+    assert len(pack.get("hotels_verified") or []) >= 1
+    assert "oasis" in (pack["hotels_verified"][0].get("name") or "").casefold()
+    ev = culture_evidence_for_query("Quels plats typiques à Ngaoundéré ?", language="fr")
+    assert any((e.source_id or "") == "culture:adamaoua" for e in ev)
+
+
+def test_lamido_sets_adamaoua_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi du lamidat de Ngaoundéré").region == "Adamaoua"
+    assert extract_slots("Que visiter à Banyo ?").city == "Banyo"
+
+
+@pytest.mark.asyncio
+async def test_visit_ngaoundere_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Ngaoundéré que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "banyo" not in cities
+    assert "meiganga" not in cities
+
+
+@pytest.mark.asyncio
+async def test_ngaoundere_hotel_oasis(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Hôtel à Ngaoundéré ?",
+        mode="text",
+        locale="fr",
+    )
+    blob = " ".join(p.name.casefold() for p in result.knowledge.places)
+    blob += " " + result.final_response.text.casefold()
+    assert "oasis" in blob or result.knowledge.verified_places_count >= 1

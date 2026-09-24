@@ -62,6 +62,12 @@ QUERIES = [
     "Quels plats typiques à Maroua / Extrême-Nord ?",
     "Où est le parc de Waza ?",
     "Je veux visiter l’Extrême-Nord.",
+    "Je veux visiter Ngaoundéré que me proposes-tu ?",
+    "La région de l’Adamaoua c’est Ngaoundéré nor ?",
+    "Ngaoundéré est dans quelle région ?",
+    "Quels plats typiques à Ngaoundéré ?",
+    "Où est le lac Tison ?",
+    "Hôtel à Ngaoundéré ?",
 ]
 
 
@@ -234,6 +240,23 @@ async def main() -> int:
         or "maroua" in turns[44]["assistant"].casefold(),
         "extreme_nord_regional": turns[45]["intent"]
         in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "ngaoundere_has_places": turns[46]["verified_places_count"] >= 1,
+        "ngaoundere_not_banyo_as_city": all(
+            (p.get("city") or "").casefold() not in {"banyo", "meiganga"} for p in turns[46]["places"]
+        ),
+        "adamaoua_not_equals_ngaoundere": "Pas exactement" in turns[47]["assistant"]
+        or "chef-lieu" in turns[47]["assistant"].casefold(),
+        "ngaoundere_region_adamaoua": "Adamaoua" in turns[48]["assistant"],
+        "adamaoua_food": turns[49]["completeness"] != "NONE"
+        or "brochette" in turns[49]["assistant"].casefold()
+        or "soya" in turns[49]["assistant"].casefold()
+        or "plat" in turns[49]["assistant"].casefold(),
+        "tison_located": "ngaoundere" in turns[50]["assistant"].casefold()
+        or "ngaoundéré" in turns[50]["assistant"].casefold()
+        or "adamaoua" in turns[50]["assistant"].casefold()
+        or "tison" in turns[50]["assistant"].casefold(),
+        "ngaoundere_hotel_oasis": "oasis" in turns[51]["assistant"].casefold()
+        or turns[51]["verified_places_count"] >= 1,
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -285,7 +308,7 @@ async def main() -> int:
         "",
         "## Geography",
         "",
-        "- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 (Diamaré, Mayo-Tsanaga, …)",
+        "- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 · Adamaoua 5",
         "",
         "## Region packs",
         "",
@@ -300,6 +323,8 @@ async def main() -> int:
         f"- Bamenda: {turns[34]['verified_places_count']} — `{turns[34]['assistant'][:100]}`",
         f"- Maroua: {turns[40]['verified_places_count']} — `{turns[40]['assistant'][:100]}`",
         f"- Waza: `{turns[44]['assistant']}`",
+        f"- Ngaoundéré: {turns[46]['verified_places_count']} — `{turns[46]['assistant'][:100]}`",
+        f"- Oasis: `{turns[51]['assistant'][:120]}`",
         "",
         "## Agent 2",
         "",
@@ -331,7 +356,7 @@ async def main() -> int:
         "",
         "## Conclusion",
         "",
-        "Structured geography covers Ouest through Extrême-Nord without inventing tourism facts.",
+        "Structured geography covers Ouest through Adamaoua without inventing tourism facts.",
         "",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")

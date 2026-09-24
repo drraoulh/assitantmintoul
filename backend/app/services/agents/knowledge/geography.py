@@ -108,6 +108,10 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["extreme nord"] = rid
             idx.alias_to_region["region de l extreme-nord"] = rid
             idx.alias_to_region["region extreme-nord"] = rid
+        elif rid == "adamaoua":
+            idx.alias_to_region["adamawa"] = rid
+            idx.alias_to_region["region de l adamaoua"] = rid
+            idx.alias_to_region["region adamaoua"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -344,6 +348,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
+        ("adamaoua" in q or "adamawa" in q)
+        and "ngaoundere" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Adamaoua",
+                relation="IS_NOT_EQUIVALENT",
+                object="Ngaoundéré",
+                text_fr=(
+                    "Pas exactement. L’Adamaoua est une région du Cameroun, "
+                    "et Ngaoundéré en est le chef-lieu."
+                ),
+                text_en=(
+                    "Not exactly. Adamawa is a region of Cameroon, "
+                    "and Ngaoundéré is its capital (chef-lieu)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("adamaoua", "ngaoundere"),
+            )
+        ]
+
+    if (
         not compound_ouest
         and ("sud" in q or "south" in q)
         and "kribi" in q
@@ -396,6 +423,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Bamenda est le chef-lieu de la région du Nord-Ouest du Cameroun."
                     elif rid == "extreme-nord":
                         text_fr = "Maroua est le chef-lieu de la région de l’Extrême-Nord du Cameroun."
+                    elif rid == "adamaoua":
+                        text_fr = "Ngaoundéré est le chef-lieu de la région de l’Adamaoua du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -603,6 +632,28 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Lac Tison
+    if "lac tison" in q or "lake tison" in q or (
+        "tison" in q and re.search(r"o[uù]\s+est|where|se\s+trouve|localisation|lac", q)
+    ):
+        return [
+            GeoFact(
+                subject="Lac Tison",
+                relation="LOCATED_IN",
+                object="Ngaoundéré / Vina / Adamaoua",
+                text_fr=(
+                    "Le lac Tison se trouve près de Ngaoundéré "
+                    "(département de la Vina, région de l’Adamaoua)."
+                ),
+                text_en=(
+                    "Lake Tison is near Ngaoundéré "
+                    "(Vina department, Adamawa region)."
+                ),
+                source="Sites touristiques Adamaoua / Lac Tison",
+                entity_ids=("lac-tison", "ngaoundere", "vina", "adamaoua"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -659,6 +710,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région du Nord-Ouest du Cameroun."
                 elif rid == "extreme-nord":
                     text_fr = f"{cname} se trouve dans la région de l’Extrême-Nord du Cameroun."
+                elif rid == "adamaoua":
+                    text_fr = f"{cname} se trouve dans la région de l’Adamaoua du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -759,6 +812,10 @@ def is_geo_simple_query(query: str) -> bool:
         r"lac\s+oku",
         r"(?:parc\s+(?:national\s+)?(?:de\s+)?)?waza",
         r"rhumsiki|kapsiki",
+        r"adamaoua.{0,40}c[' ]?est.{0,20}ngaoundere",
+        r"r[eé]gion\s+(?:de\s+l['’])?adamaoua.{0,30}ngaoundere",
+        r"ngaoundere.{0,40}c[' ]?est.{0,20}adamaoua",
+        r"lac\s+tison",
     )
     if any(re.search(p, q) for p in patterns):
         return True

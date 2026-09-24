@@ -421,6 +421,51 @@
       "capital_city_id": "yagoua",
       "source": "Départements de la région de l’Extrême-Nord",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "vina",
+      "name_fr": "Vina",
+      "name_en": "Vina",
+      "region_id": "adamaoua",
+      "capital_city_id": "ngaoundere",
+      "source": "Départements de la région de l’Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mbere",
+      "name_fr": "Mbéré",
+      "name_en": "Mbéré",
+      "region_id": "adamaoua",
+      "capital_city_id": "meiganga",
+      "source": "Départements de la région de l’Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "djerem",
+      "name_fr": "Djérem",
+      "name_en": "Djérem",
+      "region_id": "adamaoua",
+      "capital_city_id": "tibati",
+      "source": "Départements de la région de l’Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "faro-deo",
+      "name_fr": "Faro-et-Déo",
+      "name_en": "Faro-et-Déo",
+      "region_id": "adamaoua",
+      "capital_city_id": "tignere",
+      "source": "Départements de la région de l’Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-banyo",
+      "name_fr": "Mayo-Banyo",
+      "name_en": "Mayo-Banyo",
+      "region_id": "adamaoua",
+      "capital_city_id": "banyo",
+      "source": "Départements de la région de l’Adamaoua",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -508,8 +553,9 @@
         "ngaoundere",
         "ngaoundéré"
       ],
-      "source": "Chef-lieu de la région de l'Adamaoua",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région de l’Adamaoua / département de la Vina",
+      "verified_at": "2026-09-24",
+      "division_id": "vina"
     },
     {
       "id": "bertoua",
@@ -1230,6 +1276,63 @@
       ],
       "source": "Lac de Maga, Mayo-Danay, Extrême-Nord",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "banyo",
+      "name_fr": "Banyo",
+      "name_en": "Banyo",
+      "entity_type": "city",
+      "division_id": "mayo-banyo",
+      "region_id": "adamaoua",
+      "is_region_capital": false,
+      "aliases": [
+        "banyo"
+      ],
+      "source": "Chef-lieu du Mayo-Banyo, Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "meiganga",
+      "name_fr": "Meiganga",
+      "name_en": "Meiganga",
+      "entity_type": "city",
+      "division_id": "mbere",
+      "region_id": "adamaoua",
+      "is_region_capital": false,
+      "aliases": [
+        "meiganga"
+      ],
+      "source": "Chef-lieu du Mbéré, Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "tibati",
+      "name_fr": "Tibati",
+      "name_en": "Tibati",
+      "entity_type": "city",
+      "division_id": "djerem",
+      "region_id": "adamaoua",
+      "is_region_capital": false,
+      "aliases": [
+        "tibati"
+      ],
+      "source": "Chef-lieu du Djérem, Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "tignere",
+      "name_fr": "Tignère",
+      "name_en": "Tignere",
+      "entity_type": "city",
+      "division_id": "faro-deo",
+      "region_id": "adamaoua",
+      "is_region_capital": false,
+      "aliases": [
+        "tignere",
+        "tignère"
+      ],
+      "source": "Chef-lieu du Faro-et-Déo, Adamaoua",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1663,6 +1766,30 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Chaîne Mandara accessible depuis Maroua / Mokolo",
       "source": "Fiche Monts Mandara",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "beka-hossere",
+      "name_fr": "Beka-hosséré",
+      "name_en": "Beka-hossere",
+      "city_id": "ngaoundere",
+      "division_id": "vina",
+      "region_id": "adamaoua",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier de l’Hôtel Oasis",
+      "source": "Ayila’a Hôtel Oasis",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "lac-tison",
+      "name_fr": "Lac Tison",
+      "name_en": "Lake Tison",
+      "city_id": "ngaoundere",
+      "division_id": "vina",
+      "region_id": "adamaoua",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Lac de cratère près de Ngaoundéré",
+      "source": "Fiche Lac Tison",
       "verified_at": "2026-09-24"
     }
   ]

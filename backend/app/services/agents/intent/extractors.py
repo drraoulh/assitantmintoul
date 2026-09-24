@@ -74,6 +74,10 @@ _CITIES: dict[str, str] = {
     "yagoua": "Yagoua",
     "kousseri": "Kousséri",
     "kaele": "Kaélé",
+    "banyo": "Banyo",
+    "meiganga": "Meiganga",
+    "tibati": "Tibati",
+    "tignere": "Tignère",
 }
 
 _REGIONS: dict[str, str] = {
@@ -176,6 +180,10 @@ _EXTREME_NORD_CULTURE = re.compile(
     r"\b(waza|rhumsiki|roumsiki|kapsiki|mandara|mofou|lac\s+de\s+maga)\b",
     re.IGNORECASE,
 )
+_ADAMAOUA_CULTURE = re.compile(
+    r"\b(lamido|lamidat|lac\s+tison|ngan[- ]?ha|lancrenon|beka[- ]?hoss)\b",
+    re.IGNORECASE,
+)
 
 # Named places often asked about specifically (PLACE_DETAILS).
 _KNOWN_PLACES: dict[str, str] = {
@@ -263,6 +271,14 @@ _KNOWN_PLACES: dict[str, str] = {
     "monts mandara": "Monts Mandara (depuis Maroua)",
     "lac de maga": "Lac De Maga",
     "gorges de kola": "Les Gorges De Kola",
+    "lac tison": "Lac Tison",
+    "lake tison": "Lac Tison",
+    "palais du lamido": "Palais du Lamido de Ngaoundéré",
+    "lamidat de ngaoundere": "Lamidat De Ngaoundéré",
+    "lamidat de ngaoundéré": "Lamidat De Ngaoundéré",
+    "mont ngan-ha": "Le Mont Ngan-Ha",
+    "mont ngan ha": "Le Mont Ngan-Ha",
+    "chutes lancrenon": "Chutes Lancrenon",
 }
 
 _DURATION = re.compile(
@@ -386,6 +402,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Extrême-Nord"
         if slots.location is None:
             slots.location = "Extrême-Nord"
+
+    if slots.region is None and _ADAMAOUA_CULTURE.search(raw):
+        slots.region = "Adamaoua"
+        if slots.location is None:
+            slots.location = "Adamaoua"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

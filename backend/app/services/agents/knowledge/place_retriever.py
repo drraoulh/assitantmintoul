@@ -114,6 +114,18 @@ _NOT_MAROUA = {
     "yaoundé",
     "mokolo",
 }
+_NOT_NGAOUNDERE = {
+    "banyo",
+    "meiganga",
+    "tibati",
+    "tignere",
+    "tignère",
+    "garoua",
+    "maroua",
+    "douala",
+    "yaounde",
+    "yaoundé",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -132,6 +144,7 @@ _REGION_ALIASES = {
     "far north": "extreme-nord",
     "far-north": "extreme-nord",
     "extreme nord": "extreme-nord",
+    "adamawa": "adamaoua",
 }
 
 
@@ -247,6 +260,8 @@ class PlaceRetriever:
                     continue
                 if hub == "maroua" and place_city in _NOT_MAROUA:
                     continue
+                if hub in {"ngaoundere", "ngaoundéré"} and place_city in _NOT_NGAOUNDERE:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -304,6 +319,14 @@ class PlaceRetriever:
                             if place_city not in {
                                 "mandara",
                             } and "maroua" not in place_city:
+                                continue
+                        elif hub in {"ngaoundere", "ngaoundéré"}:
+                            if place_city not in {
+                                "beka-hossere",
+                                "beka-hosséré",
+                                "lac-tison",
+                                "lac tison",
+                            } and "ngaoundere" not in place_city and "ngaoundéré" not in place_city:
                                 continue
                         else:
                             continue

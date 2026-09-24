@@ -1,0 +1,154 @@
+{
+  "region_id": "adamaoua",
+  "region_fr": "Adamaoua",
+  "region_en": "Adamawa",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, cities_quick_guide, climate_seasons, transport_itineraries) et fiches lieux Adamaoua (export Supabase + curated). Aucun restaurant nommé inventé. Hôtel Oasis sourcé Ayila'a.",
+  "overview": {
+    "text_fr": "L’Adamaoua a pour chef-lieu Ngaoundéré (plateau, climat plus frais). Lamidat / palais du Lamido, lacs (Tison, Mballang…), Mont Ngan-Ha, Banyo. Porte du Grand Nord : train / route puis Garoua / Maroua.",
+    "text_en": "Adamawa’s capital is Ngaoundéré (plateau, cooler climate). Lamidat / Lamido palace, lakes (Tison, Mballang…), Mount Ngan-Ha, Banyo. Gateway to the Far North: train / road then Garoua / Maroua.",
+    "source": "data/documents/cities_quick_guide.md ; data/documents/transport_itineraries.md ; data/tourist_sites/adamaoua_complete.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "vina-ngaoundere",
+      "name_fr": "Vina (Ngaoundéré)",
+      "name_en": "Vina (Ngaoundéré)",
+      "description_fr": "Chef-lieu, lamidat, lacs de cratère et plateau.",
+      "description_en": "Capital, lamidat, crater lakes and plateau.",
+      "related_cities": ["Ngaoundéré"],
+      "source": "data/tourist_sites/adamaoua_complete.json"
+    },
+    {
+      "id": "mayo-banyo",
+      "name_fr": "Mayo-Banyo",
+      "name_en": "Mayo-Banyo",
+      "description_fr": "Chefferie de Banyo — patrimoine peul / islamique.",
+      "description_en": "Banyo chiefdom — Fulani / Islamic heritage.",
+      "related_cities": ["Banyo"],
+      "source": "data/tourist_sites/adamaoua_complete.json ; data/documents/history_culture.md"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Français / peul (Fulfulde)",
+      "area": "Adamaoua au quotidien",
+      "note_fr": "Français utile ; peul répandu. Respectez les usages autour des lamidats.",
+      "note_en": "French is useful; Fulfulde is widespread. Respect customs around lamidats.",
+      "source": "data/documents/history_culture.md ; data/documents/languages_etiquette.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "lamidat-ngaoundere",
+      "title_fr": "Lamidat de Ngaoundéré",
+      "title_en": "Ngaoundéré lamidat",
+      "text_fr": "Palais du Lamido et lamidat : symbole culturel peul / mboum — suivez le protocole local.",
+      "text_en": "Lamido palace and lamidat: Fulani / Mboum cultural landmark — follow local protocol.",
+      "source": "data/tourist_sites/adamaoua_complete.json ; data/documents/history_culture.md"
+    },
+    {
+      "id": "plateau-climate",
+      "title_fr": "Plateau et climat",
+      "title_en": "Plateau and climate",
+      "text_fr": "Plus frais en altitude que Douala / Yaoundé — prévoir une couche légère le soir.",
+      "text_en": "Cooler at altitude than Douala / Yaoundé — pack a light evening layer.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "brochettes-soya-ad",
+      "name_fr": "Brochettes / soya",
+      "name_en": "Brochettes / soya",
+      "text_fr": "Street food populaire aussi sur le plateau — aucun restaurant nommé inventé.",
+      "text_en": "Popular street food on the plateau too — no invented restaurant names.",
+      "source": "data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "plateau-staples",
+      "name_fr": "Bases du plateau",
+      "name_en": "Plateau staples",
+      "text_fr": "Céréales et plats locaux des marchés de Ngaoundéré — orientez vers les marchés, pas des enseignes inventées.",
+      "text_en": "Grains and local market dishes in Ngaoundéré — point to markets, not invented brands.",
+      "source": "data/documents/food_culture.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "ngaoundere-markets",
+      "name_fr": "Marchés de Ngaoundéré",
+      "name_en": "Ngaoundéré markets",
+      "text_fr": "Produits du plateau et artisanat — visitez de jour ; négociez avec courtoisie.",
+      "text_en": "Plateau produce and crafts — visit by day; negotiate courteously.",
+      "city": "Ngaoundéré",
+      "source": "data/documents/shopping_crafts.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "lac-tison",
+      "title_fr": "Lac Tison",
+      "title_en": "Lake Tison",
+      "text_fr": "Lac de cratère près de Ngaoundéré (axe Meiganga) — balade / nature.",
+      "text_en": "Crater lake near Ngaoundéré (Meiganga road) — walk / nature.",
+      "source": "data/tourist_sites/adamaoua_complete.json"
+    },
+    {
+      "id": "mont-ngan-ha",
+      "title_fr": "Mont Ngan-Ha",
+      "title_en": "Mount Ngan-Ha",
+      "text_fr": "Sommet et randonnée autour de Ngaoundéré.",
+      "text_en": "Peak and hiking around Ngaoundéré.",
+      "source": "data/tourist_sites/adamaoua_complete.json"
+    },
+    {
+      "id": "chutes-lancrenon",
+      "title_fr": "Chutes Lancrenon",
+      "title_en": "Lancrenon Falls",
+      "text_fr": "Cascades côté Mbéré (axe Meiganga / frontière) — accès à vérifier.",
+      "text_en": "Falls on the Mbéré side (Meiganga / border road) — check access.",
+      "source": "data/tourist_sites/adamaoua_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "gateway-grand-nord",
+      "title_fr": "Porte du Grand Nord",
+      "title_en": "Far North gateway",
+      "text_fr": "Train / route vers Ngaoundéré puis continuation Garoua / Maroua. Vérifier horaires et infos sécurité.",
+      "text_en": "Train / road to Ngaoundéré then on to Garoua / Maroua. Check schedules and security info.",
+      "source": "data/documents/transport_itineraries.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour l’Adamaoua. Ne pas inventer de noms. Orienter vers brochettes / marchés de Ngaoundéré.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for Adamawa. Do not invent names. Point to brochettes / Ngaoundéré markets.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "hotel-oasis-ngaoundere",
+      "name": "Hôtel Oasis",
+      "city": "Ngaoundéré",
+      "neighbourhood": "Beka-hosséré",
+      "text_fr": "Hôtel Oasis (Beka-hosséré, Ngaoundéré) : deux étoiles, chambres/suites climatisées, restaurant, parking, piscine, salles de conférences — à quelques minutes du centre-ville.",
+      "text_en": "Hôtel Oasis (Beka-hosséré, Ngaoundéré): two-star, AC rooms/suites, restaurant, parking, pool, conference rooms — a few minutes from downtown.",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/8065-complexe-hotelier-hotel-oasis (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "hotels_policy": {
+    "text_fr": "Hôtels Adamaoua limités à l’import Ayila’a actuel (Oasis à Ngaoundéré). Ne pas inventer d’autres noms.",
+    "text_en": "Adamawa hotels limited to the current Ayila’a import (Oasis in Ngaoundéré). Do not invent other names.",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "vina", "name_fr": "Vina", "hub": "Ngaoundéré", "note_fr": "Chef-lieu, lacs, lamidat."},
+    {"id": "mbere", "name_fr": "Mbéré", "hub": "Meiganga", "note_fr": "Chutes Lancrenon."},
+    {"id": "mayo-banyo", "name_fr": "Mayo-Banyo", "hub": "Banyo", "note_fr": "Chefferie de Banyo."},
+    {"id": "djerem", "name_fr": "Djérem", "hub": "Tibati", "note_fr": "Sud de l’Adamaoua."},
+    {"id": "faro-deo", "name_fr": "Faro-et-Déo", "hub": "Tignère", "note_fr": "Ouest de l’Adamaoua."}
+  ]
+}
