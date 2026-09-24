@@ -1,24 +1,49 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Map as MapIcon, Search } from 'lucide-react';
 
-import { Badge, Button, EmptyState, ErrorState, Skeleton } from '@/components/ui';
+import { CameroonSilhouette } from '@/components/maps/CameroonSilhouette';
+import { TourismMap } from '@/components/maps/TourismMap';
+import { PlaceCard } from '@/components/places/PlaceCard';
+import { PageTransition, SlideUp } from '@/components/motion';
+import {
+  Button,
+  EmptyState,
+  ErrorState,
+  Input,
+  Select,
+  Skeleton,
+} from '@/components/ui';
 import { friendlyError, listTouristSites } from '@/lib/api/client';
 import { useLocale } from '@/lib/i18n';
 import { REGIONS } from '@/lib/regions';
+import { isHotelCategory, sitesToMarkers } from '@/lib/utils/response';
+import type { TouristSite } from '@/lib/types';
 
 function regionMatches(siteRegion: string, apiRegion: string): boolean {
-  // Exact equality only — avoid "Ouest" matching "Nord-Ouest" / "Sud-Ouest".
   return siteRegion.trim().toLowerCase() === apiRegion.trim().toLowerCase();
 }
 
+const CATEGORY_FILTERS = [
+  { id: 'all', label: 'Tous' },
+  { id: 'nature', label: 'Nature' },
+  { id: 'culture', label: 'Culture' },
+  { id: 'heritage', label: 'Patrimoine' },
+  { id: 'activity', label: 'Activités' },
+] as const;
+
 export default function ExplorerPage() {
   const { t, locale } = useLocale();
+  const [sites, setSites] = useState<TouristSite[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  const [region, setRegion] = useState('');
+  const [category, setCategory] = useState('all');
+  const [showMap, setShowMap] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -28,13 +53,13 @@ export default function ExplorerPage() {
       try {
         const res = await listTouristSites();
         if (cancelled) return;
-        const nextCounts: Record<string, number> = {};
+        const items = res.items.filter((s) => !isHotelCategory(s.category));
+        setSites(items);
+        const next: Record<string, number> = {};
         for (const r of REGIONS) {
-          nextCounts[r.id] = res.items.filter((s) =>
-            regionMatches(s.region, r.apiRegion),
-          ).length;
+          next[r.id] = items.filter((s) => regionMatches(s.region, r.apiRegion)).length;
         }
-        setCounts(nextCounts);
+        setCounts(next);
       } catch (e) {
         if (!cancelled) setError(friendlyError(e));
       } finally {
@@ -46,86 +71,162 @@ export default function ExplorerPage() {
     };
   }, []);
 
+  const filtered = useMemo(() => {
+    let next = sites;
+    if (region) {
+      next = next.filter((s) => regionMatches(s.region, region));
+    }
+    if (category !== 'all') {
+      next = next.filter((s) => s.category.toLowerCase().includes(category));
+    }
+    const needle = query.trim().toLowerCase();
+    if (needle) {
+      next = next.filter(
+        (s) =>
+          s.name.toLowerCase().includes(needle) ||
+          s.city.toLowerCase().includes(needle) ||
+          s.region.toLowerCase().includes(needle),
+      );
+    }
+    return next;
+  }, [sites, region, category, query]);
+
+  const markers = sitesToMarkers(filtered);
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
-      <h1 className="font-display text-4xl text-[var(--green-deep)] md:text-5xl">
-        {t('explorer.title')}
-      </h1>
-      <p className="mt-3 max-w-2xl text-[var(--muted)]">{t('explorer.sub')}</p>
+    <PageTransition>
+      <div className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
+        <SlideUp>
+          <h1 className="font-display text-4xl font-bold text-[var(--green-deep)]">
+            Explorez le Cameroun
+          </h1>
+          <p className="mt-3 max-w-2xl text-[var(--muted)]">{t('explorer.sub')}</p>
+        </SlideUp>
 
-      {error ? (
-        <div className="mt-6">
-          <ErrorState message={error} />
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]" />
+            <Input
+              className="pl-10"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Rechercher une destination…"
+              aria-label="Rechercher une destination"
+            />
+          </div>
+          <Select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            aria-label="Région"
+            className="sm:w-48"
+          >
+            <option value="">Toutes les régions</option>
+            {REGIONS.map((r) => (
+              <option key={r.id} value={r.apiRegion}>
+                {locale === 'fr' ? r.nameFr : r.nameEn}
+              </option>
+            ))}
+          </Select>
         </div>
-      ) : null}
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-48 w-full" />
-            ))
-          : REGIONS.map((r) => {
-              const count = counts[r.id] ?? 0;
-              const name = locale === 'fr' ? r.nameFr : r.nameEn;
-              const capital = locale === 'fr' ? r.capitalFr : r.capitalEn;
-              return (
-                <article
-                  key={r.id}
-                  className="flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-white p-6 shadow-sm"
-                >
-                  <div>
-                    <div className="relative h-36 overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--yellow)]/50">
-                      <Image
-                        src={r.coverImage}
-                        alt={name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width:768px) 100vw, 33vw"
-                        priority={r.id === 'centre' || r.id === 'littoral'}
-                      />
-                    </div>
-                    <h2 className="mt-4 font-display text-2xl text-[var(--green-deep)]">
-                      {name}
-                    </h2>
-                    <p className="mt-1 text-sm text-[var(--muted)]">
-                      {t('explorer.capital')} : {capital}
+        <div className="mt-4 flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          {CATEGORY_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setCategory(f.id)}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition ${
+                category === f.id
+                  ? 'bg-[var(--green-deep)] text-white'
+                  : 'border border-[var(--line)] bg-white text-[var(--muted)] hover:border-[var(--gold)]'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        {error ? (
+          <div className="mt-6">
+            <ErrorState message={error} />
+          </div>
+        ) : null}
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-28 w-full" />
+              ))
+            : REGIONS.map((r) => {
+                const count = counts[r.id] ?? 0;
+                const name = locale === 'fr' ? r.nameFr : r.nameEn;
+                return (
+                  <button
+                    key={r.id}
+                    type="button"
+                    onClick={() => setRegion(r.apiRegion)}
+                    className={`rounded-2xl border px-4 py-4 text-left transition hover:-translate-y-0.5 ${
+                      region === r.apiRegion
+                        ? 'border-[var(--gold)] bg-[var(--mint-soft)]'
+                        : 'border-[var(--line)] bg-white'
+                    }`}
+                  >
+                    <p className="font-semibold text-[var(--green-deep)]">{name}</p>
+                    <p className="mt-1 text-xs text-[var(--muted)]">
+                      {count > 0 ? `${count} ${t('explorer.count')}` : r.capitalFr}
                     </p>
-                    <div className="mt-3">
-                      <Badge tone="yellow">
-                        {count} {t('explorer.count')}
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="mt-5">
-                    <Button href={`/destinations?region=${encodeURIComponent(r.apiRegion)}`}>
-                      {t('explorer.cta')}
-                    </Button>
-                  </div>
-                </article>
-              );
-            })}
-      </div>
-
-      {!loading && Object.values(counts).every((c) => c === 0) ? (
-        <div className="mt-8">
-          <EmptyState
-            title={t('empty.places')}
-            body="Le serveur API est peut-être en réveil (Render free)."
-          />
+                  </button>
+                );
+              })}
         </div>
-      ) : null}
 
-      <p className="mt-10 text-sm text-[var(--muted)]">
-        Voir aussi{' '}
-        <Link href="/destinations" className="text-[var(--green)] underline">
-          toutes les destinations
-        </Link>
-        . Photos des régions : Wikimedia Commons (voir{' '}
-        <Link href="/regions/ATTRIBUTION.json" className="text-[var(--green)] underline">
-          attribution
-        </Link>
-        ).
-      </p>
-    </div>
+        <div className="mt-10 flex items-center justify-between gap-3">
+          <h2 className="font-display text-2xl font-semibold text-[var(--green-deep)]">
+            Lieux
+          </h2>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="lg:hidden"
+            onClick={() => setShowMap((v) => !v)}
+          >
+            <MapIcon className="h-4 w-4" aria-hidden />
+            {showMap ? 'Masquer la carte' : 'Voir la carte'}
+          </Button>
+        </div>
+
+        <div className="mt-6 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="grid gap-5 sm:grid-cols-2">
+            {loading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-64 w-full" />
+                ))
+              : filtered.map((site) => <PlaceCard key={site.id} site={site} />)}
+            {!loading && !filtered.length ? (
+              <div className="sm:col-span-2">
+                <EmptyState title={t('empty.places')} />
+              </div>
+            ) : null}
+          </div>
+          <div className={`${showMap ? 'block' : 'hidden'} lg:block`}>
+            <div className="sticky top-24 space-y-4">
+              <div className="flex justify-center py-2">
+                <CameroonSilhouette size="sm" showPoints={false} glow={false} />
+              </div>
+              <TourismMap markers={markers} className="h-[28rem]" />
+            </div>
+          </div>
+        </div>
+
+        <p className="mt-10 text-sm text-[var(--muted)]">
+          Voir aussi{' '}
+          <Link href="/destinations" className="text-[var(--green)] underline">
+            toutes les destinations
+          </Link>
+          .
+        </p>
+      </div>
+    </PageTransition>
   );
 }

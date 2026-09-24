@@ -2,9 +2,11 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Search } from 'lucide-react';
 
 import { TourismMap } from '@/components/maps/TourismMap';
 import { PlaceCard } from '@/components/places/PlaceCard';
+import { PageTransition } from '@/components/motion';
 import { EmptyState, ErrorState, Input, Skeleton } from '@/components/ui';
 import { friendlyError, listTouristSites } from '@/lib/api/client';
 import { useLocale } from '@/lib/i18n';
@@ -32,8 +34,6 @@ export default function DestinationsInner() {
       setLoading(true);
       setError(null);
       try {
-        // Fetch broad list then exact-match region client-side (API substring
-        // filter would make "Ouest" include Nord-Ouest / Sud-Ouest).
         const res = await listTouristSites(city ? { city } : undefined);
         if (!cancelled) {
           let next = res.items.filter((s) => !isHotelCategory(s.category));
@@ -68,45 +68,56 @@ export default function DestinationsInner() {
   const markers = sitesToMarkers(filtered);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
-      <h1 className="font-display text-4xl text-[var(--green-deep)]">Destinations</h1>
-      <p className="mt-2 text-[var(--muted)]">
-        {region ? `Région : ${region}` : city ? `Ville : ${city}` : 'Lieux touristiques vérifiés'}
-      </p>
+    <PageTransition>
+      <div className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+        <h1 className="font-display text-4xl font-bold text-[var(--green-deep)]">
+          Destinations
+        </h1>
+        <p className="mt-2 text-[var(--muted)]">
+          {region
+            ? `Région : ${region}`
+            : city
+              ? `Ville : ${city}`
+              : 'Lieux touristiques vérifiés'}
+        </p>
 
-      <div className="mt-6 max-w-md">
-        <Input
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filtrer par nom, ville…"
-        />
-      </div>
-
-      {error ? (
-        <div className="mt-6">
-          <ErrorState message={error} />
+        <div className="relative mt-6 max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--muted)]" />
+          <Input
+            className="pl-10"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            placeholder="Filtrer par nom, ville…"
+            aria-label="Filtrer les destinations"
+          />
         </div>
-      ) : null}
 
-      <div className="mt-8">
-        {loading ? (
-          <p className="text-sm text-[var(--muted)]">{t('loading.places')}</p>
-        ) : (
-          <TourismMap markers={markers} className="h-80" />
-        )}
-      </div>
+        {error ? (
+          <div className="mt-6">
+            <ErrorState message={error} />
+          </div>
+        ) : null}
 
-      <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-64" />)
-          : filtered.map((site) => <PlaceCard key={site.id} site={site} />)}
-      </div>
-
-      {!loading && !filtered.length ? (
         <div className="mt-8">
-          <EmptyState title={t('empty.places')} />
+          {loading ? (
+            <p className="text-sm text-[var(--muted)]">{t('loading.places')}</p>
+          ) : (
+            <TourismMap markers={markers} className="h-80" />
+          )}
         </div>
-      ) : null}
-    </div>
+
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-64" />)
+            : filtered.map((site) => <PlaceCard key={site.id} site={site} />)}
+        </div>
+
+        {!loading && !filtered.length ? (
+          <div className="mt-8">
+            <EmptyState title={t('empty.places')} />
+          </div>
+        ) : null}
+      </div>
+    </PageTransition>
   );
 }

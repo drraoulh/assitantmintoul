@@ -2,76 +2,108 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin } from 'lucide-react';
 import { useState } from 'react';
+import { MapPin } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 import { Badge, Button } from '@/components/ui';
 import { useLocale } from '@/lib/i18n';
 import { addPlaceToTrip } from '@/lib/trip-store';
 import type { TouristSite } from '@/lib/types';
 
+type PlaceLike =
+  | TouristSite
+  | {
+      id: string;
+      name: string;
+      city?: string | null;
+      region?: string | null;
+      category?: string | null;
+      description?: string | null;
+      images?: string[];
+      image_url?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
+      estimated_cost_xaf?: number | null;
+      price?: string | null;
+    };
+
 export function PlaceCard({
   site,
   href,
 }: {
-  site: TouristSite | {
-    id: string;
-    name: string;
-    city?: string | null;
-    region?: string | null;
-    category?: string | null;
-    description?: string;
-    images?: string[];
-    image_url?: string | null;
-    latitude?: number | null;
-    longitude?: number | null;
-  };
+  site: PlaceLike;
   href?: string;
 }) {
   const { t } = useLocale();
+  const reduce = useReducedMotion();
   const [added, setAdded] = useState(false);
   const image =
     ('images' in site && site.images?.[0]) ||
     ('image_url' in site && site.image_url) ||
     null;
   const link = href ?? `/destinations/${encodeURIComponent(site.id)}`;
+  const price =
+    ('price' in site && site.price) ||
+    ('estimated_cost_xaf' in site &&
+      typeof site.estimated_cost_xaf === 'number' &&
+      `${site.estimated_cost_xaf} FCFA`) ||
+    null;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-      <Link href={link} className="block">
-        <div className="relative aspect-[16/10] bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--yellow)]/40">
+    <motion.article
+      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-[var(--shadow-soft)]"
+      whileHover={
+        reduce
+          ? undefined
+          : { y: -3, transition: { duration: 0.25 } }
+      }
+    >
+      <Link href={link} className="block overflow-hidden">
+        <div className="relative aspect-[16/10] bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--gold)]/30">
           {image ? (
             <Image
               src={image}
               alt={site.name}
               fill
-              className="object-cover"
+              className="object-cover transition duration-500 hover:scale-[1.03]"
               sizes="(max-width:768px) 100vw, 33vw"
               unoptimized
             />
           ) : (
             <div className="absolute inset-0 flex items-end p-4">
-              <span className="font-display text-2xl text-white/90">{site.name.slice(0, 1)}</span>
+              <span className="font-display text-3xl font-bold text-white/85">
+                {site.name.slice(0, 1)}
+              </span>
             </div>
           )}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
         </div>
       </Link>
       <div className="space-y-3 p-4">
         <div>
-          <h3 className="font-display text-lg text-[var(--green-deep)]">{site.name}</h3>
-          <p className="mt-1 flex items-start gap-1.5 text-sm text-[var(--muted)]">
-            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
-            <span>{[site.city, site.region].filter(Boolean).join(', ')}</span>
+          <h3 className="font-display text-lg font-semibold text-[var(--green-deep)]">
+            {site.name}
+          </h3>
+          <p className="mt-1 flex items-center gap-1 text-sm text-[var(--muted)]">
+            <MapPin className="h-3.5 w-3.5" aria-hidden />
+            {[site.city, site.region].filter(Boolean).join(', ') || 'Cameroun'}
           </p>
         </div>
-        {site.category ? <Badge>{site.category}</Badge> : null}
+        <div className="flex flex-wrap gap-2">
+          {site.category ? <Badge>{site.category}</Badge> : null}
+          {price ? <Badge tone="gold">{price}</Badge> : null}
+        </div>
+        {'description' in site && site.description ? (
+          <p className="line-clamp-2 text-sm text-[var(--muted)]">{site.description}</p>
+        ) : null}
         <div className="flex flex-wrap gap-2">
           <Button href={link} size="sm" variant="secondary">
-            {t('place.discover')} →
+            {t('place.discover')}
           </Button>
           <Button
             size="sm"
-            variant="primary"
+            variant="outline"
             type="button"
             onClick={() => {
               addPlaceToTrip({
@@ -91,6 +123,6 @@ export function PlaceCard({
           </Button>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 }

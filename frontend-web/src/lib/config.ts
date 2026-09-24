@@ -14,7 +14,6 @@ export function getApiBaseUrl(): string {
   if (process.env.NODE_ENV === 'development') {
     return 'http://127.0.0.1:8000';
   }
-  // Known production API from render.yaml — do not invent custom domains.
   return 'https://cameroon-ai-tour-guide-api.onrender.com';
 }
 
@@ -38,9 +37,9 @@ export function getVoiceWebSocketUrl(): string {
   return `${wsRoot}/api/voice/session`;
 }
 
-export const APP_NAME = 'SmartMboa Tour';
-export const APP_TAGLINE_FR = 'Découvrez le Cameroun autrement';
-export const APP_TAGLINE_EN = 'Discover Cameroon differently';
+export const APP_NAME = 'SmartMboa';
+export const APP_TAGLINE_FR = 'Votre guide intelligent pour découvrir le Cameroun';
+export const APP_TAGLINE_EN = 'Your intelligent guide to discover Cameroon';
 
 export const HEALTH_PROBE_TIMEOUT_MS = 20_000;
 export const REQUEST_TIMEOUT_MS = 180_000;

@@ -97,7 +97,7 @@ function BookingForm() {
 
   return (
     <div className="rounded-3xl border border-[var(--line)] bg-white p-6 md:p-8">
-      <p className="text-sm font-semibold text-[var(--yellow-ink,#7A5D00)] bg-[var(--yellow)]/40 inline-block rounded-full px-3 py-1">
+      <p className="inline-block rounded-full bg-[var(--gold)]/35 px-3 py-1 text-sm font-semibold text-[var(--green-deep)]">
         {t('booking.demoNote')}
       </p>
       <h1 className="mt-4 font-display text-3xl text-[var(--green-deep)]">{t('booking.title')}</h1>
@@ -173,7 +173,7 @@ function BookingForm() {
         )}
         {step === 5 && (
           <>
-            <div className="rounded-xl bg-[var(--sand)] p-4 text-sm">
+            <div className="rounded-xl bg-[var(--mint-soft)] p-4 text-sm">
               <p>
                 <strong>{hotel?.name}</strong>
               </p>

@@ -1,6 +1,5 @@
 'use client';
 
-import { Camera, Mic, Send } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -55,7 +54,7 @@ export function HomeAssistantTeaser() {
               aria-label="Voice"
               onClick={() => router.push('/assistant?voice=1')}
             >
-              <Mic className="h-4 w-4" aria-hidden />
+              🎙️
             </Button>
             <Button
               type="button"
@@ -63,10 +62,10 @@ export function HomeAssistantTeaser() {
               aria-label="Vision"
               onClick={() => fileRef.current?.click()}
             >
-              <Camera className="h-4 w-4" aria-hidden />
+              📷
             </Button>
-            <Button type="submit" variant="primary" aria-label={t('assistant.send')}>
-              <Send className="h-4 w-4" aria-hidden />
+            <Button type="submit" variant="primary">
+              ➤
             </Button>
           </div>
           <input

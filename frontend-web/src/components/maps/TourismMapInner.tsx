@@ -7,12 +7,11 @@ import 'leaflet/dist/leaflet.css';
 
 import type { MapMarker } from '@/lib/types';
 
-const icon = L.icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+const icon = L.divIcon({
+  className: '',
+  html: `<span style="display:block;width:14px;height:14px;border-radius:9999px;background:#D6A84F;border:2px solid #fff;box-shadow:0 2px 8px rgba(11,61,46,0.35)"></span>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
 });
 
 export function TourismMapInner({

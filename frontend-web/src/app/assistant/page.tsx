@@ -1,9 +1,9 @@
 import { AssistantChat } from '@/components/assistant/AssistantChat';
+import { PageTransition } from '@/components/motion';
 
 /**
- * Server page — pass searchParams as props so we do NOT call useSearchParams().
- * That avoids Next.js `BAILOUT_TO_CLIENT_SIDE_RENDERING`, which previously left
- * production /assistant showing only the site header + footer until JS hydrated.
+ * Server page — pass searchParams as props (no useSearchParams bailout).
+ * Keeps immersive PageTransition while SSR-ing the chat shell.
  */
 type AssistantSearchParams = {
   q?: string;
@@ -20,8 +20,10 @@ export default async function AssistantPage({
   const autoVoice = params.voice === '1';
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 md:px-6">
-      <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />
-    </div>
+    <PageTransition>
+      <div className="mx-auto max-w-4xl px-0 py-0 md:px-6 md:py-8">
+        <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />
+      </div>
+    </PageTransition>
   );
 }
