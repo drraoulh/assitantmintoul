@@ -12,7 +12,14 @@
     "ouest_food_mentions_achu": true,
     "ouest_culture_evidence": true,
     "mbapit_located": true,
-    "dschang_hotel_or_soft": true
+    "dschang_hotel_or_soft": true,
+    "douala_has_places": true,
+    "douala_not_edea_as_city": true,
+    "littoral_not_equals_douala": true,
+    "douala_region_littoral": true,
+    "littoral_food_ndole": true,
+    "sawa_culture": true,
+    "littoral_regional": true
   },
   "turns": [
     {
@@ -45,7 +52,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 37.6
+      "ms": 46.2
     },
     {
       "query": "C’est tout ?",
@@ -60,7 +67,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Pouvez-vous préciser un peu ce que vous recherchez ?",
-      "ms": 4.4
+      "ms": 4.0
     },
     {
       "query": "La région de l’Ouest c’est Bafoussam nor ?",
@@ -76,7 +83,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Ouest est une région du Cameroun, et Bafoussam en est le chef-lieu.",
-      "ms": 4.6
+      "ms": 5.2
     },
     {
       "query": "Bafoussam est dans quelle région ?",
@@ -92,7 +99,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bafoussam se trouve dans la région de l’Ouest du Cameroun.",
-      "ms": 3.8
+      "ms": 4.7
     },
     {
       "query": "Que visiter autour de Bafoussam ?",
@@ -124,7 +131,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 5.5
+      "ms": 6.2
     },
     {
       "query": "Je veux visiter l’Ouest du Cameroun.",
@@ -181,7 +188,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Chutes De Nsem-Tsa\n- La Falaise De Foreke\n- La Grotte De Demvoh\n- Palais royal de Foumban\n- Chefferie de Bafoussam\n- Base Nautique De Dschang\n- Cascades De Dschang\n- Centre Climatique De Dschang",
-      "ms": 8.0
+      "ms": 9.5
     },
     {
       "query": "Quels plats typiques de l’Ouest ?",
@@ -196,8 +203,8 @@
       "verified_places_count": 0,
       "geo_facts": 0,
       "planner": false,
-      "assistant": "Plats typiques de l’Ouest / Grassfields documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts",
-      "ms": 7.4
+      "assistant": "Plats typiques documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts plateaux : Le café des h",
+      "ms": 8.8
     },
     {
       "query": "Parle-moi des traditions bamiléké et Bamoun",
@@ -223,8 +230,8 @@
       "verified_places_count": 2,
       "geo_facts": 0,
       "planner": false,
-      "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés pour l’Ouest :\n- Protocole des chefferies",
-      "ms": 7.9
+      "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés :\n- Protocole des chefferies : Dans les c",
+      "ms": 10.0
     },
     {
       "query": "Où est le lac Mbapit ?",
@@ -240,7 +247,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban (département du Noun, région de l’Ouest).",
-      "ms": 4.2
+      "ms": 4.7
     },
     {
       "query": "Hôtel à Dschang ?",
@@ -262,11 +269,231 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 1 lieu(x) vérifié(s) autour de Dschang dans ma base :\n- Adys Hotel Dschang Officiel\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
+      "ms": 5.2
+    },
+    {
+      "query": "Je veux visiter Douala que me proposes-tu ?",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Chutes De Mbang-Ebongo",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Doual'art",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Fleuve Dibamba",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Ile De Manoka",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Jardin Botanique Agrotech",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "La Maison Omaj",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "La Nouvelle Liberte",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "La Pagode",
+          "city": "Douala",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Douala dans ma base :\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Ile De Manoka\n- Jardin Botanique Agrotech\n- La Maison Omaj\n- La Nouvelle Liberte\n- La Pagode",
+      "ms": 8.5
+    },
+    {
+      "query": "La région du Littoral c’est Douala nor ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Pas exactement. Le Littoral est une région du Cameroun, et Douala en est le chef-lieu.",
       "ms": 4.5
+    },
+    {
+      "query": "Douala est dans quelle région ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Douala se trouve dans la région du Littoral du Cameroun.",
+      "ms": 4.5
+    },
+    {
+      "query": "Quels plats typiques de Douala / Littoral ?",
+      "intent": "FOOD",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Quartier Akwa",
+          "city": "Douala",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Bonapriso",
+          "city": "Douala",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Marché Central de Douala",
+          "city": "Douala",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Marchés de Bamenda",
+          "city": "Bamenda",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Plages de Kribi",
+          "city": "Kribi",
+          "scope": "UNKNOWN"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 5,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Plats typiques documentés dans ma base :\n- Ndolé : Plat emblématique surtout associé à Douala / Littoral : feuilles amères, arachide, poisson ou viande.\n- Poissons et cuisine urbaine : Douala offre une scène resto urbaine (quartiers Akwa, Bonapriso…) avec poissons et spécialités locales — goûtez le ndolé ; signalez les",
+      "ms": 11.5
+    },
+    {
+      "query": "Parle-moi de la culture Sawa",
+      "intent": "CULTURE",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Musée Maritime De Douala",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Palais De La Culture Du Peuple Sawa",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Quartier Bonanjo (Douala)",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        }
+      ],
+      "completeness": "MEDIUM",
+      "verified_places_count": 3,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Le Littoral a pour chef-lieu Douala, capitale économique et hub aérien du Cameroun. Cultures Sawa, estuaire du Wouri, quartiers Bonanjo / Akwa / Bonapriso, et portes vers Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) et Yabassi (Nkam).\nRepères culturels documentés :\n- Patrimoine Sawa : Douala illustre le littoral urba",
+      "ms": 7.9
+    },
+    {
+      "query": "Je veux visiter le Littoral.",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Quartier Bonanjo (Douala)",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Chutes d’Ekom-Nkam",
+          "city": "Melong",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Chutes De Mbang-Ebongo",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Doual'art",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Fleuve Dibamba",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Gorges De La Sanaga",
+          "city": "Edéa",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Ile De Manoka",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Jardin Botanique Agrotech",
+          "city": "Douala",
+          "scope": "IN_REGION"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Quartier Bonanjo (Douala)\n- Chutes d’Ekom-Nkam\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Gorges De La Sanaga\n- Ile De Manoka\n- Jardin Botanique Agrotech",
+      "ms": 10.1
     }
   ],
-  "total_conversation_ms": 87.9,
-  "pytest": "230 passed, 1 warning in 1.58s",
+  "total_conversation_ms": 151.5,
+  "pytest": "236 passed, 1 warning in 1.76s",
   "flags_default": {
     "KNOWLEDGE_GEOGRAPHY_ENABLED": false,
     "WEB_KNOWLEDGE_FALLBACK_ENABLED": false

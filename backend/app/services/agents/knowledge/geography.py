@@ -403,9 +403,11 @@ def is_geo_simple_query(query: str) -> bool:
         r"(?:lac|mont|lake|mount)?\s*mbapit",
         r"o[uù]\s+est\s+(?:le\s+|la\s+|l['’])?(?:lac|mont|lake|mount)?\s*mbapit",
         r"where\s+is\s+(?:lake\s+|mount\s+)?mbapit",
-        r"littoral.{0,30}douala",
-        r"douala.{0,30}littoral",
-        r"c[' ]?est\s+douala",
+        r"littoral.{0,40}c[' ]?est.{0,20}douala",
+        r"douala.{0,40}c[' ]?est.{0,20}littoral",
+        r"c[' ]?est\s+douala\s+nor",
+        r"r[eé]gion\s+du\s+littoral.{0,30}douala",
+        r"douala.{0,30}r[eé]gion\s+du\s+littoral",
     )
     if any(re.search(p, q) for p in patterns):
         return True
