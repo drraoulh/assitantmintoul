@@ -10,11 +10,19 @@ import {
 import { useLocale } from '../i18n';
 import { ApiError, transcribeAudio } from '../services/api';
 import {
+  OrderedVoiceScheduler,
+  concatParts,
+  supportsMediaSourceMp3,
+  type VoiceStreamMetrics,
+} from '../services/voiceEarlyPlayback';
+import { ProgressiveMp3Player } from '../services/voiceStreamPlayer';
+import {
   VoiceSocket,
   uriToBase64,
   type VoiceServerEvent,
 } from '../services/voiceSocket';
 import { mimeFromRecordingUri } from '../utils/audioMime';
+import { Platform } from 'react-native';
 
 export type VoiceSessionPhase =
   | 'idle'
@@ -73,6 +81,18 @@ export function useContinuousVoiceSession({
   const socketRef = useRef<VoiceSocket | null>(null);
   const audioBuffersRef = useRef<Map<number, Uint8Array[]>>(new Map());
   const playChainRef = useRef(Promise.resolve());
+  const schedulerRef = useRef(new OrderedVoiceScheduler(true));
+  const streamPlayerRef = useRef<ProgressiveMp3Player | null>(null);
+  const streamIdleResolveRef = useRef<(() => void) | null>(null);
+  const streamIdlePromiseRef = useRef<Promise<void>>(Promise.resolve());
+  const progressiveCapableRef = useRef(
+    Platform.OS === 'web' && supportsMediaSourceMp3(),
+  );
+  const streamMetricsRef = useRef<VoiceStreamMetrics>({});
+  const turnResolveRef = useRef<(() => void) | null>(null);
+  const turnRejectRef = useRef<((error: Error) => void) | null>(null);
+  const userTextRef = useRef('');
+  const assistantAccRef = useRef('');
   const clientPerfRef = useRef<{
     turnId: string;
     recordStart?: number;
@@ -121,6 +141,29 @@ export function useContinuousVoiceSession({
     [],
   );
 
+  const resetVoiceStream = useCallback(() => {
+    streamPlayerRef.current?.stop();
+    streamPlayerRef.current = null;
+    schedulerRef.current.reset();
+    audioBuffersRef.current.clear();
+    playChainRef.current = Promise.resolve();
+    streamMetricsRef.current = {};
+    streamIdleResolveRef.current?.();
+    streamIdleResolveRef.current = null;
+    streamIdlePromiseRef.current = Promise.resolve();
+  }, []);
+
+  const armStreamIdle = useCallback(() => {
+    let resolveIdle: (() => void) | null = null;
+    streamIdlePromiseRef.current = new Promise<void>((resolve) => {
+      resolveIdle = resolve;
+    });
+    streamIdleResolveRef.current = () => {
+      resolveIdle?.();
+      streamIdleResolveRef.current = null;
+    };
+  }, []);
+
   useEffect(() => {
     if (phaseRef.current === 'idle') {
       setStatusHint(t('voice.idleHint'));
@@ -165,6 +208,156 @@ export function useContinuousVoiceSession({
     setPhase(next);
     setStatusHint(hint);
   }, []);
+
+  const applyPlayActionRef = useRef<
+    (action: ReturnType<OrderedVoiceScheduler['onChunk']>) => Promise<void>
+  >(async () => undefined);
+
+  const applyPlayAction = useCallback(
+    async (action: ReturnType<OrderedVoiceScheduler['onChunk']>) => {
+      if (action.type === 'none') {
+        return;
+      }
+      const perf = clientPerfRef.current;
+      const progressive = progressiveCapableRef.current;
+
+      if (action.type === 'start') {
+        setSessionPhase('speaking', t('voice.speakingInterrupt'));
+        busyRef.current = false;
+
+        if (perf && perf.firstPlayCommand == null && action.index === 0) {
+          const now = Date.now();
+          perf.firstPlayCommand = now;
+          streamMetricsRef.current.frontend_play_start = now;
+          if (streamMetricsRef.current.frontend_audio_received_seq0 != null) {
+            streamMetricsRef.current.receive_to_play_start_ms =
+              now - streamMetricsRef.current.frontend_audio_received_seq0;
+          }
+          const base = perf.sendStart ?? perf.recordEnd ?? now;
+          streamMetricsRef.current.time_to_first_play_ms = now - base;
+          logTtfa('frontend_play_start', {
+            sequence_id: action.index,
+            receive_to_play_start_ms:
+              streamMetricsRef.current.receive_to_play_start_ms,
+            time_to_first_play_ms: streamMetricsRef.current.time_to_first_play_ms,
+            progressive: progressive ? 1 : 0,
+          });
+          logClientPerf('frontend_play_start', {
+            receive_to_play_start_ms:
+              streamMetricsRef.current.receive_to_play_start_ms ?? -1,
+            time_to_first_play_ms:
+              streamMetricsRef.current.time_to_first_play_ms ?? -1,
+          });
+        }
+
+        if (progressive && Platform.OS === 'web') {
+          const player = new ProgressiveMp3Player({
+            onPlayStart: (index) => {
+              logTtfa('audio_player_start', { sequence_id: index });
+            },
+            onFirstAudible: (index) => {
+              const now = Date.now();
+              if (perf && perf.firstActuallyPlayed == null && index === 0) {
+                perf.firstActuallyPlayed = now;
+                perf.firstSpeech = now;
+                streamMetricsRef.current.frontend_first_audio_played = now;
+                logTtfa('frontend_first_audio_played', {
+                  sequence_id: index,
+                  since_receive_ms:
+                    streamMetricsRef.current.frontend_audio_received_seq0 != null
+                      ? now - streamMetricsRef.current.frontend_audio_received_seq0
+                      : undefined,
+                });
+                logClientPerf('frontend_first_audio_played');
+              }
+            },
+            onEnded: (index) => {
+              const next = schedulerRef.current.onPlaybackFinished(
+                index,
+                progressiveCapableRef.current,
+              );
+              void applyPlayActionRef.current(next).then(() => {
+                if (schedulerRef.current.sequences.size === 0) {
+                  streamIdleResolveRef.current?.();
+                }
+              });
+            },
+            onError: () => {
+              streamIdleResolveRef.current?.();
+            },
+          });
+          streamPlayerRef.current = player;
+          try {
+            await player.start(action.index, action.bytes, true);
+          } catch {
+            streamPlayerRef.current = null;
+            if (playBase64Mp3) {
+              const base64 = bytesToBase64([action.bytes]);
+              playChainRef.current = playChainRef.current
+                .then(async () => {
+                  if (!activeRef.current) {
+                    return;
+                  }
+                  await playBase64Mp3(base64, action.index);
+                  const next = schedulerRef.current.onPlaybackFinished(
+                    action.index,
+                    false,
+                  );
+                  await applyPlayActionRef.current(next);
+                  if (schedulerRef.current.sequences.size === 0) {
+                    streamIdleResolveRef.current?.();
+                  }
+                })
+                .catch(() => undefined);
+            }
+          }
+          return;
+        }
+
+        if (!playBase64Mp3) {
+          return;
+        }
+        const parts = audioBuffersRef.current.get(action.index) || [action.bytes];
+        const merged = parts.length === 1 ? action.bytes : concatParts(parts);
+        audioBuffersRef.current.delete(action.index);
+        const base64 = bytesToBase64([merged]);
+        playChainRef.current = playChainRef.current
+          .then(async () => {
+            if (!activeRef.current || phaseRef.current === 'idle') {
+              return;
+            }
+            await playBase64Mp3(base64, action.index);
+            if (perf && perf.firstActuallyPlayed == null && action.index === 0) {
+              perf.firstActuallyPlayed = Date.now();
+              perf.firstSpeech = perf.firstActuallyPlayed;
+              streamMetricsRef.current.frontend_first_audio_played =
+                perf.firstActuallyPlayed;
+            }
+            const next = schedulerRef.current.onPlaybackFinished(action.index, false);
+            await applyPlayActionRef.current(next);
+            if (schedulerRef.current.sequences.size === 0) {
+              streamIdleResolveRef.current?.();
+            }
+          })
+          .catch(() => undefined);
+        return;
+      }
+
+      if (action.type === 'append') {
+        streamPlayerRef.current?.append(action.bytes);
+        return;
+      }
+
+      if (action.type === 'end') {
+        streamPlayerRef.current?.end();
+      }
+    },
+    [bytesToBase64, logClientPerf, logTtfa, playBase64Mp3, setSessionPhase, t],
+  );
+
+  useEffect(() => {
+    applyPlayActionRef.current = applyPlayAction;
+  }, [applyPlayAction]);
 
   const stopRecorderSafe = useCallback(async () => {
     try {
@@ -229,11 +422,13 @@ export function useContinuousVoiceSession({
           const receiveTs =
             (event as VoiceServerEvent & { frontend_receive_timestamp?: number })
               .frontend_receive_timestamp ?? Date.now();
+          const seq = event.sequence_id ?? event.index;
           if (perf && perf.firstAudioChunk == null) {
             perf.firstAudioChunk = receiveTs;
+            streamMetricsRef.current.frontend_audio_received_seq0 = receiveTs;
             logClientPerf('first_audio_chunk');
-            logTtfa('ws_audio_received', {
-              sequence_id: event.sequence_id ?? event.index,
+            logTtfa('frontend_audio_received_seq0', {
+              sequence_id: seq,
               part: event.part ?? 0,
               backend_send_timestamp: event.backend_send_timestamp,
               backend_to_frontend_ms:
@@ -241,8 +436,6 @@ export function useContinuousVoiceSession({
                   ? Math.round(receiveTs - event.backend_send_timestamp * 1000)
                   : undefined,
             });
-            // Phase 1.2: flip UI to speaking as soon as first bytes arrive —
-            // do not wait for the full sentence MP3 (audio_done).
             setSessionPhase('speaking', t('voice.speakingInterrupt'));
             busyRef.current = false;
           }
@@ -250,85 +443,59 @@ export function useContinuousVoiceSession({
             break;
           }
           try {
-            if (perf && perf.firstAudioChunk === receiveTs) {
-              logTtfa('audio_decode_start', {
-                sequence_id: event.sequence_id ?? event.index,
-              });
-            }
+            logTtfa('audio_decode_start', { sequence_id: seq, part: event.part ?? 0 });
             const part = decodeBase64ToBytes(event.data);
-            if (perf && perf.firstAudioChunk === receiveTs) {
-              logTtfa('audio_decode_end', {
-                sequence_id: event.sequence_id ?? event.index,
-                bytes: part.byteLength,
-              });
-              logTtfa('audio_queue_push', {
-                sequence_id: event.sequence_id ?? event.index,
-                buffered_parts: (audioBuffersRef.current.get(event.index) || []).length + 1,
-              });
-            }
+            logTtfa('audio_decode_end', {
+              sequence_id: seq,
+              bytes: part.byteLength,
+            });
             const prev = audioBuffersRef.current.get(event.index) || [];
             prev.push(part);
             audioBuffersRef.current.set(event.index, prev);
+            logTtfa('audio_queue_push', {
+              sequence_id: seq,
+              buffered_parts: prev.length,
+            });
+            const progressive = progressiveCapableRef.current;
+            const action = schedulerRef.current.onChunk(
+              event.index,
+              part,
+              progressive,
+            );
+            void applyPlayAction(action);
           } catch {
             // ignore bad chunk
           }
           break;
         }
         case 'audio_done': {
+          const now = Date.now();
           if (perf) {
-            perf.audioDone = Date.now();
-            if (perf.firstAudioChunk != null && perf.firstSpeech == null) {
-              // Note: actual audible play is logged below after playBase64Mp3 starts.
-              // Historically this mark fired at audio_done (= buffer complete), NOT play.
-              logClientPerf('audio_done_before_play', {
-                time_to_audio_done_ms:
-                  Date.now() - (perf.sendStart ?? perf.recordEnd ?? Date.now()),
-                wait_after_first_chunk_ms: Date.now() - perf.firstAudioChunk,
-              });
+            perf.audioDone = now;
+          }
+          if (streamMetricsRef.current.audio_done_received == null) {
+            streamMetricsRef.current.audio_done_received = now;
+            if (streamMetricsRef.current.frontend_play_start != null) {
+              streamMetricsRef.current.play_start_to_audio_done_ms =
+                now - streamMetricsRef.current.frontend_play_start;
             }
           }
           logClientPerf('audio_done');
           logTtfa('audio_done_received', {
             sequence_id: event.sequence_id ?? event.index,
             wait_after_first_chunk_ms:
-              perf?.firstAudioChunk != null ? Date.now() - perf.firstAudioChunk : undefined,
+              perf?.firstAudioChunk != null ? now - perf.firstAudioChunk : undefined,
+            play_start_to_audio_done_ms:
+              streamMetricsRef.current.play_start_to_audio_done_ms,
+            // Generation finished — does NOT start playback.
+            note: 'generation_complete_only',
           });
           if (!playBase64Mp3) {
             break;
           }
-          const parts = audioBuffersRef.current.get(event.index) || [];
-          audioBuffersRef.current.delete(event.index);
-          if (parts.length === 0) {
-            break;
-          }
-          const base64 = bytesToBase64(parts);
-          setSessionPhase('speaking', t('voice.speakingInterrupt'));
-          busyRef.current = false;
-          // Ordered playback chain: sequence 0 → 1 → 2 … (never reorder).
-          // Phase 1.3 finding surface: play waits for audio_done (full MP3), not first chunk.
-          playChainRef.current = playChainRef.current
-            .then(async () => {
-              if (!activeRef.current || phaseRef.current === 'idle') {
-                return;
-              }
-              if (perf && perf.firstPlayCommand == null && event.index === 0) {
-                perf.firstPlayCommand = Date.now();
-                logTtfa('first_audio_play_command', {
-                  sequence_id: event.sequence_id ?? event.index,
-                  since_first_chunk_ms:
-                    perf.firstAudioChunk != null
-                      ? Date.now() - perf.firstAudioChunk
-                      : undefined,
-                });
-                logClientPerf('first_speech_play_command');
-              }
-              await playBase64Mp3(base64, event.index);
-              if (perf && perf.firstActuallyPlayed == null && event.index === 0) {
-                // playBase64Mp3 resolves when playback *ends*; mark start via hook logs.
-                perf.firstSpeech = Date.now();
-              }
-            })
-            .catch(() => undefined);
+          const progressive = progressiveCapableRef.current;
+          const action = schedulerRef.current.onDone(event.index, progressive);
+          void applyPlayAction(action);
           break;
         }
         case 'turn_done': {
@@ -341,7 +508,18 @@ export function useContinuousVoiceSession({
           if (user && assistant) {
             onExchange?.(user, assistant);
           }
-          void playChainRef.current.finally(() => {
+          // If nothing was played (or already finished), unblock the turn waiter.
+          if (
+            !schedulerRef.current.hasStartedPlayback ||
+            (schedulerRef.current.currentPlaying == null &&
+              schedulerRef.current.sequences.size === 0)
+          ) {
+            streamIdleResolveRef.current?.();
+          }
+          void Promise.race([
+            playChainRef.current,
+            streamIdlePromiseRef.current,
+          ]).finally(() => {
             turnResolveRef.current?.();
             turnResolveRef.current = null;
             turnRejectRef.current = null;
@@ -349,7 +527,7 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'interrupted': {
-          audioBuffersRef.current.clear();
+          resetVoiceStream();
           break;
         }
         case 'error': {
@@ -364,12 +542,14 @@ export function useContinuousVoiceSession({
       }
     },
     [
+      applyPlayAction,
       bytesToBase64,
       decodeBase64ToBytes,
       logClientPerf,
       logTtfa,
       onExchange,
       playBase64Mp3,
+      resetVoiceStream,
       setSessionPhase,
       t,
     ],
@@ -424,13 +604,14 @@ export function useContinuousVoiceSession({
     activeRef.current = false;
     busyRef.current = false;
     stopSpeaking();
+    resetVoiceStream();
     socketRef.current?.interrupt();
     socketRef.current?.close();
     socketRef.current = null;
     await stopRecorderSafe();
     setMicReady(false);
     setSessionPhase('idle', t('voice.closed'));
-  }, [setSessionPhase, stopRecorderSafe, stopSpeaking, t]);
+  }, [resetVoiceStream, setSessionPhase, stopRecorderSafe, stopSpeaking, t]);
 
   const armRecorder = useCallback(async (): Promise<boolean> => {
     if (preparedRef.current) {
@@ -463,6 +644,7 @@ export function useContinuousVoiceSession({
 
     try {
       stopSpeaking();
+      resetVoiceStream();
       socketRef.current?.interrupt();
       const armed = await armRecorder();
       if (!armed || !activeRef.current) {
@@ -483,7 +665,7 @@ export function useContinuousVoiceSession({
       preparedRef.current = false;
       setSessionPhase('idle', errorText(error));
     }
-  }, [armRecorder, errorText, recorder, setSessionPhase, stopSpeaking, t]);
+  }, [armRecorder, errorText, recorder, resetVoiceStream, setSessionPhase, stopSpeaking, t]);
 
   useEffect(() => {
     startListeningRef.current = startListening;
@@ -558,8 +740,8 @@ export function useContinuousVoiceSession({
         return;
       }
 
-      audioBuffersRef.current.clear();
-      playChainRef.current = Promise.resolve();
+      resetVoiceStream();
+      armStreamIdle();
       assistantAccRef.current = '';
       userTextRef.current = '';
       setLastAssistantText('');
@@ -588,13 +770,35 @@ export function useContinuousVoiceSession({
       if (!activeRef.current) {
         return;
       }
-      await playChainRef.current;
+      await Promise.race([
+        playChainRef.current,
+        streamIdlePromiseRef.current,
+        new Promise<void>((resolve) => setTimeout(resolve, 120_000)),
+      ]);
+      if (streamMetricsRef.current.time_to_first_play_ms != null) {
+        logClientPerf('time_to_first_play', {
+          time_to_first_play_ms: streamMetricsRef.current.time_to_first_play_ms,
+          receive_to_play_start_ms:
+            streamMetricsRef.current.receive_to_play_start_ms ?? -1,
+          play_start_to_audio_done_ms:
+            streamMetricsRef.current.play_start_to_audio_done_ms ?? -1,
+        });
+      }
       if (!activeRef.current) {
         return;
       }
       await finishTurn(t('voice.idleHint'));
     },
-    [finishTurn, locale, logClientPerf, recorder.uri, setSessionPhase, t],
+    [
+      armStreamIdle,
+      finishTurn,
+      locale,
+      logClientPerf,
+      recorder.uri,
+      resetVoiceStream,
+      setSessionPhase,
+      t,
+    ],
   );
 
   const processUtterance = useCallback(async () => {
