@@ -26,7 +26,13 @@
     "yaounde_region_centre": true,
     "centre_food": true,
     "mokolo_or_culture": true,
-    "centre_regional": true
+    "centre_regional": true,
+    "kribi_has_places": true,
+    "sud_not_equals_kribi": true,
+    "kribi_region_sud": true,
+    "kribi_food_poisson": true,
+    "lobe_located": true,
+    "yaounde_hotels": true
   },
   "turns": [
     {
@@ -59,7 +65,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 54.2
+      "ms": 55.0
     },
     {
       "query": "C’est tout ?",
@@ -74,7 +80,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Pouvez-vous préciser un peu ce que vous recherchez ?",
-      "ms": 5.1
+      "ms": 5.2
     },
     {
       "query": "La région de l’Ouest c’est Bafoussam nor ?",
@@ -90,7 +96,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Ouest est une région du Cameroun, et Bafoussam en est le chef-lieu.",
-      "ms": 6.5
+      "ms": 6.1
     },
     {
       "query": "Bafoussam est dans quelle région ?",
@@ -106,7 +112,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bafoussam se trouve dans la région de l’Ouest du Cameroun.",
-      "ms": 5.5
+      "ms": 5.8
     },
     {
       "query": "Que visiter autour de Bafoussam ?",
@@ -138,7 +144,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 7.5
+      "ms": 7.7
     },
     {
       "query": "Je veux visiter l’Ouest du Cameroun.",
@@ -195,7 +201,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Chutes De Nsem-Tsa\n- La Falaise De Foreke\n- La Grotte De Demvoh\n- Palais royal de Foumban\n- Chefferie de Bafoussam\n- Base Nautique De Dschang\n- Cascades De Dschang\n- Centre Climatique De Dschang",
-      "ms": 10.3
+      "ms": 10.5
     },
     {
       "query": "Quels plats typiques de l’Ouest ?",
@@ -211,7 +217,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts plateaux : Le café des h",
-      "ms": 10.3
+      "ms": 10.6
     },
     {
       "query": "Parle-moi des traditions bamiléké et Bamoun",
@@ -238,7 +244,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés :\n- Protocole des chefferies : Dans les c",
-      "ms": 11.1
+      "ms": 11.0
     },
     {
       "query": "Où est le lac Mbapit ?",
@@ -254,7 +260,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban (département du Noun, région de l’Ouest).",
-      "ms": 5.4
+      "ms": 5.8
     },
     {
       "query": "Hôtel à Dschang ?",
@@ -276,7 +282,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 1 lieu(x) vérifié(s) autour de Dschang dans ma base :\n- Adys Hotel Dschang Officiel\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 6.2
+      "ms": 6.1
     },
     {
       "query": "Je veux visiter Douala que me proposes-tu ?",
@@ -333,7 +339,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Douala dans ma base :\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Ile De Manoka\n- Jardin Botanique Agrotech\n- La Maison Omaj\n- La Nouvelle Liberte\n- La Pagode",
-      "ms": 9.6
+      "ms": 9.8
     },
     {
       "query": "La région du Littoral c’est Douala nor ?",
@@ -349,7 +355,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Littoral est une région du Cameroun, et Douala en est le chef-lieu.",
-      "ms": 5.7
+      "ms": 5.6
     },
     {
       "query": "Douala est dans quelle région ?",
@@ -365,7 +371,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Douala se trouve dans la région du Littoral du Cameroun.",
-      "ms": 5.5
+      "ms": 5.4
     },
     {
       "query": "Quels plats typiques de Douala / Littoral ?",
@@ -397,8 +403,8 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Marchés de Bamenda",
-          "city": "Bamenda",
+          "name": "Centre Touristique De Nkolandom",
+          "city": "Ebolowa",
           "scope": "UNKNOWN"
         }
       ],
@@ -407,7 +413,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Ndolé : Plat emblématique surtout associé à Douala / Littoral : feuilles amères, arachide, poisson ou viande.\n- Poissons et cuisine urbaine : Douala offre une scène resto urbaine (quartiers Akwa, Bonapriso…) avec poissons et spécialités locales — goûtez le ndolé ; signalez les",
-      "ms": 15.1
+      "ms": 15.3
     },
     {
       "query": "Parle-moi de la culture Sawa",
@@ -439,7 +445,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Le Littoral a pour chef-lieu Douala, capitale économique et hub aérien du Cameroun. Cultures Sawa, estuaire du Wouri, quartiers Bonanjo / Akwa / Bonapriso, et portes vers Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) et Yabassi (Nkam).\nRepères culturels documentés :\n- Patrimoine Sawa : Douala illustre le littoral urba",
-      "ms": 9.3
+      "ms": 18.1
     },
     {
       "query": "Je veux visiter le Littoral.",
@@ -553,7 +559,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Yaoundé dans ma base :\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé\n- Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)\n- Galerie Arts Negro\n- Galerie Ateli",
-      "ms": 9.6
+      "ms": 10.6
     },
     {
       "query": "La région du Centre c’est Yaoundé nor ?",
@@ -569,7 +575,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Centre est une région du Cameroun, et Yaoundé en est le chef-lieu (capitale politique).",
-      "ms": 5.3
+      "ms": 5.7
     },
     {
       "query": "Yaoundé est dans quelle région ?",
@@ -585,7 +591,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Yaoundé se trouve dans la région du Centre du Cameroun.",
-      "ms": 16.4
+      "ms": 5.8
     },
     {
       "query": "Quels plats typiques à Yaoundé ?",
@@ -627,7 +633,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Poulet DG : Poulet sauté avec plantains et légumes, très présent en restauration urbaine à Yaoundé.\n- Cuisine de quartier / marchés : Yaoundé offre restos de quartier et marchés (Mokolo) pour produits locaux — goûtez aussi ndolé, plantains ; signalez les allergies. Aucun resta",
-      "ms": 14.9
+      "ms": 15.2
     },
     {
       "query": "Parle-moi du marché Mokolo",
@@ -659,7 +665,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Centre International De L'artisanat De Yaoundé se trouve à Yaoundé. Centre International De L'artisanat De Yaoundé. Situé à Carrefour Intendance, près du marché central, à Yaoundé, le Centre International de l'Artisanat de Yaoundé est un espace dédié à la promotion des produits artisanaux camerounais. Ce site touristiq",
-      "ms": 16.0
+      "ms": 17.1
     },
     {
       "query": "Je veux visiter la région du Centre.",
@@ -716,11 +722,205 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- L’île  Des Cocotiers Soa\n- Le Lac Guéré\n- Les Cascades De Poupouma\n- Musée national du Cameroun\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé",
-      "ms": 9.8
+      "ms": 10.6
+    },
+    {
+      "query": "Je veux visiter Kribi que me proposes-tu ?",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Chutes de la Lobé",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Kribi Lodge",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Les Chutes De La Bongola",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Plage de Grand Batanga",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Plages de Kribi",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Hôtel Du Phare",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Hotel Ilomba",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Résidence Lynn",
+          "city": "Kribi",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Kribi dans ma base :\n- Chutes de la Lobé\n- Kribi Lodge\n- Les Chutes De La Bongola\n- Plage de Grand Batanga\n- Plages de Kribi\n- Hôtel Du Phare\n- Hotel Ilomba\n- Résidence Lynn",
+      "ms": 8.5
+    },
+    {
+      "query": "La région du Sud c’est Kribi nor ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Pas exactement. Le Sud est une région du Cameroun (chef-lieu Ebolowa) ; Kribi est sa principale station balnéaire.",
+      "ms": 5.9
+    },
+    {
+      "query": "Kribi est dans quelle région ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Kribi se trouve dans la région du Sud du Cameroun.",
+      "ms": 5.7
+    },
+    {
+      "query": "Quels plats typiques à Kribi ?",
+      "intent": "FOOD",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Plages de Kribi",
+          "city": "Kribi",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Centre Touristique De Nkolandom",
+          "city": "Ebolowa",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Marchés de Bamenda",
+          "city": "Bamenda",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "La Place De L'indépendance",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 5,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Plats typiques documentés dans ma base :\n- Poisson braisé / grillades : Poissons grillés / braisés fréquents à Kribi et sur la côte — souvent avec plantains ou bâton de manioc.\n- Fruits de mer : Kribi est associé aux fruits de mer et grillades en bord de mer — aucun restaurant nommé inventé dans cette base.\nLa base ne ",
+      "ms": 15.2
+    },
+    {
+      "query": "Où sont les chutes de la Lobé ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Les chutes de la Lobé se trouvent près de Kribi (département de l’Océan, région du Sud).",
+      "ms": 6.3
+    },
+    {
+      "query": "Hôtels à Yaoundé ?",
+      "intent": "HOTEL",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Galerie Atelier D'art Afrobantu Mekouti",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "La Place De L'indépendance",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Mont Fébé",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Rond Point J'aime Mon Pays Le Cameroun",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Hilton Yaoundé",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Star Land Hotel Yaounde",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 6,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 6 lieu(x) vérifié(s) autour de Yaoundé dans ma base :\n- Galerie Atelier D'art Afrobantu Mekouti\n- La Place De L'indépendance\n- Mont Fébé\n- Rond Point J'aime Mon Pays Le Cameroun\n- Hilton Yaoundé\n- Star Land Hotel Yaounde",
+      "ms": 7.8
     }
   ],
-  "total_conversation_ms": 249.7,
-  "pytest": "1 failed, 241 passed, 1 warning in 1.98s",
+  "total_conversation_ms": 302.9,
+  "pytest": "249 passed, 1 warning in 2.15s",
   "flags_default": {
     "KNOWLEDGE_GEOGRAPHY_ENABLED": false,
     "WEB_KNOWLEDGE_FALLBACK_ENABLED": false
