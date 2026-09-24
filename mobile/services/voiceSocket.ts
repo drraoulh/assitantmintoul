@@ -12,12 +12,19 @@ export type VoiceServerEvent =
       type: 'audio_chunk';
       format?: string;
       index: number;
+      sequence_id?: number;
       part?: number;
       data: string;
       text?: string;
+      turn_id?: string;
     }
-  | { type: 'audio_done'; index: number }
-  | { type: 'turn_done'; metrics?: Record<string, unknown>; conversation_id?: string }
+  | { type: 'audio_done'; index: number; sequence_id?: number; turn_id?: string }
+  | {
+      type: 'turn_done';
+      metrics?: Record<string, unknown>;
+      conversation_id?: string;
+      turn_id?: string;
+    }
   | { type: 'interrupted' }
   | {
       type: 'error';

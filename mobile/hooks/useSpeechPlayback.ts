@@ -11,9 +11,10 @@ import { Platform } from 'react-native';
 import { useLocale } from '../i18n';
 import { synthesizeSpeech } from '../services/api';
 
-// Fish Audio synthesis time grows with the text, so speak in chunks: the first
-// sentence starts playing while the rest is still being synthesized.
-const MAX_SEGMENT_CHARS = 180;
+// Fish TTS latency grows with text length. HTTP fallback speaks short segments
+// so the first audible audio starts while later segments synthesize.
+const MAX_SEGMENT_CHARS = 120;
+const FIRST_SEGMENT_CHARS = 48;
 
 // Tiny silent WAV — played inside a user gesture to unlock Safari/Chrome autoplay.
 const SILENT_WAV =
@@ -31,19 +32,31 @@ function splitForSpeech(text: string): string[] {
   const sentences = text.match(/[^.!?…]+[.!?…]*/g) ?? [text];
   const segments: string[] = [];
   let current = '';
+  let isFirst = true;
 
   for (const sentence of sentences) {
     const piece = sentence.trim();
     if (!piece) {
       continue;
     }
+    const limit = isFirst ? FIRST_SEGMENT_CHARS : MAX_SEGMENT_CHARS;
     if (!current) {
       current = piece;
-    } else if (current.length + piece.length + 1 <= MAX_SEGMENT_CHARS) {
+    } else if (current.length + piece.length + 1 <= limit) {
       current = `${current} ${piece}`;
     } else {
       segments.push(current);
+      isFirst = false;
       current = piece;
+    }
+    // Force-flush a long first sentence early for time-to-first-speech.
+    if (isFirst && current.length >= FIRST_SEGMENT_CHARS) {
+      const cut = current.lastIndexOf(' ', FIRST_SEGMENT_CHARS);
+      if (cut >= 20) {
+        segments.push(current.slice(0, cut).trim());
+        current = current.slice(cut).trim();
+        isFirst = false;
+      }
     }
   }
   if (current) {

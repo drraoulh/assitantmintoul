@@ -22,27 +22,15 @@ router = APIRouter(tags=["voice"])
 _SENTENCE_END = re.compile(r"(?<=[.!?…])\s+")
 
 
-def _split_ready_sentences(buffer: str) -> tuple[list[str], str]:
-    """Return complete sentences and the leftover incomplete tail.
+def _split_ready_sentences(
+    buffer: str,
+    *,
+    first_chunk: bool = False,
+) -> tuple[list[str], str]:
+    """Delegate to Phase 1.2 voice_chunker (early first-phrase flush)."""
+    from app.services.speech.voice_chunker import split_ready_phrases
 
-    Phase 1: flush earlier so Fish TTS can start while the LLM still streams.
-    - Prefer punctuation boundaries.
-    - Else flush a clause once the buffer reaches ~90 chars (was 140).
-    - Never emit fragments shorter than 28 chars (Fish quality floor).
-    """
-    parts = _SENTENCE_END.split(buffer)
-    if len(parts) == 1:
-        if len(buffer) >= 90 and (" " in buffer):
-            cut = buffer.rfind(" ", 0, 85)
-            if cut >= 28:
-                return [buffer[:cut].strip()], buffer[cut:].lstrip()
-        return [], buffer
-    *complete, tail = parts
-    ready = [p.strip() for p in complete if len(p.strip()) >= 28]
-    leftover = " ".join(
-        [*(p.strip() for p in complete if 0 < len(p.strip()) < 28), tail.strip()]
-    ).strip()
-    return ready, leftover
+    return split_ready_phrases(buffer, first_chunk=first_chunk)
 
 
 async def _send(ws: WebSocket, payload: dict[str, Any]) -> None:
@@ -200,7 +188,7 @@ async def voice_session(websocket: WebSocket) -> None:
                 return
 
             reply_parts: list[str] = []
-            tts_queue: asyncio.Queue[str | None] = asyncio.Queue()
+            tts_queue: asyncio.Queue[tuple[int, str] | None] = asyncio.Queue()
             tts_task = asyncio.create_task(
                 _tts_worker(
                     websocket, speech, tts_queue, timer, interrupt_event, marks, wall0
@@ -209,6 +197,7 @@ async def voice_session(websocket: WebSocket) -> None:
             sentence_buffer = ""
             first_token_marked = False
             first_tts_enqueue_marked = False
+            tts_seq = 0
 
             try:
                 async for event in ai.stream_response(
@@ -238,17 +227,23 @@ async def voice_session(websocket: WebSocket) -> None:
                             mark("llm_first_token")
                             first_token_marked = True
                         reply_parts.append(piece)
-                        sentence_buffer += piece
+                        from app.services.speech.voice_chunker import append_token
+
+                        sentence_buffer = append_token(sentence_buffer, piece)
                         await _send(
                             websocket,
                             {"type": "token", "text": piece, "turn_id": timer.turn_id},
                         )
-                        ready, sentence_buffer = _split_ready_sentences(sentence_buffer)
+                        ready, sentence_buffer = _split_ready_sentences(
+                            sentence_buffer,
+                            first_chunk=not first_tts_enqueue_marked,
+                        )
                         for sentence in ready:
                             if not first_tts_enqueue_marked:
                                 mark("tts_first_fragment")
                                 first_tts_enqueue_marked = True
-                            await tts_queue.put(sentence)
+                            await tts_queue.put((tts_seq, sentence))
+                            tts_seq += 1
                         await _send(
                             websocket,
                             {
@@ -261,12 +256,15 @@ async def voice_session(websocket: WebSocket) -> None:
                         mark("llm_end")
                         conversation_id = str(event.get("conversation_id") or conversation_id)
                         full = str(event.get("text") or "".join(reply_parts)).strip()
-                        if sentence_buffer.strip():
+                        from app.services.speech.voice_chunker import flush_remainder
+
+                        for sentence in flush_remainder(sentence_buffer):
                             if not first_tts_enqueue_marked:
                                 mark("tts_first_fragment")
                                 first_tts_enqueue_marked = True
-                            await tts_queue.put(sentence_buffer.strip())
-                            sentence_buffer = ""
+                            await tts_queue.put((tts_seq, sentence))
+                            tts_seq += 1
+                        sentence_buffer = ""
                         await _send(
                             websocket,
                             {
@@ -369,17 +367,24 @@ async def voice_session(websocket: WebSocket) -> None:
 
 
 
+
 async def _tts_worker(
     websocket: WebSocket,
     speech: Any,
-    queue: asyncio.Queue[str | None],
+    queue: asyncio.Queue,
     timer: PhaseTimer,
     interrupt_event: asyncio.Event,
     marks: dict[str, float] | None = None,
     wall0: float | None = None,
 ) -> None:
+    """Synthesize phrases in order while the LLM keeps producing (overlapped).
+
+    Queue items are ``(sequence_id, text)``, bare ``str``, or ``None`` sentinel.
+    Audio always carries monotonically increasing ``index`` / ``sequence_id``.
+    """
     index = 0
     first = True
+    tts_request_count = 0
     marks = marks if marks is not None else {}
     wall0 = wall0 if wall0 is not None else time.perf_counter()
 
@@ -387,13 +392,24 @@ async def _tts_worker(
         marks[name] = round((time.perf_counter() - wall0) * 1000, 1)
 
     while True:
-        sentence = await queue.get()
-        if sentence is None:
+        item = await queue.get()
+        if item is None:
             break
         if interrupt_event.is_set():
             break
+        if isinstance(item, tuple):
+            seq_id, sentence = item
+            sentence = str(sentence)
+        else:
+            seq_id = index
+            sentence = str(item)
+        sentence = sentence.strip()
+        if not sentence:
+            continue
         if first:
             mark("tts_start")
+            mark("tts_first_request")
+        tts_request_count += 1
         await _send(websocket, {"type": "status", "phase": "speaking"})
         try:
             phase_name = "tts_first" if first else f"tts_{index}"
@@ -409,6 +425,7 @@ async def _tts_worker(
                         "type": "audio_chunk",
                         "format": "mp3",
                         "index": index,
+                        "sequence_id": seq_id,
                         "part": chunk_index,
                         "data": encoded,
                         "text": sentence if chunk_index == 0 else "",
@@ -419,19 +436,29 @@ async def _tts_worker(
                 if first:
                     ttfb = (time.perf_counter() - begin) * 1000
                     timer.mark("tts_ttfb", ttfb)
-                    timer.mark("first_audio", (time.perf_counter() - timer.started_at) * 1000)
+                    timer.mark(
+                        "first_audio",
+                        (time.perf_counter() - timer.started_at) * 1000,
+                    )
                     mark("tts_first_byte")
                     mark("audio_first_chunk_sent")
+                    marks["time_to_first_audio"] = marks["audio_first_chunk_sent"]
+                    timer.mark("time_to_first_audio", marks["time_to_first_audio"])
                     first = False
             elapsed = (time.perf_counter() - begin) * 1000
             timer.mark(phase_name, elapsed)
             await _send(
                 websocket,
-                {"type": "audio_done", "index": index, "turn_id": timer.turn_id},
+                {
+                    "type": "audio_done",
+                    "index": index,
+                    "sequence_id": seq_id,
+                    "turn_id": timer.turn_id,
+                },
             )
             index += 1
         except Exception as exc:  # noqa: BLE001
-            logger.exception("TTS stream failed")
+            logger.exception("TTS worker failed")
             await _send(
                 websocket,
                 {
@@ -443,6 +470,7 @@ async def _tts_worker(
                 },
             )
     mark("tts_end")
+    timer.mark("tts_requests", float(tts_request_count))
 
 
 async def _emit_tts(
@@ -454,10 +482,25 @@ async def _emit_tts(
     marks: dict[str, float] | None = None,
     wall0: float | None = None,
 ) -> None:
-    queue: asyncio.Queue[str | None] = asyncio.Queue()
-    parts = [p.strip() for p in _SENTENCE_END.split(text) if p.strip()] or [text]
-    for part in parts:
-        await queue.put(part)
+    from app.services.speech.voice_chunker import flush_remainder, split_ready_phrases
+
+    queue: asyncio.Queue = asyncio.Queue()
+    buf = text
+    seq = 0
+    first = True
+    while buf:
+        ready, buf = split_ready_phrases(buf, first_chunk=first)
+        if not ready:
+            break
+        for part in ready:
+            await queue.put((seq, part))
+            seq += 1
+            first = False
+    for part in flush_remainder(buf):
+        await queue.put((seq, part))
+        seq += 1
+    if seq == 0 and text.strip():
+        await queue.put((0, text.strip()))
     await queue.put(None)
     await _tts_worker(
         websocket, speech, queue, timer, interrupt_event, marks, wall0
@@ -465,7 +508,7 @@ async def _emit_tts(
 
 
 def _log_voice_perf(timer: PhaseTimer, marks: dict[str, float]) -> None:
-    """Emit a dedicated [VOICE PERF] chronology for Phase 1.1 diagnostics."""
+    """Emit a dedicated [VOICE PERF] chronology for Phase 1.x diagnostics."""
     phases = timer.phases
     lines = [
         f"[VOICE PERF] turn={timer.turn_id}",
@@ -478,7 +521,9 @@ def _log_voice_perf(timer: PhaseTimer, marks: dict[str, float]) -> None:
         f"[VOICE PERF] LLM TOTAL  {phases.get('llm', 0):.0f} ms",
         f"[VOICE PERF] TTS TTFB   {phases.get('tts_ttfb', 0):.0f} ms",
         f"[VOICE PERF] TTS FIRST  {phases.get('tts_first', 0):.0f} ms",
+        f"[VOICE PERF] TTS REQ    {phases.get('tts_requests', 0):.0f}",
         f"[VOICE PERF] FIRST AUDIO {phases.get('first_audio', marks.get('audio_first_chunk_sent', 0)):.0f} ms",
+        f"[VOICE PERF] TTFA       {phases.get('time_to_first_audio', marks.get('time_to_first_audio', 0)):.0f} ms",
         f"[VOICE PERF] TOTAL      {timer.total_ms:.0f} ms",
     ]
     for line in lines:

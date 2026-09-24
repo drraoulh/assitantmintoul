@@ -1,0 +1,331 @@
+{
+  "label": "phase1.2-after",
+  "summary": {
+    "STT": {
+      "avg": 171.5,
+      "min": 171.5,
+      "max": 171.5,
+      "n": 1
+    },
+    "LLM_TTFT": {
+      "avg": 245.2,
+      "min": 0.0,
+      "max": 343.4,
+      "n": 4
+    },
+    "LLM_total": {
+      "avg": 604.9,
+      "min": 0.0,
+      "max": 1042.3,
+      "n": 4
+    },
+    "TTS_TTFB": {
+      "avg": 501.2,
+      "min": 463.3,
+      "max": 558.4,
+      "n": 4
+    },
+    "First_audio_TTFA": {
+      "avg": 6516.7,
+      "min": 5885.2,
+      "max": 6887.3,
+      "n": 4
+    },
+    "tts_first_fragment_at": {
+      "avg": 3456.6,
+      "min": 2769.1,
+      "max": 5376.7,
+      "n": 4
+    },
+    "first_frag_chars": {
+      "avg": 47.8,
+      "min": 25.0,
+      "max": 94.0,
+      "n": 4
+    },
+    "TOTAL": {
+      "avg": 8289.4,
+      "min": 7892.2,
+      "max": 9294.0,
+      "n": 4
+    },
+    "valid_n": 4,
+    "invalid_n": 5
+  },
+  "results": [
+    {
+      "label": "bonjour_r0",
+      "invalid": false,
+      "first_frag": "Bien venue au Cam er oun,",
+      "first_frag_chars": 25,
+      "reply_preview": "Bienvenue au Cameroun, l'Afrique en miniature, où forêts, montagnes et savanes se rencontrent.\nJe peux vous aider avec d",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0,
+        "llm_first_token": 2726.9,
+        "tts_first_fragment": 2779.9,
+        "llm_end": 6273.1,
+        "tts_start": 6273.1,
+        "tts_first_byte": 6831.5,
+        "audio_first_chunk_sent": 6831.5,
+        "time_to_first_audio": 6831.5,
+        "tts_end": 7941.7,
+        "turn_end": 7941.8
+      },
+      "metrics": {
+        "label": "p12:bonjour_r0",
+        "turn_id": "f163d7a75a",
+        "started_wall_ms": 1790228802792.0,
+        "total_ms": 7941.8,
+        "phases_ms": {
+          "routing": 0.2,
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.0,
+          "llm_ttft": 340.3,
+          "llm": 877.6,
+          "tts_ttfb": 558.4,
+          "time_to_first_audio": 6831.5,
+          "tts_requests": 1.0
+        }
+      }
+    },
+    {
+      "label": "food_r0",
+      "invalid": false,
+      "first_frag": "Comm ence z par le nd olé,",
+      "first_frag_chars": 26,
+      "reply_preview": "Commencez par le ndolé, notre plat national à base d'aubergines et d'amarante, souvent servi avec du poisson ou du poule",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0,
+        "llm_first_token": 2710.1,
+        "tts_first_fragment": 2769.1,
+        "llm_end": 6412.3,
+        "tts_start": 6412.3,
+        "tts_first_byte": 6887.3,
+        "audio_first_chunk_sent": 6887.3,
+        "time_to_first_audio": 6887.3,
+        "tts_end": 7892.2,
+        "turn_end": 7892.2
+      },
+      "metrics": {
+        "label": "p12:food_r0",
+        "turn_id": "352c760ea1",
+        "started_wall_ms": 1790228810733.9,
+        "total_ms": 7892.2,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 3.8,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 4.2,
+          "llm_ttft": 343.4,
+          "llm": 1042.3,
+          "tts_ttfb": 474.9,
+          "time_to_first_audio": 6887.3,
+          "tts_requests": 1.0
+        }
+      }
+    },
+    {
+      "label": "nature_r0",
+      "invalid": false,
+      "first_frag": "Déc ouvrez le Parc National du Ch ant des Sing",
+      "first_frag_chars": 46,
+      "reply_preview": "Découvrez le Parc National du Chant des Singes près de Bafoussam pour une immersion totale dans la forêt.",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 171.5,
+        "llm_start": 171.5,
+        "llm_first_token": 2825.2,
+        "tts_first_fragment": 2900.7,
+        "llm_end": 5999.4,
+        "tts_start": 5999.4,
+        "tts_first_byte": 6462.8,
+        "audio_first_chunk_sent": 6462.8,
+        "time_to_first_audio": 6462.8,
+        "tts_end": 8029.7,
+        "turn_end": 8029.7
+      },
+      "metrics": {
+        "label": "p12:nature_r0",
+        "turn_id": "5fac426038",
+        "started_wall_ms": 1790228818626.1,
+        "total_ms": 8029.7,
+        "phases_ms": {
+          "stt": 171.5,
+          "routing": 0.1,
+          "rag": 4.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 4.2,
+          "llm_ttft": 297.2,
+          "llm": 499.6,
+          "tts_ttfb": 463.3,
+          "time_to_first_audio": 6462.8,
+          "tts_requests": 1.0
+        }
+      }
+    },
+    {
+      "label": "yaounde_r0",
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0
+      },
+      "metrics": {
+        "label": "p12:yaounde_r0",
+        "turn_id": "4821d3df77",
+        "started_wall_ms": 1790228826655.9,
+        "total_ms": 2422.7,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 5.8,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 5.9,
+          "llm": 58.0
+        }
+      }
+    },
+    {
+      "label": "culture_r0",
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0
+      },
+      "metrics": {
+        "label": "p12:culture_r0",
+        "turn_id": "6cbb7498d8",
+        "started_wall_ms": 1790228829078.6,
+        "total_ms": 2391.0,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 3.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 3.1,
+          "llm": 53.0
+        }
+      }
+    },
+    {
+      "label": "bonjour_r1",
+      "invalid": false,
+      "first_frag": "Bienvenue au Cameroun, l'Afrique en miniature, où forêts, montagnes et savanes se rencontrent.",
+      "first_frag_chars": 94,
+      "reply_preview": "Bienvenue au Cameroun, l'Afrique en miniature, où forêts, montagnes et savanes se rencontrent.\nJe peux vous aider avec d",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0,
+        "llm_first_token": 5376.7,
+        "tts_first_fragment": 5376.7,
+        "llm_end": 5376.7,
+        "tts_start": 5376.8,
+        "tts_first_byte": 5885.2,
+        "audio_first_chunk_sent": 5885.2,
+        "time_to_first_audio": 5885.2,
+        "tts_end": 9294.0,
+        "turn_end": 9294.0
+      },
+      "metrics": {
+        "label": "p12:bonjour_r1",
+        "turn_id": "87dc5a788c",
+        "started_wall_ms": 1790228831469.6,
+        "total_ms": 9294.0,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.0,
+          "llm_ttft": 0.0,
+          "llm": 0.0,
+          "cache_hit": 1.0,
+          "tts_ttfb": 508.4,
+          "time_to_first_audio": 5885.2,
+          "tts_requests": 1.0
+        }
+      }
+    },
+    {
+      "label": "food_r1",
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0
+      },
+      "metrics": {
+        "label": "p12:food_r1",
+        "turn_id": "b6fcb8bc0b",
+        "started_wall_ms": 1790228840763.7,
+        "total_ms": 2394.9,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 56.2
+        }
+      }
+    },
+    {
+      "label": "nature_r1",
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 136.4,
+        "llm_start": 136.4
+      },
+      "metrics": {
+        "label": "p12:nature_r1",
+        "turn_id": "db2da7c651",
+        "started_wall_ms": 1790228843158.7,
+        "total_ms": 2551.2,
+        "phases_ms": {
+          "stt": 136.4,
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 50.7
+        }
+      }
+    },
+    {
+      "label": "yaounde_r1",
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "llm_start": 0.0
+      },
+      "metrics": {
+        "label": "p12:yaounde_r1",
+        "turn_id": "02b7071e34",
+        "started_wall_ms": 1790228845709.9,
+        "total_ms": 2400.7,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 50.5
+        }
+      }
+    }
+  ]
+}

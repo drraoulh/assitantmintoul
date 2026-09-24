@@ -14,7 +14,6 @@ import {
   uriToBase64,
   type VoiceServerEvent,
 } from '../services/voiceSocket';
-import { Platform } from 'react-native';
 import { mimeFromRecordingUri } from '../utils/audioMime';
 
 export type VoiceSessionPhase =
@@ -210,6 +209,10 @@ export function useContinuousVoiceSession({
           if (perf && perf.firstAudioChunk == null) {
             perf.firstAudioChunk = Date.now();
             logClientPerf('first_audio_chunk');
+            // Phase 1.2: flip UI to speaking as soon as first bytes arrive —
+            // do not wait for the full sentence MP3 (audio_done).
+            setSessionPhase('speaking', t('voice.speakingInterrupt'));
+            busyRef.current = false;
           }
           if (!playBase64Mp3) {
             break;
@@ -227,6 +230,13 @@ export function useContinuousVoiceSession({
         case 'audio_done': {
           if (perf) {
             perf.audioDone = Date.now();
+            if (perf.firstAudioChunk != null && (perf as { firstSpeech?: number }).firstSpeech == null) {
+              (perf as { firstSpeech?: number }).firstSpeech = Date.now();
+              logClientPerf('first_speech_play', {
+                time_to_first_speech_ms:
+                  Date.now() - (perf.sendStart ?? perf.recordEnd ?? Date.now()),
+              });
+            }
           }
           logClientPerf('audio_done');
           if (!playBase64Mp3) {
@@ -240,6 +250,7 @@ export function useContinuousVoiceSession({
           const base64 = bytesToBase64(parts);
           setSessionPhase('speaking', t('voice.speakingInterrupt'));
           busyRef.current = false;
+          // Ordered playback chain: sequence 0 → 1 → 2 … (never reorder).
           playChainRef.current = playChainRef.current
             .then(async () => {
               if (!activeRef.current || phaseRef.current === 'idle') {
@@ -286,10 +297,8 @@ export function useContinuousVoiceSession({
   );
 
   const ensureSocket = useCallback(async (): Promise<VoiceSocket | null> => {
-    // Web Render API may not expose WS yet; HTTP+Fish TTS is the reliable path.
-    if (Platform.OS === 'web') {
-      return null;
-    }
+    // Prefer WebSocket on all platforms (incl. web). HTTP STT→chat→TTS remains
+    // the fallback when connect fails (see processUtterance).
     if (socketRef.current?.ready) {
       return socketRef.current;
     }
@@ -300,6 +309,7 @@ export function useContinuousVoiceSession({
         onOpen: () => {
           if (!settled) {
             settled = true;
+            socketRef.current = socket;
             resolve(socket);
           }
         },
