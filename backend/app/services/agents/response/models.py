@@ -47,6 +47,9 @@ class FinalResponse(BaseModel):
     llm_ttft_ms: float | None = None
     llm_generation_ms: float | None = None
     total_agent4_ms: float | None = None
+    grounding_ok: bool | None = None
+    grounding_validation_ms: float | None = None
+    grounding_violations: list[str] = Field(default_factory=list)
 
     @field_validator("sources", mode="before")
     @classmethod
@@ -68,4 +71,7 @@ class FinalResponse(BaseModel):
             "llm_ttft_ms": self.llm_ttft_ms,
             "llm_generation_ms": self.llm_generation_ms,
             "total_agent4_ms": self.total_agent4_ms,
+            "grounding_ok": self.grounding_ok,
+            "grounding_validation_ms": self.grounding_validation_ms,
+            "grounding_violation_count": len(self.grounding_violations),
         }

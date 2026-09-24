@@ -8,6 +8,7 @@ from typing import Any
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
+from app.services.agents.response.evidence import build_allowed_evidence
 
 _CONTENT_MAX = 320
 _KNOWLEDGE_MAX = 4
@@ -124,6 +125,7 @@ def build_structured_context(
                             "estimated_duration_hours": item.estimated_duration_hours,
                             "estimated_cost_xaf": item.estimated_cost_xaf,
                             "distance_from_previous_km": item.distance_from_previous_km,
+                            "distance_type": "geographic",
                             "category": list(item.category),
                             "eco_tags": list(item.eco_tags),
                         }
@@ -134,6 +136,7 @@ def build_structured_context(
             ],
         }
 
+    evidence = build_allowed_evidence(intent, knowledge, tourism_plan)
     return {
         "user_query": user_query,
         "response_mode": response_mode,
@@ -147,6 +150,7 @@ def build_structured_context(
             "children": intent.children,
             "interests": list(intent.interests),
             "confidence": intent.confidence,
+            "needs_web": intent.needs_web,
         },
         "places": places,
         "knowledge": knowledge_items,
@@ -158,12 +162,14 @@ def build_structured_context(
             )
         )[:12],
         "tourism_plan": plan_payload,
+        "allowed_evidence": evidence.as_prompt_dict(),
     }
 
 
 def context_as_prompt_block(context: dict[str, Any]) -> str:
     return (
-        "STRUCTURED CONTEXT (authoritative — do not invent beyond this JSON):\n"
+        "STRUCTURED CONTEXT (authoritative — ONLY source of tourism facts):\n"
+        "Use allowed_evidence as the whitelist for named places, costs, activities, URLs.\n"
         + json.dumps(context, ensure_ascii=False, indent=2)
     )
 
