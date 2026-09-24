@@ -1,41 +1,5 @@
 [
   {
-    "id": "foumban-palais-sultan",
-    "name": "Palais du Sultan (Foumban)",
-    "city": "Foumban",
-    "region": "Ouest",
-    "category": "heritage",
-    "summary_fr": "Foumban est le cœur historique du royaume Bamoun. Le palais du sultan et le musée associé présentent l'histoire, l'écriture bamoun et l'artisanat royal.",
-    "summary_en": "Foumban is the historic heart of the Bamoun kingdom. The sultan's palace and associated museum present Bamoun history, script, and royal crafts.",
-    "tips_fr": "Prévoyez du temps pour le musée et les ateliers d'artisans. Demandez un guide pour le contexte historique.",
-    "tips_en": "Allow time for the museum and craft workshops. Ask for a guide for historical context.",
-    "tags": ["foumban", "bamoun", "palais", "palace", "ouest", "west", "culture", "histoire"]
-  },
-  {
-    "id": "bafoussam-hauts-plateaux",
-    "name": "Hauts Plateaux de l'Ouest (autour de Bafoussam)",
-    "city": "Bafoussam",
-    "region": "Ouest",
-    "category": "nature",
-    "summary_fr": "Région de collines, chefferies et paysages agricoles des Grassfields. Bafoussam sert souvent de base pour explorer l'Ouest camerounais.",
-    "summary_en": "Hills, chiefdoms, and farming landscapes of the Grassfields. Bafoussam is often a base for exploring West Cameroon.",
-    "tips_fr": "Intéressant pour la culture des chefferies et la gastronomie locale. Les distances entre sites peuvent être longues : planifiez le transport.",
-    "tips_en": "Good for chiefdom culture and local food. Distances between sites can be long: plan transport.",
-    "tags": ["bafoussam", "ouest", "west", "grassfields", "chefferie", "nature"]
-  },
-  {
-    "id": "dschang-lac",
-    "name": "Lac Municipal de Dschang",
-    "city": "Dschang",
-    "region": "Ouest",
-    "category": "nature",
-    "summary_fr": "Ville universitaire de l'Ouest avec lac municipal et climat plus frais des hauts plateaux. Destination agréable pour une pause hors des grandes villes.",
-    "summary_en": "University town in the West with a municipal lake and cooler highland climate. A pleasant break from the big cities.",
-    "tips_fr": "Combinez nature et découverte culturelle des villages environnants.",
-    "tips_en": "Combine nature with cultural visits to nearby villages.",
-    "tags": ["dschang", "lac", "lake", "ouest", "climat", "highland"]
-  },
-  {
     "id": "maroua-mandara",
     "name": "Monts Mandara (depuis Maroua)",
     "city": "Maroua",
@@ -45,7 +9,15 @@
     "summary_en": "Maroua is a gateway to the Mandara Mountains, hill villages, and Sahelian landscapes. Fulani culture and northern traditions are strong here.",
     "tips_fr": "Vérifiez toujours la situation sécuritaire locale avant tout déplacement hors ville. Voyagez avec des informations récentes.",
     "tips_en": "Always check the local security situation before travel outside town. Use up-to-date advice.",
-    "tags": ["maroua", "mandara", "extrême-nord", "far north", "sahel", "nature", "culture"]
+    "tags": [
+      "maroua",
+      "mandara",
+      "extrême-nord",
+      "far north",
+      "sahel",
+      "nature",
+      "culture"
+    ]
   },
   {
     "id": "rhumsiki",
@@ -57,7 +29,14 @@
     "summary_en": "Village famous for volcanic peaks and Mandara panoramas. An iconic photographic site of northern Cameroon.",
     "tips_fr": "Accès et sécurité à vérifier avant le voyage. Guides locaux recommandés.",
     "tips_en": "Access and security must be checked before travel. Local guides recommended.",
-    "tags": ["rhumsiki", "mandara", "volcan", "extrême-nord", "photo", "nature"]
+    "tags": [
+      "rhumsiki",
+      "mandara",
+      "volcan",
+      "extrême-nord",
+      "photo",
+      "nature"
+    ]
   },
   {
     "id": "mount-cameroon",
@@ -69,6 +48,14 @@
     "summary_en": "Active volcano and West Africa's highest peak. Demanding trek from Buea / nearby areas, with vegetation changing by altitude.",
     "tips_fr": "Engagez un guide agréé. Préparez équipement de randonnée, eau et météo. Ce n'est pas une balade légère.",
     "tips_en": "Hire a certified guide. Prepare hiking gear, water, and weather plans. This is not a casual walk.",
-    "tags": ["mont cameroun", "mount cameroon", "buea", "trek", "hiking", "volcan", "sud-ouest"]
+    "tags": [
+      "mont cameroun",
+      "mount cameroon",
+      "buea",
+      "trek",
+      "hiking",
+      "volcan",
+      "sud-ouest"
+    ]
   }
 ]

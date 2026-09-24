@@ -71,7 +71,12 @@ class SiteCatalog:
         # Legacy layout: data/tourist_sites/<region>/sites.json
         for path in sorted(directory.glob("*/*.json")):
             sites.extend(self._records_from_file(path))
-        return sites
+        # Dedupe by id (later files may refine; first wins unless empty)
+        by_id: dict[str, TouristSiteRecord] = {}
+        for site in sites:
+            if site.id not in by_id:
+                by_id[site.id] = site
+        return list(by_id.values())
 
     def _records_from_file(self, path: Path) -> list[TouristSiteRecord]:
         try:

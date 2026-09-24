@@ -22,6 +22,10 @@ QUERIES = [
     "Bafoussam est dans quelle région ?",
     "Que visiter autour de Bafoussam ?",
     "Je veux visiter l’Ouest du Cameroun.",
+    "Quels plats typiques de l’Ouest ?",
+    "Parle-moi des traditions bamiléké et Bamoun",
+    "Où est le lac Mbapit ?",
+    "Hôtel à Dschang ?",
 ]
 
 
@@ -87,7 +91,18 @@ async def main() -> int:
         "bafoussam_region_ouest": "Ouest" in turns[3]["assistant"],
         "geo_no_planner": turns[3]["planner"] is False and turns[3]["intent"] == "SIMPLE_QA",
         "around_has_places": turns[4]["verified_places_count"] >= 1,
-        "ouest_regional": turns[5]["intent"] in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "ouest_regional": turns[5]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "ouest_food_mentions_achu": "achu" in turns[6]["assistant"].casefold()
+        or turns[6]["completeness"] != "NONE",
+        "ouest_culture_evidence": turns[7]["completeness"] != "NONE"
+        or "bamoun" in turns[7]["assistant"].casefold()
+        or "chefferie" in turns[7]["assistant"].casefold(),
+        "mbapit_located": "foumban" in turns[8]["assistant"].casefold()
+        or "mbapit" in turns[8]["assistant"].casefold(),
+        "dschang_hotel_or_soft": "adys" in turns[9]["assistant"].casefold()
+        or "dschang" in turns[9]["assistant"].casefold()
+        or turns[9]["verified_places_count"] >= 1,
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -135,14 +150,20 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched local catalog: `data/tourist_sites/bafoussam_environs.json`",
+        "- Enriched local catalog: `data/tourist_sites/ouest_complete.json` (+ culture pack)",
         "",
         "## Geography",
         "",
         "- 10 regions with chef-lieux",
-        "- Ouest divisions: Mifi, Noun, Menoua",
+        "- Ouest: 8 départements (Mifi, Noun, Menoua, Bamboutos, Haut-Nkam, Hauts-Plateaux, Koung-Khi, Ndé)",
         "- Bafoussam → Mifi → Ouest; is_region_capital=true",
-        "- Localities: Baleng, Bamougoum (NEAR Bafoussam)",
+        "- Localities: Baleng, Bamougoum, Mbapit, Foumbot, Santchou, Balatchi, …",
+        "",
+        "## Ouest enrichment",
+        "",
+        "- ~30 lieux touristiques sourcés (Supabase + curated)",
+        "- Culture pack: plats (achu, koki…), traditions, langues, artisanat, hôtel Adys",
+        "- Restaurants nommés vérifiés: **aucun** (policy anti-invention)",
         "",
         "## Bafoussam",
         "",
@@ -150,11 +171,15 @@ async def main() -> int:
         f"- Preview: `{turns[0]['assistant'][:200]}`",
         f"- Region Q: `{turns[3]['assistant']}`",
         f"- Ouest≠Bafoussam: `{turns[2]['assistant']}`",
+        f"- Food: `{turns[6]['assistant'][:180]}`",
+        f"- Culture: `{turns[7]['assistant'][:180]}`",
+        f"- Mbapit: `{turns[8]['assistant']}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
         "- `knowledge_completeness` + `verified_places_count`",
+        "- Geo facts + Ouest culture evidence injected as KnowledgeEvidence",
         "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
         "",
         "## Web fallback",

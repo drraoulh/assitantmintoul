@@ -1,0 +1,241 @@
+{
+  "region_id": "ouest",
+  "region_fr": "Ouest",
+  "region_en": "West",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, food_deep_dive, shopping_crafts, cities_quick_guide, regions_overview, languages_etiquette, climate_seasons, transport_itineraries, interests_itineraries), stay-cities, fiches lieux Ouest, et hôtel Ayila'a. Aucun restaurant nommé inventé.",
+  "overview": {
+    "text_fr": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.",
+    "text_en": "The West (Grassfields) has highlands, Bamileke chiefdoms, the Bamoun kingdom in Foumban, crafts, crater lakes and waterfalls. Bafoussam is the regional capital; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang and Bangangté are major hubs.",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; cameroon_admin.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "grassfields-ouest",
+      "name_fr": "Grassfields (Ouest)",
+      "name_en": "Grassfields (West)",
+      "description_fr": "Hauts plateaux de l’Ouest : chefferies bamiléké, royaume Bamoun à Foumban, artisanat, danses, masques et protocoles de cour.",
+      "description_en": "West highlands: Bamileke chiefdoms, Bamoun kingdom in Foumban, crafts, dance, masks, and court protocol.",
+      "related_cities": ["Bafoussam", "Bandjoun", "Baham", "Dschang", "Foumban", "Bangangté", "Mbouda", "Bafang", "Batcham", "Batoufam"],
+      "source": "data/documents/history_culture.md"
+    },
+    {
+      "id": "bamoun-noun",
+      "name_fr": "Espace Bamoun (Noun)",
+      "name_en": "Bamoun area (Noun)",
+      "description_fr": "Foumban et le Noun : palais royal, musée, écriture bamoun, sculpture et bronze ; nature autour du mont et lac Mbapit.",
+      "description_en": "Foumban and the Noun: royal palace, museum, Bamoun script, sculpture and bronze; nature around Mount and Lake Mbapit.",
+      "related_cities": ["Foumban"],
+      "source": "data/documents/history_culture.md ; data/tourist_sites/ouest_complete.json"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Ghomálá'",
+      "area": "Bafoussam et environs",
+      "note_fr": "Langue bamiléké dominante autour de Bafoussam.",
+      "note_en": "Dominant Bamileke language around Bafoussam.",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Yemba",
+      "area": "Dschang / Menoua",
+      "note_fr": "Salut local distinct du Mbolo côtier (tons hauts-bas).",
+      "note_en": "Local greeting distinct from coastal Mbolo (rise-and-fall tones).",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Shüpamom",
+      "area": "Foumban / Noun (Bamoun)",
+      "note_fr": "Langue du royaume Bamoun ; orthographe et tons à respecter.",
+      "note_en": "Language of the Bamoun kingdom; respect spelling and tones.",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Medumba",
+      "area": "Bangangté / Ndé",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Ngiemboon (Mbouda)",
+      "area": "Mbouda / Bamboutos",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "chefferie-protocol",
+      "title_fr": "Protocole des chefferies",
+      "title_en": "Chiefdom protocol",
+      "text_fr": "Dans les chefferies de l’Ouest, respectez le protocole indiqué par votre guide (chaussures, posture, photos). L’accès à certaines cours ou cérémonies peut être restreint.",
+      "text_en": "In West Region chiefdoms, follow the protocol given by your guide (shoes, posture, photos). Access to some courts or ceremonies may be restricted.",
+      "source": "data/documents/history_culture.md ; data/documents/languages_etiquette.md ; data/documents/food_culture.md"
+    },
+    {
+      "id": "bamoun-heritage",
+      "title_fr": "Patrimoine Bamoun (Foumban)",
+      "title_en": "Bamoun heritage (Foumban)",
+      "text_fr": "Foumban est le cœur historique du royaume Bamoun : palais royal (1917, sultan Ibrahim Njoya), musée, manuscrits, écriture bamoun et artisanat royal (sculpture, bronze). À combiner souvent avec le mont / lac Mbapit.",
+      "text_en": "Foumban is the historic heart of the Bamoun kingdom: royal palace (1917, Sultan Ibrahim Njoya), museum, manuscripts, Bamoun script, and royal crafts (sculpture, bronze). Often combined with Mount / Lake Mbapit.",
+      "source": "data/documents/history_culture.md ; data/documents/shopping_crafts.md ; exports/supabase-tourist-places (Palais royal de Foumban)"
+    },
+    {
+      "id": "bamileke-chiefdoms",
+      "title_fr": "Chefferies bamiléké",
+      "title_en": "Bamileke chiefdoms",
+      "text_fr": "Bandjoun, Baham, Bafoussam, Batoufam, Bangang (Batcham), Balessing (Penka-Michel) et d’autres chefferies des hauts plateaux illustrent l’organisation politique et culturelle bamiléké (cases, place cérémonielle, musées).",
+      "text_en": "Bandjoun, Baham, Bafoussam, Batoufam, Bangang (Batcham), Balessing (Penka-Michel) and other highland chiefdoms illustrate Bamileke political and cultural organization (compounds, ceremonial grounds, museums).",
+      "source": "data/documents/history_culture.md ; data/tourist_sites/ouest_complete.json"
+    },
+    {
+      "id": "masks-dance",
+      "title_fr": "Masques et danses Grassfields",
+      "title_en": "Grassfields masks and dance",
+      "text_fr": "Les Grassfields de l’Ouest sont associés aux masques, danses et artisanat des chefferies. Les programmes de fêtes et foires varient selon les villes — demandez le calendrier local au moment du voyage.",
+      "text_en": "The West Grassfields are associated with chiefdom masks, dance, and crafts. Festival and fair calendars vary by town — ask locally at travel time.",
+      "source": "data/documents/history_culture.md"
+    },
+    {
+      "id": "bandjoun-december",
+      "title_fr": "Fêtes de décembre à Bandjoun",
+      "title_en": "December festivals in Bandjoun",
+      "text_fr": "La chefferie de Bandjoun (musée, cases à chaume, place cérémonielle) est notamment connue pour des fêtes de décembre offrant une immersion culturelle forte — vérifiez les dates et le protocole sur place.",
+      "text_en": "Bandjoun chiefdom (museum, thatched compounds, ceremonial ground) is notably known for December festivals with strong cultural immersion — confirm dates and protocol locally.",
+      "source": "data/tourist_sites/ouest_complete.json (Chefferie de Bandjoun)"
+    },
+    {
+      "id": "photo-etiquette",
+      "title_fr": "Photos et savoir-vivre",
+      "title_en": "Photos and etiquette",
+      "text_fr": "Demandez l’autorisation avant de photographier des personnes, chefferies ou lieux religieux.",
+      "text_en": "Ask permission before photographing people, chiefdoms, or religious sites.",
+      "source": "data/documents/practical_travel.md ; data/documents/safety_health_money.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "achu",
+      "name_fr": "Achu",
+      "name_en": "Achu",
+      "text_fr": "Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).",
+      "text_en": "Iconic Grassfields dish: pounded taro with yellow sauce (often associated with the West highlands).",
+      "source": "data/documents/food_culture.md ; data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "koki",
+      "name_fr": "Koki",
+      "name_en": "Koki",
+      "text_fr": "Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.",
+      "text_en": "Bean-based specialty steamed in leaves; found in several regions including the West.",
+      "source": "data/documents/food_culture.md"
+    },
+    {
+      "id": "cafe-hauts-plateaux",
+      "name_fr": "Café des hauts plateaux",
+      "name_en": "Highland coffee",
+      "text_fr": "Le café des hauts plateaux est associé à l’Ouest camerounais.",
+      "text_en": "Highland coffee is associated with Cameroon’s West Region.",
+      "source": "data/documents/food_culture.md"
+    },
+    {
+      "id": "staples-ouest",
+      "name_fr": "Bases alimentaires (plantains, manioc, taro)",
+      "name_en": "Food staples (plantains, cassava, taro)",
+      "text_fr": "Plantains, manioc et taro font partie des bases alimentaires selon les zones ; les recettes varient selon les ethnies — demandez conseil à votre hôte ou au restaurant.",
+      "text_en": "Plantains, cassava and taro are staples in many areas; recipes vary by community — ask your host or restaurant.",
+      "source": "data/documents/food_culture.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "foumban-crafts",
+      "name_fr": "Artisanat de Foumban",
+      "name_en": "Foumban crafts",
+      "text_fr": "Foumban est une référence pour la sculpture, le bronze et l’artisanat Bamoun. Ateliers et marchés artisanaux autour du palais.",
+      "text_en": "Foumban is a reference for Bamoun sculpture, bronze, and crafts. Workshops and craft markets around the palace.",
+      "city": "Foumban",
+      "source": "data/documents/shopping_crafts.md"
+    },
+    {
+      "id": "bafoussam-artisans",
+      "name_fr": "Route / ateliers d’artisans à Bafoussam",
+      "name_en": "Artisan route / workshops in Bafoussam",
+      "text_fr": "Ateliers et boutiques d’artisanat à Bafoussam (bois, tissus, objets traditionnels) — voir aussi la fiche lieu « Route des artisans ».",
+      "text_en": "Craft workshops and shops in Bafoussam (wood, textiles, traditional objects) — see also the ‘Route des artisans’ place card.",
+      "city": "Bafoussam",
+      "source": "data/tourist_sites/ouest_complete.json"
+    },
+    {
+      "id": "chefferie-crafts",
+      "name_fr": "Objets et tissus des chefferies",
+      "name_en": "Chiefdom objects and textiles",
+      "text_fr": "Dans l’Ouest (chefferies), objets traditionnels et tissus se trouvent avec respect culturel ; négociez avec courtoisie.",
+      "text_en": "In the West (chiefdoms), traditional objects and textiles are found with cultural respect; negotiate courteously.",
+      "source": "data/documents/shopping_crafts.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "lacs-cratere",
+      "title_fr": "Lacs de cratère et monts",
+      "title_en": "Crater lakes and mountains",
+      "text_fr": "Lac Baleng (près de Bafoussam), lac / mont Mbapit (entre Foumbot et Foumban), lac Bamendjing, mont Bachingou / col de Bana, monts Bamboutos (Haras de Balatchi).",
+      "text_en": "Lake Baleng (near Bafoussam), Lake / Mount Mbapit (between Foumbot and Foumban), Lake Bamendjing, Mount Bachingou / Bana pass, Bamboutos mountains (Balatchi stud farm).",
+      "source": "data/tourist_sites/ouest_complete.json"
+    },
+    {
+      "id": "cascades-falaise",
+      "title_fr": "Cascades et falaise",
+      "title_en": "Waterfalls and cliff",
+      "text_fr": "Cascades de Dschang, chutes de la Métché (Mbouda), chutes de la Mouankeu (Bafang), falaise de Foréké / Santchou (Dschang).",
+      "text_en": "Dschang cascades, Métché falls (Mbouda), Mouankeu falls (Bafang), Foréké / Santchou cliff (Dschang).",
+      "source": "data/tourist_sites/ouest_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "itinerary-corridor",
+      "title_fr": "Corridor culturel Ouest",
+      "title_en": "West cultural corridor",
+      "text_fr": "Itinéraire type : Yaoundé ou Douala → Bafoussam → Foumban / chefferies (Bandjoun, etc.). Dschang pour climat d’altitude, lacs et loisirs.",
+      "text_en": "Typical route: Yaoundé or Douala → Bafoussam → Foumban / chiefdoms (Bandjoun, etc.). Dschang for highland climate, lakes and leisure.",
+      "source": "data/documents/regions_overview.md ; data/documents/transport_itineraries.md ; data/documents/interests_itineraries.md"
+    },
+    {
+      "id": "climate-altitude",
+      "title_fr": "Climat d’altitude",
+      "title_en": "Highland climate",
+      "text_fr": "L’Ouest / Adamaoua est plus frais en altitude que le littoral — prévoir une couche légère le soir.",
+      "text_en": "West / Adamawa highlands are cooler than the coast — pack a light layer for evenings.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour l’Ouest (export places sans restauration). Ne pas inventer de noms de restaurants. Orienter vers plats locaux (achu, koki, café des hauts plateaux), marchés/artisanat, et restaurants d’hôtels documentés le cas échéant (ex. Adys Hotel Dschang).",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the West (places export excluded restaurants). Do not invent restaurant names. Point to local dishes (achu, koki, highland coffee), craft markets, and documented hotel restaurants when available (e.g. Adys Hotel Dschang).",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "adys-hotel-dschang",
+      "name": "Adys Hotel Dschang Officiel",
+      "city": "Dschang",
+      "neighbourhood": "Entrée campus universitaire de Dschang",
+      "text_fr": "Hôtel à Dschang (Ayila’a). Chambres climatisées ; restaurant de l’hôtel mentionné pour mets du terroir.",
+      "text_en": "Hotel in Dschang (Ayila’a). Air-conditioned rooms; hotel restaurant mentioned for local dishes.",
+      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "divisions_snapshot": [
+    {"id": "mifi", "name_fr": "Mifi", "hub": "Bafoussam", "note_fr": "Chef-lieu régional ; chefferie, artisans, Lac Baleng (Baleng)."},
+    {"id": "noun", "name_fr": "Noun", "hub": "Foumban", "note_fr": "Palais Bamoun, Mbapit, lacs."},
+    {"id": "menoua", "name_fr": "Menoua", "hub": "Dschang", "note_fr": "Cascades, base nautique, falaise Foréké, Centre climatique, hôtel Adys."},
+    {"id": "bamboutos", "name_fr": "Bamboutos", "hub": "Mbouda", "note_fr": "Haras de Balatchi, chutes de la Métché, Batcham / Bangang."},
+    {"id": "haut-nkam", "name_fr": "Haut-Nkam", "hub": "Bafang", "note_fr": "Chutes de la Mouankeu ; Bana / mont Bachingou."},
+    {"id": "hauts-plateaux", "name_fr": "Hauts-Plateaux", "hub": "Baham", "note_fr": "Chefferies des Hauts-Plateaux."},
+    {"id": "koung-khi", "name_fr": "Koung-Khi", "hub": "Bandjoun", "note_fr": "Chefferie Bandjoun, musée Batoufam, Bahouan."},
+    {"id": "nde", "name_fr": "Ndé", "hub": "Bangangté", "note_fr": "Pôle Medumba ; peu de fiches lieux encore dans la base."}
+  ]
+}

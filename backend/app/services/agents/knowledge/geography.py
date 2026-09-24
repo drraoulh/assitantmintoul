@@ -104,6 +104,10 @@ def load_geography() -> GeographyIndex:
     return idx
 
 
+def clear_geography_cache() -> None:
+    load_geography.cache_clear()
+
+
 def resolve_city_id(name: str | None, index: GeographyIndex | None = None) -> str | None:
     if not name:
         return None
@@ -232,6 +236,26 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                 ),
                 source="Sites touristiques Ouest / localité Baleng",
                 entity_ids=("baleng", "bafoussam", "mifi", "ouest"),
+            )
+        ]
+
+    # Lac / Mont Mbapit
+    if "mbapit" in q:
+        return [
+            GeoFact(
+                subject="Mbapit",
+                relation="LOCATED_IN",
+                object="Mbapit / Foumban / Noun / Ouest",
+                text_fr=(
+                    "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban "
+                    "(département du Noun, région de l’Ouest)."
+                ),
+                text_en=(
+                    "Lake and Mount Mbapit are at Mbapit, between Foumbot and Foumban "
+                    "(Noun department, West region)."
+                ),
+                source="Sites touristiques Ouest / localité Mbapit",
+                entity_ids=("mbapit", "foumban", "noun", "ouest"),
             )
         ]
 

@@ -1,0 +1,874 @@
+[
+  {
+    "id": "base-nautique-de-dschang-foto",
+    "name": "Base Nautique De Dschang",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Base Nautique De Dschang. Située à côté du lac municipal, en plein c&oelig;ur de Dschang, la Base Nautique de Dschang est un complexe de loisirs aquatiques offrant une expérience unique aux amateurs de détente et de sports nautiques. Ce lieu est idéal pour les familles, les groupes d'amis et les aventuriers en quête de sensations sur l'eau. Profitez d'une large gamme d'activités adaptées à tous les âges: • Balades en pédalo et en cano&euml; sur le lac municipal. • Kayak et autres sports nautiques pour les amateurs de glisse. • Pêche sportive pour une expérience paisible au bord de l'eau. • Air",
+    "summary_en": "Base Nautique De Dschang. Located à côté du lac municipal, en plein c&oelig;ur de Dschang, la Base Nautique de Dschang is a complexe de loisirs aquatiques offrant une expérience unique aux amateurs de détente et de sports nautiques. Ce lieu est idéal pour les familles, les groupes d'amis et les aventuriers en quête de sensations sur l'eau. Profitez d'une large gamme d'activités adaptées à tous les âges: • Balades en pédalo et en cano&euml; sur le lac municipal. • Kayak et autres sports nautiques pour les amateurs de glisse. • Pêche sportive pour une expérience paisible au bord de l'eau. • Aire",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Foto · Ville : Dschang · Localisation : A cote du lac municipal · Catégories : Sites Touristiques, BASE NAUTIQUE",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": "5000 XAF",
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Base Nautique De Dschang",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "cascades-de-dschang-kemtsop",
+    "name": "Cascades De Dschang",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Cascades De Dschang. Situé à Kemtsop, dans la ville de Dschang, les Cascades de Dschang sont un site naturel impressionnant offrant un spectacle fascinant d'eaux dévalant les rochers. Ce lieu est idéal pour les amateurs de nature et de détente en plein air. Les attractions et activités incluent principalement la contemplation du paysage, des randonnées aux alentours et la photographie. Ce site est adapté aux visiteurs de tout âge, notamment aux familles souhaitant découvrir les merveilles naturelles de la région. L'accès est généralement gratuit. Les services disponibles à proximité incluent p",
+    "summary_en": "Cascades De Dschang. Located à Kemtsop, dans la ville de Dschang, les Cascades de Dschang sont un site naturel impressionnant offrant un spectacle fascinant d'eaux dévalant les rochers. Ce lieu est idéal pour les amateurs de nature et de détente en plein air. Les attractions et activités incluent principalement la contemplation du paysage, des randonnées aux alentours et la photographie. Ce site est adapté aux visiteurs de tout âge, notamment aux familles souhaitant découvrir les merveilles naturelles de la région. L'accès est généralement gratuit. Les services disponibles à proximité incluent",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : kemtsop · Ville : Dschang · Localisation : kemtsop · Catégories : Sites Touristiques, Chutes",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Cascades De Dschang",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "centre-climatique-de-dschang-petground",
+    "name": "Centre Climatique De Dschang",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Centre Climatique De Dschang. Situé à Dschang, à l' Université/Petground, le Centre climatique de Dschang est un village de vacances historique. C'est le premier village de vacances d'Afrique centrale et un élément du patrimoine architectural de la ville. Le Centre climatique de Dschang propose des activités de détente et de loisirs, notamment la promenade dans le parc, la pratique de sports (tennis, équitation), et la baignade dans la piscine. L'établissement est adapté à tous les âges, offrant un cadre paisible pour les familles, les couples et les groupes. Les tarifs varient en fonction de ",
+    "summary_en": "Centre Climatique De Dschang. Located à Dschang, à l' Université/Petground, le Centre climatique de Dschang is a village de vacances historique. C'est le premier village de vacances d'Afrique centrale et un élément du patrimoine architectural de la ville. Le Centre climatique de Dschang propose des activités de détente et de loisirs, notamment la promenade dans le parc, la pratique de sports (tennis, équitation), et la baignade dans la piscine. L'établissement est adapté à tous les âges, offrant un cadre paisible pour les familles, les couples et les groupes. Les tarifs varient en fonction de ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Petground · Ville : Dschang · Localisation : Universite · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": "12000 XAF",
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Centre Climatique De Dschang",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chefferie-bandjoun",
+    "name": "Chefferie de Bandjoun",
+    "city": "Bandjoun",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "À une dizaine de kilomètres de Bafoussam, la chefferie de Bandjoun et son musée présentent symboles royaux, objets d'art et mémoire bamiléké. Cases à toiture de chaume, place cérémonielle et fêtes de décembre offrent une immersion Grassfields forte.",
+    "summary_en": "About 10 km from Bafoussam, Bandjoun chiefdom and its museum display royal symbols, artworks and Bamileke memory. Thatched royal compounds, ceremonial grounds and December festivals offer a strong Grassfields immersion.",
+    "tips_fr": "Guide local conseillé pour le protocole de visite.",
+    "tips_en": "A local guide is advised for visit protocol.",
+    "culture_fr": "Visites guidées thématiques ; entrée souvent autour de 1 000–2 000 FCFA. Boutiques artisanales et restaurants à proximité.",
+    "latitude": 5.3754,
+    "longitude": 10.413,
+    "price": "2000 XAF",
+    "tags": [
+      "bandjoun",
+      "ouest",
+      "west",
+      "heritage",
+      "chefferie",
+      "bamiléké",
+      "culture",
+      "grassfields"
+    ],
+    "sources": [
+      {
+        "title": "Chefferie de Bandjoun",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chutes-de-la-metche-metche",
+    "name": "Chutes De La Métché",
+    "city": "Mbouda",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Chutes De La Métché. Situé à Métché, en limite de Penka-Michel, dans l'arrondissement de Mbouda, dans la région de Bafoussam, les Chutes de la Métché sont une attraction naturelle prisée des visiteurs. Ces chutes, qui se trouvent sur le cours de la rivière Metchié-Choumi, offrent un spectacle impressionnant de la nature, avec leurs cascades pittoresques entourées d'une végétation luxuriante. Les activités phares des Chutes de la Métché incluent des randonnées autour de la rivière, des observations naturelles et des excursions dans la zone environnante. Il n'y a pas d'installations de divertiss",
+    "summary_en": "Chutes De La Métché. Located à Métché, en limite de Penka-Michel, dans l'arrondissement de Mbouda, dans la région de Bafoussam, les Chutes de la Métché sont une attraction naturelle prisée des visiteurs. Ces chutes, qui se trouvent sur le cours de la rivière Metchié-Choumi, offrent un spectacle impressionnant de la nature, avec leurs cascades pittoresques entourées d'une végétation luxuriante. Les activités phares des Chutes de la Métché incluent des randonnées autour de la rivière, des observations naturelles et des excursions dans la zone environnante. Il n'y a pas d'installations de diverti",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Métché · Ville : Mbouda · Localisation : En limite de Penka-Michel · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 5.627,
+    "longitude": 10.254,
+    "price": null,
+    "tags": [
+      "mbouda",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Chutes De La Métché",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chutes-de-la-mouankeu-mouankeu",
+    "name": "Chutes De La Mouankeu",
+    "city": "Bafang",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Chutes De La Mouankeu. Situé à Mouankeu, dans le département du Haut-Nkam, près de Bafang, la Chute de Mouenkeu est un site naturel spectaculaire alimenté par deux cours d'eau qui se rejoignent pour se déverser dans un ravin de plus de 40 mètres de long. Avec ses 20 mètres de hauteur, elle rappelle en miniature les célèbres Chutes d'Ekom Nkam. Les activités phares de ce site incluent des randonnées dans les environs pour accéder à la chute, ainsi que des observations de la faune et de la flore locale. Ce site est idéal pour les amoureux de la nature et les aventuriers, offrant un cadre parfait",
+    "summary_en": "Chutes De La Mouankeu. Located à Mouankeu, dans le département du Haut-Nkam, near Bafang, la Chute de Mouenkeu is a site naturel spectaculaire alimenté par deux cours d'eau qui se rejoignent pour se déverser dans un ravin de plus de 40 mètres de long. Avec ses 20 mètres de hauteur, elle rappelle en miniature les célèbres Chutes d'Ekom Nkam. Les activités phares de ce site incluent des randonnées dans les environs pour accéder à la chute, ainsi que des observations de la faune et de la flore locale. Ce site est idéal pour les amoureux de la nature et les aventuriers, offrant un cadre parfait po",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mouankeu · Ville : Bafang · Localisation : Dans le département du Haut-Nkam · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 5.157,
+    "longitude": 10.177,
+    "price": null,
+    "tags": [
+      "bafang",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Chutes De La Mouankeu",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chutes-de-nsem-tsa-aval-du-lac-municipal",
+    "name": "Chutes De Nsem-Tsa",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Chutes De Nsem-Tsa. Situé en aval du Lac Municipal juste derrière la prison de Dschang, les Chutes de Nsem-Tsa sont un site naturel impressionnant de la région de l'Ouest du Cameroun. Elles offrent un cadre pittoresque et apaisant, idéal pour les amoureux de la nature et de la randonnée. Les visiteurs peuvent admirer la beauté de la cascade et se détendre dans un environnement verdoyant. Le site est propice aux balades en pleine nature et à la photographie. Il est adapté aux adultes comme aux enfants, offrant une escapade rafraîchissante pour toute la famille. L'accès au site est généralement ",
+    "summary_en": "Chutes De Nsem-Tsa. Located en aval du Lac Municipal juste derrière la prison de Dschang, les Chutes de Nsem-Tsa sont un site naturel impressionnant de la région de l'Ouest du Cameroon. Elles offrent un cadre pittoresque et apaisant, idéal pour les amoureux de la nature et de la randonnée. Les visiteurs peuvent admirer la beauté de la cascade et se détendre dans un environnement verdoyant. Le site est propice aux balades en pleine nature et à la photographie. Il est adapté aux adultes comme aux enfants, offrant une escapade rafraîchissante pour toute la famille. L'accès au site est généralemen",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Aval du Lac Municipal · Ville : Dschang · Localisation : Derrière la prison de Dschang · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Chutes De Nsem-Tsa",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "green-camping-balepe-bafou",
+    "name": "Green Camping Balépé",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Green Camping Balépé. Situé à Bafou, dans l'arrondissement de Dschang, région de l 'Ouest Cameroun, Green Camping Balépé est une destination pensée pour les amoureux de la nature, de l'aventure et des expériences en plein air. Ce site propose un concept original de camping en cabanes, offrant aux visiteurs l'occasion de se déconnecter du quotidien et de profiter d'un environnement naturel exceptionnel. Entouré de paysages verdoyants et d'un air pur, Green Camping Balépé invite les familles, les groupes d'amis, les couples ainsi que les voyageurs en solo à vivre un séjour authentique au cœur de",
+    "summary_en": "Green Camping Balépé. Located à Bafou, dans l'arrondissement de Dschang, region de l 'Ouest Cameroon, Green Camping Balépé is a destination pensée pour les amoureux de la nature, de l'aventure et des expériences en plein air. Ce site features un concept original de camping en cabanes, offrant aux visiteurs l'occasion de se déconnecter du quotidien et de profiter d'un environnement naturel exceptionnel. Entouré de paysages verdoyants et d'un air pur, Green Camping Balépé invite les familles, les groupes d'amis, les couples ainsi que les voyageurs en solo à vivre un séjour authentique au cœur de",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bafou · Ville : Dschang · Localisation : Bafou · Catégories : Sites Touristiques, Site touristique avec hébergements",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Green Camping Balépé",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-falaise-de-foreke-foreke",
+    "name": "La Falaise De Foreke",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "La Falaise De Foreke. Situé à Foréké, dans la ville de Dschang, la Falaise de Foréké est un site écotouristique incontournable du Cameroun. Aussi appelée falaise de Santchou ou falaise de Dschang, elle marque la frontière entre le plateau de l'Ouest en pays Bamiléké et la plaine des Mbo dans le Littoral camerounais. Ce site naturel est reconnu pour son panorama spectaculaire, mais aussi pour sa route sinueuse qui représente un défi pour les voyageurs. La falaise est prisée pour les activités de randonnée et d'observation panoramique. Les visiteurs peuvent y admirer des paysages à couper le sou",
+    "summary_en": "La Falaise De Foreke. Located à Foréké, dans la ville de Dschang, la Falaise de Foréké is a site écotouristique incontournable du Cameroon. Aussi appelée falaise de Santchou ou falaise de Dschang, elle marque la frontière entre le plateau de l'Ouest en pays Bamiléké et la plaine des Mbo dans le Littoral camerounais. Ce site naturel est reconnu pour son panorama spectaculaire, mais aussi pour sa route sinueuse qui représente un défi pour les voyageurs. La falaise est prisée pour les activités de randonnée et d'observation panoramique. Les visiteurs peuvent y admirer des paysages à couper le sou",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Foreke · Ville : Dschang · Localisation : Santchou · Catégories : Sites Touristiques, Falaise",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "La Falaise De Foreke",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-grotte-de-demvoh-fongo-ndeng",
+    "name": "La Grotte De Demvoh",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "La Grotte De Demvoh. Situé à Fongo-Ndeng, dans la ville de Dschang, la Grotte de Ndemvoh est un site naturel et spirituel emblématique du Cameroun. Véritable joyau du patrimoine Bamiléké, elle est la plus imposante d'un réseau de grottes peu connues des environs, telles que Canouh et Le Leweh. Réputée pour sa valeur mystique, elle est considérée comme un lieu sacré de purification et abrite deux cavités distinctes, la Grotte Ndemvoh Mâle et la Grotte Ndemvoh Femelle, qui, selon la tradition, formeraient un seul dieu. La Grotte de Ndemvoh est une destination prisée pour les amateurs de randonné",
+    "summary_en": "La Grotte De Demvoh. Located à Fongo-Ndeng, dans la ville de Dschang, la Grotte de Ndemvoh is a site naturel et spirituel emblématique du Cameroon. Véritable joyau du patrimoine Bamiléké, elle est la plus imposante d'un réseau de grottes peu connues des environs, telles que Canouh et Le Leweh. Réputée pour sa valeur mystique, elle est considérée comme un lieu sacré de purification et abrite deux cavités distinctes, la Grotte Ndemvoh Mâle et la Grotte Ndemvoh Femelle, qui, selon la tradition, formeraient un seul dieu. La Grotte de Ndemvoh is a destination prisée pour les amateurs de randonnée e",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Fongo-Ndeng · Ville : Dschang · Localisation : Fongo-Ndeng · Catégories : Sites Touristiques, Grottes",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "La Grotte De Demvoh",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-baleng",
+    "name": "Lac Baleng",
+    "city": "Baleng",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Baleng. Situé à proximité du village de Tchada, au Carrefour Auberge, dans la commune de Bafoussam II, le lac Baleng est un lac au Cameroun qui fait partie du patrimoine culturel immatériel du pays, inscrit depuis 2020. Ce lieu sacré est un élément important de la chefferie Baleng. Les principales activités au lac Baleng sont les excursions autour du lac et les visites culturelles. Il est un sanctuaire traditionnel, ce qui en fait un lieu de pèlerinage et de méditation. Le site est adapté à tous les âges, bien qu'il soit principalement visité par des adultes intéressés par les aspects cult",
+    "summary_en": "Lac Baleng. Located à proximité du village de Tchada, au Carrefour Auberge, dans la commune de Bafoussam II, le lac Baleng is a lac au Cameroon qui fait partie du patrimoine culturel immatériel du pays, inscrit depuis 2020. Ce lieu sacré is a élément important de la chiefdom Baleng. Les principales activités au lac Baleng sont les excursions autour du lac et les visites culturelles. Il is a sanctuaire traditionnel, ce qui en fait un lieu de pèlerinage et de méditation. Le site est adapté à tous les âges, bien qu'il soit principalement visité par des adultes intéressés par les aspects culturels",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Carrefour Auberge · Ville : Bafoussam · Localisation : A proximité du village de Tchada · Catégories : Sites Touristiques, LAC",
+    "latitude": 5.4778,
+    "longitude": 10.4176,
+    "price": null,
+    "tags": [
+      "bafoussam",
+      "ouest",
+      "west",
+      "nature",
+      "lac",
+      "baleng",
+      "mifi",
+      "environs",
+      "nearby"
+    ],
+    "sources": [
+      {
+        "title": "Lac Baleng",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-bamendjing-commune-de-galim",
+    "name": "Lac Bamendjing",
+    "city": "Bamendjing",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Bamendjing. Situé à proximité de Nkessie et Mbashie, dans la commune de Galim, à l'ouest du Cameroun, le Lac Bamendjing est un site naturel impressionnant formé par le barrage du même nom sur la rivière Noun. Ce lac artificiel s'étend sur plusieurs kilomètres et offre un panorama saisissant de calme et de beauté sauvage, parfait pour les amoureux de nature, de photographie et de balades en plein air. Parmi les activités phares, les visiteurs peuvent profiter de promenades en pirogue, de la pêche traditionnelle, ou tout simplement admirer les couchers de soleil spectaculaires sur les eaux t",
+    "summary_en": "Lac Bamendjing. Located à proximité de Nkessie et Mbashie, dans la commune de Galim, à l'ouest du Cameroon, le Lac Bamendjing is a site naturel impressionnant formé par le barrage du même nom sur la rivière Noun. Ce lac artificiel s'étend sur plusieurs kilomètres et offers un panorama saisissant de calme et de beauté sauvage, parfait pour les amoureux de nature, de photographie et de balades en plein air. Parmi les activités phares, les visiteurs peuvent profiter de promenades en pirogue, de la pêche traditionnelle, ou tout simplement admirer les couchers de soleil spectaculaires sur les eaux ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Commune de Galim · Ville : Bamendjing · Localisation : A proximité de Nkessie et Mbashie · Catégories : Sites Touristiques, LAC",
+    "latitude": 5.65,
+    "longitude": 10.5,
+    "price": null,
+    "tags": [
+      "bamendjing",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Bamendjing",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-sanka-ndoumkain-ndoumkain",
+    "name": "Lac Sanka Ndoumkain",
+    "city": "Noun",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Sanka Ndoumkain. Situé à Ndoumkain, à 10 km à l'ouest de Kouoptamo, le lac Sanka Ndoumkain est une véritable merveille naturelle, connue pour son eau cristalline et sa profondeur impressionnante de 34 mètres. Ce plan d'eau offre un cadre idéal pour la détente, la baignade et diverses activités en pleine nature. Le lac Sanka Ndoumkain est une destination parfaite pour les amateurs de loisirs aquatiques et de plein air. Parmi les activités phares, on retrouve la baignade, les balades en pirogue, la pêche sportive, ainsi que la randonnée autour du lac pour profiter du panorama exceptionnel. L",
+    "summary_en": "Lac Sanka Ndoumkain. Located à Ndoumkain, à 10 km à l'ouest de Kouoptamo, le lac Sanka Ndoumkain is a véritable merveille naturelle, connue pour son eau cristalline et sa profondeur impressionnante de 34 mètres. Ce plan d'eau offers un cadre idéal pour la détente, la baignade et diverses activités en pleine nature. Le lac Sanka Ndoumkain is a destination parfaite pour les amateurs de loisirs aquatiques et de plein air. Parmi les activités phares, on retrouve la baignade, les balades en pirogue, la pêche sportive, ainsi que la randonnée autour du lac pour profiter du panorama exceptionnel. Le s",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ndoumkain · Ville : Noun · Localisation : A 10 km a l'ouest de Kouoptamo · Catégories : Sites Touristiques, LAC",
+    "latitude": 5.6,
+    "longitude": 10.8,
+    "price": null,
+    "tags": [
+      "noun",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Sanka Ndoumkain",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-haras-de-balatchi-balatchi",
+    "name": "Le Haras De Balatchi",
+    "city": "Mbouda",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Le Haras De Balatchi. Situé à Balatchi, à 1800 m d'altitude sur la chaîne montagneuse des Monts Bamboutos, dans la ville de Mbouda, le Haras de Balatchi est un site touristique réputé pour son cadre naturel paisible, propice à la détente et au réconfort. Il offre une expérience unique grâce à son environnement montagnard. Les activités phares au Haras de Balatchi incluent l'équitation, les randonnées pédestres, la découverte du Mont Bamboutos, et la visite de la chefferie Balatchi. Ce site est idéal pour les adultes et les enfants cherchant une expérience active en pleine nature. Les tarifs va",
+    "summary_en": "Le Haras De Balatchi. Located à Balatchi, à 1800 m d'altitude sur la chaîne montagneuse des Monts Bamboutos, dans la city of Mbouda, le Haras de Balatchi is a tourist site réputé pour son cadre naturel paisible, propice à la détente et au réconfort. Il offers une expérience unique grâce à son environnement montagnard. Les activités phares au Haras de Balatchi incluent l'équitation, les randonnées pédestres, la découverte du Mont Bamboutos, et la visite de la chiefdom Balatchi. Ce site est idéal pour les adultes et les enfants cherchant une expérience active en pleine nature. Les tarifs varient",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Balatchi · Ville : Mbouda · Localisation : A 1800 m d'altitude sur la chaîne montagneuse des Monts Bamboutos · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 5.627,
+    "longitude": 10.254,
+    "price": null,
+    "tags": [
+      "mbouda",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Le Haras De Balatchi",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-lac-mbapit-mbapit",
+    "name": "Le Lac Mbapit",
+    "city": "Foumban",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Le Lac Mbapit. Situé entre Foumbot et Foumban, le Lac Mbapit est un lac de cratère d'origine volcanique niché dans un cadre naturel spectaculaire. Ce lieu empreint de mystère est réputé pour sa légende selon laquelle les projectiles lancés dans ses eaux n'y provoqueraient aucun mouvement. Le lac est une destination idéale pour les amateurs de randonnée et d'aventure. L'ascension pour atteindre le lac nécessite de monter environ 354 marches, offrant une belle occasion d'admirer les paysages environnants. Il est aussi possible de poursuivre l'exploration avec une randonnée vers le Mont Mbapit, q",
+    "summary_en": "Le Lac Mbapit. Located entre Foumbot et Foumban, le Lac Mbapit is a lac de cratère d'origine volcanique niché dans un cadre naturel spectaculaire. Ce lieu empreint de mystère est réputé pour sa légende selon laquelle les projectiles lancés dans ses eaux n'y provoqueraient aucun mouvement. Le lac is a destination idéale pour les amateurs de randonnée et d'aventure. L'ascension pour atteindre le lac nécessite de monter environ 354 marches, offrant une belle occasion d'admirer les paysages environnants. Il est aussi possible de poursuivre l'exploration avec une randonnée vers le Mont Mbapit, qui ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mbapit · Ville : Foumban · Localisation : Entre Foumbot et Foumban · Catégories : Sites Touristiques, LAC",
+    "latitude": 5.729,
+    "longitude": 10.898,
+    "price": null,
+    "tags": [
+      "foumban",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Le Lac Mbapit",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-mont-mbapit-mbapit",
+    "name": "Le Mont Mbapit",
+    "city": "Foumban",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Le Mont Mbapit. Situé à Mbapit, entre Foumbot et Foumban, le Mont Mbapit est un ancien volcan culminant à près de 2 000 mètres d'altitude. Ce site naturel impressionnant offre un cadre unique pour les amoureux de randonnée et de paysages panoramiques. Son célèbre lac de cratère, aussi appelé Lac Nfou, est entouré de légendes locales et attire les visiteurs en quête d'expériences mystiques et culturelles. Parmi les activités phares, la randonnée pédestre est incontournable pour atteindre le sommet du mont et admirer le lac circulaire niché dans le cratère. La marche, d'une durée d'environ 45 mi",
+    "summary_en": "Le Mont Mbapit. Located à Mbapit, entre Foumbot et Foumban, le Mont Mbapit is a ancien volcan culminant à near 2 000 mètres d'altitude. Ce site naturel impressionnant offers un cadre unique pour les amoureux de randonnée et de paysages panoramiques. Son célèbre lac de cratère, aussi appelé Lac Nfou, est entouré de légendes locales et attire les visiteurs en quête d'expériences mystiques et culturelles. Parmi les activités phares, la randonnée pédestre est must-see pour atteindre le sommet du mont et admirer le lac circulaire niché dans le cratère. La marche, d'une durée d'environ 45 minutes, a",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mbapit · Ville : Foumban · Localisation : Entre Foumbot et Foumban · Catégories : Sites Touristiques, Mont",
+    "latitude": 5.729,
+    "longitude": 10.898,
+    "price": null,
+    "tags": [
+      "foumban",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Le Mont Mbapit",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "palais-royal-foumban",
+    "name": "Palais royal de Foumban",
+    "slug": "palais-royal-foumban",
+    "region": "Ouest",
+    "city": "Foumban",
+    "category": "heritage",
+    "latitude": 5.7294,
+    "longitude": 10.8987,
+    "summary_fr": "Siège du royaume Bamoun à Foumban, le palais construit en 1917 sous le sultan Ibrahim Njoya mêle influence germanique et patrimoine royal. Musée, objets rituels, manuscrits et artisanat local en font l'un des grands sites culturels du Cameroun.",
+    "summary_en": "Seat of the Bamoun kingdom in Foumban, the palace built in 1917 under Sultan Ibrahim Njoya blends German-era influence and royal heritage. Museum, ritual objects, manuscripts and local crafts make it one of Cameroon’s major cultural sites.",
+    "culture_fr": "À combiner avec le musée royal, la mosquée centrale et, pour la nature, le mont / lac Mbapit. Aussi appelé Palais des Rois Bamoun.",
+    "tips_fr": "Guide culturel conseillé pour le protocole de visite.",
+    "tips_en": "A cultural guide is advised for visit protocol.",
+    "price": null,
+    "tags": [
+      "foumban",
+      "ouest",
+      "west",
+      "heritage",
+      "bamoun",
+      "bamum",
+      "palais",
+      "palace",
+      "palais des rois bamoun",
+      "culture",
+      "histoire"
+    ],
+    "sources": [
+      {
+        "title": "Palais royal de Foumban",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      },
+      {
+        "title": "Tourisme culturel",
+        "organization": "Ministère du Tourisme et des Loisirs (MINTOUL)",
+        "url": "https://mintoul.gov.cm/tourisme/tourisme-culturel/",
+        "publication_date": null,
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "paroisse-sacre-coeur-de-dschang-sinteuh",
+    "name": "Paroisse Sacré-Coeur De Dschang",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Paroisse Sacré-Coeur De Dschang. Située à Sinteuh, Dschang, la Paroisse Sacré-C&oelig;ur de Dschang est l'un des édifices religieux les plus emblématiques de la ville. Elle appartient au diocèse de Bafoussam et suit le rite romain. Nichée sur les hauteurs, elle offre une vue panoramique sur Dschang et constitue un lieu de recueillement et de spiritualité incontournable pour les fidèles et les visiteurs en quête de sérénité. Parmi les attractions et activités, la paroisse propose des célébrations religieuses régulières, des messes et des événements communautaires. Elle est ouverte à tous les âg",
+    "summary_en": "Paroisse Sacré-Coeur De Dschang. Located à Sinteuh, Dschang, la Paroisse Sacré-C&oelig;ur de Dschang est l'un des édifices religieux les plus emblématiques de la ville. Elle appartient au diocèse de Bafoussam et suit le rite romain. Nichée sur les hauteurs, elle offers une vue panoramique sur Dschang et constitue un lieu de recueillement et de spiritualité incontournable pour les fidèles et les visiteurs en quête de sérénité. Parmi les attractions et activités, la paroisse propose des célébrations religieuses régulières, des messes et des événements communautaires. Elle est ouverte à tous les ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Sinteuh · Ville : Dschang · Localisation : Perchée sur les hauteurs · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 5.45,
+    "longitude": 10.05,
+    "price": null,
+    "tags": [
+      "dschang",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Paroisse Sacré-Coeur De Dschang",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "royal-museum-of-batoufam-mrb-chefferie",
+    "name": "Royal Museum Of Batoufam-Mrb",
+    "city": "Batoufam",
+    "region": "Ouest",
+    "category": "museum",
+    "summary_fr": "Royal Museum Of Batoufam-Mrb. Situé près du Palais Royal, au cœur de la Chefferie de Batoufam, le Royal Museum of Batoufam (MRB) est une institution culturelle à but non lucratif dédiée à la promotion de la culture et des sites touristiques du Royaume Batoufam. Ce musée joue un rôle essentiel dans la préservation et la transmission du patrimoine local, offrant aux visiteurs une immersion unique dans l'histoire et les traditions de ce peuple. Le MRB propose une exposition riche et variée où l'on découvre des objets traditionnels, des sculptures, des parures et des instruments de musique ancestr",
+    "summary_en": "Royal Museum Of Batoufam-Mrb. Located près du Palais Royal, in the heart of la chiefdom de Batoufam, le Royal Museum of Batoufam (MRB) is a institution culturelle à but non lucratif dédiée à la promotion de la culture et des sites touristiques du Royaume Batoufam. Ce museum joue un rôle essentiel dans la préservation et la transmission du patrimoine local, offrant aux visiteurs une immersion unique dans l'histoire et les traditions de ce peuple. Le MRB features une exposition riche et variée où l'on découvre des objets traditionnels, des sculptures, des parures et des instruments de musique an",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Chefferie · Ville : Batoufam · Localisation : Près du palais · Catégories : Sites Touristiques, Musée",
+    "latitude": 5.28,
+    "longitude": 10.48,
+    "price": "1000 XAF",
+    "tags": [
+      "batoufam",
+      "ouest",
+      "ouest",
+      "west",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Royal Museum Of Batoufam-Mrb",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "serenity-ndeng-bahouan",
+    "name": "Serenity Ndeng",
+    "city": "Bahouan",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Serenity Ndeng. Situé à Bahouan, dans la région de l' Ouest du Cameroun, à environ 20 km de Bafoussam, Serenity Ndeng est un complexe hôtelier, touristique et culturel. Installé dans un environnement paisible, le site propose une expérience qui associe confort moderne, nature et découverte de la culture bamiléké. L'architecture et les différents aménagements du domaine mettent en valeur l' identité locale tout en offrant un cadre agréable pour les séjours, les escapades en famille ou entre amis et les événements. Serenity Ndeng propose plusieurs solutions d'hébergement, notamment des chambres ",
+    "summary_en": "Serenity Ndeng. Located à Bahouan, dans la region de l' Ouest du Cameroon, à environ 20 km de Bafoussam, Serenity Ndeng is a complexe hôtelier, touristique et culturel. Installé dans un environnement paisible, le site features une expérience qui associe confort moderne, nature et découverte de la culture bamiléké. L'architecture et les différents aménagements du domaine mettent en valeur l' identité locale tout en offrant un cadre agréable pour les séjours, les escapades en famille ou entre amis et les événements. Serenity Ndeng features plusieurs solutions d'hébergement, notamment des chambre",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bahouan · Ville : Bahouan · Localisation : Bahouan · Catégories : Sites Touristiques, Site touristique avec hébergements",
+    "latitude": 5.42,
+    "longitude": 10.35,
+    "price": "5000 XAF",
+    "tags": [
+      "bahouan",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Serenity Ndeng",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chefferie-balessing-penka-michel",
+    "name": "Chefferie Balessing",
+    "city": "Penka-Michel",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Chefferie Balessing. Situé à Penka-Michel, dans le département de la Menoua, dans le village de Balessing, dans la Région de l'Ouest, au c&oelig;ur du pays Bamiléké, le Chefferie Balessing est un lieu de grande importance culturelle et historique. C'est un site touristique qui offre une immersion dans la tradition et les coutumes de la région Bamiléké, avec une architecture typique et un riche patrimoine. Les activités phares au Chefferie Balessing incluent la visite de la chefferie traditionnelle, où les visiteurs peuvent découvrir l'histoire de la royauté Bamiléké, participer à des cérémonie",
+    "summary_en": "Chefferie Balessing. Located à Penka-Michel, dans le département de la Menoua, dans le village de Balessing, dans la Région de l'Ouest, au c&oelig;ur du pays Bamiléké, le Chefferie Balessing is a lieu de grande importance culturelle et historique. C'is a tourist site qui offers une immersion dans la tradition et les coutumes de la région Bamiléké, avec une architecture typique et un riche patrimoine. Les activités phares au Chefferie Balessing incluent la visite de la chefferie traditionnelle, où les visiteurs peuvent découvrir l'histoire de la royauté Bamiléké, participer à des cérémonies cul",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Penka-Michel · Ville : Balessing · Localisation : Menoua · Catégories : Sites Touristiques, Chefferie/Royaume",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "penka-michel",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Chefferie Balessing",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chefferie-superieure-bangang-batcham",
+    "name": "Chefferie Supérieure Bangang",
+    "city": "Batcham",
+    "region": "Ouest",
+    "category": "activity",
+    "summary_fr": "Chefferie Supérieure Bangang. Située à Batcham, non loin de Général Voyage, Bangang, la Chefferie Supérieure Bangang est un lieu de patrimoine culturel. C'est un village de la Région de l'Ouest Cameroun, département de Bamboutos, arrondissement de Batcham, érigé en chefferie de Premier degré, dirigée par le Chef Supérieur Sa Majesté Momo Keubou Serges évariste. La Chefferie Supérieure Bangang propose des visites guidées, des cérémonies traditionnelles, des rencontres avec le chef traditionnel, des danses traditionnelles, et des événements culturels. L'établissement est adapté à tous les âges, ",
+    "summary_en": "Chefferie Supérieure Bangang. Located à Batcham, non loin de Général Voyage, Bangang, la Chefferie Supérieure Bangang is a lieu de patrimoine culturel. C'is a village de la Région de l'Ouest Cameroon, département de Bamboutos, arrondissement de Batcham, érigé en chefferie de Premier degré, dirigée par le Chef Supérieur Sa Majesté Momo Keubou Serges évariste. La Chefferie Supérieure Bangang propose des visites guidées, des cérémonies traditionnelles, des rencontres avec le chef traditionnel, des danses traditionnelles, et des événements culturels. L'établissement est adapté à tous les âges, off",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Batcham · Ville : Bangang · Localisation : Non loin de général voyage · Catégories : Sites Touristiques, Chefferie/Royaume",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "batcham",
+      "ouest",
+      "ouest",
+      "west",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Chefferie Supérieure Bangang",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "mont-bachingou-col-de-bana-bachingou",
+    "name": "Mont Bachingou/Col De Bana",
+    "city": "Bana",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Mont Bachingou/Col De Bana. Situé à Bachingou, dans l'arrondissement de Bana, à l'ouest du Cameroun, le Mont Bachingou, également connu sous le nom de Col de Bana, est un site naturel majestueux culminant à 2097 mètres d'altitude. Il s'étend jusqu'au territoire voisin de Balengou, offrant une vue spectaculaire sur les hauteurs de l'Ouest Camerounais. Ce sommet imposant est considéré comme l'un des plus grands monts du Cameroun, et attire chaque année de nombreux amoureux de la nature, de randonnée et de photographie de paysages. Le Mont Bachingou propose des activités phares telles que la rand",
+    "summary_en": "Mont Bachingou/Col De Bana. Located à Bachingou, dans l'arrondissement de Bana, à l'ouest du Cameroon, le Mont Bachingou, également connu sous le nom de Col de Bana, is a site naturel majestueux culminant à 2097 mètres d'altitude. Il s'étend jusqu'au territoire voisin de Balengou, offrant une vue spectaculaire sur les hauteurs de l'Ouest Camerounais. Ce sommet imposant est considéré comme l'un des plus grands monts du Cameroon, et attire chaque année de nombreux amoureux de la nature, de randonnée et de photographie de paysages. Le Mont Bachingou propose des activités phares telles que la rand",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bachingou · Ville : Bana · Localisation : Dans le territoire Balengou à l’Est · Catégories : Sites Touristiques, Mont",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": "5000 XAF",
+    "tags": [
+      "bana",
+      "ouest",
+      "ouest",
+      "west",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Mont Bachingou/Col De Bana",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chefferie-bafoussam",
+    "name": "Chefferie de Bafoussam",
+    "city": "Bafoussam",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Chefferie traditionnelle à Bafoussam, villes des Grassfields de l’Ouest. Point d’entrée pour découvrir la culture bamiléké locale.",
+    "summary_en": "Traditional chiefdom in Bafoussam, a Grassfields town of the West. A starting point for local Bamileke culture.",
+    "tips_fr": "Respectez les consignes locales pour les visites de chefferie.",
+    "tips_en": "Follow local guidance when visiting chiefdom sites.",
+    "tags": [
+      "chefferie",
+      "bafoussam",
+      "mifi",
+      "ouest",
+      "culture",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "Chefferies de l’Ouest — Bafoussam",
+        "organization": "Données structurées Smartmboa (Phase 2.8)",
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "route-artisans-bafoussam",
+    "name": "Route des artisans (Bafoussam)",
+    "city": "Bafoussam",
+    "region": "Ouest",
+    "category": "culture",
+    "summary_fr": "Ateliers et boutiques d’artisanat à Bafoussam (bois, tissus, objets traditionnels). Utile pour découvrir le savoir-faire local.",
+    "summary_en": "Craft workshops and shops in Bafoussam (wood, textiles, traditional objects). Useful for local handicrafts.",
+    "tips_fr": "Demandez des prix clairement et privilégiez les artisans locaux.",
+    "tips_en": "Ask prices clearly and prefer local artisans.",
+    "tags": [
+      "artisanat",
+      "bafoussam",
+      "mifi",
+      "ouest",
+      "culture"
+    ],
+    "sources": [
+      {
+        "title": "Artisanat Bafoussam — Ouest",
+        "organization": "Données structurées Smartmboa (Phase 2.8)",
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "grottes-ndessi-bamougoum",
+    "name": "Grottes de Ndessi / Nekang (Bamougoum)",
+    "city": "Bamougoum",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Site culturel/naturel des grottes à Bamougoum, dans les environs de Bafoussam (département de la Mifi). À présenter comme proximité de Bafoussam, pas comme centre-ville.",
+    "summary_en": "Cultural/natural cave site at Bamougoum, near Bafoussam (Mifi). Present as nearby Bafoussam, not downtown.",
+    "tips_fr": "Accès et guides locaux à confirmer sur place.",
+    "tips_en": "Access and local guides should be confirmed on site.",
+    "tags": [
+      "grotte",
+      "ndessi",
+      "nekang",
+      "bamougoum",
+      "bafoussam",
+      "mifi",
+      "ouest",
+      "environs",
+      "nearby"
+    ],
+    "sources": [
+      {
+        "title": "Sites culturels Mifi — Bamougoum",
+        "organization": "Données structurées Smartmboa (Phase 2.8)",
+        "url": null
+      }
+    ]
+  },
+  {
+    "id": "bafoussam-hauts-plateaux",
+    "name": "Hauts Plateaux de l'Ouest (autour de Bafoussam)",
+    "city": "Bafoussam",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Région de collines, chefferies et paysages agricoles des Grassfields. Bafoussam sert souvent de base pour explorer l'Ouest camerounais.",
+    "summary_en": "Hills, chiefdoms, and farming landscapes of the Grassfields. Bafoussam is often a base for exploring West Cameroon.",
+    "tips_fr": "Intéressant pour la culture des chefferies et la gastronomie locale. Les distances entre sites peuvent être longues : planifiez le transport.",
+    "tips_en": "Good for chiefdom culture and local food. Distances between sites can be long: plan transport.",
+    "tags": [
+      "bafoussam",
+      "ouest",
+      "west",
+      "grassfields",
+      "chefferie",
+      "nature"
+    ]
+  },
+  {
+    "id": "dschang-lac",
+    "name": "Lac Municipal de Dschang",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "nature",
+    "summary_fr": "Ville universitaire de l'Ouest avec lac municipal et climat plus frais des hauts plateaux. Destination agréable pour une pause hors des grandes villes.",
+    "summary_en": "University town in the West with a municipal lake and cooler highland climate. A pleasant break from the big cities.",
+    "tips_fr": "Combinez nature et découverte culturelle des villages environnants.",
+    "tips_en": "Combine nature with cultural visits to nearby villages.",
+    "tags": [
+      "dschang",
+      "lac",
+      "lake",
+      "ouest",
+      "climat",
+      "highland"
+    ]
+  },
+  {
+    "id": "baham-chefferie",
+    "name": "Chefferies des Hauts-Plateaux (Baham et environs)",
+    "city": "Baham",
+    "region": "Ouest",
+    "category": "heritage",
+    "summary_fr": "Réseau de chefferies des hauts plateaux de l'Ouest: masques, danses, artisanat et histoire politique traditionnelle.",
+    "summary_en": "Network of highland chiefdoms in the West: masks, dances, crafts and traditional political history.",
+    "tips_fr": "Demandez permission avant photos de lieux sacrés.",
+    "tips_en": "Ask permission before photographing sacred places.",
+    "tags": [
+      "baham",
+      "chefferie",
+      "ouest",
+      "masques",
+      "culture"
+    ]
+  },
+  {
+    "id": "adys-hotel-dschang",
+    "name": "Adys Hotel Dschang Officiel",
+    "city": "Dschang",
+    "region": "Ouest",
+    "category": "hotel",
+    "summary_fr": "Hôtel à Dschang près de l’entrée du campus universitaire. Hébergement climatisée; restaurant de l’hôtel signalé pour des mets du terroir (source Ayila’a).",
+    "summary_en": "Hotel in Dschang near the university campus entrance. Air-conditioned lodging; hotel restaurant noted for local dishes (Ayila’a source).",
+    "tips_fr": "Disponibilités et tarifs à confirmer auprès de l’établissement.",
+    "tips_en": "Confirm availability and rates with the property.",
+    "tags": [
+      "dschang",
+      "ouest",
+      "hotel",
+      "menoua"
+    ],
+    "sources": [
+      {
+        "title": "Adys Hotel Dschang Officiel",
+        "organization": "Ayila'a",
+        "url": "https://ayilaa.com",
+        "verification_status": "secondary_portal"
+      }
+    ]
+  }
+]

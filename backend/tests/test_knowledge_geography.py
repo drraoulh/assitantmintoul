@@ -26,10 +26,16 @@ def geo_on(monkeypatch):
     monkeypatch.setenv("KNOWLEDGE_GEOGRAPHY_ENABLED", "true")
     monkeypatch.setenv("GROUNDING_ENFORCEMENT_ENABLED", "true")
     from app.core.config import get_settings
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache
+    from app.services.agents.knowledge.geography import clear_geography_cache
 
     get_settings.cache_clear()
+    clear_geography_cache()
+    clear_culture_cache()
     yield
     get_settings.cache_clear()
+    clear_geography_cache()
+    clear_culture_cache()
     monkeypatch.delenv("KNOWLEDGE_GEOGRAPHY_ENABLED", raising=False)
     monkeypatch.delenv("GROUNDING_ENFORCEMENT_ENABLED", raising=False)
     get_settings.cache_clear()
@@ -200,3 +206,86 @@ def test_ten_regions_loaded():
     idx = load_geography()
     assert len(idx.regions) == 10
     assert "bafoussam" in idx.alias_to_city
+
+
+def test_ouest_has_eight_divisions():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    idx = load_geography()
+    ouest_divs = [d for d in idx.divisions.values() if d.get("region_id") == "ouest"]
+    assert len(ouest_divs) == 8
+
+
+def test_mbapit_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le lac Mbapit ?", language="fr")
+    assert facts
+    assert "Foumban" in facts[0].text_fr or "Mbapit" in facts[0].text_fr
+
+
+def test_ouest_culture_food_evidence(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques de l’Ouest ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "achu" in blob
+    assert any(e.source_id == "culture:ouest" for e in ev)
+
+
+def test_ouest_no_invented_restaurant_names_in_culture():
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache, _load_ouest
+
+    clear_culture_cache()
+    pack = _load_ouest()
+    assert pack["restaurants_policy"]["verified_named_restaurants"] == []
+
+
+def test_intent_extracts_bandjoun_and_mbouda():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Visiter Bandjoun").city == "Bandjoun"
+    assert extract_slots("Je vais à Mbouda").city == "Mbouda"
+    assert extract_slots("Bangangté ce week-end").city == "Bangangté"
+
+
+@pytest.mark.asyncio
+async def test_visit_foumban_returns_palace(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Que visiter à Foumban ?",
+        mode="text",
+        locale="fr",
+    )
+    names = " ".join(p.name.casefold() for p in result.knowledge.places)
+    assert result.knowledge.verified_places_count >= 1
+    assert "palais" in names or "mbapit" in names or "foumban" in names
+
+
+@pytest.mark.asyncio
+async def test_ouest_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques de l’Ouest camerounais ?",
+        mode="text",
+        locale="fr",
+    )
+    sources = {s.source_id for s in result.knowledge.sources}
+    assert "culture:ouest" in sources or any(
+        (k.source_id or "") == "culture:ouest" for k in result.knowledge.knowledge
+    )
+    text = result.final_response.text.casefold()
+    assert "achu" in text or "koki" in text or "restaurant" in text or "plat" in text

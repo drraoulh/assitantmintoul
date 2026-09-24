@@ -10,8 +10,9 @@ import uuid
 from app.core.config import get_settings
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.geography import answer_geo_query
+from app.services.agents.knowledge.culture_packs import culture_evidence_for_query
 from app.services.agents.knowledge.knowledge_retriever import KnowledgeRetriever
-from app.services.agents.knowledge.models import KnowledgeEvidence, KnowledgeResult
+from app.services.agents.knowledge.models import KnowledgeEvidence, KnowledgeResult, SourceEvidence
 from app.services.agents.knowledge.place_retriever import PlaceRetriever
 from app.services.agents.knowledge.place_store import PlaceIndex
 from app.services.agents.knowledge.source_validator import (
@@ -89,20 +90,31 @@ class KnowledgeAgent:
                         score=0.95,
                     ),
                 ]
+            culture = culture_evidence_for_query(query, language=language)
+            if culture:
+                knowledge = [*knowledge, *culture]
 
         src_started = time.perf_counter()
         sources = resolve_sources(places, knowledge, self._index.places)
-        if geo_facts_count:
-            from app.services.agents.knowledge.models import SourceEvidence
-
-            if not any(s.source_id == "geo:cameroon_admin" for s in sources):
+        if geo_facts_count and not any(s.source_id == "geo:cameroon_admin" for s in sources):
+            sources = [
+                *sources,
+                SourceEvidence(
+                    source_id="geo:cameroon_admin",
+                    name="Cameroon administrative geography (structured)",
+                    url=None,
+                    source_type="structured_geo",
+                ),
+            ]
+        if any((k.source_id or "") == "culture:ouest" for k in knowledge):
+            if not any(s.source_id == "culture:ouest" for s in sources):
                 sources = [
                     *sources,
                     SourceEvidence(
-                        source_id="geo:cameroon_admin",
-                        name="Cameroon administrative geography (structured)",
+                        source_id="culture:ouest",
+                        name="Ouest culture pack (dishes, traditions, crafts)",
                         url=None,
-                        source_type="structured_geo",
+                        source_type="structured_culture",
                     ),
                 ]
         source_ms = (time.perf_counter() - src_started) * 1000.0

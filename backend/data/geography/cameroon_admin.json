@@ -90,19 +90,39 @@
   ],
   "divisions": [
     {
-      "id": "mifi",
-      "name_fr": "Mifi",
-      "name_en": "Mifi",
+      "id": "bamboutos",
+      "name_fr": "Bamboutos",
+      "name_en": "Bamboutos",
       "region_id": "ouest",
-      "source": "Département de la Mifi (région de l'Ouest)",
+      "capital_city_id": "mbouda",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
       "verified_at": "2026-09-24"
     },
     {
-      "id": "noun",
-      "name_fr": "Noun",
-      "name_en": "Noun",
+      "id": "haut-nkam",
+      "name_fr": "Haut-Nkam",
+      "name_en": "Haut-Nkam",
       "region_id": "ouest",
-      "source": "Département du Noun (région de l'Ouest) — Foumban",
+      "capital_city_id": "bafang",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "hauts-plateaux",
+      "name_fr": "Hauts-Plateaux",
+      "name_en": "Hauts-Plateaux",
+      "region_id": "ouest",
+      "capital_city_id": "baham",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "koung-khi",
+      "name_fr": "Koung-Khi",
+      "name_en": "Koung-Khi",
+      "region_id": "ouest",
+      "capital_city_id": "bandjoun",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
       "verified_at": "2026-09-24"
     },
     {
@@ -110,7 +130,35 @@
       "name_fr": "Menoua",
       "name_en": "Menoua",
       "region_id": "ouest",
-      "source": "Département de la Menoua (région de l'Ouest) — Dschang",
+      "capital_city_id": "dschang",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mifi",
+      "name_fr": "Mifi",
+      "name_en": "Mifi",
+      "region_id": "ouest",
+      "capital_city_id": "bafoussam",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nde",
+      "name_fr": "Ndé",
+      "name_en": "Nde",
+      "region_id": "ouest",
+      "capital_city_id": "bangangte",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "noun",
+      "name_fr": "Noun",
+      "name_en": "Noun",
+      "region_id": "ouest",
+      "capital_city_id": "foumban",
+      "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
       "verified_at": "2026-09-24"
     }
   ],
@@ -123,7 +171,9 @@
       "division_id": "mifi",
       "region_id": "ouest",
       "is_region_capital": true,
-      "aliases": ["bafoussam"],
+      "aliases": [
+        "bafoussam"
+      ],
       "source": "Chef-lieu de la région de l'Ouest / département de la Mifi",
       "verified_at": "2026-09-24"
     },
@@ -135,7 +185,9 @@
       "division_id": "noun",
       "region_id": "ouest",
       "is_region_capital": false,
-      "aliases": ["foumban"],
+      "aliases": [
+        "foumban"
+      ],
       "source": "Ville du département du Noun, région de l'Ouest",
       "verified_at": "2026-09-24"
     },
@@ -147,7 +199,9 @@
       "division_id": "menoua",
       "region_id": "ouest",
       "is_region_capital": false,
-      "aliases": ["dschang"],
+      "aliases": [
+        "dschang"
+      ],
       "source": "Ville du département de la Menoua, région de l'Ouest",
       "verified_at": "2026-09-24"
     },
@@ -160,7 +214,10 @@
       "region_id": "centre",
       "is_region_capital": true,
       "is_national_capital": true,
-      "aliases": ["yaounde", "yaoundé"],
+      "aliases": [
+        "yaounde",
+        "yaoundé"
+      ],
       "source": "Capitale politique du Cameroun / chef-lieu du Centre",
       "verified_at": "2026-09-24"
     },
@@ -172,7 +229,9 @@
       "division_id": null,
       "region_id": "littoral",
       "is_region_capital": true,
-      "aliases": ["douala"],
+      "aliases": [
+        "douala"
+      ],
       "source": "Chef-lieu de la région du Littoral",
       "verified_at": "2026-09-24"
     },
@@ -183,7 +242,10 @@
       "entity_type": "city",
       "region_id": "adamaoua",
       "is_region_capital": true,
-      "aliases": ["ngaoundere", "ngaoundéré"],
+      "aliases": [
+        "ngaoundere",
+        "ngaoundéré"
+      ],
       "source": "Chef-lieu de la région de l'Adamaoua",
       "verified_at": "2026-09-24"
     },
@@ -194,7 +256,9 @@
       "entity_type": "city",
       "region_id": "est",
       "is_region_capital": true,
-      "aliases": ["bertoua"],
+      "aliases": [
+        "bertoua"
+      ],
       "source": "Chef-lieu de la région de l'Est",
       "verified_at": "2026-09-24"
     },
@@ -205,7 +269,9 @@
       "entity_type": "city",
       "region_id": "extreme-nord",
       "is_region_capital": true,
-      "aliases": ["maroua"],
+      "aliases": [
+        "maroua"
+      ],
       "source": "Chef-lieu de la région de l'Extrême-Nord",
       "verified_at": "2026-09-24"
     },
@@ -216,7 +282,9 @@
       "entity_type": "city",
       "region_id": "nord",
       "is_region_capital": true,
-      "aliases": ["garoua"],
+      "aliases": [
+        "garoua"
+      ],
       "source": "Chef-lieu de la région du Nord",
       "verified_at": "2026-09-24"
     },
@@ -227,7 +295,9 @@
       "entity_type": "city",
       "region_id": "nord-ouest",
       "is_region_capital": true,
-      "aliases": ["bamenda"],
+      "aliases": [
+        "bamenda"
+      ],
       "source": "Chef-lieu de la région du Nord-Ouest",
       "verified_at": "2026-09-24"
     },
@@ -238,7 +308,9 @@
       "entity_type": "city",
       "region_id": "sud",
       "is_region_capital": true,
-      "aliases": ["ebolowa"],
+      "aliases": [
+        "ebolowa"
+      ],
       "source": "Chef-lieu de la région du Sud",
       "verified_at": "2026-09-24"
     },
@@ -249,8 +321,150 @@
       "entity_type": "city",
       "region_id": "sud-ouest",
       "is_region_capital": true,
-      "aliases": ["buea"],
+      "aliases": [
+        "buea"
+      ],
       "source": "Chef-lieu de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mbouda",
+      "name_fr": "Mbouda",
+      "name_en": "Mbouda",
+      "entity_type": "city",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "mbouda"
+      ],
+      "source": "Ville du département bamboutos, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bafang",
+      "name_fr": "Bafang",
+      "name_en": "Bafang",
+      "entity_type": "city",
+      "division_id": "haut-nkam",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "bafang"
+      ],
+      "source": "Ville du département haut-nkam, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "baham",
+      "name_fr": "Baham",
+      "name_en": "Baham",
+      "entity_type": "city",
+      "division_id": "hauts-plateaux",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "baham"
+      ],
+      "source": "Ville du département hauts-plateaux, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bandjoun",
+      "name_fr": "Bandjoun",
+      "name_en": "Bandjoun",
+      "entity_type": "city",
+      "division_id": "koung-khi",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "bandjoun"
+      ],
+      "source": "Ville du département koung-khi, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bangangte",
+      "name_fr": "Bangangté",
+      "name_en": "Bangangté",
+      "entity_type": "city",
+      "division_id": "nde",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "bangangté"
+      ],
+      "source": "Ville du département nde, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "batcham",
+      "name_fr": "Batcham",
+      "name_en": "Batcham",
+      "entity_type": "city",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "batcham"
+      ],
+      "source": "Ville du département bamboutos, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bana",
+      "name_fr": "Bana",
+      "name_en": "Bana",
+      "entity_type": "city",
+      "division_id": "haut-nkam",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "bana"
+      ],
+      "source": "Ville du département haut-nkam, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "penka-michel",
+      "name_fr": "Penka-Michel",
+      "name_en": "Penka-Michel",
+      "entity_type": "city",
+      "division_id": "menoua",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "penka-michel"
+      ],
+      "source": "Ville du département menoua, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "batoufam",
+      "name_fr": "Batoufam",
+      "name_en": "Batoufam",
+      "entity_type": "city",
+      "division_id": "koung-khi",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "batoufam"
+      ],
+      "source": "Ville du département koung-khi, région de l’Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "galim",
+      "name_fr": "Galim",
+      "name_en": "Galim",
+      "entity_type": "city",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "galim"
+      ],
+      "source": "Ville du département bamboutos, région de l’Ouest",
       "verified_at": "2026-09-24"
     }
   ],
@@ -277,6 +491,126 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Localité des environs de Bafoussam (département de la Mifi)",
       "source": "Toponymie locale Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bafou",
+      "name_fr": "Bafou",
+      "name_en": "Bafou",
+      "city_id": "dschang",
+      "division_id": "menoua",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à dschang (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "foto",
+      "name_fr": "Foto",
+      "name_en": "Foto",
+      "city_id": "dschang",
+      "division_id": "menoua",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à dschang (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "balatchi",
+      "name_fr": "Balatchi",
+      "name_en": "Balatchi",
+      "city_id": "mbouda",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à mbouda (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mbapit",
+      "name_fr": "Mbapit",
+      "name_en": "Mbapit",
+      "city_id": "foumban",
+      "division_id": "noun",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à foumban (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mouankeu",
+      "name_fr": "Mouankeu",
+      "name_en": "Mouankeu",
+      "city_id": "bafang",
+      "division_id": "haut-nkam",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à bafang (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bahouan",
+      "name_fr": "Bahouan",
+      "name_en": "Bahouan",
+      "city_id": "bandjoun",
+      "division_id": "koung-khi",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité liée à bandjoun (Ouest)",
+      "source": "Toponymie / sites touristiques Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "foumbot",
+      "name_fr": "Foumbot",
+      "name_en": "Foumbot",
+      "city_id": "foumban",
+      "division_id": "noun",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Ville / localité entre Foumban et les sites Mbapit (Noun)",
+      "source": "Fiches lieux Lac / Mont Mbapit (Ouest)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "santchou",
+      "name_fr": "Santchou",
+      "name_en": "Santchou",
+      "city_id": "dschang",
+      "division_id": "menoua",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Associée à la falaise de Foréké / Santchou (descente vers la plaine des Mbo)",
+      "source": "Fiche lieu La Falaise De Foreke (Ouest)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bangang",
+      "name_fr": "Bangang",
+      "name_en": "Bangang",
+      "city_id": "batcham",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Chefferie supérieure Bangang (arrondissement de Batcham)",
+      "source": "Fiche lieu Chefferie Supérieure Bangang",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bamendjing",
+      "name_fr": "Bamendjing",
+      "name_en": "Bamendjing",
+      "city_id": "mbouda",
+      "division_id": "bamboutos",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité du lac Bamendjing (département des Bamboutos)",
+      "source": "Fiche lieu Lac Bamendjing",
       "verified_at": "2026-09-24"
     }
   ]

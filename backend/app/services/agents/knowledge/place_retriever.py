@@ -17,7 +17,23 @@ from app.services.agents.knowledge.scoring import passes_hard_filter, score_plac
 from app.services.agents.knowledge.topk import place_top_k
 
 # Cities that must never be treated as "in Bafoussam"
-_NOT_BAFOUSSAM = {"foumban", "dschang", "bandjoun", "baham", "mbouda", "bangangte", "bangangté"}
+_NOT_BAFOUSSAM = {
+    "foumban",
+    "dschang",
+    "bandjoun",
+    "baham",
+    "mbouda",
+    "bangangte",
+    "bangangté",
+    "bafang",
+    "batcham",
+    "bana",
+    "batoufam",
+    "penka-michel",
+    "foumbot",
+    "santchou",
+    "noun",
+}
 
 
 class PlaceRetriever:
