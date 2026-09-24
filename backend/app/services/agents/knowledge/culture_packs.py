@@ -176,14 +176,38 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "tibati",
         "tignere",
         "tignère",
-        "lamido",
-        "lamidat",
         "lac tison",
         "ngan-ha",
         "ngan ha",
         "lancrenon",
         "hotel oasis",
         "hôtel oasis",
+        "lamidat de ngaoundere",
+        "lamidat de ngaoundéré",
+        "palais du lamido",
+    ),
+    "nord": (
+        "region du nord",
+        "région du nord",
+        "nord du cameroun",
+        "garoua",
+        "figuil",
+        "tchollire",
+        "tcholliré",
+        "touboro",
+        "guider",
+        "poli",
+        "benoue",
+        "bénoué",
+        "faro",
+        "bouba",
+        "ndjida",
+        "lagdo",
+        "dirif",
+        "shalom city",
+        "ribadou",
+        "motel plaza",
+        "new town palace",
     ),
 }
 
@@ -201,14 +225,29 @@ _COMPOUND_OUEST = (
     "north west",
 )
 
+_COMPOUND_NORD = (
+    "nord-ouest",
+    "nord ouest",
+    "north-west",
+    "northwest",
+    "north west",
+    "extreme-nord",
+    "extreme nord",
+    "far north",
+    "far-north",
+)
+
 
 def _trigger_hits(q: str, region_id: str, tokens: tuple[str, ...]) -> bool:
-    """Match pack tokens without letting bare ouest/west hit Sud-Ouest / Nord-Ouest."""
-    compound = any(c in q for c in _COMPOUND_OUEST)
+    """Match pack tokens without letting bare ouest/nord hit compound regions."""
+    compound_ouest = any(c in q for c in _COMPOUND_OUEST)
+    compound_nord = any(c in q for c in _COMPOUND_NORD)
     for tok in tokens:
         if tok not in q:
             continue
-        if region_id == "ouest" and tok in {"ouest", "west"} and compound:
+        if region_id == "ouest" and tok in {"ouest", "west"} and compound_ouest:
+            continue
+        if region_id == "nord" and tok in {"nord", "north"} and compound_nord:
             continue
         return True
     return False

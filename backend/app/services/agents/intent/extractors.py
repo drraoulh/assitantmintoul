@@ -78,6 +78,11 @@ _CITIES: dict[str, str] = {
     "meiganga": "Meiganga",
     "tibati": "Tibati",
     "tignere": "Tignère",
+    "figuil": "Figuil",
+    "tchollire": "Tcholliré",
+    "guider": "Guider",
+    "poli": "Poli",
+    "touboro": "Touboro",
 }
 
 _REGIONS: dict[str, str] = {
@@ -181,7 +186,14 @@ _EXTREME_NORD_CULTURE = re.compile(
     re.IGNORECASE,
 )
 _ADAMAOUA_CULTURE = re.compile(
-    r"\b(lamido|lamidat|lac\s+tison|ngan[- ]?ha|lancrenon|beka[- ]?hoss)\b",
+    r"\b(lac\s+tison|ngan[- ]?ha|lancrenon|beka[- ]?hoss|"
+    r"lamidat\s+de\s+ngaound[eé]r[eé]|palais\s+du\s+lamido)\b",
+    re.IGNORECASE,
+)
+_NORD_CULTURE = re.compile(
+    r"\b(benoue|bouba\s*ndjida|lagdo|dirif|iles?\s+aux\s+damans|"
+    r"lamidat\s+de\s+demsa|demsa|"
+    r"shalom\s+city|ribadou|motel\s+plaza)\b",
     re.IGNORECASE,
 )
 
@@ -279,6 +291,14 @@ _KNOWN_PLACES: dict[str, str] = {
     "mont ngan-ha": "Le Mont Ngan-Ha",
     "mont ngan ha": "Le Mont Ngan-Ha",
     "chutes lancrenon": "Chutes Lancrenon",
+    "parc de la benoue": "Parc national de la Bénoué",
+    "parc de la bénoué": "Parc national de la Bénoué",
+    "parc national de la benoue": "Parc national de la Bénoué",
+    "parc national de la bénoué": "Parc national de la Bénoué",
+    "bouba ndjida": "Parc national de Bouba Ndjida",
+    "parc faro": "Parc National Du Faro",
+    "fleuve benoue": "Fleuve Bénoué (Garoua)",
+    "fleuve bénoué": "Fleuve Bénoué (Garoua)",
 }
 
 _DURATION = re.compile(
@@ -368,45 +388,50 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
             slots.location = label
         break
 
-    if slots.region is None and _OUEST_CULTURE.search(raw):
+    if slots.region is None and _OUEST_CULTURE.search(folded):
         slots.region = "Ouest"
         if slots.location is None:
             slots.location = "Ouest"
 
-    if slots.region is None and _LITTORAL_CULTURE.search(raw):
+    if slots.region is None and _LITTORAL_CULTURE.search(folded):
         slots.region = "Littoral"
         if slots.location is None:
             slots.location = "Littoral"
 
-    if slots.region is None and _CENTRE_CULTURE.search(raw):
+    if slots.region is None and _CENTRE_CULTURE.search(folded):
         slots.region = "Centre"
         if slots.location is None:
             slots.location = "Centre"
 
-    if slots.region is None and _SUD_CULTURE.search(raw):
+    if slots.region is None and _SUD_CULTURE.search(folded):
         slots.region = "Sud"
         if slots.location is None:
             slots.location = "Sud"
 
-    if slots.region is None and _SUD_OUEST_CULTURE.search(raw):
+    if slots.region is None and _SUD_OUEST_CULTURE.search(folded):
         slots.region = "Sud-Ouest"
         if slots.location is None:
             slots.location = "Sud-Ouest"
 
-    if slots.region is None and _NORD_OUEST_CULTURE.search(raw):
+    if slots.region is None and _NORD_OUEST_CULTURE.search(folded):
         slots.region = "Nord-Ouest"
         if slots.location is None:
             slots.location = "Nord-Ouest"
 
-    if slots.region is None and _EXTREME_NORD_CULTURE.search(raw):
+    if slots.region is None and _EXTREME_NORD_CULTURE.search(folded):
         slots.region = "Extrême-Nord"
         if slots.location is None:
             slots.location = "Extrême-Nord"
 
-    if slots.region is None and _ADAMAOUA_CULTURE.search(raw):
+    if slots.region is None and _ADAMAOUA_CULTURE.search(folded):
         slots.region = "Adamaoua"
         if slots.location is None:
             slots.location = "Adamaoua"
+
+    if slots.region is None and _NORD_CULTURE.search(folded):
+        slots.region = "Nord"
+        if slots.location is None:
+            slots.location = "Nord"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

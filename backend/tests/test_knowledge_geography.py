@@ -949,3 +949,90 @@ async def test_ngaoundere_hotel_oasis(geo_on):
     blob = " ".join(p.name.casefold() for p in result.knowledge.places)
     blob += " " + result.final_response.text.casefold()
     assert "oasis" in blob or result.knowledge.verified_places_count >= 1
+
+
+def test_nord_admin_and_garoua():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Garoua")
+    assert chain is not None
+    assert chain["region"] == "Nord"
+    assert chain["is_region_capital"] is True
+    assert chain["division"] == "Bénoué"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "nord"]) == 4
+
+
+def test_nord_not_garoua():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Nord c’est Garoua nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_benoue_park_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le parc de la Bénoué ?", language="fr")
+    assert facts
+    assert "Tcholliré" in facts[0].text_fr or "Nord" in facts[0].text_fr
+
+
+def test_nord_culture_and_hotels(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+        _load_pack,
+    )
+
+    clear_culture_cache()
+    pack = _load_pack("nord")
+    assert len(pack.get("hotels_verified") or []) >= 4
+    ev = culture_evidence_for_query("Quels plats typiques à Garoua ?", language="fr")
+    assert any((e.source_id or "") == "culture:nord" for e in ev)
+    assert not any((e.source_id or "") == "culture:nord-ouest" for e in ev)
+
+
+def test_benoue_sets_nord_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi du parc de la Bénoué").region == "Nord"
+    assert extract_slots("Que visiter à Figuil ?").city == "Figuil"
+
+
+@pytest.mark.asyncio
+async def test_visit_garoua_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Garoua que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "figuil" not in cities
+    assert "tcholliré" not in cities and "tchollire" not in cities
+
+
+@pytest.mark.asyncio
+async def test_garoua_hotels_query(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Hôtels à Garoua ?",
+        mode="text",
+        locale="fr",
+    )
+    blob = " ".join(p.name.casefold() for p in result.knowledge.places)
+    blob += " " + result.final_response.text.casefold()
+    assert result.knowledge.verified_places_count >= 2
+    assert "shalom" in blob or "ribadou" in blob or "plaza" in blob or "palace" in blob or "hôtel" in blob

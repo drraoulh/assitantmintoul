@@ -1,0 +1,175 @@
+{
+  "region_id": "nord",
+  "region_fr": "Nord",
+  "region_en": "North",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa et fiches lieux Nord (export Supabase + curated Garoua). Aucun restaurant nommé inventé. Hôtels Garoua sourcés Ayila'a.",
+  "overview": {
+    "text_fr": "Le Nord a pour chef-lieu Garoua (fleuve Bénoué). Parcs : Bénoué, Faro, Bouba Ndjida. Figuil / gorges de Dirif ; Lagdo. Corridor Ngaoundéré → Garoua → Maroua. Vérifier accès parcs et avis de voyage.",
+    "text_en": "The North’s capital is Garoua (Bénoué River). Parks: Bénoué, Faro, Bouba Ndjida. Figuil / Dirif gorges; Lagdo. Corridor Ngaoundéré → Garoua → Maroua. Check park access and travel advice.",
+    "source": "data/documents/cities_quick_guide.md ; data/documents/transport_itineraries.md ; data/tourist_sites/nord_complete.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "benoue-garoua",
+      "name_fr": "Bénoué (Garoua)",
+      "name_en": "Bénoué (Garoua)",
+      "description_fr": "Chef-lieu régional, fleuve, marchés, lamidat de Demsa.",
+      "description_en": "Regional capital, river, markets, Demsa lamidat.",
+      "related_cities": ["Garoua"],
+      "source": "data/tourist_sites/nord_complete.json"
+    },
+    {
+      "id": "parcs-nord",
+      "name_fr": "Parcs du Nord",
+      "name_en": "Northern parks",
+      "description_fr": "Bénoué (Tcholliré), Faro, Bouba Ndjida — saison et sécurité à vérifier.",
+      "description_en": "Bénoué (Tcholliré), Faro, Bouba Ndjida — check season and security.",
+      "related_cities": ["Tcholliré", "Touboro", "Garoua"],
+      "source": "data/documents/national_parks_wildlife.md ; data/tourist_sites/nord_complete.json"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Français / peul (Fulfulde)",
+      "area": "Nord au quotidien",
+      "note_fr": "Français utile ; peul répandu. Respectez les usages autour des lamidats.",
+      "note_en": "French is useful; Fulfulde is widespread. Respect customs around lamidats.",
+      "source": "data/documents/history_culture.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "lamidat-demsa",
+      "title_fr": "Lamidats du Nord",
+      "title_en": "Northern lamidats",
+      "text_fr": "Lamidat de Demsa et traditions peules / islamiques — suivez le protocole local.",
+      "text_en": "Demsa lamidat and Fulani / Islamic traditions — follow local protocol.",
+      "source": "data/tourist_sites/nord_complete.json ; data/documents/history_culture.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "brochettes-soya-nord",
+      "name_fr": "Brochettes / soya",
+      "name_en": "Brochettes / soya",
+      "text_fr": "Street food populaire à Garoua — aucun restaurant nommé inventé.",
+      "text_en": "Popular street food in Garoua — no invented restaurant names.",
+      "source": "data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "marche-garoua",
+      "name_fr": "Marché de Garoua",
+      "name_en": "Garoua market",
+      "text_fr": "Grand Marché de Garoua pour produits locaux — orientez vers le marché, pas des enseignes inventées.",
+      "text_en": "Garoua Grand Market for local produce — point to the market, not invented brands.",
+      "source": "data/tourist_sites/nord_complete.json"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "garoua-grand-marche",
+      "name_fr": "Grand Marché de Garoua",
+      "name_en": "Garoua Grand Market",
+      "text_fr": "Marché central — visitez de jour ; négociez avec courtoisie.",
+      "text_en": "Central market — visit by day; negotiate courteously.",
+      "city": "Garoua",
+      "source": "data/tourist_sites/nord_complete.json"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "parc-benoue",
+      "title_fr": "Parc national de la Bénoué",
+      "title_en": "Bénoué National Park",
+      "text_fr": "Parc majeur du Nord (accès Tcholliré) — vérifier saison.",
+      "text_en": "Major northern park (Tcholliré access) — check season.",
+      "source": "data/tourist_sites/nord_complete.json"
+    },
+    {
+      "id": "parc-faro-bouba",
+      "title_fr": "Faro et Bouba Ndjida",
+      "title_en": "Faro and Bouba Ndjida",
+      "text_fr": "Autres parcs du Nord — logistique et sécurité obligatoires.",
+      "text_en": "Other northern parks — logistics and security required.",
+      "source": "data/tourist_sites/nord_complete.json ; data/documents/national_parks_wildlife.md"
+    },
+    {
+      "id": "fleuve-benoue",
+      "title_fr": "Fleuve Bénoué",
+      "title_en": "Bénoué River",
+      "text_fr": "Fleuve à Garoua ; Lagdo / îles aux damans à proximité selon accès.",
+      "text_en": "River at Garoua; Lagdo / hyrax islands nearby depending on access.",
+      "source": "data/tourist_sites/nord_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "corridor-garoua",
+      "title_fr": "Corridor Garoua",
+      "title_en": "Garoua corridor",
+      "text_fr": "Axe Ngaoundéré → Garoua → Maroua ; aéroport régional selon liaisons. Pour les parcs : infos locales.",
+      "text_en": "Ngaoundéré → Garoua → Maroua corridor; regional airport when flights run. For parks: local info.",
+      "source": "data/documents/transport_itineraries.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Nord. Ne pas inventer de noms. Orienter vers brochettes / Grand Marché de Garoua.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the North. Do not invent names. Point to brochettes / Garoua Grand Market.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "shalom-city-hotel-garoua",
+      "name": "Shalom City Hôtel",
+      "city": "Garoua",
+      "neighbourhood": "Plateau",
+      "text_fr": "Shalom City Hôtel (Plateau, Garoua) : chambres haut standing.",
+      "text_en": "Shalom City Hôtel (Plateau, Garoua): upscale rooms.",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/6884-shalom-city-hotel (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "new-town-palace-hotel-garoua",
+      "name": "New Town Palace Hôtel Garoua",
+      "city": "Garoua",
+      "neighbourhood": "Quartier Bamiléké",
+      "text_fr": "New Town Palace (Garoua) : 3 étoiles, ~500 m du centre-ville.",
+      "text_en": "New Town Palace (Garoua): 3-star, ~500 m from downtown.",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/6866-new-town-palace-hotel-garoua (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "motel-plaza-garoua",
+      "name": "Motel Plaza",
+      "city": "Garoua",
+      "neighbourhood": "Garoua",
+      "text_fr": "Motel Plaza (Garoua) : 3 étoiles, 50+ chambres/suites.",
+      "text_en": "Motel Plaza (Garoua): 3-star, 50+ rooms/suites.",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/11685-motel-plaza (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "hotel-ribadou-garoua",
+      "name": "Hôtel Ribadou",
+      "city": "Garoua",
+      "neighbourhood": "Plateau",
+      "text_fr": "Hôtel Ribadou (Plateau, Garoua) : 4 étoiles, ~70 chambres.",
+      "text_en": "Hôtel Ribadou (Plateau, Garoua): 4-star, ~70 rooms.",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/7329-hotel-ribadou (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "hotels_policy": {
+    "text_fr": "Hôtels Nord limités à l’import Ayila’a actuel (Garoua). Ne pas inventer d’autres noms.",
+    "text_en": "North hotels limited to the current Ayila’a import (Garoua). Do not invent other names.",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "benoue", "name_fr": "Bénoué", "hub": "Garoua", "note_fr": "Chef-lieu, fleuve, Faro."},
+    {"id": "mayo-rey", "name_fr": "Mayo-Rey", "hub": "Tcholliré", "note_fr": "Parc de la Bénoué, Bouba Ndjida."},
+    {"id": "mayo-louti", "name_fr": "Mayo-Louti", "hub": "Guider", "note_fr": "Figuil / Dirif."},
+    {"id": "faro", "name_fr": "Faro", "hub": "Poli", "note_fr": "Ouest du Nord."}
+  ]
+}

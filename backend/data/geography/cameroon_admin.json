@@ -466,6 +466,42 @@
       "capital_city_id": "banyo",
       "source": "Départements de la région de l’Adamaoua",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "benoue",
+      "name_fr": "Bénoué",
+      "name_en": "Bénoué",
+      "region_id": "nord",
+      "capital_city_id": "garoua",
+      "source": "Départements de la région du Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "faro",
+      "name_fr": "Faro",
+      "name_en": "Faro",
+      "region_id": "nord",
+      "capital_city_id": "poli",
+      "source": "Départements de la région du Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-louti",
+      "name_fr": "Mayo-Louti",
+      "name_en": "Mayo-Louti",
+      "region_id": "nord",
+      "capital_city_id": "guider",
+      "source": "Départements de la région du Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-rey",
+      "name_fr": "Mayo-Rey",
+      "name_en": "Mayo-Rey",
+      "region_id": "nord",
+      "capital_city_id": "tchollire",
+      "source": "Départements de la région du Nord",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -594,8 +630,9 @@
       "aliases": [
         "garoua"
       ],
-      "source": "Chef-lieu de la région du Nord",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région du Nord / département de la Bénoué",
+      "verified_at": "2026-09-24",
+      "division_id": "benoue"
     },
     {
       "id": "bamenda",
@@ -1333,6 +1370,77 @@
       ],
       "source": "Chef-lieu du Faro-et-Déo, Adamaoua",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "figuil",
+      "name_fr": "Figuil",
+      "name_en": "Figuil",
+      "entity_type": "city",
+      "division_id": "mayo-louti",
+      "region_id": "nord",
+      "is_region_capital": false,
+      "aliases": [
+        "figuil"
+      ],
+      "source": "Ville du Mayo-Louti, Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "tchollire",
+      "name_fr": "Tcholliré",
+      "name_en": "Tchollire",
+      "entity_type": "city",
+      "division_id": "mayo-rey",
+      "region_id": "nord",
+      "is_region_capital": false,
+      "aliases": [
+        "tchollire",
+        "tcholliré"
+      ],
+      "source": "Chef-lieu du Mayo-Rey (accès Bénoué), Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "guider",
+      "name_fr": "Guider",
+      "name_en": "Guider",
+      "entity_type": "city",
+      "division_id": "mayo-louti",
+      "region_id": "nord",
+      "is_region_capital": false,
+      "aliases": [
+        "guider"
+      ],
+      "source": "Chef-lieu du Mayo-Louti, Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "poli",
+      "name_fr": "Poli",
+      "name_en": "Poli",
+      "entity_type": "city",
+      "division_id": "faro",
+      "region_id": "nord",
+      "is_region_capital": false,
+      "aliases": [
+        "poli"
+      ],
+      "source": "Chef-lieu du Faro, Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "touboro",
+      "name_fr": "Touboro",
+      "name_en": "Touboro",
+      "entity_type": "city",
+      "division_id": "mayo-rey",
+      "region_id": "nord",
+      "is_region_capital": false,
+      "aliases": [
+        "touboro"
+      ],
+      "source": "Accès Bouba Ndjida, Mayo-Rey, Nord",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1790,6 +1898,30 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Lac de cratère près de Ngaoundéré",
       "source": "Fiche Lac Tison",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "plateau-garoua",
+      "name_fr": "Plateau",
+      "name_en": "Plateau",
+      "city_id": "garoua",
+      "division_id": "benoue",
+      "region_id": "nord",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier Plateau (hôtels Ayila’a)",
+      "source": "Ayila’a hotels Garoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "lagdo",
+      "name_fr": "Lagdo",
+      "name_en": "Lagdo",
+      "city_id": "garoua",
+      "division_id": "benoue",
+      "region_id": "nord",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Barrage / îles aux damans",
+      "source": "Fiche Iles Aux Damans",
       "verified_at": "2026-09-24"
     }
   ]

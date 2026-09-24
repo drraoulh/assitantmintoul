@@ -112,6 +112,10 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["adamawa"] = rid
             idx.alias_to_region["region de l adamaoua"] = rid
             idx.alias_to_region["region adamaoua"] = rid
+        elif rid == "nord":
+            idx.alias_to_region["north region"] = rid
+            idx.alias_to_region["region du nord"] = rid
+            idx.alias_to_region["region nord"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -202,6 +206,17 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             "northwest",
             "north west",
         )
+    )
+    _COMPOUND_NORD_GEO = (
+        "nord-ouest",
+        "nord ouest",
+        "north-west",
+        "northwest",
+        "north west",
+        "extreme-nord",
+        "extreme nord",
+        "far north",
+        "far-north",
     )
     if (
         not compound_ouest
@@ -371,6 +386,30 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
+        not any(c in q for c in _COMPOUND_NORD_GEO)
+        and ("nord" in q or re.search(r"\bnorth\b", q))
+        and "garoua" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Nord",
+                relation="IS_NOT_EQUIVALENT",
+                object="Garoua",
+                text_fr=(
+                    "Pas exactement. Le Nord est une région du Cameroun, "
+                    "et Garoua en est le chef-lieu."
+                ),
+                text_en=(
+                    "Not exactly. The North is a region of Cameroon, "
+                    "and Garoua is its capital (chef-lieu)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("nord", "garoua"),
+            )
+        ]
+
+    if (
         not compound_ouest
         and ("sud" in q or "south" in q)
         and "kribi" in q
@@ -425,6 +464,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Maroua est le chef-lieu de la région de l’Extrême-Nord du Cameroun."
                     elif rid == "adamaoua":
                         text_fr = "Ngaoundéré est le chef-lieu de la région de l’Adamaoua du Cameroun."
+                    elif rid == "nord":
+                        text_fr = "Garoua est le chef-lieu de la région du Nord du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -654,6 +695,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Parc de la Bénoué
+    if re.search(r"benou[eé]", q) and re.search(
+        r"parc|o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Parc national de la Bénoué",
+                relation="LOCATED_IN",
+                object="Tcholliré / Mayo-Rey / Nord",
+                text_fr=(
+                    "Le parc national de la Bénoué s’atteint depuis Tcholliré "
+                    "(département du Mayo-Rey, région du Nord)."
+                ),
+                text_en=(
+                    "Bénoué National Park is accessed from Tcholliré "
+                    "(Mayo-Rey department, North region)."
+                ),
+                source="Sites touristiques Nord / Bénoué",
+                entity_ids=("parc-benoue", "tchollire", "mayo-rey", "nord"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -712,6 +776,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région de l’Extrême-Nord du Cameroun."
                 elif rid == "adamaoua":
                     text_fr = f"{cname} se trouve dans la région de l’Adamaoua du Cameroun."
+                elif rid == "nord":
+                    text_fr = f"{cname} se trouve dans la région du Nord du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -816,6 +882,10 @@ def is_geo_simple_query(query: str) -> bool:
         r"r[eé]gion\s+(?:de\s+l['’])?adamaoua.{0,30}ngaoundere",
         r"ngaoundere.{0,40}c[' ]?est.{0,20}adamaoua",
         r"lac\s+tison",
+        r"r[eé]gion\s+du\s+nord(?![- ]?ouest).{0,40}garoua",
+        r"nord(?![- ]?ouest).{0,40}c[' ]?est.{0,20}garoua",
+        r"garoua.{0,40}c[' ]?est.{0,20}nord",
+        r"parc.{0,20}benou[eé]|benou[eé].{0,20}parc",
     )
     if any(re.search(p, q) for p in patterns):
         return True
