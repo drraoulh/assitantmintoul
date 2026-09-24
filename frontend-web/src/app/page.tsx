@@ -19,7 +19,7 @@ import Link from 'next/link';
 import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from '@/components/motion';
 import { PlaceCard } from '@/components/places/PlaceCard';
 import { Button, Input, Skeleton } from '@/components/ui';
-import { ImmersiveWelcome } from '@/components/welcome/ImmersiveWelcome';
+import { SmartMboaIntro } from '@/components/intro/SmartMboaIntro';
 import { listTouristSites } from '@/lib/api/client';
 import { APP_NAME } from '@/lib/config';
 import { useLocale } from '@/lib/i18n';
@@ -110,7 +110,7 @@ export default function HomePage() {
 
   return (
     <>
-      {!ready ? <ImmersiveWelcome onComplete={onIntroComplete} /> : null}
+      {!ready ? <SmartMboaIntro onComplete={onIntroComplete} /> : null}
 
       <div
         className={`transition-opacity duration-700 ${ready ? 'opacity-100' : 'opacity-0'}`}
