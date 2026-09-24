@@ -52,5 +52,13 @@ services:
         value: "true"
       - key: HUGGINGFACE_HUB_TOKEN
         sync: false
+      - key: AGENT_ORCHESTRATOR_ENABLED
+        value: "true"
+      - key: AGENT_ORCHESTRATOR_USE_LLM
+        value: "true"
+      - key: VOICE_LLM_STREAMING_ENABLED
+        value: "true"
+      - key: VOICE_TTS_QUEUE_MAXSIZE
+        value: "4"
       - key: CORS_ORIGINS
         value: "*"
