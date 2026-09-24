@@ -1,0 +1,633 @@
+{
+  "phase": "2.6",
+  "status": "PASS",
+  "hf_auth": {
+    "hf_authentication": "OK",
+    "http_status": 200
+  },
+  "turn": {
+    "valid": true,
+    "query": "Bonjour, je veux visiter Yaoundé pendant trois jours avec un budget de 150000 francs CFA pour une famille, avec des activités culturelles et naturelles.",
+    "agents_called": [
+      "intent",
+      "knowledge",
+      "planner",
+      "response"
+    ],
+    "intent": "BUDGET_TRIP",
+    "streaming": true,
+    "llm_calls": 1,
+    "hf_http_status": 200,
+    "qwen_ttft_ms": 371.1,
+    "qwen_total_ms": 11330.6,
+    "first_text_chunk_ms": 419.0,
+    "first_tts_start_ms": 482.6,
+    "tts_ttfb_ms": 607.3,
+    "ttfa_ms": 1091.0,
+    "server_ttfa_ms": 1090.2,
+    "server_llm_end_ms": 12896.0,
+    "audio_done_ms": 24719.2,
+    "token_events": 140,
+    "audio_chunk_events": 161,
+    "tts_requests": 11.0,
+    "first_audio_before_qwen_finished": true,
+    "first_audio_before_audio_done": true,
+    "fallback_used": false,
+    "assistant_preview": "Bonjour. Pour un séjour de trois jours à Yaoundé avec un budget de 150 000 francs CFA, je peux vous proposer des visites culturelles et naturelles. Le Musée National du Cameroun et le Monument de la Réunification offrent un aperçu historiqu",
+    "orchestrator": {
+      "request_id": "p26-one-1d15748321",
+      "intent": "BUDGET_TRIP",
+      "mode": "voice",
+      "agents_called": [
+        "intent",
+        "knowledge",
+        "planner",
+        "response"
+      ],
+      "intent_ms": 0.669,
+      "knowledge_ms": 15.734,
+      "planner_ms": 0.372,
+      "streaming": true,
+      "llm": {
+        "use_llm_flag": true,
+        "streaming": true,
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "calls": 1,
+        "http_status": 200,
+        "ttft_ms": 371.1,
+        "total_ms": 11330.6,
+        "fallback_used": false,
+        "qwen_finished": true,
+        "text_token_events": 140
+      },
+      "response_type": "BUDGET_TRIP"
+    },
+    "marks": {
+      "user_speech_end": 0.0,
+      "route": 61.7,
+      "first_text_chunk": 419.0,
+      "first_audio_chunk": 1091.0,
+      "frontend_playback_start": 1091.0,
+      "audio_done": 24719.2,
+      "turn_complete": 24719.5
+    },
+    "server_marks": {
+      "request_received": 0.0,
+      "turn_start": 0.0,
+      "llm_pipeline_start": 0.1,
+      "llm_start": 0.1,
+      "routing_end": 46.6,
+      "llm_first_token": 418.1,
+      "chunker_first_text": 418.1,
+      "chunker_first_flush": 482.6,
+      "tts_first_fragment": 482.6,
+      "tts_queue_put": 12896.0,
+      "tts_worker_start": 482.8,
+      "tts_start": 482.8,
+      "tts_first_request": 482.8,
+      "tts_request_start": 1078.5,
+      "tts_ttfb": 1089.9,
+      "tts_first_audio_byte": 1089.9,
+      "audio_chunk_created": 1090.0,
+      "audio_chunk_sent_ws": 1090.2,
+      "tts_first_byte": 1090.2,
+      "audio_first_chunk_sent": 1090.2,
+      "time_to_first_audio": 1090.2,
+      "tts_response_complete": 2343.9,
+      "audio_done_sent": 2344.0,
+      "llm_end": 12896.0,
+      "tts_end": 24718.4,
+      "turn_end": 24718.5
+    },
+    "metrics": {
+      "label": "voice_ws",
+      "turn_id": "p26-one-1d15748321",
+      "started_wall_ms": 1790257250203.8,
+      "total_ms": 24718.7,
+      "phases_ms": {
+        "store_prepare_skip_db_new_thread": 0.0,
+        "store_prepare_total": 0.8,
+        "orchestrator_prepare": 16.8,
+        "agent_orchestrator": 16.8,
+        "intent_router": 0.7,
+        "knowledge_agent": 15.7,
+        "tourism_planner": 0.4,
+        "rag": 0.0,
+        "web": 0.0,
+        "prompt": 0.0,
+        "grounding": 0.0,
+        "cache_hit": 0.0,
+        "llm_ttft": 371.1,
+        "app_ttft": 418.0,
+        "tts_ttfb": 607.3,
+        "first_audio": 1090.2,
+        "time_to_first_audio": 1090.2,
+        "tts_first": 1861.1,
+        "tts_1": 2867.8,
+        "tts_2": 1758.4,
+        "tts_3": 2794.0,
+        "tts_4": 1611.3,
+        "llm": 11330.6,
+        "response_agent": 11330.6,
+        "text_chunks_count": 140.0,
+        "tts_5": 2973.2,
+        "tts_6": 1352.3,
+        "tts_7": 2750.4,
+        "tts_8": 2677.1,
+        "tts_9": 1486.1,
+        "tts_10": 2103.1,
+        "tts_requests": 11.0
+      },
+      "marks_ms": {
+        "request_received": 0.0,
+        "turn_start": 0.0,
+        "llm_pipeline_start": 0.1,
+        "llm_start": 0.1,
+        "routing_end": 46.6,
+        "llm_first_token": 418.1,
+        "chunker_first_text": 418.1,
+        "chunker_first_flush": 482.6,
+        "tts_first_fragment": 482.6,
+        "tts_queue_put": 12896.0,
+        "tts_worker_start": 482.8,
+        "tts_start": 482.8,
+        "tts_first_request": 482.8,
+        "tts_request_start": 1078.5,
+        "tts_ttfb": 1089.9,
+        "tts_first_audio_byte": 1089.9,
+        "audio_chunk_created": 1090.0,
+        "audio_chunk_sent_ws": 1090.2,
+        "tts_first_byte": 1090.2,
+        "audio_first_chunk_sent": 1090.2,
+        "time_to_first_audio": 1090.2,
+        "tts_response_complete": 2343.9,
+        "audio_done_sent": 2344.0,
+        "llm_end": 12896.0,
+        "tts_end": 24718.4,
+        "turn_end": 24718.5
+      },
+      "ttfa_chronology": {
+        "turn_id": "p26-one-1d15748321",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_pipeline_start",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "routing_end",
+            "elapsed_ms": 46.6,
+            "delta_ms": 46.5,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 418.1,
+            "delta_ms": 371.5,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 7
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 418.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": 0,
+            "chars": 7
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 482.6,
+            "delta_ms": 64.5,
+            "from_llm_first_token_ms": 64.5,
+            "sequence_id": 0,
+            "chars": 38
+          },
+          {
+            "event": "tts_first_fragment",
+            "elapsed_ms": 482.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 64.5,
+            "sequence_id": 0,
+            "chars": 38
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 482.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 64.5,
+            "sequence_id": 0,
+            "chars": 38
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 482.8,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 64.7,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.2,
+            "tts_worker_wait_ms": 0.2
+          },
+          {
+            "event": "tts_start",
+            "elapsed_ms": 482.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 64.7,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.2,
+            "chars": 38
+          },
+          {
+            "event": "tts_first_request",
+            "elapsed_ms": 482.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 64.7,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.2,
+            "chars": 38
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 496.2,
+            "delta_ms": 13.4,
+            "from_llm_first_token_ms": 78.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 994.8,
+            "delta_ms": 498.6,
+            "from_llm_first_token_ms": 576.7,
+            "sequence_id": 1,
+            "chars": 55
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 1078.5,
+            "delta_ms": 83.7,
+            "from_llm_first_token_ms": 660.4,
+            "sequence_id": 2,
+            "chars": 60
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 1087.6,
+            "delta_ms": 9.1,
+            "from_llm_first_token_ms": 669.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 591.4
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 1089.9,
+            "delta_ms": 2.3,
+            "from_llm_first_token_ms": 671.8,
+            "sequence_id": 0,
+            "ttfb_ms": 593.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 1089.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 671.8,
+            "sequence_id": 0,
+            "ttfb_ms": 593.7,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 1090.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 671.8,
+            "sequence_id": 0,
+            "bytes": 4096,
+            "part": 0
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 1090.2,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 672.1,
+            "sequence_id": 0,
+            "bytes": 4096,
+            "backend_send_timestamp": 1790257251.2937872
+          },
+          {
+            "event": "tts_first_byte",
+            "elapsed_ms": 1090.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 672.1,
+            "sequence_id": null
+          },
+          {
+            "event": "audio_first_chunk_sent",
+            "elapsed_ms": 1090.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 672.1,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 1222.3,
+            "delta_ms": 132.1,
+            "from_llm_first_token_ms": 804.2,
+            "sequence_id": 3,
+            "chars": 79
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 1255.6,
+            "delta_ms": 33.3,
+            "from_llm_first_token_ms": 837.5,
+            "sequence_id": 4,
+            "chars": 19
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 1419.4,
+            "delta_ms": 163.8,
+            "from_llm_first_token_ms": 1001.3,
+            "sequence_id": 5,
+            "chars": 77
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 2343.9,
+            "delta_ms": 924.5,
+            "from_llm_first_token_ms": 1925.8,
+            "sequence_id": 0,
+            "total_tts_ms": 1847.7
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 2344.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1925.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2345.4,
+            "delta_ms": 1.4,
+            "from_llm_first_token_ms": 1927.3,
+            "sequence_id": 6,
+            "chars": 35
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 5213.6,
+            "delta_ms": 2868.2,
+            "from_llm_first_token_ms": 4795.5,
+            "sequence_id": 7,
+            "chars": 72
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 6972.2,
+            "delta_ms": 1758.6,
+            "from_llm_first_token_ms": 6554.1,
+            "sequence_id": 8,
+            "chars": 79
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 9765.8,
+            "delta_ms": 2793.6,
+            "from_llm_first_token_ms": 9347.7,
+            "sequence_id": 9,
+            "chars": 52
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 12896.0,
+            "delta_ms": 3130.2,
+            "from_llm_first_token_ms": 12477.8,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 12896.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 12477.9,
+            "sequence_id": 10,
+            "chars": 50
+          },
+          {
+            "event": "tts_end",
+            "elapsed_ms": 24718.4,
+            "delta_ms": 11822.4,
+            "from_llm_first_token_ms": 24300.3,
+            "sequence_id": null
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 24718.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 24300.4,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "tts_queue_put",
+            "to": "tts_end",
+            "delta_ms": 11822.4
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "llm_end",
+            "delta_ms": 3130.2
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_queue_put",
+            "delta_ms": 2868.2
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_queue_put",
+            "delta_ms": 2793.6
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_queue_put",
+            "delta_ms": 1758.6
+          }
+        ]
+      },
+      "llm_trace": {
+        "turn_id": "p26-one-1d15748321",
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "cold": null,
+        "llm_prepare_ms": null,
+        "provider_ttfh_ms": null,
+        "stream_parse_ms": null,
+        "app_ttft_ms": 418.0,
+        "first_useful_text_ms": null,
+        "first_phrase_ready_ms": null,
+        "generation_ms": 12895.7,
+        "provider_attempt_count": 0,
+        "retry_count": 0,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "http_status": null,
+        "error": null,
+        "events": [
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "conversation_store_start_done",
+            "elapsed_ms": 0.9,
+            "delta_ms": 0.9,
+            "mode": "prepare_no_db"
+          },
+          {
+            "event": "conversation_history_loaded",
+            "elapsed_ms": 0.9,
+            "delta_ms": 0.0,
+            "history_len": 0,
+            "limit": 3
+          },
+          {
+            "event": "first_token",
+            "elapsed_ms": 418.0,
+            "delta_ms": 417.1,
+            "chars": 7,
+            "app_ttft_ms": 418.0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 12895.8,
+            "delta_ms": 12477.8,
+            "generation_ms": 12895.7
+          }
+        ],
+        "meta": {
+          "store": {
+            "total_ms": 0.8,
+            "ops": [
+              {
+                "name": "prepare_skip_db_new_thread",
+                "start_ms": 0.0,
+                "end_ms": 0.0,
+                "duration_ms": 0.0
+              }
+            ],
+            "meta": {
+              "conversation_id_given": false,
+              "limit": 3,
+              "mode": "prepare_no_db"
+            }
+          },
+          "agent_orchestrator": {
+            "request_id": "p26-one-1d15748321",
+            "intent": "BUDGET_TRIP",
+            "mode": "voice",
+            "agents_called": [
+              "intent",
+              "knowledge",
+              "planner",
+              "response"
+            ],
+            "intent_ms": 0.669,
+            "knowledge_ms": 15.734,
+            "planner_ms": 0.372,
+            "streaming": true,
+            "llm": {
+              "use_llm_flag": true,
+              "streaming": true,
+              "model": "Qwen/Qwen3.5-9B:fastest",
+              "calls": 1,
+              "http_status": 200,
+              "ttft_ms": 371.1,
+              "total_ms": 11330.6,
+              "fallback_used": false,
+              "qwen_finished": true,
+              "text_token_events": 140
+            },
+            "response_type": "BUDGET_TRIP"
+          },
+          "orchestrator_enabled": true,
+          "voice_llm_streaming": true,
+          "store_persist": {
+            "total_ms": 1518.2,
+            "ops": [
+              {
+                "name": "session_open",
+                "start_ms": 0.0,
+                "end_ms": 0.1,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "db_connection_acquire",
+                "start_ms": 0.1,
+                "end_ms": 725.9,
+                "duration_ms": 725.8
+              },
+              {
+                "name": "conversation_get",
+                "start_ms": 726.0,
+                "end_ms": 942.7,
+                "duration_ms": 216.7
+              },
+              {
+                "name": "conversation_create",
+                "start_ms": 942.7,
+                "end_ms": 942.8,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "message_insert",
+                "start_ms": 942.8,
+                "end_ms": 942.9,
+                "duration_ms": 0.1,
+                "count": 2
+              },
+              {
+                "name": "commit",
+                "start_ms": 942.9,
+                "end_ms": 1518.1,
+                "duration_ms": 575.2
+              }
+            ],
+            "meta": {}
+          }
+        }
+      }
+    },
+    "previous_ttfa_ms": 3028,
+    "historical_legacy_ttfa_ms": 1100
+  },
+  "log": "/tmp/canary_true_stream_8026.log",
+  "fallback": "PASS",
+  "cancellation": "PASS",
+  "pytest": "184 passed, 1 warning in 1.11s",
+  "conclusion": "True streaming validated. TTFA 1091.0 ms vs previous ~3028 ms (legacy warm ~1100 ms).",
+  "defaults": {
+    "AGENT_ORCHESTRATOR_ENABLED": false,
+    "AGENT_ORCHESTRATOR_USE_LLM": false,
+    "VOICE_LLM_STREAMING_ENABLED": false
+  }
+}
