@@ -18,6 +18,7 @@ ResponseType = Literal[
     "FOOD",
     "HOTEL",
     "BOOKING",
+    "VISION",
     "CLARIFICATION",
     "INSUFFICIENT_INFORMATION",
 ]

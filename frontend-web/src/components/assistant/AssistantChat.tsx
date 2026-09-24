@@ -16,7 +16,7 @@ import {
   VoiceSocket,
   blobToBase64,
 } from '@/lib/websocket/voice';
-import type { ChatSource, MapMarker, TouristSite } from '@/lib/types';
+import type { ChatResponse, ChatSource, MapMarker, TouristSite } from '@/lib/types';
 
 interface Msg {
   id: string;
@@ -24,6 +24,7 @@ interface Msg {
   content: string;
   sources?: ChatSource[];
   markers?: MapMarker[];
+  structured?: ChatResponse | null;
   isError?: boolean;
 }
 
@@ -72,16 +73,24 @@ export function AssistantChat({
       });
       setConversationId(res.conversation_id);
       const kind = inferResponseKind(res.message, res.sources);
-      const markers = sourcesToMarkers(sitesCache, res.sources);
+      const fromApi =
+        res.map?.markers?.map((m) => ({
+          id: m.place_id,
+          name: m.title,
+          latitude: m.latitude,
+          longitude: m.longitude,
+        })) ?? [];
+      const markers =
+        fromApi.length > 0 ? fromApi : sourcesToMarkers(sitesCache, res.sources);
       setMessages((m) => [
         ...m,
         {
           id: `${Date.now()}-a`,
           role: 'assistant',
-          content: res.message,
+          content: res.message || res.text || '',
           sources: res.sources,
           markers,
-          // kind used by renderer via infer again
+          structured: res,
         },
       ]);
       void kind;
@@ -218,6 +227,7 @@ export function AssistantChat({
             </p>
             {msg.role === 'assistant' && !msg.isError ? (
               <ResponseRenderer
+                response={msg.structured ?? undefined}
                 text={msg.content}
                 kind={inferResponseKind(msg.content, msg.sources)}
                 sources={msg.sources}

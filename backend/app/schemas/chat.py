@@ -1,7 +1,22 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from app.schemas.chat_ui import (
+    ActionUI,
+    BookingUI,
+    BudgetUI,
+    ChatResponseType,
+    HotelUI,
+    ItineraryUI,
+    MapUI,
+    PlaceUI,
+    SourceUI,
+    VisionUI,
+)
 
 
 class ChatRequest(BaseModel):
@@ -41,11 +56,37 @@ class ChatSource(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    """HTTP chat reply — backwards compatible with Expo (`message` + `sources`).
+
+    Phase 3.1 adds optional structured tourism UI fields for the Next.js client.
+    """
+
     conversation_id: str
     message: str
     role: Literal["assistant"] = "assistant"
     provider: str
     sources: list[ChatSource] = Field(default_factory=list)
+
+    # Alias of `message` for clients that expect `text` (mirrors message).
+    text: str | None = None
+
+    response_type: ChatResponseType | str | None = None
+    places: list[PlaceUI] = Field(default_factory=list)
+    map: MapUI | None = None
+    itinerary: ItineraryUI | None = None
+    budget: BudgetUI | None = None
+    hotels: list[HotelUI] = Field(default_factory=list)
+    booking: BookingUI | None = None
+    vision: VisionUI | None = None
+    ui_sources: list[SourceUI] = Field(default_factory=list)
+    actions: list[ActionUI] = Field(default_factory=list)
+    structured_build_ms: float | None = None
+
+    @model_validator(mode="after")
+    def _mirror_text(self) -> ChatResponse:
+        if self.text is None:
+            self.text = self.message
+        return self
 
 
 class ConversationTurn(BaseModel):

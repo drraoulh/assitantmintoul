@@ -17,6 +17,7 @@ from app.core.exceptions import (
 )
 from app.core.http import shared_async_client
 from app.schemas.chat import ChatResponse, ChatSource
+from app.services.agents.response.structured_ui import build_structured_ui
 from app.services.ai.base import AIService
 from app.services.ai.context import sources_from_knowledge
 from app.services.ai.grounding import build_grounded_system_prompt
@@ -32,6 +33,22 @@ from app.services.search.base import WebSearchService
 from app.services.search.factory import get_web_search_service
 
 logger = logging.getLogger(__name__)
+
+
+def _serialize_ui(ui: dict[str, Any]) -> dict[str, Any]:
+    """JSON-ready dump of structured UI models."""
+    out: dict[str, Any] = {}
+    for key, value in ui.items():
+        if isinstance(value, list):
+            out[key] = [
+                item.model_dump() if hasattr(item, "model_dump") else item for item in value
+            ]
+        elif hasattr(value, "model_dump"):
+            out[key] = value.model_dump()
+        else:
+            out[key] = value
+    return out
+
 
 # Phase 1: short-TTL cache for exact simple/chitchat replies (locale + brief).
 # Never caches grounded tourism answers (prices/hours can go stale).
@@ -146,13 +163,17 @@ class HuggingFaceAIService(AIService):
                     item if isinstance(item, ChatSource) else ChatSource.model_validate(item)
                     for item in raw_sources
                 ]
-                return ChatResponse(
-                    conversation_id=str(event.get("conversation_id")),
-                    role="assistant",
-                    message=str(event.get("text") or full),
-                    provider="huggingface",
-                    sources=sources,
-                )
+                ui = event.get("ui") if isinstance(event.get("ui"), dict) else {}
+                payload = {
+                    "conversation_id": str(event.get("conversation_id")),
+                    "role": "assistant",
+                    "message": str(event.get("text") or full),
+                    "text": str(event.get("text") or full),
+                    "provider": "huggingface",
+                    "sources": sources,
+                    **ui,
+                }
+                return ChatResponse.model_validate(payload)
             elif event.get("type") == "error":
                 code = str(event.get("code") or "")
                 detail = str(event.get("message") or "LLM failed")
@@ -720,6 +741,27 @@ class HuggingFaceAIService(AIService):
                 )
             )
 
+        ui = build_structured_ui(
+            final=result.final_response,
+            knowledge=result.knowledge,
+            plan=result.plan,
+            vision_summary=result.vision_summary,
+            language=result.final_response.language or locale,
+        )
+        # Enrich legacy ChatSource cards from structured places when possible.
+        if not sources and ui.get("places"):
+            for place in ui["places"][:8]:
+                sources.append(
+                    ChatSource(
+                        title=place.name,
+                        city=place.city,
+                        region=place.region,
+                        category=place.category,
+                        url=place.source_url,
+                        image_url=place.image_url,
+                    )
+                )
+
         timer.mark("rag", 0.0)
         timer.mark("web", float(result.timings.web_ms or 0.0))
         timer.mark("prompt", 0.0)
@@ -727,7 +769,9 @@ class HuggingFaceAIService(AIService):
         timer.mark("llm_ttft", float(result.final_response.llm_ttft_ms or 0.0))
         timer.mark("llm", float(result.final_response.llm_generation_ms or 0.0))
         timer.mark("cache_hit", 0.0)
-        trace.set_meta(orchestrator_enabled=True)
+        if ui.get("structured_build_ms") is not None:
+            timer.mark("structured_ui", float(ui["structured_build_ms"]))
+        trace.set_meta(orchestrator_enabled=True, structured_ui_ms=ui.get("structured_build_ms"))
         trace.mark("orchestrator_response_ready", chars=len(reply))
 
         phrase_buf = ""
@@ -769,6 +813,7 @@ class HuggingFaceAIService(AIService):
             "conversation_id": thread_id,
             "text": reply,
             "sources": [source.model_dump() for source in sources],
+            "ui": _serialize_ui(ui),
             "metrics": timer.as_dict(),
             "llm_trace": trace.as_dict(),
             "orchestrator": orch_obs,
@@ -918,11 +963,20 @@ class HuggingFaceAIService(AIService):
                 [("user", message), ("assistant", text.strip())],
             )
             trace.note_llm_end()
+            stream_ui = build_structured_ui(
+                knowledge=knowledge,
+                plan=plan,
+                vision_summary=ctx.vision_summary,
+                language=language,
+            )
+            stream_ui["response_type"] = map_response_type(intent, plan)
+            timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
             yield {
                 "type": "done",
                 "conversation_id": thread_id,
                 "text": text.strip(),
                 "sources": [],
+                "ui": _serialize_ui(stream_ui),
                 "metrics": timer.as_dict(),
                 "llm_trace": trace.as_dict(),
                 "orchestrator": orch_obs,
@@ -1094,6 +1148,14 @@ class HuggingFaceAIService(AIService):
         if getattr(self._store, "last_trace", None) is not None:
             trace.set_meta(store_persist=self._store.last_trace.as_dict())
         trace.note_llm_end()
+        stream_ui = build_structured_ui(
+            final=final,
+            knowledge=knowledge,
+            plan=plan,
+            vision_summary=ctx.vision_summary,
+            language=language,
+        )
+        timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
         yield {
             "type": "done",
             "conversation_id": thread_id,
@@ -1106,6 +1168,7 @@ class HuggingFaceAIService(AIService):
                 ).model_dump()
                 for s in sources
             ],
+            "ui": _serialize_ui(stream_ui),
             "metrics": timer.as_dict(),
             "llm_trace": trace.as_dict(),
             "orchestrator": orch_obs,

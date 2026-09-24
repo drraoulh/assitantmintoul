@@ -92,7 +92,17 @@ Render : prévoir un service Node/static séparé pointant sur `frontend-web` (E
 - Pages : Home, Explorer, Destinations, Assistant, Vision, Planifier, Hotels, Booking, Mon voyage
 - Backend unavailable → messages utilisateur génériques
 
-## Migration status
+## Phase 3.1 — Structured ChatResponse
+
+HTTP `/api/chat` may now include:
+
+`response_type`, `places`, `map`, `itinerary`, `budget`, `hotels`, `booking`,
+`vision`, `ui_sources`, `actions`, `text` (alias of `message`).
+
+Built deterministically from KnowledgeResult + TourismPlan (no extra LLM).
+Voice WS sends the same payload on `turn_done` after audio (TTFA safe).
+
+See `docs/phase3.1-structured-chatresponse.md`.
 
 | Étape | Status |
 |-------|--------|

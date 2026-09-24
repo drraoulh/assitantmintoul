@@ -197,6 +197,24 @@ async def voice_session(websocket: WebSocket) -> None:
                 mark("turn_end")
                 _log_voice_perf(timer, marks, chrono)
                 timer.log()
+                # Phase 3.1 — UI metadata after audio (does not block TTFA).
+                ui_payload = {
+                    "response_type": response.response_type,
+                    "places": [p.model_dump() for p in response.places],
+                    "map": response.map.model_dump() if response.map else None,
+                    "itinerary": (
+                        response.itinerary.model_dump() if response.itinerary else None
+                    ),
+                    "budget": response.budget.model_dump() if response.budget else None,
+                    "hotels": [h.model_dump() for h in response.hotels],
+                    "booking": (
+                        response.booking.model_dump() if response.booking else None
+                    ),
+                    "vision": response.vision.model_dump() if response.vision else None,
+                    "ui_sources": [s.model_dump() for s in response.ui_sources],
+                    "actions": [a.model_dump() for a in response.actions],
+                    "structured_build_ms": response.structured_build_ms,
+                }
                 await _send(
                     websocket,
                     {
@@ -208,6 +226,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         },
                         "conversation_id": conversation_id,
                         "turn_id": timer.turn_id,
+                        "ui": ui_payload,
                     },
                 )
                 return
@@ -242,6 +261,7 @@ async def voice_session(websocket: WebSocket) -> None:
             first_chunker_text = False
             tts_seq = 0
             llm_trace_payload: dict[str, Any] | None = None
+            structured_ui_payload: dict[str, Any] | None = None
             llm_trace = LlmStreamTrace(
                 turn_id=timer.turn_id,
                 model=getattr(ai, "_model", "") or "",
@@ -341,6 +361,8 @@ async def voice_session(websocket: WebSocket) -> None:
                         full = str(event.get("text") or "".join(reply_parts)).strip()
                         if isinstance(event.get("llm_trace"), dict):
                             llm_trace_payload = event["llm_trace"]
+                        if isinstance(event.get("ui"), dict):
+                            structured_ui_payload = event["ui"]
                         from app.services.speech.voice_chunker import flush_remainder
 
                         for sentence in flush_remainder(sentence_buffer):
@@ -412,6 +434,7 @@ async def voice_session(websocket: WebSocket) -> None:
                     },
                     "conversation_id": conversation_id,
                     "turn_id": timer.turn_id,
+                    "ui": structured_ui_payload,
                 },
             )
         except asyncio.CancelledError:

@@ -31,7 +31,7 @@ def map_response_type(intent: IntentResult, plan: TourismPlan | None) -> str:
         "HOTEL": "HOTEL",
         "BOOKING": "BOOKING",
         "CLARIFICATION": "CLARIFICATION",
-        "VISION": "CLARIFICATION",
+        "VISION": "VISION",
         "WEB_SEARCH": "TOURISM_INFORMATION",
     }
     return mapping.get(intent.intent, "TOURISM_INFORMATION")
