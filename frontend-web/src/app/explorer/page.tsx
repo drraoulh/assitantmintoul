@@ -14,6 +14,14 @@ function regionMatches(siteRegion: string, apiRegion: string): boolean {
   return siteRegion.trim().toLowerCase() === apiRegion.trim().toLowerCase();
 }
 
+/** Prefer scenic photos over Ayila'a /logos/ branding assets when picking a cover. */
+function pickRegionCover(images: (string | undefined)[]): string | undefined {
+  const urls = images.filter((u): u is string => Boolean(u?.trim()));
+  if (!urls.length) return undefined;
+  const scenic = urls.find((u) => !u.toLowerCase().includes('/logos/'));
+  return scenic ?? urls[0];
+}
+
 export default function ExplorerPage() {
   const { t, locale } = useLocale();
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -36,7 +44,7 @@ export default function ExplorerPage() {
             regionMatches(s.region, r.apiRegion),
           );
           nextCounts[r.id] = regionSites.length;
-          const cover = regionSites.find((s) => s.images?.[0])?.images?.[0];
+          const cover = pickRegionCover(regionSites.map((s) => s.images?.[0]));
           if (cover) nextCovers[r.id] = cover;
         }
         setCounts(nextCounts);
