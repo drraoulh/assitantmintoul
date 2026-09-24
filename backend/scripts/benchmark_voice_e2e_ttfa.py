@@ -214,18 +214,14 @@ async def run_ws_turn(
             mtype = msg.get("type")
             if mtype == "status":
                 phase = msg.get("phase")
-                if phase == "transcribing" and "stt_status" not in marks:
-                    mark("stt_status")
-                elif phase == "generating" and "llm_status" not in marks:
-                    mark("llm_generating_status")
+                key = f"status_{phase}"
+                if phase and key not in marks:
+                    mark(key)
             elif mtype == "route" and "rag_start" not in marks:
                 mark("rag_start", note="route_received")
             elif mtype == "token":
                 if "llm_first_token" not in marks:
                     mark("llm_first_token", chars=len(str(msg.get("text") or "")))
-                if "first_phrase_ready" not in marks and len(str(msg.get("text") or "")) > 0:
-                    # Approximate; refined from llm_trace / chronology when available.
-                    pass
             elif mtype == "audio_chunk":
                 part = int(msg.get("part") or 0)
                 if part == 0 and "tts_first_audio" not in marks:
@@ -639,8 +635,15 @@ def write_md(payload: dict[str, Any]) -> None:
             continue
         lines.append(f"Turn `{sample.get('question', '')[:60]}` — TTFA={sample.get('TTFA_ms')} ms")
         lines.append("```")
+        seen: set[str] = set()
         for e in sample.get("timeline") or []:
-            lines.append(f"{e['event']:28} +{e['elapsed_ms']:8.1f} ms")
+            name = str(e["event"])
+            # Compact print: one status_*, one audio_done.
+            if name.startswith("status_") or name in {"llm_generating_status", "audio_done"}:
+                if name in seen:
+                    continue
+                seen.add(name)
+            lines.append(f"{name:28} +{float(e['elapsed_ms']):8.1f} ms")
         lines.append("```")
         lines.append(
             f"store={sample.get('conversation_store_ms')} mode={sample.get('store_mode')} "
