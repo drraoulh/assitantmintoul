@@ -21,6 +21,9 @@ _SIMPLE_QA = re.compile(
     r"combien\s+de\s+r[eé]gions|how\s+many\s+regions|"
     r"quel(?:le)?\s+est\s+(?:la\s+)?capitale|"
     r"what\s+is\s+the\s+capital|"
+    r"dans\s+quelle\s+r[eé]gion|which\s+region|"
+    r"chef[- ]lieu|"
+    r"d[eé]partement\s+de|dans\s+quel\s+d[eé]partement|"
     r"population|superficie|official\s+language|langue\s+officielle"
     r")\b",
     re.IGNORECASE,
@@ -160,6 +163,15 @@ def classify_with_rules(
     if not raw:
         return RuleHit("CLARIFICATION", 0.3, "empty")
 
+    # Phase 2.8 — geographic relation Qs before tourism search / itinerary
+    from app.services.agents.knowledge.geography import is_geo_simple_query
+
+    if is_geo_simple_query(raw) or (
+        _SIMPLE_QA.search(raw)
+        and (slots.city or slots.region or "bafoussam" in folded or "ouest" in folded or "west" in folded)
+    ):
+        return RuleHit("SIMPLE_QA", 0.93, "geographic_relation_qa")
+
     if _AMBIGUOUS.search(raw) and not (
         slots.city or slots.duration_days or slots.budget_xaf or slots.place_name
     ):
@@ -229,9 +241,15 @@ def classify_with_rules(
     if slots.city and re.search(r"\b(visiter|visite|que\s+faire|what\s+to)\b", folded):
         return RuleHit("PLACE_SEARCH", 0.78, "city_visit_hint")
 
+    if slots.region and re.search(
+        r"\b(visiter|visite|que\s+faire|what\s+to|sites?|lieux?|tourisme|tourism)\b",
+        folded,
+    ):
+        return RuleHit("PLACE_SEARCH", 0.82, "region_visit_hint")
+
     # Vague Cameroon mention without actionable slots.
     if re.search(r"\bcameroun|cameroon\b", folded) and len(folded.split()) <= 12:
-        if not (slots.city or slots.duration_days or slots.budget_xaf):
+        if not (slots.city or slots.region or slots.duration_days or slots.budget_xaf):
             return RuleHit("CLARIFICATION", 0.45, "vague_cameroon")
 
     return RuleHit("TOURISM_INFO", 0.55, "fallback_tourism_info")

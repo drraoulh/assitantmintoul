@@ -30,6 +30,9 @@ class PlaceEvidence(BaseModel):
     evidence_score: float = Field(default=0.0, ge=0.0, le=1.0)
     is_published: bool = True
     match_reasons: list[str] = Field(default_factory=list)
+    location_scope: Literal["IN_CITY", "NEARBY", "IN_REGION", "UNKNOWN"] | None = None
+    locality: str | None = None
+    division: str | None = None
 
     @field_validator("activities", "category", "eco_tags", "source_ids", "match_reasons", mode="before")
     @classmethod
@@ -81,6 +84,9 @@ class KnowledgeResult(BaseModel):
     source_resolution_ms: float | None = None
     total_agent2_ms: float | None = None
     source: Literal["structured", "hybrid", "documents", "empty"] = "empty"
+    verified_places_count: int = 0
+    knowledge_completeness: Literal["HIGH", "MEDIUM", "LOW", "NONE"] = "NONE"
+    geo_facts_count: int = 0
 
     def observability(self) -> dict[str, object]:
         """Safe metrics — no raw knowledge text / PII."""
@@ -98,4 +104,7 @@ class KnowledgeResult(BaseModel):
             "source_resolution_ms": self.source_resolution_ms,
             "total_agent2_ms": self.total_agent2_ms,
             "source": self.source,
+            "verified_places_count": self.verified_places_count,
+            "knowledge_completeness": self.knowledge_completeness,
+            "geo_facts_count": self.geo_facts_count,
         }

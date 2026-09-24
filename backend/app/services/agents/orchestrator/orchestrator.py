@@ -13,6 +13,7 @@ import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any, Literal
 
+from app.core.config import get_settings
 from app.services.agents.intent import classify_intent
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.agent import KnowledgeAgent
@@ -156,6 +157,28 @@ class AgentOrchestrator:
                     knowledge, hits, user_query, intent, rid
                 )
             agents_called.append("web")
+        elif (
+            knowledge is not None
+            and knowledge.web_needed
+            and self._web is not None
+            and get_settings().web_knowledge_fallback_enabled
+            and not intent.needs_web
+        ):
+            # Phase 2.8 — conditional KB-thin fallback (still not an Agent 5)
+            logger.info("web_fallback_started request_id=%s", rid)
+            t_web = time.perf_counter()
+            try:
+                hits = await self._web.search(user_query, max_results=self._web_max)
+            except Exception:  # noqa: BLE001
+                logger.exception("web_fallback_failed request_id=%s", rid)
+                hits = []
+            timings.web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
+            web_hit_count = len(hits)
+            if hits:
+                knowledge = self._merge_web_evidence(
+                    knowledge, hits, user_query, intent, rid
+                )
+            agents_called.append("web")
 
         if intent.needs_planner and self._knowledge_usable_for_planner(knowledge):
             logger.info("planner_started request_id=%s", rid)
@@ -259,6 +282,9 @@ class AgentOrchestrator:
             return False
         if intent.intent == "VISION" and not (intent.needs_knowledge or intent.needs_places):
             return False
+        # SIMPLE_QA always retrieves knowledge when geography may answer
+        if intent.intent == "SIMPLE_QA":
+            return True
         return bool(intent.needs_knowledge or intent.needs_places)
 
     @staticmethod

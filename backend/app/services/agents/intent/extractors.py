@@ -37,16 +37,24 @@ _REGIONS: dict[str, str] = {
     "centre": "Centre",
     "littoral": "Littoral",
     "ouest": "Ouest",
+    "west": "Ouest",
+    "west region": "Ouest",
     "sud": "Sud",
     "est": "Est",
     "nord": "Nord",
     "extreme-nord": "Extrême-Nord",
     "extreme nord": "Extrême-Nord",
+    "far north": "Extrême-Nord",
     "adamaoua": "Adamaoua",
+    "adamawa": "Adamaoua",
     "nord-ouest": "Nord-Ouest",
     "nord ouest": "Nord-Ouest",
+    "north-west": "Nord-Ouest",
+    "northwest": "Nord-Ouest",
     "sud-ouest": "Sud-Ouest",
     "sud ouest": "Sud-Ouest",
+    "south-west": "Sud-Ouest",
+    "southwest": "Sud-Ouest",
 }
 
 # Named places often asked about specifically (PLACE_DETAILS).
@@ -61,6 +69,8 @@ _KNOWN_PLACES: dict[str, str] = {
     "parc de waza": "Parc de Waza",
     "reserve du dja": "Réserve du Dja",
     "lac tchad": "Lac Tchad",
+    "lac baleng": "Lac Baleng",
+    "lake baleng": "Lac Baleng",
     "rhumsiki": "Rhumsiki",
     "korup": "Korup",
 }
@@ -198,6 +208,12 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         interests.append("food")
     if re.search(r"\b(hotel|hôtel|hebergement|hébergement)\b", folded):
         interests.append("hotel")
+    if re.search(
+        r"\b(autour|alentours|environs|proche|nearby|around|proximit[eé])\b",
+        folded,
+    ):
+        interests.append("nearby")
+    slots.interests = interests
     slots.interests = interests
 
     if re.search(r"\b(luxe|premium|haut\s+de\s+gamme)\b", folded):

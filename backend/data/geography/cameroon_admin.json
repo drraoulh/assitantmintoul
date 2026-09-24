@@ -1,0 +1,283 @@
+{
+  "country": {
+    "id": "cm",
+    "name_fr": "Cameroun",
+    "name_en": "Cameroon",
+    "source": "Constitution / découpage administratif officiel du Cameroun",
+    "verified_at": "2026-09-24"
+  },
+  "regions": [
+    {
+      "id": "adamaoua",
+      "name_fr": "Adamaoua",
+      "name_en": "Adamawa",
+      "capital_city_id": "ngaoundere",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "centre",
+      "name_fr": "Centre",
+      "name_en": "Centre",
+      "capital_city_id": "yaounde",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "est",
+      "name_fr": "Est",
+      "name_en": "East",
+      "capital_city_id": "bertoua",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "extreme-nord",
+      "name_fr": "Extrême-Nord",
+      "name_en": "Far North",
+      "capital_city_id": "maroua",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "littoral",
+      "name_fr": "Littoral",
+      "name_en": "Littoral",
+      "capital_city_id": "douala",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nord",
+      "name_fr": "Nord",
+      "name_en": "North",
+      "capital_city_id": "garoua",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nord-ouest",
+      "name_fr": "Nord-Ouest",
+      "name_en": "North-West",
+      "capital_city_id": "bamenda",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ouest",
+      "name_fr": "Ouest",
+      "name_en": "West",
+      "capital_city_id": "bafoussam",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "sud",
+      "name_fr": "Sud",
+      "name_en": "South",
+      "capital_city_id": "ebolowa",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "sud-ouest",
+      "name_fr": "Sud-Ouest",
+      "name_en": "South-West",
+      "capital_city_id": "buea",
+      "source": "Découpage administratif officiel (10 régions)",
+      "verified_at": "2026-09-24"
+    }
+  ],
+  "divisions": [
+    {
+      "id": "mifi",
+      "name_fr": "Mifi",
+      "name_en": "Mifi",
+      "region_id": "ouest",
+      "source": "Département de la Mifi (région de l'Ouest)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "noun",
+      "name_fr": "Noun",
+      "name_en": "Noun",
+      "region_id": "ouest",
+      "source": "Département du Noun (région de l'Ouest) — Foumban",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "menoua",
+      "name_fr": "Menoua",
+      "name_en": "Menoua",
+      "region_id": "ouest",
+      "source": "Département de la Menoua (région de l'Ouest) — Dschang",
+      "verified_at": "2026-09-24"
+    }
+  ],
+  "cities": [
+    {
+      "id": "bafoussam",
+      "name_fr": "Bafoussam",
+      "name_en": "Bafoussam",
+      "entity_type": "city",
+      "division_id": "mifi",
+      "region_id": "ouest",
+      "is_region_capital": true,
+      "aliases": ["bafoussam"],
+      "source": "Chef-lieu de la région de l'Ouest / département de la Mifi",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "foumban",
+      "name_fr": "Foumban",
+      "name_en": "Foumban",
+      "entity_type": "city",
+      "division_id": "noun",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": ["foumban"],
+      "source": "Ville du département du Noun, région de l'Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "dschang",
+      "name_fr": "Dschang",
+      "name_en": "Dschang",
+      "entity_type": "city",
+      "division_id": "menoua",
+      "region_id": "ouest",
+      "is_region_capital": false,
+      "aliases": ["dschang"],
+      "source": "Ville du département de la Menoua, région de l'Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "yaounde",
+      "name_fr": "Yaoundé",
+      "name_en": "Yaoundé",
+      "entity_type": "city",
+      "division_id": null,
+      "region_id": "centre",
+      "is_region_capital": true,
+      "is_national_capital": true,
+      "aliases": ["yaounde", "yaoundé"],
+      "source": "Capitale politique du Cameroun / chef-lieu du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "douala",
+      "name_fr": "Douala",
+      "name_en": "Douala",
+      "entity_type": "city",
+      "division_id": null,
+      "region_id": "littoral",
+      "is_region_capital": true,
+      "aliases": ["douala"],
+      "source": "Chef-lieu de la région du Littoral",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ngaoundere",
+      "name_fr": "Ngaoundéré",
+      "name_en": "Ngaoundéré",
+      "entity_type": "city",
+      "region_id": "adamaoua",
+      "is_region_capital": true,
+      "aliases": ["ngaoundere", "ngaoundéré"],
+      "source": "Chef-lieu de la région de l'Adamaoua",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bertoua",
+      "name_fr": "Bertoua",
+      "name_en": "Bertoua",
+      "entity_type": "city",
+      "region_id": "est",
+      "is_region_capital": true,
+      "aliases": ["bertoua"],
+      "source": "Chef-lieu de la région de l'Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "maroua",
+      "name_fr": "Maroua",
+      "name_en": "Maroua",
+      "entity_type": "city",
+      "region_id": "extreme-nord",
+      "is_region_capital": true,
+      "aliases": ["maroua"],
+      "source": "Chef-lieu de la région de l'Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "garoua",
+      "name_fr": "Garoua",
+      "name_en": "Garoua",
+      "entity_type": "city",
+      "region_id": "nord",
+      "is_region_capital": true,
+      "aliases": ["garoua"],
+      "source": "Chef-lieu de la région du Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bamenda",
+      "name_fr": "Bamenda",
+      "name_en": "Bamenda",
+      "entity_type": "city",
+      "region_id": "nord-ouest",
+      "is_region_capital": true,
+      "aliases": ["bamenda"],
+      "source": "Chef-lieu de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ebolowa",
+      "name_fr": "Ebolowa",
+      "name_en": "Ebolowa",
+      "entity_type": "city",
+      "region_id": "sud",
+      "is_region_capital": true,
+      "aliases": ["ebolowa"],
+      "source": "Chef-lieu de la région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "buea",
+      "name_fr": "Buea",
+      "name_en": "Buea",
+      "entity_type": "city",
+      "region_id": "sud-ouest",
+      "is_region_capital": true,
+      "aliases": ["buea"],
+      "source": "Chef-lieu de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    }
+  ],
+  "localities": [
+    {
+      "id": "baleng",
+      "name_fr": "Baleng",
+      "name_en": "Baleng",
+      "city_id": "bafoussam",
+      "division_id": "mifi",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité près de Bafoussam (commune de Bafoussam II / environs)",
+      "source": "Toponymie locale Ouest / sites touristiques autour de Bafoussam",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bamougoum",
+      "name_fr": "Bamougoum",
+      "name_en": "Bamougoum",
+      "city_id": "bafoussam",
+      "division_id": "mifi",
+      "region_id": "ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Localité des environs de Bafoussam (département de la Mifi)",
+      "source": "Toponymie locale Ouest",
+      "verified_at": "2026-09-24"
+    }
+  ]
+}

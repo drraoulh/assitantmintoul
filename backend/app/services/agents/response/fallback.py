@@ -25,6 +25,13 @@ def render_deterministic(
     if intent.intent == "BOOKING":
         return _booking_unavailable(lang, has_places=bool(knowledge.places))
 
+    # Phase 2.8 — prefer structured geo facts when present
+    geo_chunks = [
+        k for k in knowledge.knowledge if (k.chunk_id or "").startswith("geo-")
+    ]
+    if geo_chunks and intent.intent in {"SIMPLE_QA", "TOURISM_INFO"}:
+        return geo_chunks[0].content.split(" (source:")[0].strip()
+
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
             return _insufficient(lang)
@@ -317,26 +324,62 @@ def _render_place_list(
     lang: str,
     voice: bool,
 ) -> str:
-    names = [p.name for p in knowledge.places[:8]]
+    names: list[str] = []
+    for p in knowledge.places[:8]:
+        label = p.name
+        if getattr(p, "location_scope", None) == "NEARBY":
+            if lang == "en":
+                label = f"{p.name} (near {intent.city or p.city or 'the area'})"
+            else:
+                label = f"{p.name} (environs de {intent.city or p.city or 'la zone'})"
+        names.append(label)
     if not names:
         return _insufficient(lang)
+
+    count = knowledge.verified_places_count or len(knowledge.places)
+    completeness = knowledge.knowledge_completeness or "MEDIUM"
+
     if voice:
         joined = ", ".join(names)
         if lang == "en":
             where = f" in {intent.city}" if intent.city else ""
-            return f"Verified options{where} include: {joined}."
+            base = f"I currently have {count} verified place(s){where}: {joined}."
+            if completeness in {"LOW", "MEDIUM"} and count <= 3:
+                base += " I can present these, or look for more recent tourist information if you want."
+            return base
         where = f" à {intent.city}" if intent.city else ""
-        return f"Parmi les options vérifiées{where} : {joined}."
-    header = (
-        f"Verified places" + (f" in {intent.city}" if intent.city else "") + ":"
-        if lang == "en"
-        else "Lieux vérifiés" + (f" à {intent.city}" if intent.city else "") + " :"
-    )
-    lines = [header] + [f"- {n}" for n in names]
-    missing = _missing_sentence(knowledge.missing_information, lang)
-    if missing:
-        lines.append(missing)
-    return "\n".join(lines)
+        base = f"J’ai actuellement {count} lieu(x) vérifié(s){where} : {joined}."
+        if completeness in {"LOW", "MEDIUM"} and count <= 3:
+            base += (
+                " Je peux te les présenter, ou rechercher davantage d’activités "
+                "et de sites touristiques récents si tu veux."
+            )
+        return base
+
+    bullets = "\n".join(f"- {n}" for n in names)
+    if lang == "en":
+        header = f"I currently have {count} verified place(s)"
+        if intent.city:
+            header += f" for {intent.city}"
+        header += " in my knowledge base:"
+        footer = ""
+        if completeness in {"LOW", "MEDIUM"} and count <= 3:
+            footer = (
+                "\n\nI can present these places, or search for more recent "
+                "tourist activities and sites if you want."
+            )
+        return f"{header}\n{bullets}{footer}"
+    header = f"J’ai actuellement {count} lieu(x) vérifié(s)"
+    if intent.city:
+        header += f" autour de {intent.city}"
+    header += " dans ma base :"
+    footer = ""
+    if completeness in {"LOW", "MEDIUM"} and count <= 3:
+        footer = (
+            "\n\nJe peux te présenter ces lieux, ou rechercher davantage "
+            "d’activités et de sites touristiques récents si tu veux."
+        )
+    return f"{header}\n{bullets}{footer}"
 
 
 def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> str:

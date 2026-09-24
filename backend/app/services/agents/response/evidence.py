@@ -90,6 +90,26 @@ def build_allowed_evidence(
         if "africa in miniature" in folded or "afrique en miniature" in folded:
             ev.allowed_slogans.add("Africa in miniature")
             ev.allowed_slogans.add("Afrique en miniature")
+        # Geo facts may mention admin names — whitelist them for grounding
+        if (chunk.chunk_id or "").startswith("geo-") or (chunk.source_id or "") == "geo:cameroon_admin":
+            for token in (
+                "Bafoussam",
+                "Ouest",
+                "West",
+                "Mifi",
+                "Foumban",
+                "Dschang",
+                "Baleng",
+                "Bamougoum",
+                "Cameroun",
+                "Cameroon",
+                "Lac Baleng",
+                "Noun",
+                "Menoua",
+            ):
+                if fold(token) in folded:
+                    ev.place_names.add(token)
+                    ev.place_names_folded.add(fold(token))
 
     for src in knowledge.sources:
         if src.source_id:

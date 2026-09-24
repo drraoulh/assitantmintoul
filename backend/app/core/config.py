@@ -272,6 +272,18 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("GROUNDING_ENFORCEMENT_ENABLED"),
     )
 
+    # Phase 2.8 — structured geography graph + hierarchical retrieval. Default OFF.
+    knowledge_geography_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("KNOWLEDGE_GEOGRAPHY_ENABLED"),
+    )
+    # When KB completeness is LOW/NONE for tourism intents, allow orchestrator
+    # to set needs_web from Agent 2 web_needed (still no Agent 5). Default OFF.
+    web_knowledge_fallback_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("WEB_KNOWLEDGE_FALLBACK_ENABLED"),
+    )
+
     @property
     def cors_origin_list(self) -> list[str]:
         if self.cors_origins.strip() == "*":
