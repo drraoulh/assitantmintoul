@@ -16,7 +16,12 @@
       "name_en": "Sawa area (Littoral)",
       "description_fr": "Cultures Sawa du littoral : liens maritimes, Duala, patrimoine urbain de Douala (Bonanjo, palais de la culture, musée maritime).",
       "description_en": "Coastal Sawa cultures: maritime links, Duala language, Douala urban heritage (Bonanjo, culture palace, maritime museum).",
-      "related_cities": ["Douala", "Edéa", "Mouanko", "Yabassi"],
+      "related_cities": [
+        "Douala",
+        "Edéa",
+        "Mouanko",
+        "Yabassi"
+      ],
       "source": "data/documents/history_culture.md"
     }
   ],
@@ -151,20 +156,90 @@
   },
   "hotels_verified": [
     {
-      "id": "krystal-palace-douala",
+      "id": "krystal-palace-douala-akwa",
       "name": "Krystal Palace Douala",
       "city": "Douala",
       "neighbourhood": "Akwa",
-      "text_fr": "Hôtel à Akwa (boulevard de la Liberté), documenté sur Ayila’a ; vue sur le Wouri mentionnée.",
-      "text_en": "Hotel in Akwa (Boulevard de la Liberté), documented on Ayila’a; Wouri view mentioned.",
-      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "text_fr": "Krystal Palace Douala. SituÃ©au boulevard de la libertÃ© Ã  Akwa, Ã  cÃ´tÃ©de la Direction gÃ©nÃ©rale de l'entreprise UBA, le Krystal Palace Douala est le premier hÃ´tel cinq Ã©toiles de la ville. Avec 237 chambres, cet ",
+      "text_en": "Krystal Palace Douala. Locatedau boulevard de la libertÃ© Ã  Akwa, Ã  cÃ´tÃ©de la Direction gÃ©nÃ©rale de l'entreprise UBA, le Krystal Palace Douala est le premier hotel cinq Ã©toiles de la ville. Avec 237 chambres, cet ",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/5249-hotel-krystal-palace-douala (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "soft-hotel-akwa",
+      "name": "Soft Hotel",
+      "city": "Douala",
+      "neighbourhood": "Akwa",
+      "text_fr": "Soft Hotel. SituÃ© Ã  Douala, Ã  moins de 1 km du stade Akwa, le SOFT HOTEL est un Ã©tablissement 2 Ã©toiles qui propose des hÃ©bergements luxueux et des Ã©quipements haut de gamme, garantissant un sÃ©jour mÃ©morable. L'",
+      "text_en": "Soft Hotel. SituÃ© Ã  Douala, Ã  moins de 1 km du stade Akwa, le SOFT HOTEL is a Ã©tablissement 2 Ã©toiles qui propose des hÃ©bergements luxueux et des Ã©quipements haut de gamme, garantissant un sÃ©jour mÃ©morable. L'ho",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/11426-soft-hotel (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "khotel-douala-bonanjo",
+      "name": "Khotel Douala",
+      "city": "Douala",
+      "neighbourhood": "Bonanjo",
+      "text_fr": "Khotel Douala. SituÃ©au quartier Bonanjo Ã  Douala, KHÃ´tel propose une gamme de chambres et de suites, toutes Ã©quipÃ©es d'un lit confortable, d'une tÃ©lÃ©vision Ã  Ã©cran plat, d'un accÃ¨s Wi-Fi gratuit, et d'une salle",
+      "text_en": "Khotel Douala. Locatedau quartier Bonanjo Ã  Douala, KHÃ´tel propose une gamme de chambres et de suites, toutes Ã©quipÃ©es d'un lit confortable, d'une tÃ©lÃ©vision Ã  Ã©cran plat, d'un accÃ¨s Wi-Fi gratuit, et d'une sall",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/4629-khotel-douala (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "best-western-plus-soaho-echangeur",
+      "name": "Best Western Plus Soaho",
+      "city": "Douala",
+      "neighbourhood": "Echangeur",
+      "text_fr": "Best Western Plus Soaho. SituÃ© Ã  Douala, la capitale Ã©conomique du Cameroun. Ã  seulement une minute en voiture ou cinq minutes Ã  pied de l'aÃ©roport, Best Western Plus Soaho Douala Airport est un hÃ´tel, un vÃ©ritab",
+      "text_en": "Best Western Plus Soaho. SituÃ© Ã  Douala, la capitale Ã©conomique du Cameroon. Ã  seulement une minute en voiture ou cinq minutes Ã  pied de l'aÃ©roport, Best Western Plus Soaho Douala Airport is a hotel, un vÃ©ritable ",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3359-hotel-best-western-plus-soaho (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "exotic-plaza-hotel-apart-spa-japoma",
+      "name": "Exotic Plaza Hotel Apart & Spa",
+      "city": "Douala",
+      "neighbourhood": "Japoma",
+      "text_fr": "Exotic Plaza Hotel Apart & Spa. SituÃ©derriÃ¨re le stade de Japoma, un quartier de Douala, l'Exotic Plaza Hotel Apart & Spa est un complexe hÃ´telier qui allie confort et modernitÃ©. Exotic Plaza, c'est d'abord un hÃ´tel",
+      "text_en": "Exotic Plaza Hotel Apart & Spa. LocatedderriÃ¨re le stade de Japoma, un quartier de Douala, l'Exotic Plaza Hotel Apart & Spa is a complexe hÃ´telier qui allie confort et modernitÃ©. Exotic Plaza, c'est d'abord un hotel a",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/15264-exotic-plaza-hotel-apart-spa (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "residence-2f-bonapriso",
+      "name": "Résidence 2F",
+      "city": "Douala",
+      "neighbourhood": "Bonapriso",
+      "text_fr": "RÃ©sidence 2F. SituÃ©au quartier Bonapriso Ã  Douala, La RÃ©sidence 2F bouscule les codes de l'hÃ©bergement urbain en proposant des appartements et studios meublÃ©spensÃ©spour les sÃ©jours de haut standing. Cette adresse",
+      "text_en": "RÃ©sidence 2F (Douala). residence 2F. Locatedau quartier Bonapriso Ã  Douala, La residence 2F bouscule les codes de l'accommodation urbain en proposant des appartements et studios meublÃ©spensÃ©spour les sÃ©jours de haut",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/4269-residence-2f (imports/camerounai-stay-language-games/data/hotels.ts)",
       "source_note": "Ayila'a · hotels category"
     }
   ],
   "divisions_snapshot": [
-    {"id": "wouri", "name_fr": "Wouri", "hub": "Douala", "note_fr": "Chef-lieu régional ; Bonanjo, Akwa, Wouri, musées, marché."},
-    {"id": "sanaga-maritime", "name_fr": "Sanaga-Maritime", "hub": "Edéa", "note_fr": "Sanaga, gorges et chutes ; axe Douala–Yaoundé."},
-    {"id": "moungo", "name_fr": "Moungo", "hub": "Nkongsamba", "note_fr": "Ekom-Nkam, mont Nlonako, Melong."},
-    {"id": "nkam", "name_fr": "Nkam", "hub": "Yabassi", "note_fr": "Yabassi / Siga Bonjo ; accès estuaire / Nkam."}
+    {
+      "id": "wouri",
+      "name_fr": "Wouri",
+      "hub": "Douala",
+      "note_fr": "Chef-lieu régional ; Bonanjo, Akwa, Wouri, musées, marché."
+    },
+    {
+      "id": "sanaga-maritime",
+      "name_fr": "Sanaga-Maritime",
+      "hub": "Edéa",
+      "note_fr": "Sanaga, gorges et chutes ; axe Douala–Yaoundé."
+    },
+    {
+      "id": "moungo",
+      "name_fr": "Moungo",
+      "hub": "Nkongsamba",
+      "note_fr": "Ekom-Nkam, mont Nlonako, Melong."
+    },
+    {
+      "id": "nkam",
+      "name_fr": "Nkam",
+      "hub": "Yabassi",
+      "note_fr": "Yabassi / Siga Bonjo ; accès estuaire / Nkam."
+    }
   ]
 }

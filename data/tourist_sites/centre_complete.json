@@ -746,8 +746,8 @@
     "city": "Yaoundé",
     "region": "Centre",
     "category": "hotel",
-    "summary_fr": "Hôtel Hilton Yaoundé, boulevard du 20 Mai — documenté sur Ayila’a.",
-    "summary_en": "Hilton Yaoundé hotel, Boulevard du 20 Mai — documented on Ayila’a.",
+    "summary_fr": "Hilton YaoundÃ©. SituÃ© Ã  2 km du monument de la RÃ©unification, le Hilton YaoundÃ©est un hÃ´tel haut de gamme qui se trouve Ã©galement Ã  1 km du musÃ©enational, construit dans les annÃ©es 1930, ainsi que de la cathÃ©drale Notre-Dame-des-Victoires. Avec 248 chambres, 4 bars et ",
+    "summary_en": "Hilton YaoundÃ©. SituÃ© Ã  2 km du monument de la RÃ©unification, le Hilton YaoundÃ©is a hotel haut de gamme qui se trouve Ã©galement Ã  1 km du musÃ©enational, construit dans les annÃ©es 1930, ainsi que de la cathÃ©drale Notre-Dame-des-Victoires. Avec 248 chambres, 4 bars et Res",
     "culture_fr": "Quartier : Boulevard du 20 Mai · Ville : Yaoundé",
     "latitude": null,
     "longitude": null,
@@ -756,14 +756,202 @@
       "yaounde",
       "centre",
       "hotel",
-      "hilton",
-      "bastos"
+      "hôtel"
     ],
     "sources": [
       {
         "title": "Hilton Yaoundé",
         "organization": "Ayila'a hotels",
-        "url": "https://ayilaa.com",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/5330-hotel-hilton-yaounde",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "star-land-hotel-yaounde-bastos",
+    "name": "Star Land Hotel Yaounde",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Star Land Hotel Yaounde. SituÃ©au quartier Bastos dans la ville de YaoundÃ© Ã  seulement 3,6 km de la gare centrale de YaoundÃ©. Star Land Hotel est conÃ§upour offrir un confort optimal Ã  ses clients, avec une var iÃ©tÃ© d'Ã©quipements de loisirs et de services pratiques. Profit",
+    "summary_en": "Star Land Hotel Yaounde. Locatedau quartier Bastos dans la ville de YaoundÃ© Ã  seulement 3,6 km de la gare centrale de YaoundÃ©. Star Land Hotel est conÃ§upour offrir un confort optimal Ã  ses clients, avec une var iÃ©tÃ© d'Ã©quipements de loisirs et de services pratiques. Profi",
+    "culture_fr": "Quartier : Bastos · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Star Land Hotel Yaounde",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/3307-star-land-hotel-yaounde",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "djeuga-palace-hotel-warda",
+    "name": "Djeuga Palace Hotel",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Djeuga Palace Hotel. SituÃ©au Quartier Warda Ã  YaoundÃ© Ã  environ 21 km de l'aÃ©roport international de YaoundÃ© Nsimalen, avec un service de navette aÃ©roport disponible sur demande pour plus de commoditÃ©. DJEUGA PALACE HOTEL est particuliÃ¨rement apprÃ©ciÃ©par les couples, q",
+    "summary_en": "Djeuga Palace Hotel. Locatedau Quartier Warda Ã  YaoundÃ© Ã  environ 21 km de l'aÃ©roport international de YaoundÃ© Nsimalen, avec un service de navette aÃ©roport disponible sur demande pour plus de commoditÃ©. DJEUGA PALACE HOTEL est particuliÃ¨rement apprÃ©ciÃ©par les couples, ",
+    "culture_fr": "Quartier : Warda · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Djeuga Palace Hotel",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/3332-djeuga-palace-hotel",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "international-summit-palace-tongolo",
+    "name": "International Summit Palace",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "International Summit Palace est un hÃ´tel de standing situÃ© Ã  Tongolo, en face du Club Yannick Noah Ã  YaoundÃ©. Cet Ã©tablissement propose des chambres et appartements climatisÃ©s, Ã©quipÃ©sdu Wi-Fi, d'une tÃ©lÃ©vision, d'espaces confortables ainsi que d'un service de restaura",
+    "summary_en": "International Summit Palace is a hotel de standing situÃ© Ã  Tongolo, en face du Club Yannick Noah Ã  YaoundÃ©. Cet Ã©tablissement propose des chambres et appartements climatisÃ©s, Ã©quipÃ©sdu Wi-Fi, d'une tÃ©lÃ©vision, d'espaces confortables ainsi que d'un service de restauratio",
+    "culture_fr": "Quartier : Tongolo · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "International Summit Palace",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/15688-international-summit-palace",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "united-hotel-cinema-mbankomo",
+    "name": "United Hôtel & Cinéma",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "United HÃ´tel & CinÃ©ma. SituÃ©dans le quartier Mbankomo Ã  YaoundÃ©, le United HÃ´tel Mbankomo propose 80 chambres de haut standing, avec des tarifs des chambres de 58 000 FCFA pour les chambres standard, 68 000 FCFA pour les Chambres confort, 75 000 FCFA pour les Chambres confo",
+    "summary_en": "United hotel & CinÃ©ma. Locateddans le quartier Mbankomo Ã  YaoundÃ©, le United hotel Mbankomo propose 80 chambres de haut standing, avec des tarifs des chambres de 58 000 FCFA pour les chambres standard, 68 000 FCFA pour les Chambres confort, 75 000 FCFA pour les Chambres confor",
+    "culture_fr": "Quartier : Mbankomo · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "United Hôtel & Cinéma",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/4406-united-hotel-cinema",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "welcome-garden-s-hotel-soa",
+    "name": "Welcome Garden's Hôtel",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Welcome Garden's HÃ´tel. SituÃ© Ã  seulement 2 km de l'UniversitÃ©de SOA, Ã  proximitÃ©du stade OLEMBÃ©et Ã  10 minutes du stade OMNISPORTS dans la ville de YaoundÃ©, Welcome Garden's HÃ´tel est un vÃ©ritable joyau architectural. L'Ã©tablissement offre une gamme d'installations m",
+    "summary_en": "Welcome Garden's hotel. SituÃ© Ã  seulement 2 km de l'UniversitÃ©de SOA, Ã  proximitÃ©du stade OLEMBÃ©et Ã  10 minutes du stade OMNISPORTS dans la ville de YaoundÃ©, Welcome Garden's hotel is a vÃ©ritable joyau architectural. L'Ã©tablissement offers une gamme d'installations mode",
+    "culture_fr": "Quartier : Soa · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Welcome Garden's Hôtel",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/3326-welcome-garden-s-hotel",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "complexe-mundi-nsimalen",
+    "name": "Complexe Mundi",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Complexe Mundi. SituÃ©prÃ¨sde l'aÃ©roport international de YaoundÃ© Nsimalen, dans le quartier de Ntoun, le Complexe Mundi est un complexe hÃ´telier au design architectural remarquable. Il bÃ©nÃ©ficie d'un emplacement stratÃ©gique en pÃ©riphÃ©rie, offrant une Ã©chappatoire Ã  la ",
+    "summary_en": "Complexe Mundi. LocatedprÃ¨sde l'aÃ©roport international de YaoundÃ© Nsimalen, dans le quartier de Ntoun, le Complexe Mundi is a complexe hÃ´telier au design architectural remarquable. Il bÃ©nÃ©ficie d'un emplacement stratÃ©gique en pÃ©riphÃ©rie, offrant une Ã©chappatoire Ã  la p",
+    "culture_fr": "Quartier : Nsimalen · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Complexe Mundi",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/4193-complexe-hotelier-complexe-mundi",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "prunelle-residences-bastos",
+    "name": "Prunelle Residences",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Prunelle Residences. SituÃ©dans le quartier Bastos Ã  YaoundÃ©, Prunelle RÃ©sidences est un Ã©tablissement d'hÃ©bergement qui propose des studios meublÃ©shaut de gamme. Chaque espace est conÃ§upour offrir un confort optimal, oÃ¹le luxe se ressent dans chaque piÃ¨ce. Les commoditÃ",
+    "summary_en": "Prunelle Residences. Locateddans le quartier Bastos Ã  YaoundÃ©, Prunelle RÃ©sidences is a Ã©tablissement d'accommodation qui propose des studios meublÃ©shaut de gamme. Chaque espace est conÃ§upour offrir un confort optimal, oÃ¹le luxe se ressent dans chaque piÃ¨ce. Les commoditÃ",
+    "culture_fr": "Quartier : Bastos · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Prunelle Residences",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/15454-prunelle-residences",
         "verification_status": "structured_import"
       }
     ]

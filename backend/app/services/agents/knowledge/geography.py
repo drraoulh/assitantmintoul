@@ -235,6 +235,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    if (
+        ("sud" in q or "south" in q)
+        and "kribi" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Sud",
+                relation="IS_NOT_EQUIVALENT",
+                object="Kribi",
+                text_fr=(
+                    "Pas exactement. Le Sud est une région du Cameroun "
+                    "(chef-lieu Ebolowa) ; Kribi est sa principale station balnéaire."
+                ),
+                text_en=(
+                    "Not exactly. The South is a region of Cameroon "
+                    "(capital Ebolowa); Kribi is its main beach resort."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("sud", "kribi", "ebolowa"),
+            )
+        ]
+
     # Capital / chef-lieu of a region
     if re.search(r"capitale|chef[- ]lieu|capital\s+of", q):
         rid = _find_region_in_query(q, idx)
@@ -254,6 +277,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Douala est le chef-lieu de la région du Littoral du Cameroun."
                     elif rid == "centre":
                         text_fr = "Yaoundé est le chef-lieu de la région du Centre du Cameroun (capitale politique)."
+                    elif rid == "sud":
+                        text_fr = "Ebolowa est le chef-lieu de la région du Sud du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -309,6 +334,26 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Lobé falls
+    if re.search(r"\blob[eé]\b", q) or "chutes de la lobe" in q or "chutes de la lobé" in q:
+        return [
+            GeoFact(
+                subject="Chutes de la Lobé",
+                relation="LOCATED_IN",
+                object="Kribi / Océan / Sud",
+                text_fr=(
+                    "Les chutes de la Lobé se trouvent près de Kribi "
+                    "(département de l’Océan, région du Sud)."
+                ),
+                text_en=(
+                    "Lobé Falls are near Kribi "
+                    "(Ocean department, South region)."
+                ),
+                source="Sites touristiques Sud / Kribi",
+                entity_ids=("lobe", "kribi", "ocean", "sud"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -357,6 +402,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région du Littoral du Cameroun."
                 elif rid == "centre":
                     text_fr = f"{cname} se trouve dans la région du Centre du Cameroun."
+                elif rid == "sud":
+                    text_fr = f"{cname} se trouve dans la région du Sud du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -439,6 +486,9 @@ def is_geo_simple_query(query: str) -> bool:
         r"yaounde.{0,30}r[eé]gion\s+du\s+centre",
         r"centre.{0,40}c[' ]?est.{0,20}yaounde",
         r"c[' ]?est\s+yaounde\s+nor",
+        r"(?:chutes?\s+de\s+la\s+)?lob[eé]",
+        r"sud.{0,40}c[' ]?est.{0,20}kribi",
+        r"r[eé]gion\s+du\s+sud.{0,30}kribi",
     )
     if any(re.search(p, q) for p in patterns):
         return True

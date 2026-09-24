@@ -16,7 +16,12 @@
       "name_en": "Fang-Beti plateau (Centre)",
       "description_fr": "Yaoundé et le plateau Centre : langues fang-beti (dont Ewondo), capitale politique, musées nationaux et collines administratives.",
       "description_en": "Yaoundé and the Centre plateau: Fang-Beti languages (including Ewondo), political capital, national museums and administrative hills.",
-      "related_cities": ["Yaoundé", "Mbalmayo", "Mfou", "Soa"],
+      "related_cities": [
+        "Yaoundé",
+        "Mbalmayo",
+        "Mfou",
+        "Soa"
+      ],
       "source": "data/documents/history_culture.md ; imports/camerounai-stay-language-games/data/stay-cities.ts"
     }
   ],
@@ -160,20 +165,110 @@
   },
   "hotels_verified": [
     {
-      "id": "hilton-yaounde",
+      "id": "hilton-yaounde-boulevard-du-20-mai",
       "name": "Hilton Yaoundé",
       "city": "Yaoundé",
       "neighbourhood": "Boulevard du 20 Mai",
-      "text_fr": "Hôtel Hilton Yaoundé (boulevard du 20 Mai), documenté sur Ayila’a.",
-      "text_en": "Hilton Yaoundé hotel (Boulevard du 20 Mai), documented on Ayila’a.",
-      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "text_fr": "Hilton YaoundÃ©. SituÃ© Ã  2 km du monument de la RÃ©unification, le Hilton YaoundÃ©est un hÃ´tel haut de gamme qui se trouve Ã©galement Ã  1 km du musÃ©enational, construit dans les annÃ©es 1930, ainsi que de la cathÃ©d",
+      "text_en": "Hilton YaoundÃ©. SituÃ© Ã  2 km du monument de la RÃ©unification, le Hilton YaoundÃ©is a hotel haut de gamme qui se trouve Ã©galement Ã  1 km du musÃ©enational, construit dans les annÃ©es 1930, ainsi que de la cathÃ©dral",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/5330-hotel-hilton-yaounde (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "star-land-hotel-yaounde-bastos",
+      "name": "Star Land Hotel Yaounde",
+      "city": "Yaoundé",
+      "neighbourhood": "Bastos",
+      "text_fr": "Star Land Hotel Yaounde. SituÃ©au quartier Bastos dans la ville de YaoundÃ© Ã  seulement 3,6 km de la gare centrale de YaoundÃ©. Star Land Hotel est conÃ§upour offrir un confort optimal Ã  ses clients, avec une var iÃ©tÃ",
+      "text_en": "Star Land Hotel Yaounde. Locatedau quartier Bastos dans la ville de YaoundÃ© Ã  seulement 3,6 km de la gare centrale de YaoundÃ©. Star Land Hotel est conÃ§upour offrir un confort optimal Ã  ses clients, avec une var iÃ©t",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3307-star-land-hotel-yaounde (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "djeuga-palace-hotel-warda",
+      "name": "Djeuga Palace Hotel",
+      "city": "Yaoundé",
+      "neighbourhood": "Warda",
+      "text_fr": "Djeuga Palace Hotel. SituÃ©au Quartier Warda Ã  YaoundÃ© Ã  environ 21 km de l'aÃ©roport international de YaoundÃ© Nsimalen, avec un service de navette aÃ©roport disponible sur demande pour plus de commoditÃ©. DJEUGA PAL",
+      "text_en": "Djeuga Palace Hotel. Locatedau Quartier Warda Ã  YaoundÃ© Ã  environ 21 km de l'aÃ©roport international de YaoundÃ© Nsimalen, avec un service de navette aÃ©roport disponible sur demande pour plus de commoditÃ©. DJEUGA PA",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3332-djeuga-palace-hotel (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "international-summit-palace-tongolo",
+      "name": "International Summit Palace",
+      "city": "Yaoundé",
+      "neighbourhood": "Tongolo",
+      "text_fr": "International Summit Palace est un hÃ´tel de standing situÃ© Ã  Tongolo, en face du Club Yannick Noah Ã  YaoundÃ©. Cet Ã©tablissement propose des chambres et appartements climatisÃ©s, Ã©quipÃ©sdu Wi-Fi, d'une tÃ©lÃ©visio",
+      "text_en": "International Summit Palace is a hotel de standing situÃ© Ã  Tongolo, en face du Club Yannick Noah Ã  YaoundÃ©. Cet Ã©tablissement propose des chambres et appartements climatisÃ©s, Ã©quipÃ©sdu Wi-Fi, d'une tÃ©lÃ©vision, ",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/15688-international-summit-palace (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "united-hotel-cinema-mbankomo",
+      "name": "United Hôtel & Cinéma",
+      "city": "Yaoundé",
+      "neighbourhood": "Mbankomo",
+      "text_fr": "United HÃ´tel & CinÃ©ma. SituÃ©dans le quartier Mbankomo Ã  YaoundÃ©, le United HÃ´tel Mbankomo propose 80 chambres de haut standing, avec des tarifs des chambres de 58 000 FCFA pour les chambres standard, 68 000 FCFA po",
+      "text_en": "United hotel & CinÃ©ma. Locateddans le quartier Mbankomo Ã  YaoundÃ©, le United hotel Mbankomo propose 80 chambres de haut standing, avec des tarifs des chambres de 58 000 FCFA pour les chambres standard, 68 000 FCFA pou",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/4406-united-hotel-cinema (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "welcome-garden-s-hotel-soa",
+      "name": "Welcome Garden's Hôtel",
+      "city": "Yaoundé",
+      "neighbourhood": "Soa",
+      "text_fr": "Welcome Garden's HÃ´tel. SituÃ© Ã  seulement 2 km de l'UniversitÃ©de SOA, Ã  proximitÃ©du stade OLEMBÃ©et Ã  10 minutes du stade OMNISPORTS dans la ville de YaoundÃ©, Welcome Garden's HÃ´tel est un vÃ©ritable joyau archi",
+      "text_en": "Welcome Garden's hotel. SituÃ© Ã  seulement 2 km de l'UniversitÃ©de SOA, Ã  proximitÃ©du stade OLEMBÃ©et Ã  10 minutes du stade OMNISPORTS dans la ville de YaoundÃ©, Welcome Garden's hotel is a vÃ©ritable joyau architect",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3326-welcome-garden-s-hotel (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "complexe-mundi-nsimalen",
+      "name": "Complexe Mundi",
+      "city": "Yaoundé",
+      "neighbourhood": "Nsimalen",
+      "text_fr": "Complexe Mundi. SituÃ©prÃ¨sde l'aÃ©roport international de YaoundÃ© Nsimalen, dans le quartier de Ntoun, le Complexe Mundi est un complexe hÃ´telier au design architectural remarquable. Il bÃ©nÃ©ficie d'un emplacement st",
+      "text_en": "Complexe Mundi. LocatedprÃ¨sde l'aÃ©roport international de YaoundÃ© Nsimalen, dans le quartier de Ntoun, le Complexe Mundi is a complexe hÃ´telier au design architectural remarquable. Il bÃ©nÃ©ficie d'un emplacement str",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/4193-complexe-hotelier-complexe-mundi (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "prunelle-residences-bastos",
+      "name": "Prunelle Residences",
+      "city": "Yaoundé",
+      "neighbourhood": "Bastos",
+      "text_fr": "Prunelle Residences. SituÃ©dans le quartier Bastos Ã  YaoundÃ©, Prunelle RÃ©sidences est un Ã©tablissement d'hÃ©bergement qui propose des studios meublÃ©shaut de gamme. Chaque espace est conÃ§upour offrir un confort opti",
+      "text_en": "Prunelle Residences. Locateddans le quartier Bastos Ã  YaoundÃ©, Prunelle RÃ©sidences is a Ã©tablissement d'accommodation qui propose des studios meublÃ©shaut de gamme. Chaque espace est conÃ§upour offrir un confort opti",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/15454-prunelle-residences (imports/camerounai-stay-language-games/data/hotels.ts)",
       "source_note": "Ayila'a · hotels category"
     }
   ],
   "divisions_snapshot": [
-    {"id": "mfoundi", "name_fr": "Mfoundi", "hub": "Yaoundé", "note_fr": "Chef-lieu régional / capitale nationale."},
-    {"id": "mefou-afamba", "name_fr": "Méfou-et-Afamba", "hub": "Mfou", "note_fr": "Sanctuaire de Mefou ; Soa."},
-    {"id": "nyong-soo", "name_fr": "Nyong-et-So'o", "hub": "Mbalmayo", "note_fr": "Ebogo et nature proche."},
-    {"id": "lekie", "name_fr": "Lékié", "hub": "Monatélé", "note_fr": "Département au nord de Yaoundé."}
+    {
+      "id": "mfoundi",
+      "name_fr": "Mfoundi",
+      "hub": "Yaoundé",
+      "note_fr": "Chef-lieu régional / capitale nationale."
+    },
+    {
+      "id": "mefou-afamba",
+      "name_fr": "Méfou-et-Afamba",
+      "hub": "Mfou",
+      "note_fr": "Sanctuaire de Mefou ; Soa."
+    },
+    {
+      "id": "nyong-soo",
+      "name_fr": "Nyong-et-So'o",
+      "hub": "Mbalmayo",
+      "note_fr": "Ebogo et nature proche."
+    },
+    {
+      "id": "lekie",
+      "name_fr": "Lékié",
+      "hub": "Monatélé",
+      "note_fr": "Département au nord de Yaoundé."
+    }
   ]
 }

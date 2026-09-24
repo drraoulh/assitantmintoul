@@ -399,6 +399,92 @@ async def test_centre_food_query_injects_culture(geo_on):
     assert "poulet" in text or "plat" in text or "mokolo" in text
 
 
+def test_sud_admin_and_kribi():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Kribi")
+    assert chain is not None
+    assert chain["region"] == "Sud"
+    assert chain["division"] == "Océan"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "sud"]) == 4
+    ebolowa = city_admin_chain("Ebolowa")
+    assert ebolowa and ebolowa["is_region_capital"] is True
+
+
+def test_sud_not_kribi():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Sud c’est Kribi nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_lobe_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où sont les chutes de la Lobé ?", language="fr")
+    assert facts
+    assert "Kribi" in facts[0].text_fr
+
+
+def test_sud_culture_poisson(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques à Kribi ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "poisson" in blob or "fruit" in blob
+    assert any((e.source_id or "") == "culture:sud" for e in ev)
+
+
+def test_centre_has_multiple_hotels():
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache, _load_pack
+
+    clear_culture_cache()
+    pack = _load_pack("centre")
+    assert len(pack.get("hotels_verified") or []) >= 5
+
+
+@pytest.mark.asyncio
+async def test_visit_kribi_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Kribi que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "ebolowa" not in cities
+
+
+@pytest.mark.asyncio
+async def test_yaounde_hotels_query(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Hôtels à Yaoundé ?",
+        mode="text",
+        locale="fr",
+    )
+    assert result.knowledge.verified_places_count >= 2
+    names = " ".join(p.name.casefold() for p in result.knowledge.places)
+    assert "hilton" in names or "hotel" in names or "hôtel" in names or "palace" in names
+
+
 def test_intent_extracts_bandjoun_and_mbouda():
     from app.services.agents.intent.extractors import extract_slots
 

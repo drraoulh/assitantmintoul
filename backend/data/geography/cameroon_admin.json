@@ -232,6 +232,42 @@
       "capital_city_id": "monatele",
       "source": "Départements de la région du Centre",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ocean",
+      "name_fr": "Océan",
+      "name_en": "Ocean",
+      "region_id": "sud",
+      "capital_city_id": "kribi",
+      "source": "Départements de la région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mvila",
+      "name_fr": "Mvila",
+      "name_en": "Mvila",
+      "region_id": "sud",
+      "capital_city_id": "ebolowa",
+      "source": "Départements de la région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "dja-lobo",
+      "name_fr": "Dja-et-Lobo",
+      "name_en": "Dja-et-Lobo",
+      "region_id": "sud",
+      "capital_city_id": "sangmelima",
+      "source": "Départements de la région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "vallee-ntem",
+      "name_fr": "Vallée-du-Ntem",
+      "name_en": "Vallée-du-Ntem",
+      "region_id": "sud",
+      "capital_city_id": "ambam",
+      "source": "Départements de la région du Sud",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -384,8 +420,9 @@
       "aliases": [
         "ebolowa"
       ],
-      "source": "Chef-lieu de la région du Sud",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région du Sud / département de la Mvila",
+      "verified_at": "2026-09-24",
+      "division_id": "mvila"
     },
     {
       "id": "buea",
@@ -682,6 +719,63 @@
       ],
       "source": "Localité / commune du Centre (Nyong-et-So'o)",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kribi",
+      "name_fr": "Kribi",
+      "name_en": "Kribi",
+      "entity_type": "city",
+      "division_id": "ocean",
+      "region_id": "sud",
+      "is_region_capital": false,
+      "aliases": [
+        "kribi"
+      ],
+      "source": "Ville côtière du département de l'Océan, région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "sangmelima",
+      "name_fr": "Sangmélima",
+      "name_en": "Sangmélima",
+      "entity_type": "city",
+      "division_id": "dja-lobo",
+      "region_id": "sud",
+      "is_region_capital": false,
+      "aliases": [
+        "sangmélima",
+        "sangmelima"
+      ],
+      "source": "Chef-lieu du Dja-et-Lobo, région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "campo",
+      "name_fr": "Campo",
+      "name_en": "Campo",
+      "entity_type": "city",
+      "division_id": "ocean",
+      "region_id": "sud",
+      "is_region_capital": false,
+      "aliases": [
+        "campo"
+      ],
+      "source": "Ville / parc Campo-Ma'an, département de l'Océan, région du Sud",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ambam",
+      "name_fr": "Ambam",
+      "name_en": "Ambam",
+      "entity_type": "city",
+      "division_id": "vallee-ntem",
+      "region_id": "sud",
+      "is_region_capital": false,
+      "aliases": [
+        "ambam"
+      ],
+      "source": "Chef-lieu de la Vallée-du-Ntem, région du Sud",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -971,6 +1065,54 @@
       "region_id": "centre",
       "notes_fr": "Site touristique d'Ebogo près de Mbalmayo",
       "source": "Fiche lieu Site Touristique D'ebogo",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "lobe",
+      "name_fr": "Lobé",
+      "name_en": "Lobé",
+      "city_id": "kribi",
+      "division_id": "ocean",
+      "region_id": "sud",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Chutes de la Lobé près de Kribi",
+      "source": "Fiche lieu Chutes de la Lobé",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "grand-batanga",
+      "name_fr": "Grand Batanga",
+      "name_en": "Grand Batanga",
+      "city_id": "kribi",
+      "division_id": "ocean",
+      "region_id": "sud",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Plage au sud de Kribi",
+      "source": "Fiche lieu Plage de Grand Batanga",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nkolandom",
+      "name_fr": "Nkolandom",
+      "name_en": "Nkolandom",
+      "city_id": "ebolowa",
+      "division_id": "mvila",
+      "region_id": "sud",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Centre / musée de Nkolandom",
+      "source": "Fiches lieux Nkolandom",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bwambe",
+      "name_fr": "Bwambé",
+      "name_en": "Bwambe",
+      "city_id": "kribi",
+      "division_id": "ocean",
+      "region_id": "sud",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Quartier / plage côté Kribi (hôtel Ilomba)",
+      "source": "Ayila'a Hotel Ilomba",
       "verified_at": "2026-09-24"
     }
   ]

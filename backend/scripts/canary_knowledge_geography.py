@@ -38,6 +38,12 @@ QUERIES = [
     "Quels plats typiques à Yaoundé ?",
     "Parle-moi du marché Mokolo",
     "Je veux visiter la région du Centre.",
+    "Je veux visiter Kribi que me proposes-tu ?",
+    "La région du Sud c’est Kribi nor ?",
+    "Kribi est dans quelle région ?",
+    "Quels plats typiques à Kribi ?",
+    "Où sont les chutes de la Lobé ?",
+    "Hôtels à Yaoundé ?",
 ]
 
 
@@ -146,6 +152,20 @@ async def main() -> int:
         or turns[20]["completeness"] != "NONE",
         "centre_regional": turns[21]["intent"]
         in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "kribi_has_places": turns[22]["verified_places_count"] >= 1,
+        "sud_not_equals_kribi": "Pas exactement" in turns[23]["assistant"]
+        or "ebolowa" in turns[23]["assistant"].casefold()
+        or "chef-lieu" in turns[23]["assistant"].casefold(),
+        "kribi_region_sud": "Sud" in turns[24]["assistant"],
+        "kribi_food_poisson": "poisson" in turns[25]["assistant"].casefold()
+        or "fruit" in turns[25]["assistant"].casefold()
+        or turns[25]["completeness"] != "NONE",
+        "lobe_located": "kribi" in turns[26]["assistant"].casefold()
+        or "lob" in turns[26]["assistant"].casefold(),
+        "yaounde_hotels": turns[27]["verified_places_count"] >= 2
+        or "hilton" in turns[27]["assistant"].casefold()
+        or "hotel" in turns[27]["assistant"].casefold()
+        or "hôtel" in turns[27]["assistant"].casefold(),
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -193,33 +213,29 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched local catalogs: `ouest_complete`, `littoral_complete`, `centre_complete` (+ culture packs)",
+        "- Enriched catalogs: ouest / littoral / centre / sud (+ culture packs + hotels Ayila’a)",
         "",
         "## Geography",
         "",
-        "- 10 regions with chef-lieux",
-        "- Ouest: 8 depts · Littoral: 4 · Centre: 4 (Mfoundi, Méfou-et-Afamba, Nyong-et-So'o, Lékié)",
-        "- Bafoussam → Ouest · Douala → Littoral · Yaoundé → Centre (capitale politique)",
+        "- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 (Océan, Mvila, Dja-et-Lobo, Vallée-du-Ntem)",
         "",
         "## Region packs",
         "",
-        "- Ouest: ~30 lieux · achu/koki · Adys",
-        "- Littoral: ~31 lieux · ndolé/Sawa · Krystal Palace",
-        "- Centre: ~27 lieux · Mokolo/musées/Mefou · Hilton · 0 restos inventés",
+        "- Ouest · Littoral · Centre · Sud (Kribi/Lobé/Campo) · 0 restos inventés",
+        "- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang)",
         "",
         "## Samples",
         "",
-        f"- Bafoussam: {turns[0]['verified_places_count']} — `{turns[0]['assistant'][:120]}`",
-        f"- Douala: {turns[10]['verified_places_count']} — `{turns[10]['assistant'][:120]}`",
-        f"- Yaoundé: {turns[16]['verified_places_count']} — `{turns[16]['assistant'][:120]}`",
-        f"- Centre≠Yaoundé: `{turns[17]['assistant']}`",
-        f"- Food Yaoundé: `{turns[19]['assistant'][:160]}`",
+        f"- Yaoundé: {turns[16]['verified_places_count']} — `{turns[16]['assistant'][:100]}`",
+        f"- Kribi: {turns[22]['verified_places_count']} — `{turns[22]['assistant'][:100]}`",
+        f"- Lobé: `{turns[26]['assistant']}`",
+        f"- Hotels Yaoundé: `{turns[27]['assistant'][:160]}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
         "- `knowledge_completeness` + `verified_places_count`",
-        "- Geo facts + multi-region culture evidence (Ouest, Littoral, Centre)",
+        "- Geo facts + multi-region culture evidence (Ouest, Littoral, Centre, Sud)",
         "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
         "",
         "## Web fallback",

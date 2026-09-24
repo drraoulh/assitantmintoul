@@ -1,0 +1,428 @@
+[
+  {
+    "id": "centre-touristique-de-nkolandom-nkolandom",
+    "name": "Centre Touristique De Nkolandom",
+    "city": "Ebolowa",
+    "region": "Sud",
+    "category": "activity",
+    "summary_fr": "Centre Touristique De Nkolandom. Situé à Nkolandom, axe Mekomo – Ambam, Ebolowa, le Centre Touristique de Nkolandom est un site d'accueil de tourisme offrant une immersion complète dans la nature environnante, entouré de collines verdoyantes. Ce centre combine hébergement hôtelier, gastronomie locale, et activités socioculturelles, créant ainsi une expérience de détente et d'apprentissage. Les attractions et activités proposées incluent des séjours dans des suites haut de gamme et des chambres modernes, des plats faits maison sur demande, et des visites des grottes préhistoriques locales. Le centre offre une gamme de services adaptés à tous les âges, accueillant les familles, les amis, les clubs sociaux et tous types de regroupements. Il est à noter que les tarifs sont très abordables, ce qui rend ce site attractif pour une large variété de visiteurs. Le Centre Touristique de Nkolandom d",
+    "summary_en": "Centre Touristique De Nkolandom. Located à Nkolandom, axe Mekomo – Ambam, Ebolowa, le Centre Touristique de Nkolandom is a site d'accueil de tourisme offrant une immersion complète dans la nature environnante, entouré de collines verdoyantes. Ce centre combine hébergement hôtelier, gastronomie locale, et activités socioculturelles, créant ainsi une expérience de détente et d'apprentissage. Les attractions et activités proposées incluent des séjours dans des suites haut de gamme et des chambres modernes, des plats faits maison sur demande, et des visites des grottes préhistoriques locales. Le centre offers une gamme de services adaptés à tous les âges, accueillant les familles, les amis, les clubs sociaux et tous types de regroupements. Il est à noter que les tarifs sont très abordables, ce qui rend ce site attractif pour une large variété de visiteurs. Le Centre Touristique de Nkolandom ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Nkolandom · Ville : Ebolowa · Localisation : Axe Mekomo – Ambam · Catégories : Sites Touristiques, Site touristique avec hébergements, Centre d'éco-tourisme",
+    "latitude": 2.9,
+    "longitude": 11.15,
+    "price": "1000 XAF",
+    "tags": [
+      "ebolowa",
+      "sud",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Centre Touristique De Nkolandom",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chutes-de-la-lobe",
+    "name": "Chutes de la Lobé",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "À environ 7 km du centre de Kribi, les chutes de la Lobé offrent un spectacle rare : le fleuve se jette directement dans l'océan Atlantique. Pirogues, baignade, fruits de mer et rencontres avec les communautés riveraines composent une sortie accessible à tous les âges.",
+    "summary_en": "About 7 km from central Kribi, the Lobé Falls are a rare sight: the river plunges straight into the Atlantic. Canoe rides, swimming, seafood and meetings with riverside communities make it a family-friendly outing.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Les guides locaux proposent des balades en pirogue au pied des cascades. À proximité : Grand Batanga, le phare de Kribi et le Lagon Bleu.",
+    "latitude": 2.881,
+    "longitude": 9.897,
+    "price": "5000 XAF",
+    "tags": [
+      "kribi",
+      "sud",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Chutes de la Lobé",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "kribi-lodge-lobe",
+    "name": "Kribi Lodge",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "activity",
+    "summary_fr": "Kribi Lodge. Situé à proximité de s majestueuses Chutes de la Lobé à Kribi, le Kribi Lodge est une agence de tourisme offre une immersion totale dans la beauté sauvage de la région. Ce cadre enchanteur permet de découvrir un environnement naturel exceptionnel, où chaque séjour est rythmé par la détente et l'exploration. Les clients apprécient particulièrement la vue imprenable sur la mer et l'atmosphère apaisante qui règne dans cet havre de paix. Le Kribi Lodge propose une gamme de logements authentiques et confortables, adaptés à tous les budgets. Pour le s petits budgets et les aventuriers, des logements simples et authentiques sont disponibles à partir de 22 000 FCFA/nuit. Les options intermédiaires, qui allient charme et équipements, commencent à 45 000 FCFA/nuit, tandis que les suites et logements privilégiés, jusqu'à 90 000 FCFA/nuit, sont parfaits pour des moments d'exception en c",
+    "summary_en": "Kribi Lodge. Located à proximité de s majestueuses Chutes de la Lobé à Kribi, le Kribi Lodge is a agence de tourisme offers une immersion totale dans la beauté sauvage de la region. Ce cadre enchanteur allows de découvrir un environnement naturel exceptionnel, où chaque séjour est rythmé par la détente et l'exploration. Les clients apprécient particulièrement la vue imprenable sur la mer et l'atmosphère apaisante qui règne dans cet havre de paix. Le Kribi Lodge features une gamme de logements authentiques et confortables, adaptés à tous les budgets. Pour le s petits budgets et les aventuriers, des logements simples et authentiques sont disponibles à partir de 22 000 FCFA/nuit. Les options intermédiaires, qui allient charme et équipements, commencent à 45 000 FCFA/nuit, tandis que les suites et logements privilégiés, jusqu'à 90 000 FCFA/nuit, sont parfaits pour des moments d'exception en ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Lobé · Ville : Kribi · Catégories : Sites Touristiques, Agence De Tourisme",
+    "latitude": 2.9372,
+    "longitude": 9.9078,
+    "price": "35000 XAF",
+    "tags": [
+      "kribi",
+      "sud",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Kribi Lodge",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-musee-de-nkolandom-nkolandom",
+    "name": "Le Musée De Nkolandom",
+    "city": "Ebolowa",
+    "region": "Sud",
+    "category": "museum",
+    "summary_fr": "Le Musée De Nkolandom. Situé à Nkolandom, dans le département de la Mvila, Ebolowa, le Musée de Nkolandom est un lieu dédié à la préservation, à la conservation et à la modernisation du patrimoine négro-africain. Il offre une expérience culturelle et historique profonde, idéale pour ceux qui s'intéressent à l'histoire et à la culture africaines. Les activités phares incluent des visites guidées à travers des expositions de sculptures, d'objets artisanaux, de textiles et d'artefacts représentant la richesse culturelle des peuples d'Afrique centrale. Le musée propose également des ateliers interactifs permettant aux visiteurs de mieux comprendre les techniques artisanales traditionnelles. Le site est adapté à tous les âges, avec des activités spécialement conçues pour les enfants, comme des démonstrations d'artisanat. Le Musée de Nkolandom offre des services tels que la réservation de visi",
+    "summary_en": "Le museum De Nkolandom. Located à Nkolandom, dans le département de la Mvila, Ebolowa, le museum de Nkolandom is a lieu dédié à la préservation, à la conservation et à la modernisation du patrimoine négro-africain. Il offers une expérience culturelle et historique profonde, idéale pour ceux qui s'intéressent à l'histoire et à la culture africaines. Les activités phares incluent des visites guidées à travers des expositions de sculptures, d'objets artisanaux, de textiles et d'artefacts représentant la richesse culturelle des peuples d'Afrique centrale. Le museum propose également des ateliers interactifs permettant aux visiteurs de mieux comprendre les techniques artisanales traditionnelles. Le site est adapté à tous les âges, avec des activités spécialement conçues pour les enfants, comme des démonstrations d'artisanat. Le museum de Nkolandom offers des services tels que la réservation d",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Nkolandom · Ville : Ebolowa · Localisation : Dans le département de la Mvila · Catégories : Sites Touristiques, Musée",
+    "latitude": 2.9,
+    "longitude": 11.15,
+    "price": null,
+    "tags": [
+      "ebolowa",
+      "sud",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Le Musée De Nkolandom",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "les-chutes-de-la-bongola-bongola",
+    "name": "Les Chutes De La Bongola",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "activity",
+    "summary_fr": "Les Chutes De La Bongola. Situé à Bongola, dans le Parc national de Campo Ma'an, sur l' île de Dipikar, près de Kribi, les Chutes de la Bongola sont une destination idéale pour les amoureux de la nature et les aventuriers. Ce site naturel époustouflant fait partie du parc, offrant une expérience unique dans l'un des plus grands espaces protégés du Cameroun. Les activités phares proposées incluent des randonnées à travers la forêt tropicale, la découverte des chutes impressionnantes et des balades guidées permettant de mieux comprendre la biodiversité du parc. Les visiteurs peuvent également participer à des observations d'animaux sauvages et explorer les sentiers naturels autour des chutes. Ce site est adapté à tous les âges, offrant une expérience enrichissante aussi bien pour les adultes que pour les enfants. En matière de services offerts, le site dispose de restaurations locales où l",
+    "summary_en": "Les Chutes De La Bongola. Located à Bongola, dans le Parc national de Campo Ma'an, sur l' île de Dipikar, near Kribi, les Chutes de la Bongola sont une destination idéale pour les amoureux de la nature et les aventuriers. Ce site naturel époustouflant fait partie du parc, offrant une expérience unique dans l'un des plus grands espaces protégés du Cameroon. Les activités phares proposées incluent des randonnées à travers la forêt tropicale, la découverte des chutes impressionnantes et des balades guidées permettant de mieux comprendre la biodiversité du parc. Les visiteurs peuvent également participer à des observations d'animaux sauvages et explorer les sentiers naturels autour des chutes. Ce site est adapté à tous les âges, offrant une expérience enrichissante aussi bien pour les adultes que pour les enfants. En matière de services offerts, le site dispose de restaurations locales où l'",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bongola · Ville : Kribi · Localisation : Parc national de campo ma'an ile de Dipikar · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 2.9372,
+    "longitude": 9.9078,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Les Chutes De La Bongola",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "plage-grand-batanga",
+    "name": "Plage de Grand Batanga",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "Longue plage au sud de Kribi, villages de pêcheurs et accès pratique aux chutes de la Lobé. Ambiance plus calme que le centre-ville, idéale pour prolonger une journée océan.",
+    "summary_en": "Long beach south of Kribi, fishing villages and easy access to Lobé Falls. Calmer than the town centre, ideal for extending an ocean day.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Fruits de mer chez les riverains ; respecter les zones de pêche.",
+    "latitude": 2.901,
+    "longitude": 9.91,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Plage de Grand Batanga",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "square-parc-centre-ville",
+    "name": "Square Parc",
+    "city": "Ebolowa",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "Square Parc. Situé en plein Centre-ville d' Ebolowa, juste en face de la boulangerie DELI, le Square Parc est un espace public emblématique qui se distingue par sa statue imposante du lion, symbole de force et de fierté nationale. Ce site touristique urbain est un lieu de rencontre, de détente et de balade, parfait pour s'imprégner de l'ambiance locale tout en admirant une &oelig;uvre sculpturale de grande valeur. Les activités phares du Square Parc incluent les promenades autour de la statue du lion, les pauses photo, les moments de relaxation sur les bancs publics, et les jeux libres pour les enfants dans les espaces dégagés. C'est un lieu accessible à tous les âges, aussi bien aux adultes qu'aux enfants, parfait pour une sortie en famille, entre amis ou avec des visiteurs de passage. L' accès est gratuit, ce qui en fait une attraction populaire et conviviale pour toutes les bourses. C",
+    "summary_en": "Square Parc. Located en plein Centre-ville d' Ebolowa, juste en face de la boulangerie DELI, le Square Parc is a espace public emblématique qui se distingue par sa statue imposante du lion, symbole de force et de fierté nationale. Ce tourist site urbain is a lieu de rencontre, de détente et de balade, parfait pour s'imprégner de l'ambiance locale tout en admirant une &oelig;uvre sculpturale de grande valeur. Les activités phares du Square Parc incluent les promenades autour de la statue du lion, les pauses photo, les moments de relaxation sur les bancs publics, et les jeux libres pour les enfants dans les espaces dégagés. C'is a lieu accessible à tous les âges, aussi bien aux adultes qu'aux enfants, parfait pour une sortie en famille, entre amis ou avec des visiteurs de passage. L' accès est gratuit, ce qui en fait une attraction populaire et conviviale pour toutes les bourses. Concernan",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Centre ville · Ville : Ebolowa · Localisation : Face boulangerie DELI · Catégories : Sites Touristiques, Parcs",
+    "latitude": 2.9,
+    "longitude": 11.15,
+    "price": null,
+    "tags": [
+      "ebolowa",
+      "sud",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Square Parc",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "kribi-plages",
+    "name": "Plages de Kribi",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "beach",
+    "summary_fr": "Station balnéaire du sud camerounais, connue pour ses plages de sable, restaurants de fruits de mer et ambiance détendue. Destination phare pour baignade et week-ends.",
+    "summary_en": "Southern Cameroon beach destination known for sandy shores, seafood restaurants, and a relaxed vibe. A top spot for swimming and weekend getaways.",
+    "tips_fr": "Choisissez des zones fréquentées. Vérifiez les conditions de baignade. Les prix des hôtels et restaurants varient fortement selon la saison.",
+    "tips_en": "Prefer busy beach stretches. Check swimming conditions. Hotel and restaurant prices vary a lot by season.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "kribi",
+      "plage",
+      "beach",
+      "mer",
+      "sea",
+      "sud",
+      "balnéaire"
+    ],
+    "sources": [
+      {
+        "title": "Plages de Kribi",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "ebolowa-sud",
+    "name": "Ebolowa et forêt du Sud",
+    "city": "Ebolowa",
+    "region": "Sud",
+    "category": "nature",
+    "summary_fr": "Ebolowa, capitale du Sud, au cœur d'un environnement forestier humide. Base pour découvrir le Sud camerounais hors littoral de Kribi.",
+    "summary_en": "Ebolowa, South Region capital, in a humid forest setting. Base for inland southern Cameroon beyond Kribi's coast.",
+    "tips_fr": "Climat très pluvieux selon la saison; prévoyez imperméable.",
+    "tips_en": "Very rainy depending on season; bring rain gear.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "ebolowa",
+      "sud",
+      "south",
+      "forêt",
+      "forest"
+    ],
+    "sources": [
+      {
+        "title": "Ebolowa et forêt du Sud",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "parc-campo-maan",
+    "name": "Parc national de Campo-Ma'an",
+    "city": "Campo",
+    "region": "Sud",
+    "category": "park",
+    "summary_fr": "Parc côtier-forestier du Sud près de la frontière équato-guinéenne. Éléphants de forêt, plages et écosystèmes variés.",
+    "summary_en": "Coastal-forest park in the South near the Equatorial Guinea border. Forest elephants, beaches and varied ecosystems.",
+    "tips_fr": "Combine parfois nature et littoral; logistique locale indispensable.",
+    "tips_en": "Sometimes combines nature and coast; local logistics essential.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "campo",
+      "campo-maan",
+      "parc",
+      "sud",
+      "éléphant",
+      "plage"
+    ],
+    "sources": [
+      {
+        "title": "Parc national de Campo-Ma'an",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "sangmelima",
+    "name": "Sangmélima",
+    "city": "Sangmélima",
+    "region": "Sud",
+    "category": "city",
+    "summary_fr": "Ville du Sud sur l'axe vers la frontière gabonaise / sud forestier. Étape possible entre Yaoundé et le Sud intérieur.",
+    "summary_en": "Southern town on the axis toward the Gabonese border / forested south. Possible stop between Yaoundé and the inland South.",
+    "tips_fr": "Services plus limités qu'à Yaoundé; planifiez essence et cash.",
+    "tips_en": "Fewer services than Yaoundé; plan fuel and cash.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "sangmélima",
+      "sud",
+      "route",
+      "forêt"
+    ],
+    "sources": [
+      {
+        "title": "Sangmélima",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "hotel-du-phare-kribi",
+    "name": "Hôtel Du Phare",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "hotel",
+    "summary_fr": "HÃ´tel Du Phare. SituÃ©dans la ville de krib i, l'hÃ´tel du Phare est un lieu idÃ©al pour les voyageurs souhaitant se ressourcer lors de leur sÃ©jour Ã  Kribi. RÃ©putÃ©pour son ambiance familiale et sa proximitÃ©avec de grands restaurants, cet hÃ´tel vous permet de profiter plein",
+    "summary_en": "HÃ´tel Du Phare (Kribi). hotel Du Phare. Locateddans la ville de krib i, l'hotel du Phare is a lieu idÃ©al pour les voyageurs souhaitant se ressourcer lors de leur sÃ©jour Ã  Kribi. RÃ©putÃ©pour son ambiance familiale et sa proximitÃ©avec de grands restaurants, cet hotel vous per",
+    "culture_fr": "Quartier : Kribi · Ville : Kribi",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Hôtel Du Phare",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/3291-hotel-du-phare",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "hotel-ilomba-bwambe",
+    "name": "Hotel Ilomba",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "hotel",
+    "summary_fr": "Hotel Ilomba. SituÃ©au quartier Bwambe Ã  Kribi, Hotel Ilomba est un hÃ´tel offrant une variÃ©tÃ©de services avec une vue imprenable sur la plage. Cet Ã©tablissement se distingue par son ambiance accueillante et ses installations modernes, parfaites pour les voyageurs d'affaires ",
+    "summary_en": "Hotel Ilomba. Locatedau quartier Bwambe Ã  Kribi, Hotel Ilomba is a hotel offrant une variÃ©tÃ©de services avec une vue imprenable sur la plage. Cet Ã©tablissement se distingue par son ambiance accueillante et ses installations modernes, parfaites pour les voyageurs d'affaires et",
+    "culture_fr": "Quartier : Bwambe · Ville : Kribi",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Hotel Ilomba",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/3289-hotel-ilomba",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "residence-lynn-ebome",
+    "name": "Résidence Lynn",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "hotel",
+    "summary_fr": "RÃ©sidence Lynn. SituÃ© Ã  EbomÃ©, dans la citÃ© balnÃ©aire proche des Chutes de la LobÃ©, la RÃ©sidence Lynn est une adresse de rÃ©fÃ©rence pour les sÃ©jours et les Ã©vÃ©nements. La rÃ©sidence se trouve aprÃ¨s l'hÃ´pital Net et avant le contrÃ´le mixte de BwambÃ©, dans un cadre ",
+    "summary_en": "RÃ©sidence Lynn (Kribi). residence Lynn. SituÃ© Ã  EbomÃ©, dans la citÃ© balnÃ©aire proche des Chutes de la LobÃ©, la residence Lynn is a adresse de rÃ©fÃ©rence pour les sÃ©jours et les Ã©vÃ©nements. La residence se trouve aprÃ¨s l'hÃ´pital Net et avant le contrÃ´le mixte de Bwam",
+    "culture_fr": "Quartier : Ebome · Ville : Kribi",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Résidence Lynn",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/15462-residence-lynn",
+        "verification_status": "structured_import"
+      }
+    ]
+  },
+  {
+    "id": "kribi-home-conforts-elabe",
+    "name": "Kribi Home Conforts",
+    "city": "Kribi",
+    "region": "Sud",
+    "category": "hotel",
+    "summary_fr": "Kribi Home Conforts. SituÃ©au quartier ElabÃ©dans la ville de Kribi, Kribi Home Conforts est une villa meublÃ©ede 5 chambre s, idÃ©ale pour vos courts et longs sÃ©jours loin des tracas quotidiens. La Villa Elabi sÃ©duit par son architecture nÃ©oclassique et ses prestations haut d",
+    "summary_en": "Kribi Home Conforts. Locatedau quartier ElabÃ©dans la ville de Kribi, Kribi Home Conforts is a villa meublÃ©ede 5 chambre s, idÃ©ale pour vos courts et longs sÃ©jours loin des tracas quotidiens. La Villa Elabi sÃ©duit par son architecture nÃ©oclassique et ses prestations haut de ",
+    "culture_fr": "Quartier : Elabè · Ville : Kribi",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "kribi",
+      "sud",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Kribi Home Conforts",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/14532-villa-kribi-home-conforts",
+        "verification_status": "structured_import"
+      }
+    ]
+  }
+]

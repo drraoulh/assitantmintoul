@@ -178,6 +178,8 @@ def classify_with_rules(
             or "littoral" in folded
             or "yaounde" in folded
             or "yaoundé" in folded
+            or "kribi" in folded
+            or "ebolowa" in folded
         )
     ):
         return RuleHit("SIMPLE_QA", 0.93, "geographic_relation_qa")

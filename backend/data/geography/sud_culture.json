@@ -1,0 +1,220 @@
+{
+  "region_id": "sud",
+  "region_fr": "Sud",
+  "region_en": "South",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, food_deep_dive, shopping_crafts, cities_quick_guide, regions_overview, climate_seasons, transport_itineraries, interests_itineraries, national_parks_wildlife), fiches lieux Sud, et hôtels Ayila'a. Aucun restaurant nommé inventé.",
+  "overview": {
+    "text_fr": "Le Sud a pour chef-lieu Ebolowa. Côté mer : Kribi (plages, chutes de la Lobé, fruits de mer). Intérieur forestier : Ebolowa, Sangmélima, parc Campo-Ma’an. Accès typique depuis Douala (demi-journée vers Kribi).",
+    "text_en": "The South’s capital is Ebolowa. On the coast: Kribi (beaches, Lobé falls, seafood). Inland forest: Ebolowa, Sangmélima, Campo-Ma’an park. Typical access from Douala (half-day to Kribi).",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; cameroon_admin.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "sud-coastal",
+      "name_fr": "Côte Sud (Kribi)",
+      "name_en": "South coast (Kribi)",
+      "description_fr": "Destination balnéaire : plages, Lobé, grillades de poisson ; liens culturels côtiers / forestiers du Sud.",
+      "description_en": "Beach destination: beaches, Lobé falls, grilled fish; coastal / forest cultural links of the South.",
+      "related_cities": [
+        "Kribi",
+        "Campo"
+      ],
+      "source": "data/documents/cities_quick_guide.md ; data/documents/history_culture.md"
+    },
+    {
+      "id": "sud-forest",
+      "name_fr": "Sud forestier",
+      "name_en": "Forest South",
+      "description_fr": "Ebolowa et Sangmélima comme portes du Sud forestier ; Nkolandom et environs pour patrimoine et nature.",
+      "description_en": "Ebolowa and Sangmélima as gateways to the forested South; Nkolandom and surroundings for heritage and nature.",
+      "related_cities": [
+        "Ebolowa",
+        "Sangmélima"
+      ],
+      "source": "data/documents/cities_quick_guide.md ; data/tourist_sites/sud_complete.json"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Français",
+      "area": "Sud (officiel / dominant)",
+      "note_fr": "Français courant ; langues locales fang et voisines selon les zones.",
+      "note_en": "French is common; local Fang and related languages vary by area.",
+      "source": "data/documents/languages_etiquette.md ; data/documents/regions_overview.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "lobe-visit",
+      "title_fr": "Chutes de la Lobé",
+      "title_en": "Lobé Falls",
+      "text_fr": "Les chutes de la Lobé près de Kribi se visitent souvent en pirogue ; un guide local est recommandé. Respectez les consignes de sécurité et demandez avant de photographier.",
+      "text_en": "Lobé Falls near Kribi are often visited by canoe; a local guide is recommended. Follow safety advice and ask before photographing.",
+      "source": "data/documents/practical_travel.md ; data/documents/interests_itineraries.md"
+    },
+    {
+      "id": "coastal-souvenirs",
+      "title_fr": "Souvenirs côtiers",
+      "title_en": "Coastal souvenirs",
+      "text_fr": "À Kribi, souvenirs côtiers possibles — vérifiez la légalité des coquillages / produits animaux.",
+      "text_en": "In Kribi, coastal souvenirs are available — check legality of shells / animal products.",
+      "source": "data/documents/shopping_crafts.md"
+    },
+    {
+      "id": "beach-safety",
+      "title_fr": "Plages et prudence",
+      "title_en": "Beaches and caution",
+      "text_fr": "Kribi : sable clair, crème solaire, cash ; prévoir le transport retour avant la nuit. Voyager de jour depuis Douala.",
+      "text_en": "Kribi: light sand, sunscreen, cash; plan return transport before nightfall. Travel by day from Douala.",
+      "source": "data/documents/interests_itineraries.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "poisson-braise",
+      "name_fr": "Poisson braisé / grillades",
+      "name_en": "Grilled fish",
+      "text_fr": "Poissons grillés / braisés fréquents à Kribi et sur la côte — souvent avec plantains ou bâton de manioc.",
+      "text_en": "Grilled fish is common in Kribi and along the coast — often with plantains or cassava stick.",
+      "source": "data/documents/food_culture.md ; data/documents/food_deep_dive.md ; data/documents/interests_itineraries.md"
+    },
+    {
+      "id": "fruits-de-mer",
+      "name_fr": "Fruits de mer",
+      "name_en": "Seafood",
+      "text_fr": "Kribi est associé aux fruits de mer et grillades en bord de mer — aucun restaurant nommé inventé dans cette base.",
+      "text_en": "Kribi is associated with seafood and seaside grills — no invented restaurant names in this base.",
+      "source": "data/documents/cities_quick_guide.md ; data/documents/interests_itineraries.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "kribi-souvenirs",
+      "name_fr": "Souvenirs de Kribi",
+      "name_en": "Kribi souvenirs",
+      "text_fr": "Objets et souvenirs côtiers ; négociez avec courtoisie et vérifiez la légalité.",
+      "text_en": "Coastal crafts and souvenirs; negotiate courteously and check legality.",
+      "city": "Kribi",
+      "source": "data/documents/shopping_crafts.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "kribi-coast",
+      "title_fr": "Plages et Lobé",
+      "title_en": "Beaches and Lobé",
+      "text_fr": "Plages de Kribi / Grand Batanga, chutes de la Lobé, chutes de la Bongola.",
+      "text_en": "Kribi / Grand Batanga beaches, Lobé falls, Bongola falls.",
+      "source": "data/tourist_sites/sud_complete.json"
+    },
+    {
+      "id": "campo-maan",
+      "title_fr": "Parc Campo-Ma’an",
+      "title_en": "Campo-Ma’an park",
+      "text_fr": "Parc national de Campo-Ma’an : mosaïque forêt-littoral au Sud — opérateurs responsables, pas de commerce illégal d’espèces.",
+      "text_en": "Campo-Ma’an national park: forest–coast mosaic in the South — responsible operators, no illegal wildlife trade.",
+      "source": "data/documents/national_parks_wildlife.md ; data/tourist_sites/sud_complete.json"
+    },
+    {
+      "id": "ebolowa-forest",
+      "title_fr": "Ebolowa / Nkolandom",
+      "title_en": "Ebolowa / Nkolandom",
+      "text_fr": "Centre et musée de Nkolandom, square parc ; porte du Sud forestier.",
+      "text_en": "Nkolandom tourism centre and museum, square park; gateway to the forested South.",
+      "source": "data/tourist_sites/sud_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "corridor-kribi",
+      "title_fr": "Corridor Douala → Kribi",
+      "title_en": "Douala → Kribi corridor",
+      "text_fr": "Itinéraire type : Douala → Kribi (plages, Lobé) — demi-journée de route typique ; car ou voiture, de jour.",
+      "text_en": "Typical route: Douala → Kribi (beaches, Lobé) — about half a day by road; bus or car, by day.",
+      "source": "data/documents/transport_itineraries.md ; data/documents/regions_overview.md"
+    },
+    {
+      "id": "climate-sud",
+      "title_fr": "Climat côtier",
+      "title_en": "Coastal climate",
+      "text_fr": "Kribi / Sud côtier : chaud, saison des pluies marquée — vêtements légers + imperméable.",
+      "text_en": "Kribi / South coast: hot, marked rainy season — light clothes + rain jacket.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Sud (export places sans restauration). Ne pas inventer de noms. Orienter vers poisson braisé / fruits de mer à Kribi, et restaurants d’hôtels documentés le cas échéant.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the South (places export excluded restaurants). Do not invent names. Point to grilled fish / seafood in Kribi, and documented hotel restaurants when available.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "hotel-du-phare-kribi",
+      "name": "Hôtel Du Phare",
+      "city": "Kribi",
+      "neighbourhood": "Kribi",
+      "text_fr": "HÃ´tel Du Phare. SituÃ©dans la ville de krib i, l'hÃ´tel du Phare est un lieu idÃ©al pour les voyageurs souhaitant se ressourcer lors de leur sÃ©jour Ã  Kribi. RÃ©putÃ©pour son ambiance familiale et sa proximitÃ©avec de ",
+      "text_en": "HÃ´tel Du Phare (Kribi). hotel Du Phare. Locateddans la ville de krib i, l'hotel du Phare is a lieu idÃ©al pour les voyageurs souhaitant se ressourcer lors de leur sÃ©jour Ã  Kribi. RÃ©putÃ©pour son ambiance familiale et",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3291-hotel-du-phare",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "hotel-ilomba-bwambe",
+      "name": "Hotel Ilomba",
+      "city": "Kribi",
+      "neighbourhood": "Bwambe",
+      "text_fr": "Hotel Ilomba. SituÃ©au quartier Bwambe Ã  Kribi, Hotel Ilomba est un hÃ´tel offrant une variÃ©tÃ©de services avec une vue imprenable sur la plage. Cet Ã©tablissement se distingue par son ambiance accueillante et ses inst",
+      "text_en": "Hotel Ilomba. Locatedau quartier Bwambe Ã  Kribi, Hotel Ilomba is a hotel offrant une variÃ©tÃ©de services avec une vue imprenable sur la plage. Cet Ã©tablissement se distingue par son ambiance accueillante et ses instal",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3289-hotel-ilomba",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "residence-lynn-ebome",
+      "name": "Résidence Lynn",
+      "city": "Kribi",
+      "neighbourhood": "Ebome",
+      "text_fr": "RÃ©sidence Lynn. SituÃ© Ã  EbomÃ©, dans la citÃ© balnÃ©aire proche des Chutes de la LobÃ©, la RÃ©sidence Lynn est une adresse de rÃ©fÃ©rence pour les sÃ©jours et les Ã©vÃ©nements. La rÃ©sidence se trouve aprÃ¨s l'hÃ´pita",
+      "text_en": "RÃ©sidence Lynn (Kribi). residence Lynn. SituÃ© Ã  EbomÃ©, dans la citÃ© balnÃ©aire proche des Chutes de la LobÃ©, la residence Lynn is a adresse de rÃ©fÃ©rence pour les sÃ©jours et les Ã©vÃ©nements. La residence se trou",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/15462-residence-lynn",
+      "source_note": "Ayila'a · hotels category"
+    },
+    {
+      "id": "kribi-home-conforts-elabe",
+      "name": "Kribi Home Conforts",
+      "city": "Kribi",
+      "neighbourhood": "Elabè",
+      "text_fr": "Kribi Home Conforts. SituÃ©au quartier ElabÃ©dans la ville de Kribi, Kribi Home Conforts est une villa meublÃ©ede 5 chambre s, idÃ©ale pour vos courts et longs sÃ©jours loin des tracas quotidiens. La Villa Elabi sÃ©duit ",
+      "text_en": "Kribi Home Conforts. Locatedau quartier ElabÃ©dans la ville de Kribi, Kribi Home Conforts is a villa meublÃ©ede 5 chambre s, idÃ©ale pour vos courts et longs sÃ©jours loin des tracas quotidiens. La Villa Elabi sÃ©duit pa",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/14532-villa-kribi-home-conforts",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "divisions_snapshot": [
+    {
+      "id": "ocean",
+      "name_fr": "Océan",
+      "hub": "Kribi",
+      "note_fr": "Plages, Lobé, Grand Batanga."
+    },
+    {
+      "id": "mvila",
+      "name_fr": "Mvila",
+      "hub": "Ebolowa",
+      "note_fr": "Chef-lieu régional ; Nkolandom."
+    },
+    {
+      "id": "dja-lobo",
+      "name_fr": "Dja-et-Lobo",
+      "hub": "Sangmélima",
+      "note_fr": "Porte Sud forestier / axe frontière."
+    },
+    {
+      "id": "vallee-ntem",
+      "name_fr": "Vallée-du-Ntem",
+      "hub": "Ambam",
+      "note_fr": "Sud frontalier."
+    }
+  ]
+}

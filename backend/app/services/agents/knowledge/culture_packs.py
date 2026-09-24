@@ -81,6 +81,23 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "poulet dg",
         "bastos",
     ),
+    "sud": (
+        "region du sud",
+        "région du sud",
+        "sud du cameroun",
+        "kribi",
+        "ebolowa",
+        "sangmelima",
+        "sangmélima",
+        "campo",
+        "ambam",
+        "lobe",
+        "lobé",
+        "batanga",
+        "nkolandom",
+        "poisson braise",
+        "poisson braisé",
+    ),
 }
 
 
@@ -109,6 +126,7 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "ndole",
             "ndolé",
             "poulet",
+            "poisson",
             "cafe",
             "café",
         )
@@ -143,7 +161,7 @@ def _intent_flags(q: str) -> dict[str, bool]:
     want_hotel = any(t in q for t in ("hotel", "hôtel", "heberg", "héberg", "dormir", "stay"))
     want_nature = any(
         t in q
-        for t in ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise", "mangrove", "plage", "fleuve", "ile", "île")
+        for t in ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise", "mangrove", "plage", "fleuve", "ile", "île", "parc")
     )
     want_practical = any(
         t in q

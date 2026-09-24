@@ -57,6 +57,16 @@ _NOT_YAOUNDE = {
     "douala",
     "bafoussam",
 }
+_NOT_KRIBI = {
+    "ebolowa",
+    "sangmelima",
+    "sangmélima",
+    "campo",
+    "ambam",
+    "douala",
+    "yaounde",
+    "yaoundé",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -177,6 +187,8 @@ class PlaceRetriever:
                 if hub == "yaoundé" or hub == "yaounde":
                     if place_city in _NOT_YAOUNDE:
                         continue
+                if hub == "kribi" and place_city in _NOT_KRIBI:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -205,6 +217,9 @@ class PlaceRetriever:
                                 "nsimalen",
                                 "mvog-mbi",
                             } and "yaounde" not in place_city and "yaoundé" not in place_city:
+                                continue
+                        elif hub == "kribi":
+                            if place_city not in {"lobe", "lobé", "grand-batanga", "grand batanga", "bwambe", "bwambé"} and "kribi" not in place_city:
                                 continue
                         else:
                             continue

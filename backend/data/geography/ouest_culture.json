@@ -16,7 +16,18 @@
       "name_en": "Grassfields (West)",
       "description_fr": "Hauts plateaux de l’Ouest : chefferies bamiléké, royaume Bamoun à Foumban, artisanat, danses, masques et protocoles de cour.",
       "description_en": "West highlands: Bamileke chiefdoms, Bamoun kingdom in Foumban, crafts, dance, masks, and court protocol.",
-      "related_cities": ["Bafoussam", "Bandjoun", "Baham", "Dschang", "Foumban", "Bangangté", "Mbouda", "Bafang", "Batcham", "Batoufam"],
+      "related_cities": [
+        "Bafoussam",
+        "Bandjoun",
+        "Baham",
+        "Dschang",
+        "Foumban",
+        "Bangangté",
+        "Mbouda",
+        "Bafang",
+        "Batcham",
+        "Batoufam"
+      ],
       "source": "data/documents/history_culture.md"
     },
     {
@@ -25,7 +36,9 @@
       "name_en": "Bamoun area (Noun)",
       "description_fr": "Foumban et le Noun : palais royal, musée, écriture bamoun, sculpture et bronze ; nature autour du mont et lac Mbapit.",
       "description_en": "Foumban and the Noun: royal palace, museum, Bamoun script, sculpture and bronze; nature around Mount and Lake Mbapit.",
-      "related_cities": ["Foumban"],
+      "related_cities": [
+        "Foumban"
+      ],
       "source": "data/documents/history_culture.md ; data/tourist_sites/ouest_complete.json"
     }
   ],
@@ -218,24 +231,64 @@
   },
   "hotels_verified": [
     {
-      "id": "adys-hotel-dschang",
+      "id": "adys-hotel-dschang-officiel-entree-campus-universitaire-de-dschang",
       "name": "Adys Hotel Dschang Officiel",
       "city": "Dschang",
-      "neighbourhood": "Entrée campus universitaire de Dschang",
-      "text_fr": "Hôtel à Dschang (Ayila’a). Chambres climatisées ; restaurant de l’hôtel mentionné pour mets du terroir.",
-      "text_en": "Hotel in Dschang (Ayila’a). Air-conditioned rooms; hotel restaurant mentioned for local dishes.",
-      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "neighbourhood": "Entree campus universitaire de Dschang",
+      "text_fr": "Adys Hotel Dschang Officiel. SituÃ©dans la ville de Dschang, Adys hotel Dschang officiel est un hÃ´tel qui allie confort et simplicitÃ©dans un cadre exceptionnel et chaleureux. Cet Ã©tablissement est idÃ©al pour les voya",
+      "text_en": "Adys Hotel Dschang Officiel. Locateddans la ville de Dschang, Adys hotel Dschang officiel is a hotel qui allie confort et simplicitÃ©dans un cadre exceptionnel et chaleureux. Cet Ã©tablissement est idÃ©al pour les voyage",
+      "source": "https://ayilaa.com/fr/hotels-et-hebergements/3240-adys-hotel-dschang-officiel (imports/camerounai-stay-language-games/data/hotels.ts)",
       "source_note": "Ayila'a · hotels category"
     }
   ],
   "divisions_snapshot": [
-    {"id": "mifi", "name_fr": "Mifi", "hub": "Bafoussam", "note_fr": "Chef-lieu régional ; chefferie, artisans, Lac Baleng (Baleng)."},
-    {"id": "noun", "name_fr": "Noun", "hub": "Foumban", "note_fr": "Palais Bamoun, Mbapit, lacs."},
-    {"id": "menoua", "name_fr": "Menoua", "hub": "Dschang", "note_fr": "Cascades, base nautique, falaise Foréké, Centre climatique, hôtel Adys."},
-    {"id": "bamboutos", "name_fr": "Bamboutos", "hub": "Mbouda", "note_fr": "Haras de Balatchi, chutes de la Métché, Batcham / Bangang."},
-    {"id": "haut-nkam", "name_fr": "Haut-Nkam", "hub": "Bafang", "note_fr": "Chutes de la Mouankeu ; Bana / mont Bachingou."},
-    {"id": "hauts-plateaux", "name_fr": "Hauts-Plateaux", "hub": "Baham", "note_fr": "Chefferies des Hauts-Plateaux."},
-    {"id": "koung-khi", "name_fr": "Koung-Khi", "hub": "Bandjoun", "note_fr": "Chefferie Bandjoun, musée Batoufam, Bahouan."},
-    {"id": "nde", "name_fr": "Ndé", "hub": "Bangangté", "note_fr": "Pôle Medumba ; peu de fiches lieux encore dans la base."}
+    {
+      "id": "mifi",
+      "name_fr": "Mifi",
+      "hub": "Bafoussam",
+      "note_fr": "Chef-lieu régional ; chefferie, artisans, Lac Baleng (Baleng)."
+    },
+    {
+      "id": "noun",
+      "name_fr": "Noun",
+      "hub": "Foumban",
+      "note_fr": "Palais Bamoun, Mbapit, lacs."
+    },
+    {
+      "id": "menoua",
+      "name_fr": "Menoua",
+      "hub": "Dschang",
+      "note_fr": "Cascades, base nautique, falaise Foréké, Centre climatique, hôtel Adys."
+    },
+    {
+      "id": "bamboutos",
+      "name_fr": "Bamboutos",
+      "hub": "Mbouda",
+      "note_fr": "Haras de Balatchi, chutes de la Métché, Batcham / Bangang."
+    },
+    {
+      "id": "haut-nkam",
+      "name_fr": "Haut-Nkam",
+      "hub": "Bafang",
+      "note_fr": "Chutes de la Mouankeu ; Bana / mont Bachingou."
+    },
+    {
+      "id": "hauts-plateaux",
+      "name_fr": "Hauts-Plateaux",
+      "hub": "Baham",
+      "note_fr": "Chefferies des Hauts-Plateaux."
+    },
+    {
+      "id": "koung-khi",
+      "name_fr": "Koung-Khi",
+      "hub": "Bandjoun",
+      "note_fr": "Chefferie Bandjoun, musée Batoufam, Bahouan."
+    },
+    {
+      "id": "nde",
+      "name_fr": "Ndé",
+      "hub": "Bangangté",
+      "note_fr": "Pôle Medumba ; peu de fiches lieux encore dans la base."
+    }
   ]
 }

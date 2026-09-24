@@ -50,6 +50,9 @@ _CITIES: dict[str, str] = {
     "mfou": "Mfou",
     "soa": "Soa",
     "monatele": "Monatélé",
+    "campo": "Campo",
+    "sangmelima": "Sangmélima",
+    "ambam": "Ambam",
 }
 
 _REGIONS: dict[str, str] = {
@@ -93,6 +96,12 @@ _REGION_SAFE_SUBSTRING = {
         r"\bcenter\s+region\b)",
         re.IGNORECASE,
     ),
+    "sud": re.compile(
+        r"(?:\br[eé]gion\s+(?:du\s+)?sud\b|\bsud\s+(?:du\s+)?cameroun\b|"
+        r"\bdans\s+le\s+sud\b|\bau\s+sud\s+(?:du\s+)?cameroun\b|"
+        r"\bsouth\s+region\b|\bsouth\s+cameroon\b)",
+        re.IGNORECASE,
+    ),
 }
 
 # Cultural area cues → region (no city invented).
@@ -106,6 +115,10 @@ _LITTORAL_CULTURE = re.compile(
 )
 _CENTRE_CULTURE = re.compile(
     r"\b(ewondo|fang[- ]?beti|mokolo|mefou|ebogo|r[eé]unification)\b",
+    re.IGNORECASE,
+)
+_SUD_CULTURE = re.compile(
+    r"\b(lob[eé]|grand\s+batanga|campo[- ]?ma|nkolandom|poisson\s+brais)\b",
     re.IGNORECASE,
 )
 
@@ -160,6 +173,12 @@ _KNOWN_PLACES: dict[str, str] = {
     "sanctuaire de primates de mefou": "Sanctuaire de primates de Mefou",
     "mefou": "Sanctuaire de primates de Mefou",
     "ebogo": "Site Touristique D'ebogo",
+    "chutes de la bongola": "Les Chutes De La Bongola",
+    "plage de grand batanga": "Plage de Grand Batanga",
+    "grand batanga": "Plage de Grand Batanga",
+    "parc campo": "Parc national de Campo-Ma'an",
+    "campo-ma'an": "Parc national de Campo-Ma'an",
+    "campo maan": "Parc national de Campo-Ma'an",
     "rhumsiki": "Rhumsiki",
     "korup": "Korup",
 }
@@ -265,6 +284,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Centre"
         if slots.location is None:
             slots.location = "Centre"
+
+    if slots.region is None and _SUD_CULTURE.search(raw):
+        slots.region = "Sud"
+        if slots.location is None:
+            slots.location = "Sud"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:
