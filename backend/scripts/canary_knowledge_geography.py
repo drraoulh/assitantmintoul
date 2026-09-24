@@ -32,6 +32,12 @@ QUERIES = [
     "Quels plats typiques de Douala / Littoral ?",
     "Parle-moi de la culture Sawa",
     "Je veux visiter le Littoral.",
+    "Je veux visiter Yaoundé que me proposes-tu ?",
+    "La région du Centre c’est Yaoundé nor ?",
+    "Yaoundé est dans quelle région ?",
+    "Quels plats typiques à Yaoundé ?",
+    "Parle-moi du marché Mokolo",
+    "Je veux visiter la région du Centre.",
 ]
 
 
@@ -124,6 +130,22 @@ async def main() -> int:
         or "douala" in turns[14]["assistant"].casefold(),
         "littoral_regional": turns[15]["intent"]
         in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "yaounde_has_places": turns[16]["verified_places_count"] >= 1,
+        "yaounde_not_mbalmayo_as_only": all(
+            (p.get("city") or "").casefold() not in {"mbalmayo", "mfou"}
+            for p in turns[16]["places"]
+        )
+        or any("yaound" in (p.get("city") or "").casefold() for p in turns[16]["places"]),
+        "centre_not_equals_yaounde": "Pas exactement" in turns[17]["assistant"]
+        or "chef-lieu" in turns[17]["assistant"].casefold(),
+        "yaounde_region_centre": "Centre" in turns[18]["assistant"],
+        "centre_food": "poulet" in turns[19]["assistant"].casefold()
+        or "plat" in turns[19]["assistant"].casefold()
+        or turns[19]["completeness"] != "NONE",
+        "mokolo_or_culture": "mokolo" in turns[20]["assistant"].casefold()
+        or turns[20]["completeness"] != "NONE",
+        "centre_regional": turns[21]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -171,35 +193,33 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched local catalogs: `ouest_complete.json`, `littoral_complete.json` (+ culture packs)",
+        "- Enriched local catalogs: `ouest_complete`, `littoral_complete`, `centre_complete` (+ culture packs)",
         "",
         "## Geography",
         "",
         "- 10 regions with chef-lieux",
-        "- Ouest: 8 départements · Littoral: 4 (Wouri, Sanaga-Maritime, Moungo, Nkam)",
-        "- Bafoussam → Mifi → Ouest; Douala → Wouri → Littoral",
+        "- Ouest: 8 depts · Littoral: 4 · Centre: 4 (Mfoundi, Méfou-et-Afamba, Nyong-et-So'o, Lékié)",
+        "- Bafoussam → Ouest · Douala → Littoral · Yaoundé → Centre (capitale politique)",
         "",
-        "## Ouest enrichment",
+        "## Region packs",
         "",
-        "- ~30 lieux · culture pack (achu, koki, chefferies, Adys) · 0 restos inventés",
-        "",
-        "## Littoral enrichment",
-        "",
-        "- ~31 lieux · culture pack (ndolé, Sawa, Duala, Krystal Palace) · 0 restos inventés",
+        "- Ouest: ~30 lieux · achu/koki · Adys",
+        "- Littoral: ~31 lieux · ndolé/Sawa · Krystal Palace",
+        "- Centre: ~27 lieux · Mokolo/musées/Mefou · Hilton · 0 restos inventés",
         "",
         "## Samples",
         "",
-        f"- Bafoussam visit: {turns[0]['verified_places_count']} places — `{turns[0]['assistant'][:160]}`",
-        f"- Douala visit: {turns[10]['verified_places_count']} places — `{turns[10]['assistant'][:160]}`",
-        f"- Littoral≠Douala: `{turns[11]['assistant']}`",
-        f"- Ndolé: `{turns[13]['assistant'][:180]}`",
-        f"- Sawa: `{turns[14]['assistant'][:180]}`",
+        f"- Bafoussam: {turns[0]['verified_places_count']} — `{turns[0]['assistant'][:120]}`",
+        f"- Douala: {turns[10]['verified_places_count']} — `{turns[10]['assistant'][:120]}`",
+        f"- Yaoundé: {turns[16]['verified_places_count']} — `{turns[16]['assistant'][:120]}`",
+        f"- Centre≠Yaoundé: `{turns[17]['assistant']}`",
+        f"- Food Yaoundé: `{turns[19]['assistant'][:160]}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
         "- `knowledge_completeness` + `verified_places_count`",
-        "- Geo facts + multi-region culture evidence (Ouest, Littoral)",
+        "- Geo facts + multi-region culture evidence (Ouest, Littoral, Centre)",
         "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
         "",
         "## Web fallback",

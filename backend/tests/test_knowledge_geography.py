@@ -324,6 +324,81 @@ async def test_littoral_food_query_injects_culture(geo_on):
     assert "ndol" in text or "plat" in text
 
 
+def test_centre_admin_and_capital():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Yaoundé")
+    assert chain is not None
+    assert chain["region"] == "Centre"
+    assert chain["division"] == "Mfoundi"
+    assert chain["is_region_capital"] is True
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "centre"]) == 4
+
+
+def test_centre_not_yaounde():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Centre c’est Yaoundé nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_centre_culture_poulet(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques à Yaoundé ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "poulet" in blob or "mokolo" in blob
+    assert any((e.source_id or "") == "culture:centre" for e in ev)
+
+
+def test_mokolo_sets_centre_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Aller au marché Mokolo").region == "Centre"
+
+
+@pytest.mark.asyncio
+async def test_visit_yaounde_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Yaoundé que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "mbalmayo" not in cities
+    assert "mfou" not in cities
+
+
+@pytest.mark.asyncio
+async def test_centre_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques à Yaoundé ?",
+        mode="text",
+        locale="fr",
+    )
+    assert any((k.source_id or "") == "culture:centre" for k in result.knowledge.knowledge)
+    text = result.final_response.text.casefold()
+    assert "poulet" in text or "plat" in text or "mokolo" in text
+
+
 def test_intent_extracts_bandjoun_and_mbouda():
     from app.services.agents.intent.extractors import extract_slots
 

@@ -1,0 +1,771 @@
+[
+  {
+    "id": "abali-gallery-hippodrome",
+    "name": "Abali Gallery",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Abali Gallery. Situé à Hippodrome, face au Ministère de la Communication, sur l' Avenue de l'Indépendance à Yaoundé, Abali Gallery est une galerie d'art contemporain qui met en lumière le génie créatif camerounais et africain. Ce lieu est entièrement dédié à la promotion des arts visuels à travers des expositions temporaires ou permanentes, créant un espace de dialogue entre artistes, collectionneurs et amateurs d'art. Parmi les activités phares, Abali Gallery organise régulièrement des vernissages, des expositions individuelles ou collectives, ainsi que des ateliers de médiation culturelle. Ces événements permettent de découvrir des &oelig;uvres inédites d'artistes contemporains camerounais et internationaux. Le lieu est adapté à tous les âges, que ce soit pour des visites guidées pédagogiques pour enfants, ou des rencontres artistiques destinées aux adultes. La galerie propose des serv",
+    "summary_en": "Abali Gallery. Located à Hippodrome, face au Ministère de la Communication, sur l' Avenue de l'Indépendance à Yaoundé, Abali Gallery is a galerie d'art contemporain qui met en lumière le génie créatif camerounais et africain. Ce lieu est entièrement dédié à la promotion des arts visuels à travers des expositions temporaires ou permanentes, créant un espace de dialogue entre artistes, collectionneurs et amateurs d'art. Parmi les activités phares, Abali Gallery organise régulièrement des vernissages, des expositions individuelles ou collectives, ainsi que des ateliers de médiation culturelle. Ces événements permettent de découvrir des &oelig;uvres inédites d'artistes contemporains camerounais et internationaux. Le lieu est adapté à tous les âges, que ce soit pour des visites guidées pédagogiques pour enfants, ou des rencontres artistiques destinées aux adultes. La galerie propose des servi",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Hippodrome · Ville : Yaoundé · Localisation : Avenue De L’indépendance, face ministère de la communication · Catégories : Sites Touristiques, Gallérie d'art",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Abali Gallery",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "basilique-marie-reine-des-apotres-mvolye",
+    "name": "Basilique Marie Reine Des Apotres",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "activity",
+    "summary_fr": "Basilique Marie Reine Des Apotres. Situé sur la colline de Mvolyé, à Yaoundé, la Basilique Marie-Reine-des-Apôtres est un édifice religieux emblématique du Cameroun. Construite pour remplacer l'ancienne cathédrale de Mvolyé, elle a été consacrée en 2006 par le cardinal Jean-Louis Tauran au nom du pape Benoît XVI. Son architecture impressionnante repose sur douze colonnes, symbolisant les douze apôtres, et elle peut accueillir environ 4 000 fidèles à l'intérieur, avec une extension sur son parvis pour les grandes célébrations religieuses. La Basilique est un lieu de culte et de recueillement où les visiteurs peuvent admirer des &oelig;uvres d'art religieux uniques, notamment des vitraux colorés réalisés par le peintre verrier Henri Guérin, ainsi qu'une Vierge noire sculptée dans un bois sacré. On y trouve également un autel taillé dans le granit en forme de jeton du jeu d'abbia, en référe",
+    "summary_en": "Basilique Marie Reine Des Apotres. Located sur la colline de Mvolyé, à Yaoundé, la Basilique Marie-Reine-des-Apôtres is a édifice religieux emblématique du Cameroon. Construite pour remplacer l'ancienne cathédrale de Mvolyé, elle a été consacrée en 2006 par le cardinal Jean-Louis Tauran au nom du pape Benoît XVI. Son architecture impressionnante repose sur douze colonnes, symbolisant les douze apôtres, et elle peut accueillir environ 4 000 fidèles à l'intérieur, avec une extension sur son parvis pour les grandes célébrations religieuses. La Basilique is a lieu de culte et de recueillement où les visiteurs peuvent admirer des &oelig;uvres d'art religieux uniques, notamment des vitraux colorés réalisés par le peintre verrier Henri Guérin, ainsi qu'une Vierge noire sculptée dans un bois sacré. On y trouve également un autel taillé dans le granit en forme de jeton du jeu d'abbia, en référenc",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mvolye · Ville : Yaoundé · Localisation : Sur la colline · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Basilique Marie Reine Des Apotres",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "cathedrale-notre-dame-yaounde",
+    "name": "Cathédrale Notre-Dame-des-Victoires",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "heritage",
+    "summary_fr": "Cathédrale Notre-Dame-des-Victoires, repère du centre-ville de Yaoundé et lieu de culte majeur. Architecture, place publique et vie paroissiale en font une halte patrimoniale facile à intégrer dans un parcours urbain.",
+    "summary_en": "Notre-Dame-des-Victoires Cathedral is a downtown Yaoundé landmark and major place of worship. Architecture, public square and parish life make it an easy heritage stop on a city walk.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Tenue correcte pendant les offices. Photos discrètes à l'intérieur.",
+    "latitude": 3.8636,
+    "longitude": 11.5208,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "Cathédrale Notre-Dame-des-Victoires",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "centre-international-de-l-artisanat-de-yaounde-intendance",
+    "name": "Centre International De L'artisanat De Yaoundé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "activity",
+    "summary_fr": "Centre International De L'artisanat De Yaoundé. Situé à Carrefour Intendance, près du marché central, à Yaoundé, le Centre International de l'Artisanat de Yaoundé est un espace dédié à la promotion des produits artisanaux camerounais. Ce site touristique est un lieu incontournable pour ceux qui s'intéressent à l'artisanat local et souhaitent découvrir le savoir-faire des artisans du Cameroun. Les activités phares proposées par le centre incluent la production, l' exposition, et la commercialisation de divers produits artisanaux tels que des objets d'art, des vêtements traditionnels, des bijoux et des meubles faits main. Les visiteurs peuvent également participer à des ateliers pour apprendre les techniques de fabrication artisanale. Le lieu est adapté aux adultes et enfants, offrant une belle expérience éducative et culturelle pour toute la famille. En termes de services offerts, le cent",
+    "summary_en": "Centre International De L'artisanat De Yaoundé. Located à Carrefour Intendance, près du marché central, à Yaoundé, le Centre International de l'Artisanat de Yaoundé is a espace dédié à la promotion des produits artisanaux camerounais. Ce tourist site is a lieu incontournable pour ceux qui s'intéressent à l'artisanat local et souhaitent découvrir le savoir-faire des artisans du Cameroon. Les activités phares proposées par le centre incluent la production, l' exposition, et la commercialisation de divers produits artisanaux tels que des objets d'art, des vêtements traditionnels, des bijoux et des meubles faits main. Les visiteurs peuvent également participer à des ateliers pour apprendre les techniques de fabrication artisanale. Le lieu est adapté aux adultes et enfants, offrant une belle expérience éducative et culturelle pour toute la famille. En termes de services offerts, le centre pro",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Intendance · Ville : Yaoundé · Localisation : Carrefour, près du marché central · Catégories : Sites Touristiques, Centre culturel",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Centre International De L'artisanat De Yaoundé",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "cipca-centre-international-pour-le-patrimoine-culturel-et-artistique-emana",
+    "name": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique). Situé à la Montée lycée d'Emana, dans la ville de Yaoundé, capitale du Cameroun, le CIPCA (Centre International pour le Patrimoine Culturel et Artistique) est un centre d'art associatif engagé dans la promotion et la valorisation du patrimoine culturel et artistique local. Il représente un véritable lieu de vie artistique, de créativité contemporaine et de rencontres culturelles au c&oelig;ur d'un quartier paisible et dynamique. Parmi les activités phares proposées par le CIPCA, on retrouve des expositions d'art visuel, des résidences artistiques, des ateliers de formation en danse, théâtre, arts plastiques, photographie, ainsi que des conférences et projections culturelles. Le lieu accueille régulièrement des événements ouverts au public, encourageant ainsi les échanges entre artistes locaux et internationaux. Ce ce",
+    "summary_en": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique). Located à la Montée lycée d'Emana, dans la ville de Yaoundé, capitale du Cameroon, le CIPCA (Centre International pour le Patrimoine Culturel et Artistique) is a centre d'art associatif engagé dans la promotion et la valorisation du patrimoine culturel et artistique local. Il représente un véritable lieu de vie artistique, de créativité contemporaine et de rencontres culturelles au c&oelig;ur d'un quartier paisible et dynamique. Parmi les activités phares proposées par le CIPCA, on retrouve des expositions d'art visuel, des résidences artistiques, des ateliers de formation en danse, théâtre, arts plastiques, photographie, ainsi que des conférences et projections culturelles. Le lieu accueille régulièrement des événements ouverts au public, encourageant ainsi les échanges entre artistes locaux et internationaux. Ce ce",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Emana · Ville : Yaoundé · Localisation : Montée lycée · Catégories : Sites Touristiques, Gallérie d'art",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "galerie-arts-negro-bastos",
+    "name": "Galerie Arts Negro",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Galerie Arts Negro. Situé à Bastos, un quartier huppé de Yaoundé, la Galerie ART Negro est un centre des arts dédié à la promotion de l'art contemporain africain. ​ Mapcarta La galerie propose des expositions d'art mettant en avant des &oelig;uvres de peinture, sculpture, photographie et autres formes d'expression artistique. Ces activités sont adaptées à tous les âges, offrant une expérience culturelle enrichissante pour les enfants comme pour les adultes. Les tarifs d'entrée varient en fonction des expositions en cours; il est recommandé de contacter la galerie pour obtenir des informations précises. La galerie ne dispose pas de places assises spécifiques, étant principalement un espace d'exposition.​ Parmi les services offerts, la Galerie ART Negro propose des visites guidées sur réservation, permettant aux visiteurs de mieux comprendre les &oelig;uvres exposées. Bien que la galerie n",
+    "summary_en": "Galerie Arts Negro. Located à Bastos, un quartier huppé de Yaoundé, la Galerie ART Negro is a centre des arts dédié à la promotion de l'art contemporain africain. ​ Mapcarta La galerie propose des expositions d'art mettant en avant des &oelig;uvres de peinture, sculpture, photographie et autres formes d'expression artistique. Ces activités sont adaptées à tous les âges, offrant une expérience culturelle enrichissante pour les enfants comme pour les adultes. Les tarifs d'entrée varient en fonction des expositions en cours; il est recommandé de contacter la galerie pour obtenir des informations précises. La galerie ne dispose pas de places assises spécifiques, étant principalement un espace d'exposition.​ Parmi les services offerts, la Galerie ART Negro propose des visites guidées sur réservation, permettant aux visiteurs de mieux comprendre les &oelig;uvres exposées. Bien que la galerie n",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bastos · Ville : Yaoundé · Localisation : A proximité de Ambassade de Turquie au Cameroun · Catégories : Sites Touristiques, GALLERIE D'ART",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Galerie Arts Negro",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "galerie-atelier-d-art-afrobantu-mekouti-mont-febe",
+    "name": "Galerie Atelier D'art Afrobantu Mekouti",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Galerie Atelier D'art Afrobantu Mekouti. Situé à Mont Febé, à proximité de l' hôtel, à Yaoundé, le Galerie Atelier d'Art AfroBantu Mekouti est un centre culturel unique dédié à l'art afro-bantou. Ce site touristique propose un espace où l'art et la culture se rencontrent à travers diverses activités éducatives et artistiques. Les activités phares de ce lieu incluent des leçons de dessin, des ateliers de peinture, ainsi que des balades guidées culturelles qui permettent de découvrir la richesse de l'art afro-bantou. Les visiteurs peuvent également acheter des tableaux vierges pour leurs créations artistiques ou souvenirs. Le lieu est adapté tant aux adultes qu'aux enfants, avec des activités ludiques et éducatives pour tous les âges. Concernant les services offerts, le site dispose de stationnement, d'une zone de vente de tableaux et d'un espace dédié à la peinture extérieure et intérieur",
+    "summary_en": "Galerie Atelier D'art Afrobantu Mekouti. Located à Mont Febé, à proximité de l' hôtel, à Yaoundé, le Galerie Atelier d'Art AfroBantu Mekouti is a centre culturel unique dédié à l'art afro-bantou. Ce tourist site features un espace où l'art et la culture se rencontrent à travers diverses activités éducatives et artistiques. Les activités phares de ce lieu incluent des leçons de dessin, des ateliers de peinture, ainsi que des balades guidées culturelles qui permettent de découvrir la richesse de l'art afro-bantou. Les visiteurs peuvent également acheter des tableaux vierges pour leurs créations artistiques ou souvenirs. Le lieu est adapté tant aux adultes qu'aux enfants, avec des activités ludiques et éducatives pour tous les âges. Concernant les services offerts, le site dispose de stationnement, d'une zone de vente de tableaux et d'un espace dédié à la peinture extérieure et intérieure. ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mont Febé · Ville : Yaoundé · Localisation : A proximité de l'hôtel · Catégories : Sites Touristiques, Gallérie d'art",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Galerie Atelier D'art Afrobantu Mekouti",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "l-ile-des-cocotiers-soa-soa",
+    "name": "L’île  Des Cocotiers Soa",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "L’île Des Cocotiers Soa. Situé à Soa, entrée Millénium, à Yaoundé, L'île des Cocotiers est un site touristique pittoresque, au cœur du quartier. Ce lieu tranquille, naturel et charmant vous invite à savourer des menus variés, alliant plats locaux et internationaux. L'atmosphère du site vous plonge dans un cadre de détente et de repos, loin de l'agitation urbaine. Les principales attractions et activités incluent des moments de relaxation dans un cadre naturel, avec la possibilité de découvrir des menus typiques de la région et d'autres spécialités. Le site est parfait pour des visites en famille ou entre amis, offrant un environnement adapté aux adultes et aux enfants. Les tarifs sont abordables et permettent d'accéder à une expérience agréable dans un cadre paisible. Il existe des options de réservation et un espace de stationnement pour les visiteurs. Les avis des visiteurs soulignent ",
+    "summary_en": "L’île Des Cocotiers Soa. Located à Soa, entrée Millénium, à Yaoundé, L'île des Cocotiers is a tourist site pittoresque, au cœur du quartier. Ce lieu tranquille, naturel et charmant vous invite à savourer des menus variés, alliant plats locaux et internationaux. L'atmosphère du site vous plonge dans un cadre de détente et de repos, loin de l'agitation urbaine. Les principales attractions et activités incluent des moments de relaxation dans un cadre naturel, avec la possibilité de découvrir des menus typiques de la region et d'autres spécialités. Le site est parfait pour des visites en famille ou entre amis, offrant un environnement adapté aux adultes et aux enfants. Les tarifs sont abordables et permettent d'accéder à une expérience agréable dans un cadre paisible. Il existe des options de réservation et un espace de stationnement pour les visiteurs. Les avis des visiteurs soulignent souv",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Soa · Ville : Yaoundé · Localisation : Entrée Millénium · Catégories : Sites Touristiques, ILE",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": "4000 XAF",
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "L’île  Des Cocotiers Soa",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-place-de-l-independance-hippodrome",
+    "name": "La Place De L'indépendance",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "heritage",
+    "summary_fr": "La Place De L'indépendance. Situé à Hippodrome, sur l' Avenue de l'Indépendance à Yaoundé, La Place de l'Indépendance est un site historique et symbolique marquant un tournant décisif dans l'histoire du Cameroun. C'est en ce lieu que, le 1er janvier 1960, le président Ahmadou Ahidjo proclama l' indépendance du Cameroun, dans un discours gravé à jamais dans la mémoire nationale. Parmi les attractions et activités, les visiteurs peuvent contempler la stèle commémorative, prendre des photos souvenirs, assister à des cérémonies officielles, ou encore profiter de promenades paisibles autour de ce carrefour historique. Lieu de mémoire vivante, il convient aussi bien aux adultes qu'aux enfants, surtout pour des visites éducatives ou patriotiques. Des kiosques de rafraîchissements sont présents à proximité, ainsi que plusieurs restaurants, dont Le Boun's Hôtel Restaurant, O'Balcony et Café de Ya",
+    "summary_en": "La Place De L'indépendance. Located à Hippodrome, sur l' Avenue de l'Indépendance à Yaoundé, La Place de l'Indépendance is a site historique et symbolique marquant un tournant décisif dans l'histoire du Cameroon. C'est en ce lieu que, le 1er janvier 1960, le président Ahmadou Ahidjo proclama l' indépendance du Cameroon, dans un discours gravé à jamais dans la mémoire nationale. Parmi les attractions et activités, les visiteurs peuvent contempler la stèle commémorative, prendre des photos souvenirs, assister à des cérémonies officielles, ou encore profiter de promenades paisibles autour de ce carrefour historique. Lieu de mémoire vivante, il convient aussi bien aux adultes qu'aux enfants, surtout pour des visites éducatives ou patriotiques. Des kiosques de rafraîchissements sont présents à proximité, ainsi que plusieurs restaurants, dont Le Boun's Hôtel Restaurant, O'Balcony et Café de Ya",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Hippodrome · Ville : Yaoundé · Localisation : Avenue de l'indépendance · Catégories : Sites Touristiques, Monument",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "La Place De L'indépendance",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-de-bayomen-carriere-de-bayomen",
+    "name": "Lac De Bayomen",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Lac De Bayomen. Situé dans le village Bayomen, à 20 minutes de Bafia, le Lac de Bayomen est un véritable petit coin de paradis. Ce site pittoresque est réputé pour son paysage magnifique et son eau étincelante, offrant un cadre paisible pour les amoureux de la nature. Les activités phares incluent la promenade autour du lac, la pêche et des moments de détente au bord de l'eau. C'est un endroit adapté aux adultes et enfants, idéal pour un week-end en famille ou entre amis. Les tarifs sont généralement accessibles et adaptés aux visiteurs locaux. Il n'y a pas de grands événements ou de salles dédiées à des spectacles. Concernant les services offerts, le site ne dispose pas de restaurants ni d'installations complexes, mais offre un cadre naturel pour des pique-niques et des moments de relaxation. Le stationnement est généralement disponible près du site. En termes d' évaluations, le Lac de ",
+    "summary_en": "Lac De Bayomen. Located dans le village Bayomen, à 20 minutes de Bafia, le Lac de Bayomen is a véritable petit coin de paradis. Ce site pittoresque est réputé pour son paysage magnifique et son eau étincelante, offrant un cadre paisible pour les amoureux de la nature. Les activités phares incluent la promenade autour du lac, la pêche et des moments de détente au bord de l'eau. C'is a endroit adapté aux adultes et enfants, idéal pour un week-end en famille ou entre amis. Les tarifs sont généralement accessibles et adaptés aux visiteurs locaux. Il n'y a pas de grands événements ou de salles dédiées à des spectacles. Concernant les services offerts, le site ne dispose pas de restaurants ni d'installations complexes, mais offers un cadre naturel pour des pique-niques et des moments de relaxation. Le stationnement est généralement disponible près du site. En termes d' évaluations, le Lac de B",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Carriere de Bayomen · Ville : Bayomen · Localisation : Près de Bafia · Catégories : Sites Touristiques, LAC",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac De Bayomen",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-lac-guere-bec-de-canard",
+    "name": "Le Lac Guéré",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Le Lac Guéré. Situé à une trentaine de kilomètres de la ville de Yagoua, dans la localité de Guéré, Extrême-Nord du Cameroun, le Lac Guéré est un site touristique naturel méconnu mais d'une grande beauté. Il se trouve dans la zone dite \"bec de canard\", au c&oelig;ur du département du Mayo Danay. Ce lac est un véritable trésor naturel qui attire les passionnés de nature, loin des circuits touristiques traditionnels. Les activités phares du Lac Guéré incluent des balades en pirogue, des moments de détente au bord de l'eau, et la possibilité d'observer la faune et la flore locales, notamment les oiseaux et autres espèces vivant autour du lac. Ce lieu est adapté pour les adultes et les enfants souhaitant découvrir la nature sauvage de la région, dans un cadre calme et apaisant. Concernant les services offerts, il est important de noter qu'il n'y a pas d'infrastructures complexes sur place te",
+    "summary_en": "Le Lac Guéré. Located à une trentaine de kilomètres de la ville de Yagoua, dans la localité de Guéré, Extrême-Nord du Cameroon, le Lac Guéré is a tourist site naturel méconnu mais d'une grande beauté. Il se trouve dans la zone dite \"bec de canard\", au c&oelig;ur du département du Mayo Danay. Ce lac is a véritable trésor naturel qui attire les passionnés de nature, loin des circuits touristiques traditionnels. Les activités phares du Lac Guéré incluent des balades en pirogue, des moments de détente au bord de l'eau, et la possibilité d'observer la faune et la flore locales, notamment les oiseaux et autres espèces vivant autour du lac. Ce lieu est adapté pour les adultes et les enfants souhaitant découvrir la nature sauvage de la région, dans un cadre calme et apaisant. Concernant les services offerts, il est important de noter qu'il n'y a pas d'infrastructures complexes sur place telles q",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : bec de canard · Ville : Guéré · Localisation : A une trentaine de kilomètre de la ville de Yagoua · Catégories : Sites Touristiques, LAC",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Le Lac Guéré",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "les-cascades-de-poupouma-poupouma",
+    "name": "Les Cascades De Poupouma",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Les Cascades De Poupouma. Situées à Poupouma, dans la région de la Lékié sur la route de Monatélé, les cascades de Poupouma sont un site naturel exceptionnel. Cette chute d'eau en escalier offre un spectacle étonnant et une expérience inoubliable aux visiteurs. Attractions et activités • Activités phares: Observation de la chute d'eau en escalier, baignade dans les piscines naturelles entre les escaliers (en saison sèche), traversée à pied de la rivière (en saison sèche), appréciation du précipice de près de 30 mètres de hauteur et 100 mètres de largeur, observation de la brume et de l' arc-en-ciel (en saison pluvieuse), découverte des villages traversés sur la route. • Options pour tous les âges: Adapté à tous les âges aimant la nature et les paysages, avec des zones de baignade sécurisées en saison sèche. • Tarifs: Généralement gratuit, mais des frais d'accès ou de guidage peuvent s'ap",
+    "summary_en": "Les Cascades De Poupouma. Situées à Poupouma, dans la region de la Lékié sur la route de Monatélé, les cascades de Poupouma are a site naturel exceptionnel. Cette chute d'eau en escalier offers un spectacle étonnant et une expérience inoubliable aux visiteurs. Attractions et activités • Activités phares: Observation de la chute d'eau en escalier, baignade dans les piscines naturelles entre les escaliers (en saison sèche), traversée à pied de la rivière (en saison sèche), appréciation du précipice de near 30 mètres de hauteur et 100 mètres de largeur, observation de la brume et de l' arc-en-ciel (en saison pluvieuse), découverte des villages traversés sur la route. • Options pour tous les âges: Adapté à tous les âges aimant la nature et les paysages, avec des zones de baignade sécurisées en saison sèche. • Tarifs: Généralement gratuit, mais des frais d'accès ou de guidage peuvent s'appliq",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Poupouma · Ville : Yaoundé · Localisation : Sur la route de Monatélé · Catégories : Sites Touristiques, Chutes",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": "1000 XAF",
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Les Cascades De Poupouma",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "mont-eloundem-mendong",
+    "name": "Mont Eloundem",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Mont Eloundem. Le Mont Eloundem est situé à Mendong Eloundem, un quartier de la ville de Yaoundé. Ce mont est recouvert sur plusieurs kilomètres d'une forêt dense abritant une grande diversité d'arbres et d'animaux. C'est un site naturel offrant une magnifique biodiversité et une expérience immersive en plein cœur de la nature. Attractions et Activités: • Activités phares: Randonnée, exploration de la forêt, observation de la faune et flore locales, activités physiques et bien-être • Options pour tous les âges: Le site est adapté à tous les âges, parfait pour une découverte en famille ou entre amis • Tarifs: Non précisé, mais les activités sont généralement accessibles sur réservation ou par le biais d'un guide local • Nombre de places assises: Ce lieu étant principalement en plein air, il n'y a pas de places assises fixes, mais des aires de repos peuvent être aménagées pour les visiteur",
+    "summary_en": "Mont Eloundem. Le Mont Eloundem est situé à Mendong Eloundem, un quartier de la city of Yaoundé. Ce mont est recouvert sur plusieurs kilomètres d'une forêt dense abritant une grande diversité d'arbres et d'animaux. C'is a site naturel offrant une magnifique biodiversité et une expérience immersive en plein cœur de la nature. Attractions et Activités: • Activités phares: Randonnée, exploration de la forêt, observation de la faune et flore locales, activités physiques et bien-être • Options pour tous les âges: Le site est adapté à tous les âges, parfait pour une découverte en famille ou entre amis • Tarifs: Non précisé, mais les activités sont généralement accessibles sur réservation ou par le biais d'un guide local • Nombre de places assises: Ce lieu étant principalement en plein air, il n'y a pas de places assises fixes, mais des aires de repos peuvent être aménagées pour les visiteurs E",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Mendong · Ville : Yaoundé · Localisation : ELOUNDEM · Catégories : Sites Touristiques, Mont",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Mont Eloundem",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "mont-febe",
+    "name": "Mont Fébé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Colline au nord-ouest de Yaoundé : panorama sur la capitale, basilique et espaces hôteliers. Balade courte idéale pour se situer dans la géographie urbaine Fang-Beti.",
+    "summary_en": "Hill northwest of Yaoundé: capital panorama, basilica and hotel grounds. A short walk that helps you read Fang-Beti urban geography.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Accès véhicule ou marche ; respect des lieux de culte.",
+    "latitude": 3.915,
+    "longitude": 11.485,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Mont Fébé",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "monument-reunification-yaounde",
+    "name": "Monument de la Réunification",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "heritage",
+    "summary_fr": "Monument emblématique de Yaoundé commémorant la réunification du Cameroun. Escaliers, vue urbaine et symbolique nationale : un passage classique pour comprendre le récit politique du pays.",
+    "summary_en": "Yaoundé's emblematic monument commemorating Cameroon's reunification. Steps, city views and national symbolism: a classic stop for the country's political story.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Site ouvert ; idéal en combo Musée national et centre-ville.",
+    "latitude": 3.8578,
+    "longitude": 11.5123,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "Monument de la Réunification",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "musee-national-yaounde",
+    "name": "Musée national du Cameroun",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "museum",
+    "summary_fr": "Installé dans l'ancien palais présidentiel près du palais de justice, le Musée national (rénové en 2015) déploie sur ~5 000 m² l'histoire politique et les cultures des dix régions : costumes, instruments, archives et pièces uniques (dont le saxophone de Manu Dibango).",
+    "summary_en": "Housed in the former presidential palace near the law courts, the National Museum (renovated 2015) spreads across ~5,000 m² Cameroon's political history and the cultures of all ten regions: costumes, instruments, archives and unique pieces (including Manu Dibango's saxophone).",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Entrée souvent indiquée à partir de ~500 FCFA. Parking disponible ; pas de restauration sur place.",
+    "latitude": 3.8634,
+    "longitude": 11.5165,
+    "price": "500 XAF",
+    "tags": [
+      "yaounde",
+      "centre",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Musée national du Cameroun",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "oveng-lodge-eco-hotel-amp-spa-cameroun-ayene",
+    "name": "Oveng Lodge Éco Hôtel & Spa Cameroun",
+    "city": "Nkolmétet",
+    "region": "Centre",
+    "category": "activity",
+    "summary_fr": "Oveng Lodge Éco Hôtel & Spa Cameroun. Situé à Ayéné, Nkolmétet, l' Oveng Lodge éco Hôtel & Spa Cameroun est un havre de paix niché en pleine forêt équatoriale, offrant une expérience immersive et dépaysante à seulement 30 km de Mbalmayo. Ce lodge écologique chic met en avant un tourisme responsable et durable, alliant confort, nature et authenticité. L' Oveng Lodge propose une variété d' activités enrichissantes, notamment des ateliers de cuisine traditionnelle, des balades en pirogue sur la rivière So'p et des visites de cacaoyères guidées par des experts locaux. Ce lieu est adapté à tous les âges, permettant aux adultes et aux enfants de découvrir la culture et l'environnement naturel en toute sérénité. Le tarif des séjours varie en fonction des prestations choisies, incluant hébergement, repas et activités. Le site ne dispose pas de salles de concert ou de cinéma, mais son cadre natur",
+    "summary_en": "Oveng Lodge Éco Hôtel & Spa Cameroon. Located à Ayéné, Nkolmétet, l' Oveng Lodge éco Hôtel & Spa Cameroon is a havre de paix niché en pleine forêt équatoriale, offrant une expérience immersive et dépaysante à seulement 30 km de Mbalmayo. Ce lodge écologique chic met en avant un tourisme responsable et durable, alliant confort, nature et authenticité. L' Oveng Lodge features une variété d' activités enrichissantes, notamment des ateliers de cuisine traditionnelle, des balades en pirogue sur la rivière So'p et des visites de cacaoyères guidées par des experts locaux. Ce lieu est adapté à tous les âges, permettant aux adultes et aux enfants de découvrir la culture et l'environnement naturel en toute sérénité. Le tarif des séjours varie en fonction des prestations choisies, incluant hébergement, repas et activités. Le site ne dispose pas de salles de concert ou de cinéma, mais son cadre natu",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ayéné · Ville : Nkolmétet · Localisation : Oveng Lodge; 30 km de Mbalmayo · Catégories : Sites Touristiques, Centre d'éco-tourisme",
+    "latitude": 3.4,
+    "longitude": 11.75,
+    "price": "80000 XAF",
+    "tags": [
+      "nkolmetet",
+      "centre",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Oveng Lodge Éco Hôtel & Spa Cameroun",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "place-charles-atangana-cm",
+    "name": "Place Charles Atangana",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "activity",
+    "summary_fr": "Place Charles Atangana. Situé à Av. Marchand, en face du Ministère des Transports, au cœur de Yaoundé, la Place Charles Atangana est un site touristique emblématique chargé d'histoire et de symboles. Ce square verdoyant abrite la majestueuse statue de Charles Atangana, œuvre de 1982 signée par l'artiste camerounais Gédéon Mpando, véritable repère historique en hommage au premier chef supérieur du peuple Ewondo-Bané. Véritable havre de paix, le site offre des promenades tranquilles, des moments de détente à l'ombre des arbres centenaires, et un cadre idéal pour les passionnés d'histoire, de photographie et de culture. La Place Charles Atangana est accessible à tous les âges, aussi bien pour les familles que pour les visiteurs solitaires en quête d'un moment de sérénité. L'accès au site est gratuit, et la place ne comporte pas de places assises fixes, mais les nombreux bancs du square perm",
+    "summary_en": "Place Charles Atangana. Located à Av. Marchand, en face du Ministère des Transports, in the heart of Yaoundé, la Place Charles Atangana is a tourist site emblématique chargé d'histoire et de symboles. Ce square verdoyant abrite la majestueuse statue de Charles Atangana, œuvre de 1982 signée par l'artiste camerounais Gédéon Mpando, véritable repère historique en hommage au premier chef supérieur du peuple Ewondo-Bané. Véritable havre de paix, le site offers des promenades tranquilles, des moments de détente à l'ombre des arbres centenaires, et un cadre idéal pour les passionnés d'histoire, de photographie et de culture. La Place Charles Atangana est accessible à tous les âges, aussi bien pour les familles que pour les visiteurs solitaires en quête d'un moment de sérénité. L'accès au site est gratuit, et la place ne comporte pas de places assises fixes, mais les nombreux bancs du square pe",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Av. Marchand · Ville : Yaoundé · Localisation : En face du ministère des transports · Catégories : Sites Touristiques",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Place Charles Atangana",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "rond-point-j-aime-mon-pays-le-cameroun-centre-ville",
+    "name": "Rond Point J'aime Mon Pays Le Cameroun",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "heritage",
+    "summary_fr": "Rond Point J'aime Mon Pays Le Cameroun. Situé au Centre-ville de Yaoundé, à quelques mètres de l'hôtel Hilton, le Rond-Point J'Aime Mon Pays Le Cameroun est un site touristique emblématique et hautement symbolique. Véritable repère visuel et identitaire, ce monument patriote attire visiteurs et citoyens pour célébrer l' amour du Cameroun et immortaliser leur passage dans la capitale. La principale attraction du site est la sculpture arborant fièrement le slogan &laquo; J'Aime Mon Pays Le Cameroun &raquo;, un espace propice à la photographie souvenir, à la flânerie urbaine et à l'observation de la vie citadine. Le lieu est accessible à tous les âges, aussi bien aux enfants qu'aux adultes, sans aucune restriction. Il s'agit d'un site gratuit et librement accessible, sans places assises formelles mais entouré de trottoirs et d'espaces piétons. Le rond-point ne dispose pas de services sur pl",
+    "summary_en": "Rond Point J'aime Mon Pays Le Cameroon. Located au Centre-ville de Yaoundé, à quelques mètres de l'hôtel Hilton, le Rond-Point J'Aime Mon Pays Le Cameroon is a tourist site emblématique et hautement symbolique. Véritable repère visuel et identitaire, ce monument patriote attire visiteurs et citoyens pour célébrer l' amour du Cameroon et immortaliser leur passage dans la capitale. La principale attraction du site est la sculpture arborant fièrement le slogan &laquo; J'Aime Mon Pays Le Cameroon &raquo;, un espace propice à la photographie souvenir, à la flânerie urbaine et à l'observation de la vie citadine. Le lieu est accessible à tous les âges, aussi bien aux enfants qu'aux adultes, sans aucune restriction. Il s'agit d'un site gratuit et librement accessible, sans places assises formelles mais entouré de trottoirs et d'espaces piétons. Le rond-point ne dispose pas de services sur place ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Centre-ville · Ville : Yaoundé · Localisation : A quelques mètres du Hilton · Catégories : Sites Touristiques, Monument",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "Rond Point J'aime Mon Pays Le Cameroun",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "sanctuaire-primates-mefou",
+    "name": "Sanctuaire de primates de Mefou",
+    "city": "Mfou",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "À Mfou, à environ 45 km au sud de Yaoundé, le parc / sanctuaire de la Méfou accueille chimpanzés, gorilles et autres primates dans un cadre forestier. Ouvert en journée (souvent 8h30–16h30), c'est une sortie pédagogique très adaptée aux familles.",
+    "summary_en": "In Mfou, about 45 km south of Yaoundé, the Méfou park / sanctuary cares for chimpanzees, gorillas and other primates in a forest setting. Daytime opening (often 8:30–16:30) makes it a strong educational family visit.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Tarif souvent indiqué autour de 7 500 FCFA. Parking sur place ; restauration limitée, prévoir de l'eau.",
+    "latitude": 3.63,
+    "longitude": 11.555,
+    "price": "7500 XAF",
+    "tags": [
+      "mfou",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Sanctuaire de primates de Mefou",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "site-touristique-d-ebogo-ebogo",
+    "name": "Site Touristique D'ebogo",
+    "city": "Mbalmayo",
+    "region": "Centre",
+    "category": "activity",
+    "summary_fr": "Site Touristique D'ebogo. Situé à Ebogo, dans le quartier de Mengueme, à environ une quinzaine de kilomètres par piste de Mbalmayo, le Site Touristique d'Ebogo est un joyau de tourisme durable niché au cœur de la forêt dense camerounaise. Ce site enchanteur, proche du fleuve qui serpente à travers la végétation luxuriante, n'est pas un lieu de divertissement classique comme un cinéma ou un parc d'attractions, mais une destination idéale pour les amateurs de nature et d'aventure. Le Site Touristique d'Ebogo propose une multitude d'activités qui raviront les visiteurs en quête d'évasion. Les attractions phares incluent des randonnées en forêt pour découvrir la biodiversité locale, des balades en pirogue sur le fleuve, et des séances de baignade dans des eaux cristallines. Ce site convient à tous les âges: les enfants pourront profiter des jeux autour du fleuve, tandis que les adultes appré",
+    "summary_en": "tourist site D'ebogo. Located à Ebogo, dans le quartier de Mengueme, à environ une quinzaine de kilomètres par piste de Mbalmayo, le tourist site d'Ebogo is a joyau de tourisme durable niché in the heart of la forêt dense camerounaise. Ce site enchanteur, proche du fleuve qui serpente à travers la végétation luxuriante, n'est pas un lieu de divertissement classique comme un cinéma ou un parc d'attractions, mais une destination idéale pour les amateurs de nature et d'aventure. Le tourist site d'Ebogo features une multitude d'activités qui raviront les visiteurs en quête d'évasion. Les attractions phares incluent des randonnées en forêt pour découvrir la biodiversité locale, des balades en pirogue sur le fleuve, et des séances de baignade dans des eaux cristallines. Ce site convient à tous les âges: les enfants pourront profiter des jeux autour du fleuve, tandis que les adultes apprécieron",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ebogo · Ville : Mbalmayo · Localisation : Mengueme · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 3.52,
+    "longitude": 11.5,
+    "price": "1000 XAF",
+    "tags": [
+      "mbalmayo",
+      "centre",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Site Touristique D'ebogo",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "site-touristique-ecosysteme-afamba-pk-12",
+    "name": "Site Touristique Ecosystème Afamba",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Site Touristique Ecosystème Afamba. Situé à PK 12, le long de l' axe Yaoundé-Akonolinga, dans la ville de Yaoundé, le Site Touristique écosystème Afamba est un espace naturel préservé, véritable réserve de forêt vierge, offrant un cadre de détente unique et immersif. Ce site s'inscrit comme un club multi-activités niché en pleine nature, parfait pour une échappée hors du tumulte urbain. Parmi les activités phares, les visiteurs peuvent profiter de randonnées écologiques, d' ateliers nature, de balades pédagogiques, de pique-niques champêtres ainsi que de séances de relaxation en plein air. Le site propose également des animations ponctuelles et thématiques pour sensibiliser à l'environnement. Il est adapté à tous les âges, autant pour les enfants, les familles que les groupes d'adultes. L'entrée est généralement payante, avec des tarifs accessibles en fonction des formules choisies. L'es",
+    "summary_en": "tourist site Ecosystème Afamba. Located à PK 12, le long de l' axe Yaoundé-Akonolinga, dans la city of Yaoundé, le tourist site écosystème Afamba is a espace naturel préservé, véritable réserve de forêt vierge, offrant un cadre de détente unique et immersif. Ce site s'inscrit comme un club multi-activités niché en pleine nature, parfait pour une échappée hors du tumulte urbain. Parmi les activités phares, les visiteurs peuvent profiter de randonnées écologiques, d' ateliers nature, de balades pédagogiques, de pique-niques champêtres ainsi que de séances de relaxation en plein air. Le site features également des animations ponctuelles et thématiques pour sensibiliser à l'environnement. Il est adapté à tous les âges, autant pour les enfants, les familles que les groupes d'adultes. L'entrée est généralement payante, avec des tarifs accessibles en fonction des formules choisies. L'espace est",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Pk 12 · Ville : Yaoundé · Localisation : AXE YAOUNDE -AKONOLINGA · Catégories : Sites Touristiques, Parcs",
+    "latitude": 3.848,
+    "longitude": 11.5021,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Site Touristique Ecosystème Afamba",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "yaounde-marche-mokolo",
+    "name": "Marché Mokolo",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "market",
+    "summary_fr": "Grand marché populaire de Yaoundé : fruits, légumes, tissus, objets du quotidien. Immersion dans la vie locale et l'ambiance commerciale de la capitale.",
+    "summary_en": "Large popular market in Yaoundé: fruit, vegetables, fabrics, everyday goods. Immersion in local life and the capital's commercial energy.",
+    "tips_fr": "Gardez vos affaires près de vous. Négociez poliment. Allez de préférence en journée.",
+    "tips_en": "Keep belongings close. Bargain politely. Prefer daytime visits.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "yaoundé",
+      "marché",
+      "market",
+      "shopping",
+      "food",
+      "local",
+      "centre"
+    ],
+    "sources": [
+      {
+        "title": "Marché Mokolo",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "yaounde-boulevard-du-20-mai",
+    "name": "Boulevard du 20 Mai / centre administratif",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "district",
+    "summary_fr": "Axe et secteur administratifs de Yaoundé: institutions, monuments et ambiance de capitale politique.",
+    "summary_en": "Administrative axis of Yaoundé: institutions, monuments and political-capital atmosphere.",
+    "tips_fr": "Utile pour une première orientation en centre-ville.",
+    "tips_en": "Useful for first orientation downtown.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "yaoundé",
+      "centre",
+      "capitale",
+      "administratif"
+    ],
+    "sources": [
+      {
+        "title": "Boulevard du 20 Mai / centre administratif",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "yaounde-mvog-mbi",
+    "name": "Quartier Mvog-Mbi / vie nocturne & restauration",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "district",
+    "summary_fr": "Secteur connu pour restaurants et vie nocturne. Bon endroit pour goûter cuisine camerounaise en ville.",
+    "summary_en": "Area known for restaurants and nightlife. Good place to try Cameroonian food in the city.",
+    "tips_fr": "Comme partout, restez attentif la nuit et privilégiez les établissements fréquentés.",
+    "tips_en": "As anywhere, stay alert at night and prefer busy venues.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "restaurant",
+      "food",
+      "nightlife",
+      "cuisine",
+      "centre"
+    ],
+    "sources": [
+      {
+        "title": "Quartier Mvog-Mbi / vie nocturne & restauration",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "yaounde-lac-municipal",
+    "name": "Environs des lacs et collines de Yaoundé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "nature",
+    "summary_fr": "Yaoundé est une ville de sept collines: promenades, points de vue et espaces verts selon les quartiers (dont secteurs autour des lacs municipaux selon accès).",
+    "summary_en": "Yaoundé is a city of seven hills: walks, viewpoints and green spaces by neighbourhood (including municipal lake areas depending on access).",
+    "tips_fr": "Demandez un itinéraire de balade local; la circulation peut être dense.",
+    "tips_en": "Ask for a local walking route; traffic can be heavy.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "collines",
+      "hills",
+      "nature",
+      "lac",
+      "centre"
+    ],
+    "sources": [
+      {
+        "title": "Environs des lacs et collines de Yaoundé",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "hilton-yaounde-boulevard-du-20-mai",
+    "name": "Hilton Yaoundé",
+    "city": "Yaoundé",
+    "region": "Centre",
+    "category": "hotel",
+    "summary_fr": "Hôtel Hilton Yaoundé, boulevard du 20 Mai — documenté sur Ayila’a.",
+    "summary_en": "Hilton Yaoundé hotel, Boulevard du 20 Mai — documented on Ayila’a.",
+    "culture_fr": "Quartier : Boulevard du 20 Mai · Ville : Yaoundé",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "yaounde",
+      "centre",
+      "hotel",
+      "hilton",
+      "bastos"
+    ],
+    "sources": [
+      {
+        "title": "Hilton Yaoundé",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com",
+        "verification_status": "structured_import"
+      }
+    ]
+  }
+]

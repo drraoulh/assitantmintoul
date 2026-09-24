@@ -59,6 +59,28 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "manoka",
         "ekom",
     ),
+    "centre": (
+        "region du centre",
+        "région du centre",
+        "centre du cameroun",
+        "yaounde",
+        "yaoundé",
+        "mbalmayo",
+        "mfou",
+        "soa",
+        "monatele",
+        "monatélé",
+        "ewondo",
+        "fang-beti",
+        "mokolo",
+        "mefou",
+        "ebogo",
+        "reunification",
+        "réunification",
+        "nsimalen",
+        "poulet dg",
+        "bastos",
+    ),
 }
 
 
@@ -86,6 +108,7 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "koki",
             "ndole",
             "ndolé",
+            "poulet",
             "cafe",
             "café",
         )
@@ -100,12 +123,18 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "bamum",
             "bamil",
             "sawa",
+            "ewondo",
+            "fang",
+            "beti",
             "danse",
             "masque",
             "protocole",
             "langue",
             "language",
             "patrimoine",
+            "musee",
+            "musée",
+            "monument",
         )
     )
     want_craft = any(

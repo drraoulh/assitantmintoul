@@ -46,6 +46,10 @@ _CITIES: dict[str, str] = {
     "melong": "Melong",
     "yabassi": "Yabassi",
     "mouanko": "Mouanko",
+    "mbalmayo": "Mbalmayo",
+    "mfou": "Mfou",
+    "soa": "Soa",
+    "monatele": "Monatélé",
 }
 
 _REGIONS: dict[str, str] = {
@@ -76,10 +80,17 @@ _REGIONS: dict[str, str] = {
 }
 
 # Bare "est" is also the French verb — never match it with a plain substring.
+# Bare "centre" can mean "city centre" — require regional cues.
 _REGION_SAFE_SUBSTRING = {
     "est": re.compile(
         r"(?:\bl['’]est\b|\br[eé]gion\s+(?:de\s+l['’])?est\b|\beast(?:\s+region)?\b|"
         r"\bdans\s+l['’]est\b|\bvers\s+l['’]est\b)",
+        re.IGNORECASE,
+    ),
+    "centre": re.compile(
+        r"(?:\br[eé]gion\s+(?:du\s+)?centre\b|\bcentre\s+(?:du\s+)?cameroun\b|"
+        r"\bdans\s+le\s+centre\b|\bau\s+centre\s+(?:du\s+)?cameroun\b|"
+        r"\bcenter\s+region\b)",
         re.IGNORECASE,
     ),
 }
@@ -91,6 +102,10 @@ _OUEST_CULTURE = re.compile(
 )
 _LITTORAL_CULTURE = re.compile(
     r"\b(sawa|ndol[eé]|wouri|bonanjo|duala)\b",
+    re.IGNORECASE,
+)
+_CENTRE_CULTURE = re.compile(
+    r"\b(ewondo|fang[- ]?beti|mokolo|mefou|ebogo|r[eé]unification)\b",
     re.IGNORECASE,
 )
 
@@ -133,6 +148,18 @@ _KNOWN_PLACES: dict[str, str] = {
     "fleuve wouri": "Fleuve Wouri",
     "ile de manoka": "Ile De Manoka",
     "île de manoka": "Ile De Manoka",
+    "monument de la reunification": "Monument de la Réunification",
+    "monument de la réunification": "Monument de la Réunification",
+    "musee national du cameroun": "Musée national du Cameroun",
+    "musée national du cameroun": "Musée national du Cameroun",
+    "mont febe": "Mont Fébé",
+    "mont fébé": "Mont Fébé",
+    "marche mokolo": "Marché Mokolo",
+    "marché mokolo": "Marché Mokolo",
+    "sanctuaire de mefou": "Sanctuaire de primates de Mefou",
+    "sanctuaire de primates de mefou": "Sanctuaire de primates de Mefou",
+    "mefou": "Sanctuaire de primates de Mefou",
+    "ebogo": "Site Touristique D'ebogo",
     "rhumsiki": "Rhumsiki",
     "korup": "Korup",
 }
@@ -233,6 +260,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Littoral"
         if slots.location is None:
             slots.location = "Littoral"
+
+    if slots.region is None and _CENTRE_CULTURE.search(raw):
+        slots.region = "Centre"
+        if slots.location is None:
+            slots.location = "Centre"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

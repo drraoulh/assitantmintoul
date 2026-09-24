@@ -46,6 +46,17 @@ _NOT_DOUALA = {
     "limbé",
     "buea",
 }
+_NOT_YAOUNDE = {
+    "mbalmayo",
+    "mfou",
+    "soa",
+    "monatele",
+    "monatélé",
+    "nkolmetet",
+    "nkolmétet",
+    "douala",
+    "bafoussam",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -163,6 +174,9 @@ class PlaceRetriever:
                     continue
                 if hub == "douala" and place_city in _NOT_DOUALA:
                     continue
+                if hub == "yaoundé" or hub == "yaounde":
+                    if place_city in _NOT_YAOUNDE:
+                        continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -183,6 +197,14 @@ class PlaceRetriever:
                                 "bonamoussadi",
                                 "manoka",
                             } and "douala" not in place_city:
+                                continue
+                        elif hub in {"yaounde", "yaoundé"}:
+                            if place_city not in {
+                                "mokolo",
+                                "bastos",
+                                "nsimalen",
+                                "mvog-mbi",
+                            } and "yaounde" not in place_city and "yaoundé" not in place_city:
                                 continue
                         else:
                             continue

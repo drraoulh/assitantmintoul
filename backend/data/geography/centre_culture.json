@@ -1,0 +1,179 @@
+{
+  "region_id": "centre",
+  "region_fr": "Centre",
+  "region_en": "Centre",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, shopping_crafts, cities_quick_guide, regions_overview, climate_seasons, transport_itineraries, interests_itineraries, languages_etiquette), stay-cities (Ewondo), fiches lieux Centre, et hôtel Ayila'a. Aucun restaurant nommé inventé.",
+  "overview": {
+    "text_fr": "Le Centre a pour chef-lieu Yaoundé, capitale politique du Cameroun : collines, musées, Monument de la Réunification, marché Mokolo. Base pour le centre du pays et départ vers l’Ouest ou le Sud. Autour : Mefou (Mfou), Ebogo (Mbalmayo), Soa.",
+    "text_en": "The Centre’s capital is Yaoundé, Cameroon’s political capital: hills, museums, Reunification Monument, Mokolo market. A base for the centre of the country and departures to the West or South. Nearby: Mefou (Mfou), Ebogo (Mbalmayo), Soa.",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; cameroon_admin.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "fang-beti-centre",
+      "name_fr": "Plateau Fang-Beti (Centre)",
+      "name_en": "Fang-Beti plateau (Centre)",
+      "description_fr": "Yaoundé et le plateau Centre : langues fang-beti (dont Ewondo), capitale politique, musées nationaux et collines administratives.",
+      "description_en": "Yaoundé and the Centre plateau: Fang-Beti languages (including Ewondo), political capital, national museums and administrative hills.",
+      "related_cities": ["Yaoundé", "Mbalmayo", "Mfou", "Soa"],
+      "source": "data/documents/history_culture.md ; imports/camerounai-stay-language-games/data/stay-cities.ts"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Ewondo",
+      "area": "Yaoundé / plateau Fang-Beti",
+      "note_fr": "Mbolo aussi, mais le ton ewondo est plus net qu’à la côte. Akiba pour merci.",
+      "note_en": "Mbolo too, but the Ewondo tone is crisper than on the coast. Akiba for thank you.",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Français / Camfranglais",
+      "area": "Yaoundé urbain",
+      "note_fr": "Français dominant ; mix français-anglais fréquent en ville.",
+      "note_en": "French dominates; French–English mix is common in the city.",
+      "source": "data/documents/languages_etiquette.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "political-capital",
+      "title_fr": "Capitale politique",
+      "title_en": "Political capital",
+      "text_fr": "Yaoundé est la capitale politique du Cameroun : institutions, collines administratives, Monument de la Réunification et musée national.",
+      "text_en": "Yaoundé is Cameroon’s political capital: institutions, administrative hills, Reunification Monument and national museum.",
+      "source": "data/documents/history_culture.md ; data/documents/cities_quick_guide.md"
+    },
+    {
+      "id": "museums-monuments",
+      "title_fr": "Musées et monuments",
+      "title_en": "Museums and monuments",
+      "text_fr": "Musée national, Monument de la Réunification, cathédrale Notre-Dame-des-Victoires, place de l’Indépendance : repères culturels et historiques de la capitale.",
+      "text_en": "National Museum, Reunification Monument, Notre-Dame-des-Victoires cathedral, Independence Square: cultural and historical landmarks of the capital.",
+      "source": "data/tourist_sites/centre_complete.json ; data/documents/interests_itineraries.md"
+    },
+    {
+      "id": "market-etiquette",
+      "title_fr": "Marché Mokolo et savoir-vivre",
+      "title_en": "Mokolo market and etiquette",
+      "text_fr": "Au marché Mokolo : saluer, négocier avec courtoisie ; fruits tropicaux et produits du quotidien. Demandez avant de photographier.",
+      "text_en": "At Mokolo market: greet first, negotiate courteously; tropical fruit and everyday goods. Ask before photographing.",
+      "source": "data/documents/food_culture.md ; data/documents/shopping_crafts.md ; data/documents/languages_etiquette.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "poulet-dg",
+      "name_fr": "Poulet DG",
+      "name_en": "Poulet DG",
+      "text_fr": "Poulet sauté avec plantains et légumes, très présent en restauration urbaine à Yaoundé.",
+      "text_en": "Sautéed chicken with plantains and vegetables, very common in Yaoundé urban restaurants.",
+      "source": "data/documents/food_culture.md"
+    },
+    {
+      "id": "cuisine-quartier",
+      "name_fr": "Cuisine de quartier / marchés",
+      "name_en": "Neighbourhood / market cuisine",
+      "text_fr": "Yaoundé offre restos de quartier et marchés (Mokolo) pour produits locaux — goûtez aussi ndolé, plantains ; signalez les allergies. Aucun restaurant nommé inventé dans cette base.",
+      "text_en": "Yaoundé has neighbourhood restaurants and markets (Mokolo) for local produce — also try ndolé, plantains; state allergies. No invented restaurant names in this base.",
+      "source": "data/documents/interests_itineraries.md ; data/documents/languages_etiquette.md"
+    },
+    {
+      "id": "plantains-manioc",
+      "name_fr": "Plantains et manioc",
+      "name_en": "Plantains and cassava",
+      "text_fr": "Plantains et manioc font partie des bases alimentaires rencontrées à Yaoundé comme ailleurs au Cameroun.",
+      "text_en": "Plantains and cassava are staples found in Yaoundé as elsewhere in Cameroon.",
+      "source": "data/documents/food_culture.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "mokolo",
+      "name_fr": "Marché Mokolo",
+      "name_en": "Mokolo market",
+      "text_fr": "Grand marché de Yaoundé pour fruits tropicaux, produits du quotidien, wax et paniers.",
+      "text_en": "Major Yaoundé market for tropical fruit, everyday goods, wax cloth and baskets.",
+      "city": "Yaoundé",
+      "source": "data/documents/food_culture.md ; data/documents/shopping_crafts.md"
+    },
+    {
+      "id": "artisanat-yaounde",
+      "name_fr": "Centre international de l’artisanat",
+      "name_en": "International craft centre",
+      "text_fr": "Point de vente / découverte d’artisanat à Yaoundé (voir fiche lieu Centre International De L’artisanat).",
+      "text_en": "Craft shopping / discovery point in Yaoundé (see International Craft Centre place card).",
+      "city": "Yaoundé",
+      "source": "data/tourist_sites/centre_complete.json"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "hills-lakes",
+      "title_fr": "Collines et lacs",
+      "title_en": "Hills and lakes",
+      "text_fr": "Mont Fébé, mont Eloundem, environs des lacs et collines ; cascades de Poupouma ; île des Cocotiers (Soa).",
+      "text_en": "Mount Fébé, Mount Eloundem, lakes and hills surroundings; Poupouma falls; Cocotiers island (Soa).",
+      "source": "data/tourist_sites/centre_complete.json"
+    },
+    {
+      "id": "mefou-ebogo",
+      "title_fr": "Mefou et Ebogo",
+      "title_en": "Mefou and Ebogo",
+      "text_fr": "Sanctuaire de primates de Mefou (Mfou) ; site touristique d’Ebogo (Mbalmayo) pour nature proche de Yaoundé.",
+      "text_en": "Mefou primate sanctuary (Mfou); Ebogo tourist site (Mbalmayo) for nature near Yaoundé.",
+      "source": "data/tourist_sites/centre_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "hub-yaounde",
+      "title_fr": "Hub Yaoundé",
+      "title_en": "Yaoundé hub",
+      "text_fr": "Aéroport Yaoundé-Nsimalen (NSI). Route Douala ↔ Yaoundé via Edéa. Bonne base vers l’Ouest (Bafoussam) ou le Sud.",
+      "text_en": "Yaoundé-Nsimalen airport (NSI). Douala ↔ Yaoundé road via Edéa. Good base toward the West (Bafoussam) or the South.",
+      "source": "data/documents/transport_itineraries.md ; data/documents/regions_overview.md"
+    },
+    {
+      "id": "climate-centre",
+      "title_fr": "Climat d’altitude",
+      "title_en": "Highland climate",
+      "text_fr": "Yaoundé / Centre : tropical d’altitude, souvent plus agréable que le littoral.",
+      "text_en": "Yaoundé / Centre: highland tropical climate, often more pleasant than the coast.",
+      "source": "data/documents/climate_seasons.md"
+    },
+    {
+      "id": "two-day-yaounde",
+      "title_fr": "Exemple 2 jours à Yaoundé",
+      "title_en": "Sample 2 days in Yaoundé",
+      "text_fr": "Jour 1 : musée / monument + marché Mokolo (matin), vue depuis une colline, resto local le soir. Jour 2 : Mefou, Ebogo ou collines selon envie nature.",
+      "text_en": "Day 1: museum / monument + Mokolo market (morning), hill viewpoint, local dinner. Day 2: Mefou, Ebogo or hills for nature.",
+      "source": "data/documents/interests_itineraries.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Centre (export places sans restauration). Ne pas inventer de noms. Orienter vers cuisine de quartier, Mokolo, poulet DG, et restaurants d’hôtels documentés le cas échéant (ex. Hilton Yaoundé).",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the Centre (places export excluded restaurants). Do not invent names. Point to neighbourhood cuisine, Mokolo, poulet DG, and documented hotel restaurants when available (e.g. Hilton Yaoundé).",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "hilton-yaounde",
+      "name": "Hilton Yaoundé",
+      "city": "Yaoundé",
+      "neighbourhood": "Boulevard du 20 Mai",
+      "text_fr": "Hôtel Hilton Yaoundé (boulevard du 20 Mai), documenté sur Ayila’a.",
+      "text_en": "Hilton Yaoundé hotel (Boulevard du 20 Mai), documented on Ayila’a.",
+      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "divisions_snapshot": [
+    {"id": "mfoundi", "name_fr": "Mfoundi", "hub": "Yaoundé", "note_fr": "Chef-lieu régional / capitale nationale."},
+    {"id": "mefou-afamba", "name_fr": "Méfou-et-Afamba", "hub": "Mfou", "note_fr": "Sanctuaire de Mefou ; Soa."},
+    {"id": "nyong-soo", "name_fr": "Nyong-et-So'o", "hub": "Mbalmayo", "note_fr": "Ebogo et nature proche."},
+    {"id": "lekie", "name_fr": "Lékié", "hub": "Monatélé", "note_fr": "Département au nord de Yaoundé."}
+  ]
+}

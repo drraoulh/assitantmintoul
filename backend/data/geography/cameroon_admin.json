@@ -196,6 +196,42 @@
       "capital_city_id": "yabassi",
       "source": "Départements de la région du Littoral (découpage administratif du Cameroun)",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mfoundi",
+      "name_fr": "Mfoundi",
+      "name_en": "Mfoundi",
+      "region_id": "centre",
+      "capital_city_id": "yaounde",
+      "source": "Départements de la région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mefou-afamba",
+      "name_fr": "Méfou-et-Afamba",
+      "name_en": "Méfou-et-Afamba",
+      "region_id": "centre",
+      "capital_city_id": "mfou",
+      "source": "Départements de la région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nyong-soo",
+      "name_fr": "Nyong-et-So'o",
+      "name_en": "Nyong-et-So'o",
+      "region_id": "centre",
+      "capital_city_id": "mbalmayo",
+      "source": "Départements de la région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "lekie",
+      "name_fr": "Lékié",
+      "name_en": "Lékié",
+      "region_id": "centre",
+      "capital_city_id": "monatele",
+      "source": "Départements de la région du Centre",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -246,7 +282,7 @@
       "name_fr": "Yaoundé",
       "name_en": "Yaoundé",
       "entity_type": "city",
-      "division_id": null,
+      "division_id": "mfoundi",
       "region_id": "centre",
       "is_region_capital": true,
       "is_national_capital": true,
@@ -254,7 +290,7 @@
         "yaounde",
         "yaoundé"
       ],
-      "source": "Capitale politique du Cameroun / chef-lieu du Centre",
+      "source": "Capitale politique du Cameroun / chef-lieu du Centre (Mfoundi)",
       "verified_at": "2026-09-24"
     },
     {
@@ -574,6 +610,78 @@
       ],
       "source": "Localité / commune de la Sanaga-Maritime (île de Mouanko), région du Littoral",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mbalmayo",
+      "name_fr": "Mbalmayo",
+      "name_en": "Mbalmayo",
+      "entity_type": "city",
+      "division_id": "nyong-soo",
+      "region_id": "centre",
+      "is_region_capital": false,
+      "aliases": [
+        "mbalmayo"
+      ],
+      "source": "Chef-lieu du Nyong-et-So'o, région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mfou",
+      "name_fr": "Mfou",
+      "name_en": "Mfou",
+      "entity_type": "city",
+      "division_id": "mefou-afamba",
+      "region_id": "centre",
+      "is_region_capital": false,
+      "aliases": [
+        "mfou"
+      ],
+      "source": "Chef-lieu de Méfou-et-Afamba, région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "soa",
+      "name_fr": "Soa",
+      "name_en": "Soa",
+      "entity_type": "city",
+      "division_id": "mefou-afamba",
+      "region_id": "centre",
+      "is_region_capital": false,
+      "aliases": [
+        "soa"
+      ],
+      "source": "Ville de Méfou-et-Afamba, région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "monatele",
+      "name_fr": "Monatélé",
+      "name_en": "Monatélé",
+      "entity_type": "city",
+      "division_id": "lekie",
+      "region_id": "centre",
+      "is_region_capital": false,
+      "aliases": [
+        "monatélé",
+        "monatele"
+      ],
+      "source": "Chef-lieu de la Lékié, région du Centre",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nkolmetet",
+      "name_fr": "Nkolmétet",
+      "name_en": "Nkolmétet",
+      "entity_type": "city",
+      "division_id": "nyong-soo",
+      "region_id": "centre",
+      "is_region_capital": false,
+      "aliases": [
+        "nkolmétet",
+        "nkolmetet"
+      ],
+      "source": "Localité / commune du Centre (Nyong-et-So'o)",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -791,6 +899,78 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Île / zone estuaire près de Douala",
       "source": "Fiche lieu Ile De Manoka",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mokolo",
+      "name_fr": "Mokolo",
+      "name_en": "Mokolo",
+      "city_id": "yaounde",
+      "division_id": "mfoundi",
+      "region_id": "centre",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier / marché Mokolo à Yaoundé",
+      "source": "Fiche lieu Marché Mokolo",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bastos",
+      "name_fr": "Bastos",
+      "name_en": "Bastos",
+      "city_id": "yaounde",
+      "division_id": "mfoundi",
+      "region_id": "centre",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier diplomatique / résidentiel de Yaoundé",
+      "source": "Toponymie Yaoundé",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nsimalen",
+      "name_fr": "Nsimalen",
+      "name_en": "Nsimalen",
+      "city_id": "yaounde",
+      "division_id": "mfoundi",
+      "region_id": "centre",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Aéroport Yaoundé-Nsimalen",
+      "source": "data/documents/transport_itineraries.md",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mvog-mbi",
+      "name_fr": "Mvog-Mbi",
+      "name_en": "Mvog-Mbi",
+      "city_id": "yaounde",
+      "division_id": "mfoundi",
+      "region_id": "centre",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier de Yaoundé (vie nocturne / restauration)",
+      "source": "Fiche lieu Mvog-Mbi",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mefou",
+      "name_fr": "Mefou",
+      "name_en": "Mefou",
+      "city_id": "mfou",
+      "division_id": "mefou-afamba",
+      "region_id": "centre",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Sanctuaire de primates de Mefou",
+      "source": "Fiche lieu Sanctuaire de primates de Mefou",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ebogo",
+      "name_fr": "Ebogo",
+      "name_en": "Ebogo",
+      "city_id": "mbalmayo",
+      "division_id": "nyong-soo",
+      "relation_to_city": "NEAR",
+      "region_id": "centre",
+      "notes_fr": "Site touristique d'Ebogo près de Mbalmayo",
+      "source": "Fiche lieu Site Touristique D'ebogo",
       "verified_at": "2026-09-24"
     }
   ]

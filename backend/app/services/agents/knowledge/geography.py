@@ -212,6 +212,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    if (
+        "centre" in q
+        and "yaounde" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Centre",
+                relation="IS_NOT_EQUIVALENT",
+                object="Yaoundé",
+                text_fr=(
+                    "Pas exactement. Le Centre est une région du Cameroun, "
+                    "et Yaoundé en est le chef-lieu (capitale politique)."
+                ),
+                text_en=(
+                    "Not exactly. The Centre is a region of Cameroon, "
+                    "and Yaoundé is its capital (political capital)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("centre", "yaounde"),
+            )
+        ]
+
     # Capital / chef-lieu of a region
     if re.search(r"capitale|chef[- ]lieu|capital\s+of", q):
         rid = _find_region_in_query(q, idx)
@@ -229,6 +252,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Bafoussam est le chef-lieu de la région de l’Ouest du Cameroun."
                     elif rid == "littoral":
                         text_fr = "Douala est le chef-lieu de la région du Littoral du Cameroun."
+                    elif rid == "centre":
+                        text_fr = "Yaoundé est le chef-lieu de la région du Centre du Cameroun (capitale politique)."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -330,6 +355,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région de l’Ouest du Cameroun."
                 elif rid == "littoral":
                     text_fr = f"{cname} se trouve dans la région du Littoral du Cameroun."
+                elif rid == "centre":
+                    text_fr = f"{cname} se trouve dans la région du Centre du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -408,6 +435,10 @@ def is_geo_simple_query(query: str) -> bool:
         r"c[' ]?est\s+douala\s+nor",
         r"r[eé]gion\s+du\s+littoral.{0,30}douala",
         r"douala.{0,30}r[eé]gion\s+du\s+littoral",
+        r"r[eé]gion\s+du\s+centre.{0,30}yaounde",
+        r"yaounde.{0,30}r[eé]gion\s+du\s+centre",
+        r"centre.{0,40}c[' ]?est.{0,20}yaounde",
+        r"c[' ]?est\s+yaounde\s+nor",
     )
     if any(re.search(p, q) for p in patterns):
         return True

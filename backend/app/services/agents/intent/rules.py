@@ -168,7 +168,17 @@ def classify_with_rules(
 
     if is_geo_simple_query(raw) or (
         _SIMPLE_QA.search(raw)
-        and (slots.city or slots.region or "bafoussam" in folded or "ouest" in folded or "west" in folded)
+        and (
+            slots.city
+            or slots.region
+            or "bafoussam" in folded
+            or "ouest" in folded
+            or "west" in folded
+            or "douala" in folded
+            or "littoral" in folded
+            or "yaounde" in folded
+            or "yaoundé" in folded
+        )
     ):
         return RuleHit("SIMPLE_QA", 0.93, "geographic_relation_qa")
 
