@@ -186,6 +186,18 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("GEMINI_TIMEOUT_SECONDS"),
     )
 
+    # Phase 2.1 Agent 1 — Intent & Router (progressive). Default OFF so the
+    # Phase-1 voice path is unchanged. When observe=true, classify_intent runs
+    # alongside route_query for metrics only (no routing behavior change).
+    intent_router_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("INTENT_ROUTER_OBSERVE"),
+    )
+    intent_router_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("INTENT_ROUTER_ENABLED"),
+    )
+
     @property
     def cors_origin_list(self) -> list[str]:
         if self.cors_origins.strip() == "*":

@@ -216,13 +216,45 @@ class HuggingFaceAIService(AIService):
             with timer.phase("routing"):
                 route = route_query(message)
             trace.mark("routing_done", kind=route.kind, skip_kb=route.skip_kb)
-            yield {
-                "type": "route",
-                "kind": route.kind,
-                "skip_kb": route.skip_kb,
-                "skip_web": route.skip_web,
-                "reason": route.reason,
-            }
+
+            # Phase 2.1 progressive observe — never changes which route is used.
+            if get_settings().intent_router_observe:
+                try:
+                    from app.services.agents.intent import classify_intent
+
+                    intent = classify_intent(
+                        message,
+                        locale=locale,
+                        mode="voice" if brief else "text",
+                        request_id=turn_id,
+                    )
+                    timer.mark("intent_router", intent.router_latency_ms or 0.0)
+                    trace.set_meta(intent_router=intent.observability())
+                    yield {
+                        "type": "route",
+                        "kind": route.kind,
+                        "skip_kb": route.skip_kb,
+                        "skip_web": route.skip_web,
+                        "reason": route.reason,
+                        "intent": intent.observability(),
+                    }
+                except Exception:  # noqa: BLE001
+                    logger.exception("intent_router_observe_failed")
+                    yield {
+                        "type": "route",
+                        "kind": route.kind,
+                        "skip_kb": route.skip_kb,
+                        "skip_web": route.skip_web,
+                        "reason": route.reason,
+                    }
+            else:
+                yield {
+                    "type": "route",
+                    "kind": route.kind,
+                    "skip_kb": route.skip_kb,
+                    "skip_web": route.skip_web,
+                    "reason": route.reason,
+                }
 
             # Safe response cache for exact greetings / chitchat (no KB, no personalization).
             cached = _simple_reply_cache_get(message, locale, brief) if route.skip_kb else None
