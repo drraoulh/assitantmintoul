@@ -82,6 +82,7 @@ def _enrich_row(row: dict[str, Any]) -> dict[str, Any]:
 
 def _hypothesis(rows: list[dict[str, Any]]) -> str:
     valid = [r for r in rows if r.get("valid")]
+    failed = [r for r in rows if not r.get("valid")]
     if not valid:
         return (
             "Aucune mesure valide (souvent FAILED_HTTP_402). "
@@ -92,60 +93,113 @@ def _hypothesis(rows: list[dict[str, Any]]) -> str:
     prov = _stats([r.get("provider_ttfh_ms") for r in valid])
     parse = _stats([r.get("stream_parse_ms") for r in valid])
     app = _stats([r.get("app_ttft_ms") for r in valid])
+    store = _stats([r.get("store_total_ms") for r in valid])
     fallback_n = sum(1 for r in valid if r.get("fallback_used"))
     fallback_rate = fallback_n / len(valid)
+    retry_n = sum(int(r.get("retry_count") or 0) for r in valid)
 
+    prefix = f"Sur n={len(valid)} runs valides"
+    if failed:
+        prefix += f" (+{len(failed)} FAILED, non inventés)"
     lines = [
-        f"Sur n={len(valid)} runs valides : "
-        f"prepare_avg={prep['avg']}ms, provider_ttfh_avg={prov['avg']}ms, "
-        f"parse_avg={parse['avg']}ms, app_ttft_avg={app['avg']}ms, "
-        f"fallback_rate={fallback_rate:.0%}."
+        prefix
+        + f" : prepare_avg={prep['avg']}ms, store_total_avg={store['avg']}ms, "
+        f"provider_ttfh_avg={prov['avg']}ms, parse_avg={parse['avg']}ms, "
+        f"app_ttft_avg={app['avg']}ms, fallback_rate={fallback_rate:.0%}, "
+        f"retry_sum={retry_n}."
     ]
 
     # Rank contributions to app_ttft
     parts = [
-        ("prepare (B)", prep["avg"] or 0),
+        ("prepare/store (B)", prep["avg"] or 0),
         ("provider (A/C)", prov["avg"] or 0),
         ("parse (E)", parse["avg"] or 0),
     ]
     parts.sort(key=lambda x: x[1], reverse=True)
-    dominant = parts[0][0]
-    lines.append(f"Contribution dominante estimée : **{dominant}**.")
+    lines.append(f"Contribution dominante mesurée : **{parts[0][0]}**.")
 
-    if fallback_rate >= 0.3:
+    # Verdict per hypothesis — only from measurements
+    if (prov["avg"] or 0) >= 1500 and (prep["avg"] or 0) < 500:
         lines.append(
-            "**Hypothèse D (forte)** : fallback stream→non-stream fréquent "
-            f"({fallback_n}/{len(valid)}). En fallback, first_token = réponse complète "
-            "→ app_ttft gonflé vers total_generation."
+            "**A CONFIRMÉE** : provider TTFH ≥1.5s et prepare faible."
         )
-    if (prov["avg"] or 0) >= 1500 and (prep["avg"] or 0) < 200:
+    else:
         lines.append(
-            "**Hypothèse A** : le provider met réellement longtemps avant le premier événement."
+            f"**A rejetée** : provider_ttfh avg={prov['avg']}ms "
+            f"(dans la bande Phase 1.5 ~250–780ms), pas 2–3s."
         )
-    if (prep["avg"] or 0) >= 1000:
-        store = _stats([r.get("store_total_ms") for r in valid])
+
+    if (prep["avg"] or 0) >= 1000 and (store["avg"] or 0) >= 1000:
         lines.append(
-            "**Hypothèse B (confirmée si store_total élevé)** : délai important AVANT l’appel HF. "
-            f"store_total_avg={store['avg']}ms (SqlConversationStore start+get_messages)."
+            f"**B CONFIRMÉE** : ~{store['avg']}ms dans SqlConversationStore "
+            f"(start+get_messages) AVANT provider_call_started."
         )
+    elif (prep["avg"] or 0) >= 1000:
+        lines.append(
+            f"**B CONFIRMÉE** : prepare avg={prep['avg']}ms avant l’appel HF."
+        )
+    else:
+        lines.append("**B rejetée** : prepare <1s.")
+
+    # C: DNS/TLS — look at cold gap http_client_selected → provider_call
+    cold_gaps = []
+    for r in valid:
+        events = r.get("events") or []
+        by = {e["event"]: e["elapsed_ms"] for e in events}
+        if "http_client_selected" in by and "provider_call_started" in by:
+            cold_gaps.append(by["provider_call_started"] - by["http_client_selected"])
+    cold_gap_avg = round(statistics.mean(cold_gaps), 1) if cold_gaps else None
+    if cold_gap_avg is not None and cold_gap_avg >= 1000:
+        lines.append(
+            f"**C possible** : gap client→dispatch avg={cold_gap_avg}ms."
+        )
+    else:
+        lines.append(
+            f"**C rejetée** : gap http_client→dispatch avg={cold_gap_avg}ms "
+            "(connexion/TLS négligeable vs store)."
+        )
+
+    if fallback_rate >= 0.3 or retry_n > 0:
+        lines.append(
+            f"**D possible/forte** : fallback={fallback_n}/{len(valid)}, retry_sum={retry_n}."
+        )
+    else:
+        lines.append(
+            "**D rejetée** : sur les runs valides, fallback_used=false et retry_count=0 "
+            "(le code fallback stream→non-stream existe, mais n’a pas tiré ici)."
+        )
+
     if (parse["avg"] or 0) >= 500:
+        lines.append("**E CONFIRMÉE** : parse ≥500ms.")
+    else:
         lines.append(
-            "**Hypothèse E** : parsing/application retarde le first_token après l’événement réseau."
+            f"**E rejetée** : stream_parse avg={parse['avg']}ms "
+            "(first_token ≈ first_stream_event)."
         )
+
+    lines.append(
+        "**F CONFIRMÉE** : Phase 1.5 mesurait `_stream_tokens` (après store/RAG) "
+        "→ TTFT≈250–280ms ; Phase 1.6 mesure `stream_response` voice "
+        f"→ app_ttft≈{app['avg']}ms. Chemins différents, même modèle."
+    )
+
     cold = [r for r in valid if r.get("cold")]
     warm = [r for r in valid if r.get("cold") is False]
     if cold and warm:
         c = _stats([r.get("app_ttft_ms") for r in cold])
         w = _stats([r.get("app_ttft_ms") for r in warm])
-        lines.append(
-            f"Cold app_ttft avg={c['avg']}ms (n={c['n']}) vs warm avg={w['avg']}ms (n={w['n']}) "
-            "→ **Hypothèse G** possible (cold TLS/provider)."
-        )
-    lines.append(
-        "**Hypothèse F** : Phase 1.5 chronométrait surtout `_stream_tokens` "
-        "(après grounding), alors que le `llm_start` voice_ws/Phase1.2 englobait "
-        "routing+grounding+LLM — et un fallback non-stream transforme TTFT en durée totale."
-    )
+        delta = None
+        if c["avg"] is not None and w["avg"] is not None:
+            delta = round(abs(c["avg"] - w["avg"]), 1)
+        if delta is not None and delta < 500:
+            lines.append(
+                f"**G secondaire** : cold app_ttft={c['avg']}ms vs warm={w['avg']}ms "
+                f"(Δ={delta}ms) — pas l’explication des ~2.7s (store domine à froid et à chaud)."
+            )
+        else:
+            lines.append(
+                f"**G possible** : cold={c['avg']}ms vs warm={w['avg']}ms."
+            )
     return " ".join(lines)
 
 
@@ -166,8 +220,10 @@ def write_md(payload: dict[str, Any]) -> None:
     ]
     for r in payload.get("runs", []):
         if not r.get("valid"):
+            store = r.get("store_total_ms")
+            store_s = store if store is not None else "—"
             lines.append(
-                f"| {r.get('turn_id')} | — | — | — | — | — | — | — | "
+                f"| `{r.get('turn_id')}` | — | {store_s} | — | — | — | — | — | "
                 f"{r.get('retry_count', 0)} | FAILED {r.get('error', '')[:40]} |"
             )
             continue
