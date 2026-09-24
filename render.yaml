@@ -29,9 +29,9 @@ services:
       - key: HF_TIMEOUT_SECONDS
         value: "60"
       - key: LLM_MAX_TOKENS
-        value: "380"
+        value: "320"
       - key: LLM_VOICE_MAX_TOKENS
-        value: "160"
+        value: "140"
       - key: RAG_ENABLED
         value: "true"
       - key: RAG_TOP_K
@@ -41,7 +41,13 @@ services:
       - key: WEB_SEARCH_MAX_RESULTS
         value: "3"
       - key: WEB_SEARCH_TIMEOUT_SECONDS
-        value: "4"
+        value: "2.5"
+      - key: VOICE_WEB_SEARCH_TIMEOUT_SECONDS
+        value: "1.5"
+      - key: LLM_HISTORY_MESSAGES
+        value: "6"
+      - key: LLM_VOICE_HISTORY_MESSAGES
+        value: "3"
       - key: DATABASE_ENABLED
         value: "true"
       - key: HUGGINGFACE_HUB_TOKEN

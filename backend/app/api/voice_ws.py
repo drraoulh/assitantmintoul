@@ -23,18 +23,26 @@ _SENTENCE_END = re.compile(r"(?<=[.!?…])\s+")
 
 
 def _split_ready_sentences(buffer: str) -> tuple[list[str], str]:
-    """Return complete sentences and the leftover incomplete tail."""
+    """Return complete sentences and the leftover incomplete tail.
+
+    Phase 1: flush earlier so Fish TTS can start while the LLM still streams.
+    - Prefer punctuation boundaries.
+    - Else flush a clause once the buffer reaches ~90 chars (was 140).
+    - Never emit fragments shorter than 28 chars (Fish quality floor).
+    """
     parts = _SENTENCE_END.split(buffer)
     if len(parts) == 1:
-        # Also flush on long clause without punctuation.
-        if len(buffer) >= 140 and (" " in buffer):
-            cut = buffer.rfind(" ", 0, 120)
-            if cut > 40:
+        if len(buffer) >= 90 and (" " in buffer):
+            cut = buffer.rfind(" ", 0, 85)
+            if cut >= 28:
                 return [buffer[:cut].strip()], buffer[cut:].lstrip()
         return [], buffer
     *complete, tail = parts
-    ready = [p.strip() for p in complete if p.strip()]
-    return ready, tail.strip()
+    ready = [p.strip() for p in complete if len(p.strip()) >= 28]
+    leftover = " ".join(
+        [*(p.strip() for p in complete if 0 < len(p.strip()) < 28), tail.strip()]
+    ).strip()
+    return ready, leftover
 
 
 async def _send(ws: WebSocket, payload: dict[str, Any]) -> None:
@@ -324,6 +332,7 @@ async def _tts_worker(
                 chunk_index += 1
                 if first:
                     timer.mark("tts_ttfb", (time.perf_counter() - begin) * 1000)
+                    timer.mark("first_audio", (time.perf_counter() - timer.started_at) * 1000)
                     first = False
             elapsed = (time.perf_counter() - begin) * 1000
             timer.mark(phase_name, elapsed)

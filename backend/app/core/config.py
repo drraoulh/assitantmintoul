@@ -51,20 +51,21 @@ class Settings(BaseSettings):
 
     # Generation budgets. Shorter answers = faster TTFT + TTS.
     llm_max_tokens: int = Field(
-        default=380,
+        default=320,
         validation_alias=AliasChoices("LLM_MAX_TOKENS"),
     )
     llm_voice_max_tokens: int = Field(
-        default=160,
+        default=140,
         validation_alias=AliasChoices("LLM_VOICE_MAX_TOKENS"),
     )
-    # How many prior turns to send to the LLM (lower = faster).
+    # How many prior turns to send to the LLM (lower = faster TTFT).
+    # Phase 1: trimmed from 8/4 → 6/3 while keeping short conversation continuity.
     llm_history_messages: int = Field(
-        default=8,
+        default=6,
         validation_alias=AliasChoices("LLM_HISTORY_MESSAGES"),
     )
     llm_voice_history_messages: int = Field(
-        default=4,
+        default=3,
         validation_alias=AliasChoices("LLM_VOICE_HISTORY_MESSAGES"),
     )
     hf_embedding_model_id: str = (
@@ -107,16 +108,16 @@ class Settings(BaseSettings):
         default="",
         validation_alias=AliasChoices("REDIS_URL"),
     )
-    # Live web enrichment: organic open web first, wiki/IA only if needed.
+    # Live web enrichment: providers run in parallel; hard budget aborts the leg.
     web_search_enabled: bool = True
     web_search_max_results: int = 3
-    # Hard budget for the web leg; the answer is generated without it on timeout.
+    # Phase 1: tighter budgets — KB already covers most tourism questions.
     web_search_timeout_seconds: float = Field(
-        default=4.0,
+        default=2.5,
         validation_alias=AliasChoices("WEB_SEARCH_TIMEOUT_SECONDS"),
     )
     voice_web_search_timeout_seconds: float = Field(
-        default=2.5,
+        default=1.5,
         validation_alias=AliasChoices("VOICE_WEB_SEARCH_TIMEOUT_SECONDS"),
     )
 

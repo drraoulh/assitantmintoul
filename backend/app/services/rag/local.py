@@ -4,6 +4,7 @@ import math
 import re
 import unicodedata
 from collections import Counter
+from functools import lru_cache
 
 from app.services.rag.base import RAGService
 from app.services.rag.chunk import KnowledgeChunk
@@ -48,15 +49,24 @@ def tokenize(text: str) -> list[str]:
     return _TOKEN.findall(_normalize(text))
 
 
+@lru_cache(maxsize=4096)
+def _expand_token(token: str) -> frozenset[str]:
+    """Cache per-token alias expansion (queries reuse the same tourism terms)."""
+    expanded: set[str] = {token}
+    expanded.update(_ALIASES.get(token, set()))
+    for key, values in _ALIASES.items():
+        key_norm = _normalize(key)
+        value_norms = {_normalize(v) for v in values}
+        if token == key_norm or token in value_norms:
+            expanded.update(value_norms)
+            expanded.add(key_norm)
+    return frozenset(_normalize(v) for v in expanded)
+
+
 def expand_tokens(tokens: list[str]) -> set[str]:
-    expanded: set[str] = set(tokens)
+    expanded: set[str] = set()
     for token in tokens:
-        expanded.update(_ALIASES.get(token, set()))
-        # Also try without accents already handled by normalize; keep raw aliases.
-        for key, values in _ALIASES.items():
-            if token == _normalize(key) or token in {_normalize(v) for v in values}:
-                expanded.update(_normalize(v) for v in values)
-                expanded.add(_normalize(key))
+        expanded.update(_expand_token(token))
     return expanded
 
 
@@ -64,7 +74,7 @@ class LocalRAGService(RAGService):
     """Lexical TF-IDF retrieval over curated Cameroon tourism files.
 
     No embedding model download — suitable for a student laptop MVP.
-    A later phase can swap in sentence-transformers + FAISS via the same interface.
+    Vectors and doc norms are precomputed once at construction.
     """
 
     def __init__(
@@ -83,6 +93,14 @@ class LocalRAGService(RAGService):
         self._idf = self._build_idf(self._docs_tokens)
         self._doc_vectors: list[dict[str, float]] = [
             self._tfidf_vector(tokens) for tokens in self._docs_tokens
+        ]
+        # Precompute L2 norms + searchable haystacks once (avoids per-query work).
+        self._doc_norms: list[float] = [
+            math.sqrt(sum(v * v for v in vec.values())) if vec else 0.0
+            for vec in self._doc_vectors
+        ]
+        self._searchable_norm: list[str] = [
+            _normalize(chunk.searchable_text) for chunk in self._chunks
         ]
 
     @property
@@ -114,15 +132,26 @@ class LocalRAGService(RAGService):
         if not query_vector:
             return []
 
+        norm_q = math.sqrt(sum(v * v for v in query_vector.values()))
+        if norm_q <= 0:
+            return []
+
         scored: list[tuple[float, KnowledgeChunk]] = []
-        for chunk, doc_vector in zip(self._chunks, self._doc_vectors, strict=True):
-            score = self._cosine(query_vector, doc_vector)
+        for chunk, doc_vector, norm_d, haystack in zip(
+            self._chunks,
+            self._doc_vectors,
+            self._doc_norms,
+            self._searchable_norm,
+            strict=True,
+        ):
+            if norm_d <= 0:
+                continue
+            score = self._dot(query_vector, doc_vector) / (norm_q * norm_d)
             if score <= 0:
                 continue
             # Small boost when city/name appears explicitly in the query.
-            searchable = _normalize(chunk.searchable_text)
             for term in query_terms:
-                if len(term) >= 4 and term in searchable:
+                if len(term) >= 4 and term in haystack:
                     score += 0.03
             scored.append((score, chunk))
 
@@ -151,14 +180,10 @@ class LocalRAGService(RAGService):
         return vector
 
     @staticmethod
-    def _cosine(a: dict[str, float], b: dict[str, float]) -> float:
+    def _dot(a: dict[str, float], b: dict[str, float]) -> float:
         if not a or not b:
             return 0.0
-        dot = sum(value * b.get(term, 0.0) for term, value in a.items())
-        if dot <= 0:
-            return 0.0
-        norm_a = math.sqrt(sum(value * value for value in a.values()))
-        norm_b = math.sqrt(sum(value * value for value in b.values()))
-        if norm_a == 0 or norm_b == 0:
-            return 0.0
-        return dot / (norm_a * norm_b)
+        # Iterate the smaller dict for speed.
+        if len(a) > len(b):
+            a, b = b, a
+        return sum(value * b.get(term, 0.0) for term, value in a.items())

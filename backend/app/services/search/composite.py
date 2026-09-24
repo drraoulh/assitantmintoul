@@ -12,7 +12,14 @@ logger = logging.getLogger(__name__)
 
 
 class CompositeWebSearchService(WebSearchService):
-    """Open-web first for speed; Wikipedia / Instant Answer only if needed."""
+    """Fan out independent providers in parallel; stop early when full.
+
+    Phase 1 parallelisation (documented):
+    - Open-web, Wikipedia and Instant Answer are independent → start together.
+    - As soon as ``max_results`` unique hits are collected, remaining tasks are
+      cancelled so a slow filler cannot stall the grounding budget.
+    - Functional merge/dedupe behaviour is unchanged.
+    """
 
     def __init__(
         self,
@@ -22,25 +29,30 @@ class CompositeWebSearchService(WebSearchService):
         fillers: list[WebSearchService] | None = None,
     ) -> None:
         if services is not None:
-            self._open_web = services[0] if services else OpenWebSearchService()
-            self._fillers = services[1:]
+            self._services = list(services)
         else:
-            self._open_web = open_web or OpenWebSearchService()
-            self._fillers = fillers or [
+            primary = open_web or OpenWebSearchService()
+            extras = fillers or [
                 WikipediaSearchService(),
                 DuckDuckGoSearchService(),
             ]
+            self._services = [primary, *extras]
 
     async def search(self, query: str, *, max_results: int = 5) -> list[WebSearchHit]:
-        if max_results <= 0:
+        if max_results <= 0 or not self._services:
             return []
 
+        tasks = [
+            asyncio.create_task(service.search(query, max_results=max_results))
+            for service in self._services
+        ]
         merged: list[WebSearchHit] = []
         seen: set[str] = set()
 
         def _absorb(hits: list[WebSearchHit] | BaseException) -> None:
             if isinstance(hits, BaseException):
-                logger.warning("Web search provider failed: %s", hits)
+                if not isinstance(hits, asyncio.CancelledError):
+                    logger.warning("Web search provider failed: %s", hits)
                 return
             for hit in hits:
                 key = (hit.url or hit.title).strip().casefold()
@@ -52,21 +64,21 @@ class CompositeWebSearchService(WebSearchService):
                     return
 
         try:
-            primary = await self._open_web.search(query, max_results=max_results)
-        except Exception as exc:
-            logger.warning("Open-web search failed: %s", exc)
-            primary = []
-        _absorb(primary)
-        if len(merged) >= max_results or not self._fillers:
-            return merged[:max_results]
+            for finished in asyncio.as_completed(tasks):
+                try:
+                    result = await finished
+                except asyncio.CancelledError:
+                    continue
+                except Exception as exc:  # noqa: BLE001
+                    _absorb(exc)
+                    continue
+                _absorb(result)
+                if len(merged) >= max_results:
+                    break
+        finally:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
 
-        remaining = max_results - len(merged)
-        filler_results = await asyncio.gather(
-            *[service.search(query, max_results=remaining) for service in self._fillers],
-            return_exceptions=True,
-        )
-        for result in filler_results:
-            _absorb(result)
-            if len(merged) >= max_results:
-                break
         return merged[:max_results]

@@ -2,13 +2,19 @@ from app.services.rag.chunk import KnowledgeChunk
 from app.services.search.base import WebSearchHit
 
 
-def format_knowledge_context(chunks: list[KnowledgeChunk], *, max_chars: int = 520) -> str:
+def format_knowledge_context(
+    chunks: list[KnowledgeChunk],
+    *,
+    max_chars: int = 520,
+    max_chunks: int | None = None,
+) -> str:
     """Format retrieved chunks for injection into the LLM prompt."""
     if not chunks:
         return ""
 
+    selected = chunks if max_chunks is None else chunks[:max_chunks]
     blocks: list[str] = []
-    for index, chunk in enumerate(chunks, start=1):
+    for index, chunk in enumerate(selected, start=1):
         header = f"[{index}] {chunk.title}"
         meta_bits = []
         if chunk.city:

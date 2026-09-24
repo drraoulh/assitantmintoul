@@ -31,6 +31,17 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         print("Speech + AI services ready (singleton)")
     except Exception as exc:  # noqa: BLE001
         print(f"Speech/AI warm-up skipped: {exc}")
+    # Phase 1: hydrate HybridRAG (Supabase merge + TF-IDF) before first request.
+    try:
+        from app.services.rag.factory import get_rag_service
+
+        rag = get_rag_service()
+        warm = getattr(rag, "warm", None)
+        if callable(warm):
+            n = await warm()
+            print(f"RAG index hydrated: {n} chunks")
+    except Exception as exc:  # noqa: BLE001
+        print(f"RAG warm-up skipped: {exc}")
     yield
     await close_shared_clients()
 

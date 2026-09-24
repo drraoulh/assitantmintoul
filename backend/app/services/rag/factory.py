@@ -58,6 +58,11 @@ class HybridRAGService(RAGService):
         await self._ensure_loaded()
         return await self._hybrid.retrieve_chunks(query, top_k=top_k)
 
+    async def warm(self) -> int:
+        """Hydrate Supabase + file index at startup so the first user turn is cheap."""
+        await self._ensure_loaded()
+        return self.chunk_count
+
     async def _ensure_loaded(self) -> None:
         if self._ready:
             self._ensure_vector_warming()

@@ -13,6 +13,7 @@ from app.services.ai.prompts import (
     TEXT_STYLE_PROMPT,
     VOICE_STYLE_PROMPT,
 )
+from app.services.metrics.latency import PhaseTimer
 from app.services.rag.base import PlaceholderRAGService, RAGService
 from app.services.rag.chunk import KnowledgeChunk
 from app.services.rag.context import build_system_prompt, format_knowledge_context, format_web_context
@@ -33,6 +34,7 @@ _LIVE_NEED = re.compile(
 class GroundingResult:
     system_prompt: str
     chunks: list[KnowledgeChunk] = field(default_factory=list)
+    phases_ms: dict[str, float] = field(default_factory=dict)
 
 
 def build_retrieval_query(message: str, history: list[dict[str, str]]) -> str:
@@ -83,6 +85,7 @@ async def build_grounded_system_prompt(
     skip_kb: bool = False,
     skip_web: bool = False,
     locale: str = "fr",
+    timer: PhaseTimer | None = None,
 ) -> GroundingResult:
     """Assemble system prompt with local KB + optional live web hits.
 
@@ -91,16 +94,20 @@ async def build_grounded_system_prompt(
     Simple routed queries can skip both legs entirely.
     """
     started = time.perf_counter()
+    phases: dict[str, float] = {}
     query = build_retrieval_query(message, history)
     chunks: list[KnowledgeChunk] = []
     kb_text = ""
     web_text = ""
+    # Voice gets a tighter KB budget → fewer LLM input tokens → faster TTFT.
+    kb_max_chars = 360 if brief else 480
+    web_max_chars = 240 if brief else 300
+    kb_max_chunks = min(rag_top_k, 3 if brief else 4)
 
     if skip_kb:
-        logger.info(
-            "Grounding: skipped (route=simple) (%.0fms)",
-            (time.perf_counter() - started) * 1000,
-        )
+        phases["rag"] = 0.0
+        phases["web"] = 0.0
+        prompt_t0 = time.perf_counter()
         prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
         if brief:
             prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
@@ -109,14 +116,29 @@ async def build_grounded_system_prompt(
         locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
         # Locale hard rule last — models weight the final instruction most.
         prompt = f"{prompt.rstrip()}\n\n{locale_block}"
-        return GroundingResult(system_prompt=prompt, chunks=[])
+        phases["prompt"] = round((time.perf_counter() - prompt_t0) * 1000, 1)
+        phases["grounding"] = round((time.perf_counter() - started) * 1000, 1)
+        logger.info(
+            "Grounding: skipped (route=simple) (%.0fms)",
+            phases["grounding"],
+        )
+        _stamp_timer(timer, phases)
+        return GroundingResult(system_prompt=prompt, chunks=[], phases_ms=phases)
 
     if not isinstance(rag_service, PlaceholderRAGService):
+        rag_t0 = time.perf_counter()
         try:
             chunks = await rag_service.retrieve_chunks(query, top_k=rag_top_k)
-            kb_text = format_knowledge_context(chunks)
+            kb_text = format_knowledge_context(
+                chunks,
+                max_chars=kb_max_chars,
+                max_chunks=kb_max_chunks,
+            )
         except Exception:
             logger.exception("RAG retrieval failed; continuing without KB context")
+        phases["rag"] = round((time.perf_counter() - rag_t0) * 1000, 1)
+    else:
+        phases["rag"] = 0.0
 
     skip_web_search = (
         skip_web
@@ -125,32 +147,41 @@ async def build_grounded_system_prompt(
         or knowledge_covers_query(query, chunks)
     )
     if skip_web_search:
+        phases["web"] = 0.0
         logger.info(
-            "Grounding: kb=%s chunks, web=skipped (%.0fms)",
+            "Grounding: kb=%s chunks, web=skipped rag=%.0fms (%.0fms)",
             len(chunks),
+            phases["rag"],
             (time.perf_counter() - started) * 1000,
         )
     else:
+        web_t0 = time.perf_counter()
         try:
             hits = await asyncio.wait_for(
                 web_search_service.search(query, max_results=web_search_max_results),
                 timeout=web_search_timeout_seconds,
             )
-            web_text = format_web_context(hits)
+            web_text = format_web_context(hits, max_chars=web_max_chars)
+            phases["web"] = round((time.perf_counter() - web_t0) * 1000, 1)
             logger.info(
-                "Grounding: kb=%s chunks, web=%s hits (%.0fms)",
+                "Grounding: kb=%s chunks, web=%s hits rag=%.0fms web=%.0fms (%.0fms)",
                 len(chunks),
                 len(hits),
+                phases["rag"],
+                phases["web"],
                 (time.perf_counter() - started) * 1000,
             )
         except (TimeoutError, asyncio.TimeoutError):
+            phases["web"] = round((time.perf_counter() - web_t0) * 1000, 1)
             logger.info(
                 "Web search over %.1fs budget; answering with KB only",
                 web_search_timeout_seconds,
             )
         except Exception:
+            phases["web"] = round((time.perf_counter() - web_t0) * 1000, 1)
             logger.exception("Web search failed; continuing without web context")
 
+    prompt_t0 = time.perf_counter()
     prompt = build_system_prompt(SYSTEM_PROMPT, kb_text, web_text)
     if brief:
         prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
@@ -159,4 +190,14 @@ async def build_grounded_system_prompt(
     locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
     # Locale hard rule last — models weight the final instruction most.
     prompt = f"{prompt.rstrip()}\n\n{locale_block}"
-    return GroundingResult(system_prompt=prompt, chunks=chunks)
+    phases["prompt"] = round((time.perf_counter() - prompt_t0) * 1000, 1)
+    phases["grounding"] = round((time.perf_counter() - started) * 1000, 1)
+    _stamp_timer(timer, phases)
+    return GroundingResult(system_prompt=prompt, chunks=chunks, phases_ms=phases)
+
+
+def _stamp_timer(timer: PhaseTimer | None, phases: dict[str, float]) -> None:
+    if timer is None:
+        return
+    for name, ms in phases.items():
+        timer.mark(name, ms)

@@ -54,6 +54,8 @@ async def test_grounding_skips_web_when_kb_covers() -> None:
     assert "Live web search results" not in result.system_prompt
     assert web.calls == 0
     assert result.chunks
+    assert "rag" in result.phases_ms
+    assert result.phases_ms.get("web", -1) == 0.0
 
 
 @pytest.mark.asyncio

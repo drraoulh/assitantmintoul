@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 from app.services.search.base import WebSearchHit
@@ -35,7 +37,9 @@ async def test_composite_web_search_merges_and_dedupes() -> None:
 
 
 @pytest.mark.asyncio
-async def test_composite_skips_fillers_when_open_web_is_enough() -> None:
+async def test_composite_cancels_fillers_when_primary_is_enough() -> None:
+    """Primary fills max_results → remaining providers are cancelled early."""
+
     class Primary:
         async def search(self, query: str, *, max_results: int = 5):
             return [
@@ -45,17 +49,22 @@ async def test_composite_skips_fillers_when_open_web_is_enough() -> None:
 
     class Filler:
         def __init__(self) -> None:
-            self.calls = 0
+            self.started = 0
+            self.completed = 0
 
         async def search(self, query: str, *, max_results: int = 5):
-            self.calls += 1
+            self.started += 1
+            await asyncio.sleep(0.5)
+            self.completed += 1
             return [WebSearchHit("filler", "x", "https://example.com/filler", "filler")]
 
     filler = Filler()
     service = CompositeWebSearchService(services=[Primary(), filler])  # type: ignore[arg-type]
     hits = await service.search("Kribi", max_results=3)
     assert len(hits) == 3
-    assert filler.calls == 0
+    assert all(hit.source == "primary" for hit in hits)
+    # Filler may have been scheduled, but must not finish after early cancel.
+    assert filler.completed == 0
 
 
 def test_open_web_maps_organic_rows() -> None:

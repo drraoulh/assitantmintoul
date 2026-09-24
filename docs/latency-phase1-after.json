@@ -1,0 +1,218 @@
+{
+  "label": "after",
+  "results": [
+    {
+      "probe": "simple",
+      "message": "Bonjour",
+      "route": {
+        "kind": "simple",
+        "skip_kb": true,
+        "skip_web": true,
+        "reason": "greeting_or_chitchat"
+      },
+      "reply_preview": "Bienvenue au Cameroun, l'Afrique en miniature, où côtes, forêts et savanes se rencontrent. Comment puis-je vous aider à explorer nos richesses culturelles et na",
+      "metrics": {
+        "label": "after:simple",
+        "turn_id": "f2c31935b1",
+        "started_wall_ms": 1790227351912.5,
+        "total_ms": 11738.1,
+        "phases_ms": {
+          "routing": 0.1,
+          "route_kind_simple": 1.0,
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.0,
+          "llm_ttft": 382.9,
+          "llm": 1022.7,
+          "tts_ttfb": 4761.0,
+          "tts": 5335.3
+        }
+      },
+      "perf_lines": [
+        "[PERF] turn=f2c31935b1 label=after:simple",
+        "[PERF] ROUTING            0 ms",
+        "[PERF] RAG                0 ms",
+        "[PERF] WEB                0 ms",
+        "[PERF] PROMPT             0 ms",
+        "[PERF] GROUNDING          0 ms",
+        "[PERF] LLM_TTFT         383 ms",
+        "[PERF] LLM             1023 ms",
+        "[PERF] TTS_TTFB        4761 ms",
+        "[PERF] TTS             5335 ms",
+        "[PERF] ROUTE_KIND_SIMPLE       1 ms",
+        "[PERF] TOTAL          11738 ms"
+      ]
+    },
+    {
+      "probe": "food",
+      "message": "Quels plats camerounais dois-je goûter ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "Cameroon offers a rich culinary mosaic where every region has its own specialities.\n\n*   **Ndolé** : Le roi des plats, une salade de feuilles amères mélangée à ",
+      "metrics": {
+        "label": "after:food",
+        "turn_id": "9fa86a74df",
+        "started_wall_ms": 1790227363650.6,
+        "total_ms": 15808.2,
+        "phases_ms": {
+          "routing": 0.1,
+          "route_kind_simple": 0.0,
+          "rag": 3.7,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 4.1,
+          "llm_ttft": 276.1,
+          "llm": 3005.0,
+          "tts_ttfb": 6675.9,
+          "tts": 7473.0
+        }
+      },
+      "perf_lines": [
+        "[PERF] turn=9fa86a74df label=after:food",
+        "[PERF] ROUTING            0 ms",
+        "[PERF] RAG                4 ms",
+        "[PERF] WEB                0 ms",
+        "[PERF] PROMPT             0 ms",
+        "[PERF] GROUNDING          4 ms",
+        "[PERF] LLM_TTFT         276 ms",
+        "[PERF] LLM             3005 ms",
+        "[PERF] TTS_TTFB        6676 ms",
+        "[PERF] TTS             7473 ms",
+        "[PERF] ROUTE_KIND_SIMPLE       0 ms",
+        "[PERF] TOTAL          15808 ms"
+      ]
+    },
+    {
+      "probe": "kb_city",
+      "message": "Que visiter à Yaoundé ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "Yaoundé, la capitale politique, offre un mélange unique de patrimoine historique et de vie urbaine animée. Voici les incontournables pour une visite courte :\n\n*",
+      "metrics": {
+        "label": "after:kb_city",
+        "turn_id": "e30180a00b",
+        "started_wall_ms": 1790227379458.8,
+        "total_ms": 17044.5,
+        "phases_ms": {
+          "routing": 0.1,
+          "route_kind_simple": 0.0,
+          "rag": 6.4,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 6.6,
+          "llm_ttft": 746.5,
+          "llm": 3951.2,
+          "tts_ttfb": 6832.8,
+          "tts": 7588.8
+        }
+      },
+      "perf_lines": [
+        "[PERF] turn=e30180a00b label=after:kb_city",
+        "[PERF] ROUTING            0 ms",
+        "[PERF] RAG                6 ms",
+        "[PERF] WEB                0 ms",
+        "[PERF] PROMPT             0 ms",
+        "[PERF] GROUNDING          7 ms",
+        "[PERF] LLM_TTFT         746 ms",
+        "[PERF] LLM             3951 ms",
+        "[PERF] TTS_TTFB        6833 ms",
+        "[PERF] TTS             7589 ms",
+        "[PERF] ROUTE_KIND_SIMPLE       0 ms",
+        "[PERF] TOTAL          17045 ms"
+      ]
+    },
+    {
+      "probe": "circuit",
+      "message": "Propose un circuit nature au Cameroun.",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "[error] The language model took too long to respond. Try again.",
+      "metrics": {
+        "label": "after:circuit",
+        "turn_id": "fac67bd08a",
+        "started_wall_ms": 1790227396503.5,
+        "total_ms": 65275.3,
+        "phases_ms": {
+          "routing": 0.1,
+          "route_kind_simple": 0.0,
+          "rag": 3.3,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 3.5,
+          "llm": 60074.7,
+          "tts_ttfb": 2237.2,
+          "tts": 2774.4
+        }
+      },
+      "perf_lines": [
+        "[PERF] turn=fac67bd08a label=after:circuit",
+        "[PERF] ROUTING            0 ms",
+        "[PERF] RAG                3 ms",
+        "[PERF] WEB                0 ms",
+        "[PERF] PROMPT             0 ms",
+        "[PERF] GROUNDING          4 ms",
+        "[PERF] LLM            60075 ms",
+        "[PERF] TTS_TTFB        2237 ms",
+        "[PERF] TTS             2774 ms",
+        "[PERF] ROUTE_KIND_SIMPLE       0 ms",
+        "[PERF] TOTAL          65275 ms"
+      ]
+    },
+    {
+      "probe": "voice_prompt",
+      "message": "Bonjour, que puis-je visiter au Cameroun ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "Le Cameroun, « l'Afrique en miniature », offre une diversité incroyable : des chutes de Mbang-Ebongo près de Douala, le lac sacré de Baleng à Bafoussam, et la p",
+      "metrics": {
+        "label": "after:voice_prompt",
+        "turn_id": "a2876143dd",
+        "started_wall_ms": 1790227461778.8,
+        "total_ms": 14880.0,
+        "phases_ms": {
+          "routing": 0.1,
+          "route_kind_simple": 0.0,
+          "rag": 6.2,
+          "web": 747.2,
+          "prompt": 0.0,
+          "grounding": 753.5,
+          "llm_ttft": 1030.2,
+          "llm": 1956.5,
+          "tts_ttfb": 5928.6,
+          "tts": 6767.8
+        }
+      },
+      "perf_lines": [
+        "[PERF] turn=a2876143dd label=after:voice_prompt",
+        "[PERF] ROUTING            0 ms",
+        "[PERF] RAG                6 ms",
+        "[PERF] WEB              747 ms",
+        "[PERF] PROMPT             0 ms",
+        "[PERF] GROUNDING        754 ms",
+        "[PERF] LLM_TTFT        1030 ms",
+        "[PERF] LLM             1956 ms",
+        "[PERF] TTS_TTFB        5929 ms",
+        "[PERF] TTS             6768 ms",
+        "[PERF] ROUTE_KIND_SIMPLE       0 ms",
+        "[PERF] TOTAL          14880 ms"
+      ]
+    }
+  ]
+}

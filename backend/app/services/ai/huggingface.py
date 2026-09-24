@@ -32,6 +32,38 @@ from app.services.search.factory import get_web_search_service
 
 logger = logging.getLogger(__name__)
 
+# Phase 1: short-TTL cache for exact simple/chitchat replies (locale + brief).
+# Never caches grounded tourism answers (prices/hours can go stale).
+_SIMPLE_REPLY_TTL_S = 300.0
+_SIMPLE_REPLY_CACHE: dict[str, tuple[float, str]] = {}
+_SIMPLE_REPLY_MAX = 64
+
+
+def _simple_cache_key(message: str, locale: str, brief: bool) -> str:
+    compact = " ".join(message.strip().casefold().split())
+    return f"{locale}|{'v' if brief else 't'}|{compact}"
+
+
+def _simple_reply_cache_get(message: str, locale: str, brief: bool) -> str | None:
+    key = _simple_cache_key(message, locale, brief)
+    entry = _SIMPLE_REPLY_CACHE.get(key)
+    if entry is None:
+        return None
+    expires_at, text = entry
+    if expires_at < time.time():
+        _SIMPLE_REPLY_CACHE.pop(key, None)
+        return None
+    return text
+
+
+def _simple_reply_cache_set(message: str, locale: str, brief: bool, reply: str) -> None:
+    if not reply.strip():
+        return
+    if len(_SIMPLE_REPLY_CACHE) >= _SIMPLE_REPLY_MAX:
+        _SIMPLE_REPLY_CACHE.pop(next(iter(_SIMPLE_REPLY_CACHE)), None)
+    key = _simple_cache_key(message, locale, brief)
+    _SIMPLE_REPLY_CACHE[key] = (time.time() + _SIMPLE_REPLY_TTL_S, reply.strip())
+
 
 class HuggingFaceAIService(AIService):
     """Chat via Hugging Face Inference Providers (OpenAI-compatible API).
@@ -151,7 +183,9 @@ class HuggingFaceAIService(AIService):
             thread_id = await self._store.start(conversation_id)
             history = await self._store.get_messages(thread_id)
             history_window = self._voice_history_n if brief else self._history_n
-            route = route_query(message)
+
+            with timer.phase("routing"):
+                route = route_query(message)
             yield {
                 "type": "route",
                 "kind": route.kind,
@@ -160,24 +194,46 @@ class HuggingFaceAIService(AIService):
                 "reason": route.reason,
             }
 
-            with timer.phase("grounding"):
-                grounding = await build_grounded_system_prompt(
-                    message,
-                    history,
-                    rag_service=self._rag,
-                    web_search_service=self._web,
-                    rag_top_k=max(2, self._rag_top_k - 1) if brief else self._rag_top_k,
-                    web_search_max_results=(
-                        min(2, self._web_max) if brief else self._web_max
-                    ),
-                    web_search_timeout_seconds=(
-                        self._voice_web_timeout if brief else self._web_timeout
-                    ),
-                    brief=brief,
-                    skip_kb=route.skip_kb,
-                    skip_web=route.skip_web,
-                    locale=locale,
-                )
+            # Safe response cache for exact greetings / chitchat (no KB, no personalization).
+            cached = _simple_reply_cache_get(message, locale, brief) if route.skip_kb else None
+            if cached:
+                timer.mark("rag", 0.0)
+                timer.mark("web", 0.0)
+                timer.mark("prompt", 0.0)
+                timer.mark("grounding", 0.0)
+                timer.mark("llm_ttft", 0.0)
+                timer.mark("llm", 0.0)
+                timer.mark("cache_hit", 1.0)
+                await self._store.add_message(thread_id, "user", message)
+                await self._store.add_message(thread_id, "assistant", cached)
+                yield {"type": "token", "text": cached}
+                yield {
+                    "type": "done",
+                    "conversation_id": thread_id,
+                    "text": cached,
+                    "sources": [],
+                    "metrics": timer.as_dict(),
+                }
+                return
+
+            grounding = await build_grounded_system_prompt(
+                message,
+                history,
+                rag_service=self._rag,
+                web_search_service=self._web,
+                rag_top_k=max(2, self._rag_top_k - 1) if brief else self._rag_top_k,
+                web_search_max_results=(
+                    min(2, self._web_max) if brief else self._web_max
+                ),
+                web_search_timeout_seconds=(
+                    self._voice_web_timeout if brief else self._web_timeout
+                ),
+                brief=brief,
+                skip_kb=route.skip_kb,
+                skip_web=route.skip_web,
+                locale=locale,
+                timer=timer,
+            )
             sources = sources_from_knowledge(grounding.chunks)
 
             payload_messages: list[dict[str, str]] = [
@@ -208,6 +264,9 @@ class HuggingFaceAIService(AIService):
                     "message": "The language model returned an empty answer.",
                 }
                 return
+
+            if route.skip_kb:
+                _simple_reply_cache_set(message, locale, brief, reply)
 
             await self._store.add_message(thread_id, "user", message)
             await self._store.add_message(thread_id, "assistant", reply)
