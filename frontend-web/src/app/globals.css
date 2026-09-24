@@ -1,0 +1,156 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  /* SmartMboa brand palette */
+  --green-deep: #0b3d2e;
+  --green: #145c43;
+  --green-mid: #1a7a56;
+  --gold: #d6a84f;
+  --gold-soft: #e8c878;
+  --ivory: #f8f6f0;
+  --white: #ffffff;
+  --ink: #17201c;
+  --muted: #6b746e;
+  --mint-soft: #eef5f0;
+  --line: #e4e6e2;
+  --danger: #b42318;
+  --radius: 1rem;
+  --radius-lg: 1.5rem;
+  --shadow-soft: 0 8px 30px rgba(11, 61, 46, 0.08);
+  --shadow-lift: 0 12px 40px rgba(11, 61, 46, 0.12);
+  --header-h: 4rem;
+  --bottom-nav-h: 4.5rem;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@theme inline {
+  --color-green-deep: var(--green-deep);
+  --color-green: var(--green);
+  --color-green-mid: var(--green-mid);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-ivory: var(--ivory);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-mint-soft: var(--mint-soft);
+  --color-line: var(--line);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-body);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100svh;
+  color: var(--ink);
+  background: var(--ivory);
+  font-family: var(--font-body), "Plus Jakarta Sans", sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--gold) 35%, white);
+  color: var(--green-deep);
+}
+
+.font-display {
+  font-family: var(--font-body), "Plus Jakarta Sans", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  z-index: 0;
+  background: var(--mint-soft);
+}
+
+/* Subtle scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--green) 40%, transparent) transparent;
+}
+
+/* Reduced motion: keep opacity only */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile bottom padding when bottom nav present */
+.pb-bottom-nav {
+  padding-bottom: calc(var(--bottom-nav-h) + var(--safe-bottom) + 1rem);
+}
+
+@media (min-width: 1024px) {
+  .pb-bottom-nav {
+    padding-bottom: 0;
+  }
+}
+
+/* Hide scrollbar for horizontal quick actions */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Skeleton shimmer */
+@keyframes smartmboa-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--line) 0%,
+    var(--mint-soft) 50%,
+    var(--line) 100%
+  );
+  background-size: 200% 100%;
+  animation: smartmboa-shimmer 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none;
+  }
+}
