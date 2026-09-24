@@ -629,8 +629,14 @@ class HuggingFaceAIService(AIService):
                 raise RuntimeError(
                     "AGENT_ORCHESTRATOR_FORCE_FAIL canary injection"
                 )
+            settings = get_settings()
+            use_llm = bool(settings.agent_orchestrator_use_llm)
+            llm_complete = None
+            if use_llm:
+                llm_complete = self._make_agent4_llm_complete(brief=brief, trace=trace)
             orch = AgentOrchestrator(
-                prefer_deterministic=True,
+                prefer_deterministic=not use_llm,
+                llm_complete=llm_complete,
                 web_search=self._web,
                 rag=self._rag,
             )
@@ -650,7 +656,18 @@ class HuggingFaceAIService(AIService):
             timer.mark("tourism_planner", result.timings.planner_ms)
         if result.timings.response_ms is not None:
             timer.mark("response_agent", result.timings.response_ms)
-        trace.set_meta(agent_orchestrator=result.observability())
+        orch_obs = result.observability()
+        llm_meta = getattr(self, "_last_agent4_llm", None) or {}
+        orch_obs["llm"] = {
+            "use_llm_flag": bool(get_settings().agent_orchestrator_use_llm),
+            "model": self._model,
+            "calls": int(llm_meta.get("calls") or 0),
+            "http_status": llm_meta.get("http_status"),
+            "ttft_ms": llm_meta.get("ttft_ms"),
+            "total_ms": llm_meta.get("total_ms"),
+            "fallback_used": result.final_response.fallback_used,
+        }
+        trace.set_meta(agent_orchestrator=orch_obs)
 
         intent = result.intent
         # Map intent → legacy route fields for WS clients expecting route events.
@@ -663,7 +680,7 @@ class HuggingFaceAIService(AIService):
             "skip_web": skip_web,
             "reason": f"orchestrator:{intent.intent}",
             "intent": intent.observability(),
-            "orchestrator": result.observability(),
+            "orchestrator": orch_obs,
         }
 
         reply = (result.final_response.text or "").strip()
@@ -733,8 +750,122 @@ class HuggingFaceAIService(AIService):
             "sources": [source.model_dump() for source in sources],
             "metrics": timer.as_dict(),
             "llm_trace": trace.as_dict(),
-            "orchestrator": result.observability(),
+            "orchestrator": orch_obs,
         }
+
+    def _make_agent4_llm_complete(
+        self,
+        *,
+        brief: bool,
+        trace: LlmStreamTrace | None = None,
+    ):
+        """One Qwen completion for Agent 4. Tracks HF status for canary; no retries."""
+
+        async def _complete(messages: list[dict[str, str]]) -> str:
+            self._last_agent4_llm = {
+                "calls": 1,
+                "http_status": None,
+                "ttft_ms": None,
+                "total_ms": None,
+                "model": self._model,
+            }
+            body: dict[str, Any] = {
+                "model": self._model,
+                "messages": messages,
+                "temperature": 0.45,
+                "max_tokens": self._voice_max_tokens if brief else self._max_tokens,
+                "stream": True,
+                "chat_template_kwargs": {"enable_thinking": False},
+            }
+            started = time.perf_counter()
+            first_token_at: float | None = None
+            parts: list[str] = []
+            try:
+                async for token in self._iter_completion_tokens(body, trace=trace):
+                    if first_token_at is None:
+                        first_token_at = time.perf_counter()
+                        self._last_agent4_llm["ttft_ms"] = round(
+                            (first_token_at - started) * 1000.0, 1
+                        )
+                        self._last_agent4_llm["http_status"] = int(
+                            getattr(self, "_last_hf_http_status", 200) or 200
+                        )
+                    parts.append(token)
+            except Exception as exc:
+                status = getattr(self, "_last_hf_http_status", None)
+                self._last_agent4_llm["http_status"] = status
+                self._last_agent4_llm["total_ms"] = round(
+                    (time.perf_counter() - started) * 1000.0, 1
+                )
+                self._last_agent4_llm["error"] = type(exc).__name__
+                raise
+            text = "".join(parts).strip()
+            self._last_agent4_llm["total_ms"] = round(
+                (time.perf_counter() - started) * 1000.0, 1
+            )
+            if not text:
+                raise GenerationFailedError("Agent4 Qwen returned empty text")
+            return text
+
+        return _complete
+
+    async def _iter_completion_tokens(
+        self,
+        body: Mapping[str, Any],
+        *,
+        trace: LlmStreamTrace | None = None,  # noqa: ARG002 — reserved for shared traces
+    ) -> AsyncIterator[str]:
+        """Stream Qwen tokens; record HTTP status; no automatic retry loops."""
+        timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
+        headers = {
+            "Authorization": f"Bearer {self._token}",
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream",
+        }
+        client = self._client or shared_async_client(
+            base_url=self._base_url,
+            timeout_seconds=self._timeout_seconds,
+        )
+        async with client.stream(
+            "POST",
+            "/chat/completions",
+            json=dict(body),
+            headers=headers,
+            timeout=timeout,
+        ) as response:
+            self._last_hf_http_status = int(response.status_code)
+            if response.status_code >= 400:
+                detail = (await response.aread()).decode("utf-8", errors="replace")[:200]
+                if response.status_code == 402:
+                    raise HuggingFaceUnavailableError(
+                        "You have depleted your monthly included credits. "
+                        f"HTTP 402. {detail}"
+                    )
+                if response.status_code in {401, 403}:
+                    raise HuggingFaceAuthError(
+                        f"Hugging Face rejected the token (HTTP {response.status_code})."
+                    )
+                raise GenerationFailedError(
+                    f"HF chat HTTP {response.status_code}: {detail}"
+                )
+            async for line in response.aiter_lines():
+                if not line:
+                    continue
+                if line.startswith("data:"):
+                    data = line[5:].strip()
+                    if data == "[DONE]":
+                        break
+                    try:
+                        payload = json.loads(data)
+                    except json.JSONDecodeError:
+                        continue
+                    choices = payload.get("choices") or []
+                    if not choices:
+                        continue
+                    delta = (choices[0] or {}).get("delta") or {}
+                    piece = delta.get("content") or ""
+                    if piece:
+                        yield str(piece)
 
     async def _stream_tokens(
         self,

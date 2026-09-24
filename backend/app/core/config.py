@@ -237,6 +237,12 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("AGENT_ORCHESTRATOR_FORCE_FAIL"),
     )
+    # Canary / progressive: when true with AGENT_ORCHESTRATOR_ENABLED, Agent 4
+    # may call Qwen once via llm_complete. Default false keeps deterministic Agent 4.
+    agent_orchestrator_use_llm: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_USE_LLM"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:
