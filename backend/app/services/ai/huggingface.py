@@ -25,6 +25,7 @@ from app.services.ai.routing import route_query
 from app.services.conversation.base import ConversationStore
 from app.services.conversation.memory import InMemoryConversationStore
 from app.services.metrics.latency import PhaseTimer
+from app.services.metrics.llm_stream_trace import LlmStreamTrace
 from app.services.rag.base import RAGService
 from app.services.rag.factory import get_rag_service
 from app.services.search.base import WebSearchService
@@ -172,20 +173,36 @@ class HuggingFaceAIService(AIService):
         brief: bool = False,
         locale: str = "fr",
         timer: PhaseTimer | None = None,
+        turn_id: str | None = None,
+        llm_trace: LlmStreamTrace | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Yield route / token / done / error events for voice or SSE clients."""
         timer = timer or PhaseTimer("stream")
+        trace = llm_trace or LlmStreamTrace(
+            turn_id=turn_id or timer.turn_id,
+            model=self._model,
+        )
+        if not trace.model:
+            trace.model = self._model
+        trace.wall0 = time.perf_counter()
+        trace.mark("llm_start")
         if not self._token:
             yield {"type": "error", "code": "hf_auth", "message": "Missing HF token"}
             return
 
         try:
             thread_id = await self._store.start(conversation_id)
+            trace.mark("conversation_store_start_done")
             history = await self._store.get_messages(thread_id)
+            trace.mark(
+                "conversation_history_loaded",
+                history_len=len(history),
+            )
             history_window = self._voice_history_n if brief else self._history_n
 
             with timer.phase("routing"):
                 route = route_query(message)
+            trace.mark("routing_done", kind=route.kind, skip_kb=route.skip_kb)
             yield {
                 "type": "route",
                 "kind": route.kind,
@@ -204,15 +221,22 @@ class HuggingFaceAIService(AIService):
                 timer.mark("llm_ttft", 0.0)
                 timer.mark("llm", 0.0)
                 timer.mark("cache_hit", 1.0)
+                trace.set_meta(cache_hit=True)
+                trace.mark("cache_hit")
                 await self._store.add_message(thread_id, "user", message)
                 await self._store.add_message(thread_id, "assistant", cached)
+                trace.note_first_token(chars=len(cached))
+                trace.note_first_useful_text(text=cached)
+                trace.note_first_phrase_ready(text=cached)
                 yield {"type": "token", "text": cached}
+                trace.note_llm_end()
                 yield {
                     "type": "done",
                     "conversation_id": thread_id,
                     "text": cached,
                     "sources": [],
                     "metrics": timer.as_dict(),
+                    "llm_trace": trace.as_dict(),
                 }
                 return
 
@@ -235,33 +259,80 @@ class HuggingFaceAIService(AIService):
                 timer=timer,
             )
             sources = sources_from_knowledge(grounding.chunks)
+            trace.mark(
+                "prompt_ready",
+                system_chars=len(grounding.system_prompt),
+                kb_chunks=len(grounding.chunks),
+                grounding_ms=(grounding.phases_ms or {}).get("grounding"),
+                rag_ms=(grounding.phases_ms or {}).get("rag"),
+            )
 
             payload_messages: list[dict[str, str]] = [
                 {"role": "system", "content": grounding.system_prompt},
                 *history[-history_window:],
                 {"role": "user", "content": f"{message}{locale_user_suffix(locale)}"},
             ]
+            trace.mark(
+                "request_object_created",
+                message_count=len(payload_messages),
+                history_window=history_window,
+            )
 
             reply_parts: list[str] = []
             first_token = True
             llm_started = time.perf_counter()
+            phrase_buf = ""
+            first_phrase = True
+            from app.services.speech.voice_chunker import (
+                append_token,
+                flush_remainder,
+                split_ready_phrases,
+            )
+
             with timer.phase("llm"):
-                async for token in self._stream_tokens(payload_messages, brief=brief):
+                async for token in self._stream_tokens(
+                    payload_messages,
+                    brief=brief,
+                    trace=trace,
+                ):
                     if first_token:
                         timer.mark(
                             "llm_ttft",
                             (time.perf_counter() - llm_started) * 1000,
                         )
+                        # Also record TTFT from stream_response llm_start (includes prepare).
+                        timer.mark(
+                            "app_ttft",
+                            (time.perf_counter() - trace.wall0) * 1000,
+                        )
                         first_token = False
+                        trace.note_first_token(chars=len(token))
                     reply_parts.append(token)
+                    if brief:
+                        phrase_buf = append_token(phrase_buf, token)
+                        if trace.first_useful_text_ms is None and phrase_buf.strip():
+                            trace.note_first_useful_text(text=phrase_buf.strip()[:64])
+                        ready, phrase_buf = split_ready_phrases(
+                            phrase_buf, first_chunk=first_phrase
+                        )
+                        if ready and first_phrase:
+                            trace.note_first_phrase_ready(text=ready[0])
+                            first_phrase = False
                     yield {"type": "token", "text": token}
+
+            if brief and trace.first_phrase_ready_ms is None:
+                for part in flush_remainder(phrase_buf):
+                    trace.note_first_phrase_ready(text=part)
+                    break
 
             reply = "".join(reply_parts).strip()
             if not reply:
+                trace.note_error("empty_reply")
                 yield {
                     "type": "error",
                     "code": "empty_reply",
                     "message": "The language model returned an empty answer.",
+                    "llm_trace": trace.as_dict(),
                 }
                 return
 
@@ -270,25 +341,45 @@ class HuggingFaceAIService(AIService):
 
             await self._store.add_message(thread_id, "user", message)
             await self._store.add_message(thread_id, "assistant", reply)
+            trace.note_llm_end()
+            if trace.llm_prepare_ms is not None:
+                timer.mark("llm_prepare", trace.llm_prepare_ms)
+            if trace.provider_ttfh_ms is not None:
+                timer.mark("provider_ttfh", trace.provider_ttfh_ms)
+            if trace.stream_parse_ms is not None:
+                timer.mark("stream_parse", trace.stream_parse_ms)
+            if trace.fallback_used:
+                timer.mark("fallback_used", 1.0)
+            timer.mark("provider_attempts", float(trace.provider_attempt_count))
+            timer.mark("retry_count", float(trace.retry_count))
             yield {
                 "type": "done",
                 "conversation_id": thread_id,
                 "text": reply,
                 "sources": [source.model_dump() for source in sources],
                 "metrics": timer.as_dict(),
+                "llm_trace": trace.as_dict(),
             }
         except (
             HuggingFaceAuthError,
             HuggingFaceUnavailableError,
             GenerationTimeoutError,
         ) as exc:
-            yield {"type": "error", "code": type(exc).__name__, "message": str(exc)}
+            trace.note_error(str(exc))
+            yield {
+                "type": "error",
+                "code": type(exc).__name__,
+                "message": str(exc),
+                "llm_trace": trace.as_dict(),
+            }
         except Exception as exc:  # noqa: BLE001
             logger.exception("stream_response failed")
+            trace.note_error(str(exc) or "Generation failed")
             yield {
                 "type": "error",
                 "code": "generation_failed",
                 "message": str(exc) or "Generation failed",
+                "llm_trace": trace.as_dict(),
             }
 
     async def _stream_tokens(
@@ -296,6 +387,7 @@ class HuggingFaceAIService(AIService):
         messages: list[dict[str, str]],
         *,
         brief: bool = False,
+        trace: LlmStreamTrace | None = None,
     ) -> AsyncIterator[str]:
         body: dict[str, Any] = {
             "model": self._model,
@@ -305,30 +397,72 @@ class HuggingFaceAIService(AIService):
             "stream": True,
             "chat_template_kwargs": {"enable_thinking": False},
         }
+        if trace is not None:
+            trace.mark(
+                "stream_body_ready",
+                max_tokens=body["max_tokens"],
+                temperature=body["temperature"],
+            )
         try:
-            async for token in self._iter_sse_tokens(body):
+            async for token in self._iter_sse_tokens(body, trace=trace):
                 yield token
         except httpx.ConnectError as exc:
             logger.warning("Hugging Face connection failed: %s", exc)
+            if trace is not None:
+                trace.note_error(f"ConnectError: {exc}")
             raise HuggingFaceUnavailableError() from exc
         except httpx.TimeoutException as exc:
             logger.warning("Hugging Face timed out: %s", exc)
+            if trace is not None:
+                trace.note_error(f"Timeout: {exc}")
             raise GenerationTimeoutError() from exc
         except httpx.HTTPError as exc:
             logger.warning("Hugging Face HTTP error: %s", exc)
+            if trace is not None:
+                trace.note_error(f"HTTPError: {exc}")
             raise HuggingFaceUnavailableError() from exc
 
-    async def _iter_sse_tokens(self, body: Mapping[str, Any]) -> AsyncIterator[str]:
+    async def _iter_sse_tokens(
+        self,
+        body: Mapping[str, Any],
+        *,
+        trace: LlmStreamTrace | None = None,
+    ) -> AsyncIterator[str]:
         timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
         headers = {
             "Authorization": f"Bearer {self._token}",
             "Content-Type": "application/json",
             "Accept": "text/event-stream",
         }
+        if trace is not None:
+            trace.mark("headers_ready")
+            # Detect whether client is already warm (shared pool).
+            key_exists = False
+            try:
+                from app.core.http import _clients
+
+                key_exists = (self._base_url, self._timeout_seconds) in _clients and not (
+                    _clients[(self._base_url, self._timeout_seconds)].is_closed
+                )
+            except Exception:
+                key_exists = False
+            trace.set_meta(http_client_warm=key_exists)
+            if trace.cold is None:
+                trace.cold = not key_exists
+            trace.mark(
+                "http_client_selected",
+                warm=key_exists,
+                base_url=self._base_url,
+            )
+
         client = self._client or shared_async_client(
             base_url=self._base_url,
             timeout_seconds=self._timeout_seconds,
         )
+        if trace is not None:
+            trace.note_provider_call_started()
+            trace.note_http_dispatched()
+
         async with client.stream(
             "POST",
             "/chat/completions",
@@ -336,23 +470,45 @@ class HuggingFaceAIService(AIService):
             headers=headers,
             timeout=timeout,
         ) as response:
+            if trace is not None:
+                trace.note_response_headers(response.status_code)
+
             if response.status_code >= 400:
                 logger.warning(
                     "HF stream HTTP %s; falling back to non-stream",
                     response.status_code,
                 )
+                if trace is not None:
+                    trace.note_fallback(
+                        f"stream_http_{response.status_code}_to_non_stream"
+                    )
                 await response.aread()
                 fallback = dict(body)
                 fallback["stream"] = False
+                if trace is not None:
+                    trace.note_provider_call_started()
+                    trace.note_http_dispatched()
                 non_stream = await self._post("/chat/completions", fallback)
+                if trace is not None:
+                    trace.note_response_headers(non_stream.status_code)
+                    trace.note_first_stream_event(kind="non_stream_json")
                 text = self._parse_response(non_stream)
                 if text:
+                    if trace is not None:
+                        # Entire reply arrives as one chunk after fallback.
+                        trace.mark(
+                            "non_stream_body_parsed",
+                            chars=len(text),
+                            note="first_token_equals_full_reply_after_fallback",
+                        )
                     yield text
                 return
 
             content_type = (response.headers.get("content-type") or "").lower()
             # Mock / providers sometimes reply with a full JSON body instead of SSE.
             if "text/event-stream" not in content_type and "json" in content_type:
+                if trace is not None:
+                    trace.note_fallback("content_type_json_instead_of_sse")
                 raw = await response.aread()
                 non_stream = httpx.Response(
                     response.status_code,
@@ -360,10 +516,15 @@ class HuggingFaceAIService(AIService):
                     headers=response.headers,
                     request=response.request,
                 )
+                if trace is not None:
+                    trace.note_first_stream_event(kind="json_body")
                 text = self._parse_response(non_stream)
                 if text:
                     yield text
                 return
+
+            if trace is not None:
+                trace.note_stream_iterator_created()
 
             async for line in response.aiter_lines():
                 if not line:
@@ -372,6 +533,8 @@ class HuggingFaceAIService(AIService):
                     continue
                 if not line.startswith("data:"):
                     continue
+                if trace is not None:
+                    trace.note_first_stream_event(kind="sse_data")
                 data = line[5:].strip()
                 if data == "[DONE]":
                     break

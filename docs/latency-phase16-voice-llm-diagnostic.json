@@ -1,0 +1,542 @@
+{
+  "phase": "1.6",
+  "model": "Qwen/Qwen3.5-9B:fastest",
+  "runs_requested": 3,
+  "valid_n": 3,
+  "failed_n": 0,
+  "stats": {
+    "llm_prepare_ms": {
+      "avg": 2367.4,
+      "median": 2358.0,
+      "min": 2351.8,
+      "max": 2392.5,
+      "n": 3
+    },
+    "provider_ttfh_ms": {
+      "avg": 445.7,
+      "median": 357.9,
+      "min": 311.1,
+      "max": 668.2,
+      "n": 3
+    },
+    "stream_parse_ms": {
+      "avg": 0.2,
+      "median": 0.2,
+      "min": 0.2,
+      "max": 0.3,
+      "n": 3
+    },
+    "app_ttft_ms": {
+      "avg": 2813.4,
+      "median": 2716.1,
+      "min": 2703.9,
+      "max": 3020.2,
+      "n": 3
+    },
+    "first_useful_text_ms": {
+      "avg": 2813.4,
+      "median": 2716.1,
+      "min": 2703.9,
+      "max": 3020.2,
+      "n": 3
+    },
+    "first_phrase_ready_ms": {
+      "avg": 2893.1,
+      "median": 2832.6,
+      "min": 2760.1,
+      "max": 3086.5,
+      "n": 3
+    },
+    "generation_ms": {
+      "avg": 6656.1,
+      "median": 6656.7,
+      "min": 6531.3,
+      "max": 6780.4,
+      "n": 3
+    },
+    "fallback_rate": 0.0
+  },
+  "runs": [
+    {
+      "turn_id": "voice-20260924-food-00",
+      "question_id": "food",
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "run_i": 0,
+      "cold": true,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "valid": true,
+      "llm_prepare_ms": 2392.5,
+      "provider_ttfh_ms": 311.1,
+      "stream_parse_ms": 0.3,
+      "app_ttft_ms": 2703.9,
+      "first_useful_text_ms": 2703.9,
+      "first_phrase_ready_ms": 2760.1,
+      "generation_ms": 6656.7,
+      "retry_count": 0,
+      "provider_attempt_count": 1,
+      "fallback_used": false,
+      "fallback_reason": null,
+      "http_status": 200,
+      "events": [
+        {
+          "event": "llm_start",
+          "elapsed_ms": 0.0,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "conversation_store_start_done",
+          "elapsed_ms": 1283.8,
+          "delta_ms": 1283.8
+        },
+        {
+          "event": "conversation_history_loaded",
+          "elapsed_ms": 2358.5,
+          "delta_ms": 1074.7,
+          "history_len": 0
+        },
+        {
+          "event": "routing_done",
+          "elapsed_ms": 2358.8,
+          "delta_ms": 0.3,
+          "kind": "grounded",
+          "skip_kb": false
+        },
+        {
+          "event": "prompt_ready",
+          "elapsed_ms": 2361.6,
+          "delta_ms": 2.8,
+          "system_chars": 5137,
+          "kb_chunks": 3,
+          "grounding_ms": 2.7,
+          "rag_ms": 2.5
+        },
+        {
+          "event": "request_object_created",
+          "elapsed_ms": 2361.6,
+          "delta_ms": 0.0,
+          "message_count": 2,
+          "history_window": 3
+        },
+        {
+          "event": "stream_body_ready",
+          "elapsed_ms": 2362.0,
+          "delta_ms": 0.4,
+          "max_tokens": 140,
+          "temperature": 0.45
+        },
+        {
+          "event": "headers_ready",
+          "elapsed_ms": 2362.1,
+          "delta_ms": 0.1
+        },
+        {
+          "event": "http_client_selected",
+          "elapsed_ms": 2362.1,
+          "delta_ms": 0.0,
+          "warm": false,
+          "base_url": "https://router.huggingface.co/v1"
+        },
+        {
+          "event": "provider_call_started",
+          "elapsed_ms": 2392.5,
+          "delta_ms": 30.4,
+          "attempt": 1
+        },
+        {
+          "event": "http_request_dispatched",
+          "elapsed_ms": 2392.5,
+          "delta_ms": 0.0,
+          "attempt": 1
+        },
+        {
+          "event": "provider_response_headers",
+          "elapsed_ms": 2703.6,
+          "delta_ms": 311.1,
+          "http_status": 200,
+          "provider_ttfh_ms": 311.1
+        },
+        {
+          "event": "stream_iterator_created",
+          "elapsed_ms": 2703.6,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "first_stream_event",
+          "elapsed_ms": 2703.8,
+          "delta_ms": 0.2,
+          "kind": "sse_data",
+          "provider_ttfh_ms": 311.1
+        },
+        {
+          "event": "first_token",
+          "elapsed_ms": 2703.9,
+          "delta_ms": 0.1,
+          "chars": 4,
+          "app_ttft_ms": 2703.9,
+          "stream_parse_ms": 0.3
+        },
+        {
+          "event": "first_useful_text",
+          "elapsed_ms": 2703.9,
+          "delta_ms": 0.0,
+          "chars": 4,
+          "preview": "Comm"
+        },
+        {
+          "event": "first_phrase_ready",
+          "elapsed_ms": 2760.1,
+          "delta_ms": 56.2,
+          "chars": 26,
+          "preview": "Comm ence z par le nd olé,"
+        },
+        {
+          "event": "llm_end",
+          "elapsed_ms": 6656.7,
+          "delta_ms": 3896.6,
+          "generation_ms": 6656.7
+        }
+      ],
+      "meta": {
+        "http_client_warm": false
+      },
+      "phases_ms": {
+        "routing": 0.3,
+        "rag": 2.5,
+        "web": 0.0,
+        "prompt": 0.0,
+        "grounding": 2.7,
+        "llm_ttft": 342.3,
+        "app_ttft": 2703.9,
+        "llm": 1308.6,
+        "llm_prepare": 2392.5,
+        "provider_ttfh": 311.1,
+        "stream_parse": 0.3,
+        "provider_attempts": 1.0,
+        "retry_count": 0.0
+      },
+      "reply_preview": "Commencez par le ndolé, plat national à base d'aubergines et de feuilles d'amarante, ou l'eru, une sauce aux feuilles de taro servie avec du poisson ou du poulet.\n\nPour une expérience complète, essaye"
+    },
+    {
+      "turn_id": "voice-20260924-yaounde-01",
+      "question_id": "yaounde",
+      "question": "Que puis-je visiter à Yaoundé ?",
+      "run_i": 1,
+      "cold": false,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "valid": true,
+      "llm_prepare_ms": 2358.0,
+      "provider_ttfh_ms": 357.9,
+      "stream_parse_ms": 0.2,
+      "app_ttft_ms": 2716.1,
+      "first_useful_text_ms": 2716.1,
+      "first_phrase_ready_ms": 2832.6,
+      "generation_ms": 6780.4,
+      "retry_count": 0,
+      "provider_attempt_count": 1,
+      "fallback_used": false,
+      "fallback_reason": null,
+      "http_status": 200,
+      "events": [
+        {
+          "event": "llm_start",
+          "elapsed_ms": 0.0,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "conversation_store_start_done",
+          "elapsed_ms": 1278.1,
+          "delta_ms": 1278.1
+        },
+        {
+          "event": "conversation_history_loaded",
+          "elapsed_ms": 2351.7,
+          "delta_ms": 1073.6,
+          "history_len": 0
+        },
+        {
+          "event": "routing_done",
+          "elapsed_ms": 2351.8,
+          "delta_ms": 0.1,
+          "kind": "grounded",
+          "skip_kb": false
+        },
+        {
+          "event": "prompt_ready",
+          "elapsed_ms": 2357.9,
+          "delta_ms": 6.1,
+          "system_chars": 5759,
+          "kb_chunks": 3,
+          "grounding_ms": 6.1,
+          "rag_ms": 5.9
+        },
+        {
+          "event": "request_object_created",
+          "elapsed_ms": 2357.9,
+          "delta_ms": 0.0,
+          "message_count": 2,
+          "history_window": 3
+        },
+        {
+          "event": "stream_body_ready",
+          "elapsed_ms": 2358.0,
+          "delta_ms": 0.1,
+          "max_tokens": 140,
+          "temperature": 0.45
+        },
+        {
+          "event": "headers_ready",
+          "elapsed_ms": 2358.0,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "http_client_selected",
+          "elapsed_ms": 2358.0,
+          "delta_ms": 0.0,
+          "warm": true,
+          "base_url": "https://router.huggingface.co/v1"
+        },
+        {
+          "event": "provider_call_started",
+          "elapsed_ms": 2358.0,
+          "delta_ms": 0.0,
+          "attempt": 1
+        },
+        {
+          "event": "http_request_dispatched",
+          "elapsed_ms": 2358.0,
+          "delta_ms": 0.0,
+          "attempt": 1
+        },
+        {
+          "event": "provider_response_headers",
+          "elapsed_ms": 2715.9,
+          "delta_ms": 357.9,
+          "http_status": 200,
+          "provider_ttfh_ms": 357.9
+        },
+        {
+          "event": "stream_iterator_created",
+          "elapsed_ms": 2715.9,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "first_stream_event",
+          "elapsed_ms": 2716.1,
+          "delta_ms": 0.2,
+          "kind": "sse_data",
+          "provider_ttfh_ms": 357.9
+        },
+        {
+          "event": "first_token",
+          "elapsed_ms": 2716.1,
+          "delta_ms": 0.0,
+          "chars": 4,
+          "app_ttft_ms": 2716.1,
+          "stream_parse_ms": 0.2
+        },
+        {
+          "event": "first_useful_text",
+          "elapsed_ms": 2716.1,
+          "delta_ms": 0.0,
+          "chars": 4,
+          "preview": "Comm"
+        },
+        {
+          "event": "first_phrase_ready",
+          "elapsed_ms": 2832.6,
+          "delta_ms": 116.5,
+          "chars": 46,
+          "preview": "Comm ence z votre visite à la Place de l'Ind é"
+        },
+        {
+          "event": "llm_end",
+          "elapsed_ms": 6780.4,
+          "delta_ms": 3947.8,
+          "generation_ms": 6780.4
+        }
+      ],
+      "meta": {
+        "http_client_warm": true
+      },
+      "phases_ms": {
+        "routing": 0.1,
+        "rag": 5.9,
+        "web": 0.0,
+        "prompt": 0.0,
+        "grounding": 6.1,
+        "llm_ttft": 358.1,
+        "app_ttft": 2716.1,
+        "llm": 1439.2,
+        "llm_prepare": 2358.0,
+        "provider_ttfh": 357.9,
+        "stream_parse": 0.2,
+        "provider_attempts": 1.0,
+        "retry_count": 0.0
+      },
+      "reply_preview": "Commencez votre visite à la Place de l'Indépendance, le cœur historique de Yaoundé où l'histoire du Cameroun a tourné une page décisive.\n\nPour voir des artisans locaux, rendez-vous au Centre Internati"
+    },
+    {
+      "turn_id": "voice-20260924-nature-02",
+      "question_id": "nature",
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "run_i": 2,
+      "cold": false,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "valid": true,
+      "llm_prepare_ms": 2351.8,
+      "provider_ttfh_ms": 668.2,
+      "stream_parse_ms": 0.2,
+      "app_ttft_ms": 3020.2,
+      "first_useful_text_ms": 3020.2,
+      "first_phrase_ready_ms": 3086.5,
+      "generation_ms": 6531.3,
+      "retry_count": 0,
+      "provider_attempt_count": 1,
+      "fallback_used": false,
+      "fallback_reason": null,
+      "http_status": 200,
+      "events": [
+        {
+          "event": "llm_start",
+          "elapsed_ms": 0.0,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "conversation_store_start_done",
+          "elapsed_ms": 1284.7,
+          "delta_ms": 1284.7
+        },
+        {
+          "event": "conversation_history_loaded",
+          "elapsed_ms": 2348.4,
+          "delta_ms": 1063.7,
+          "history_len": 0
+        },
+        {
+          "event": "routing_done",
+          "elapsed_ms": 2348.5,
+          "delta_ms": 0.1,
+          "kind": "grounded",
+          "skip_kb": false
+        },
+        {
+          "event": "prompt_ready",
+          "elapsed_ms": 2351.7,
+          "delta_ms": 3.2,
+          "system_chars": 5612,
+          "kb_chunks": 3,
+          "grounding_ms": 3.1,
+          "rag_ms": 3.0
+        },
+        {
+          "event": "request_object_created",
+          "elapsed_ms": 2351.7,
+          "delta_ms": 0.0,
+          "message_count": 2,
+          "history_window": 3
+        },
+        {
+          "event": "stream_body_ready",
+          "elapsed_ms": 2351.7,
+          "delta_ms": 0.0,
+          "max_tokens": 140,
+          "temperature": 0.45
+        },
+        {
+          "event": "headers_ready",
+          "elapsed_ms": 2351.8,
+          "delta_ms": 0.1
+        },
+        {
+          "event": "http_client_selected",
+          "elapsed_ms": 2351.8,
+          "delta_ms": 0.0,
+          "warm": true,
+          "base_url": "https://router.huggingface.co/v1"
+        },
+        {
+          "event": "provider_call_started",
+          "elapsed_ms": 2351.8,
+          "delta_ms": 0.0,
+          "attempt": 1
+        },
+        {
+          "event": "http_request_dispatched",
+          "elapsed_ms": 2351.8,
+          "delta_ms": 0.0,
+          "attempt": 1
+        },
+        {
+          "event": "provider_response_headers",
+          "elapsed_ms": 3020.0,
+          "delta_ms": 668.2,
+          "http_status": 200,
+          "provider_ttfh_ms": 668.2
+        },
+        {
+          "event": "stream_iterator_created",
+          "elapsed_ms": 3020.0,
+          "delta_ms": 0.0
+        },
+        {
+          "event": "first_stream_event",
+          "elapsed_ms": 3020.2,
+          "delta_ms": 0.2,
+          "kind": "sse_data",
+          "provider_ttfh_ms": 668.2
+        },
+        {
+          "event": "first_token",
+          "elapsed_ms": 3020.2,
+          "delta_ms": 0.0,
+          "chars": 4,
+          "app_ttft_ms": 3020.2,
+          "stream_parse_ms": 0.2
+        },
+        {
+          "event": "first_useful_text",
+          "elapsed_ms": 3020.2,
+          "delta_ms": 0.0,
+          "chars": 4,
+          "preview": "Prof"
+        },
+        {
+          "event": "first_phrase_ready",
+          "elapsed_ms": 3086.5,
+          "delta_ms": 66.3,
+          "chars": 47,
+          "preview": "Prof itez de la forêt primaire du parc national"
+        },
+        {
+          "event": "llm_end",
+          "elapsed_ms": 6531.3,
+          "delta_ms": 3444.8,
+          "generation_ms": 6531.3
+        }
+      ],
+      "meta": {
+        "http_client_warm": true
+      },
+      "phases_ms": {
+        "routing": 0.1,
+        "rag": 3.0,
+        "web": 0.0,
+        "prompt": 0.0,
+        "grounding": 3.1,
+        "llm_ttft": 668.5,
+        "app_ttft": 3020.2,
+        "llm": 1182.4,
+        "llm_prepare": 2351.8,
+        "provider_ttfh": 668.2,
+        "stream_parse": 0.2,
+        "provider_attempts": 1.0,
+        "retry_count": 0.0
+      },
+      "reply_preview": "Profitez de la forêt primaire du parc national du Dja pour observer des chimpanzés et une biodiversité unique. C'est l'un des derniers grands sanctuaires de la nature en Afrique centrale. Souhaitez-vo"
+    }
+  ],
+  "phase15_comparison": "Phase 1.5 (direct `_stream_tokens` / warm) : TTFT ≈ 245–280 ms, avg opportuniste ≈ 440 ms. Phase 1.6 mesure le chemin `stream_response` voice (routing+RAG+prompt+HTTP+SSE) avec métriques séparées prepare / provider_ttfh / parse / app_ttft. app_ttft avg ici = 2813.4 ms ; provider_ttfh avg = 445.7 ms ; prepare avg = 2367.4 ms ; fallback_rate = 0.0.",
+  "hypothesis": "Sur n=3 runs valides : prepare_avg=2367.4ms, provider_ttfh_avg=445.7ms, parse_avg=0.2ms, app_ttft_avg=2813.4ms, fallback_rate=0%. Contribution dominante estimée : **prepare (B)**. **Hypothèse B** : délai important AVANT l’appel HF (préparation app). Cold app_ttft avg=2703.9ms (n=1) vs warm avg=2868.1ms (n=2) → **Hypothèse G** possible (cold TLS/provider). **Hypothèse F** : Phase 1.5 chronométrait surtout `_stream_tokens` (après grounding), alors que le `llm_start` voice_ws/Phase1.2 englobait routing+grounding+LLM — et un fallback non-stream transforme TTFT en durée totale.",
+  "conclusion": "Les ~2.7 s historiques llm_start→first_token ne sont pas un mystère de « Qwen lent à 250 ms ». Selon les métriques séparées ci-dessus, localiser le budget dans prepare vs provider_ttfh vs fallback non-stream. Pas de fallback sur les runs valides de cette session.",
+  "code_finding_fallback": "huggingface._iter_sse_tokens: if stream HTTP status >= 400, falls back to non-stream POST and yields the full text as a single token. That alone can turn ~250ms TTFT into multi-second 'first_token'."
+}

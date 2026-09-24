@@ -14,6 +14,7 @@ from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from app.api.deps import get_ai_service, get_speech_service
 from app.services.ai.huggingface import HuggingFaceAIService
 from app.services.metrics.latency import PhaseTimer
+from app.services.metrics.llm_stream_trace import LlmStreamTrace
 from app.services.metrics.ttfa_trace import TurnChronology
 
 logger = logging.getLogger(__name__)
@@ -221,6 +222,11 @@ async def voice_session(websocket: WebSocket) -> None:
             first_tts_enqueue_marked = False
             first_chunker_text = False
             tts_seq = 0
+            llm_trace_payload: dict[str, Any] | None = None
+            llm_trace = LlmStreamTrace(
+                turn_id=timer.turn_id,
+                model=getattr(ai, "_model", "") or "",
+            )
 
             try:
                 async for event in ai.stream_response(
@@ -229,6 +235,8 @@ async def voice_session(websocket: WebSocket) -> None:
                     brief=True,
                     locale=locale,
                     timer=timer,
+                    turn_id=timer.turn_id,
+                    llm_trace=llm_trace,
                 ):
                     if interrupt_event.is_set():
                         break
@@ -301,6 +309,8 @@ async def voice_session(websocket: WebSocket) -> None:
                         mark("llm_end")
                         conversation_id = str(event.get("conversation_id") or conversation_id)
                         full = str(event.get("text") or "".join(reply_parts)).strip()
+                        if isinstance(event.get("llm_trace"), dict):
+                            llm_trace_payload = event["llm_trace"]
                         from app.services.speech.voice_chunker import flush_remainder
 
                         for sentence in flush_remainder(sentence_buffer):
@@ -334,6 +344,8 @@ async def voice_session(websocket: WebSocket) -> None:
                             },
                         )
                     elif etype == "error":
+                        if isinstance(event.get("llm_trace"), dict):
+                            llm_trace_payload = event["llm_trace"]
                         await _send(
                             websocket,
                             {
@@ -366,6 +378,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         **timer.as_dict(),
                         "marks_ms": marks,
                         "ttfa_chronology": chrono.as_dict(),
+                        "llm_trace": llm_trace_payload,
                     },
                     "conversation_id": conversation_id,
                     "turn_id": timer.turn_id,
