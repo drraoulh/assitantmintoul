@@ -211,6 +211,15 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("TOURISM_PLANNER_ENABLED"),
     )
+    # Phase 2.4 Agent 4 — Response Generator (progressive). Default OFF.
+    response_agent_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("RESPONSE_AGENT_OBSERVE"),
+    )
+    response_agent_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("RESPONSE_AGENT_ENABLED"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

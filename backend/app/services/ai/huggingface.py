@@ -325,6 +325,53 @@ class HuggingFaceAIService(AIService):
                 except Exception:  # noqa: BLE001
                     logger.exception("tourism_planner_observe_failed")
 
+            if get_settings().response_agent_observe:
+                # Deterministic Agent 4 only — no extra LLM call (protects TTFA).
+                try:
+                    from app.services.agents.intent import classify_intent
+                    from app.services.agents.knowledge import retrieve_knowledge
+                    from app.services.agents.planner import build_tourism_plan
+                    from app.services.agents.response import generate_response
+
+                    intent_obs = classify_intent(
+                        message,
+                        locale=locale,
+                        mode="voice" if brief else "text",
+                        request_id=turn_id,
+                    )
+                    knowledge_obs = await retrieve_knowledge(
+                        message,
+                        intent_obs,
+                        request_id=turn_id,
+                    )
+                    plan_obs = None
+                    if intent_obs.needs_planner or intent_obs.intent in {
+                        "ITINERARY",
+                        "BUDGET_TRIP",
+                        "NATURE",
+                        "CULTURE",
+                    }:
+                        plan_obs = build_tourism_plan(
+                            message,
+                            intent_obs,
+                            knowledge_obs,
+                            request_id=turn_id,
+                        )
+                    final_obs = await generate_response(
+                        message,
+                        intent_obs,
+                        knowledge_obs,
+                        plan_obs,
+                        response_mode="voice" if brief else "text",
+                        locale=locale,
+                        request_id=turn_id,
+                        prefer_deterministic=True,
+                    )
+                    timer.mark("response_agent", final_obs.total_agent4_ms or 0.0)
+                    trace.set_meta(response_agent=final_obs.observability())
+                except Exception:  # noqa: BLE001
+                    logger.exception("response_agent_observe_failed")
+
             # Safe response cache for exact greetings / chitchat (no KB, no personalization).
             cached = _simple_reply_cache_get(message, locale, brief) if route.skip_kb else None
             if cached:
