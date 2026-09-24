@@ -193,9 +193,14 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("INTENT_ROUTER_OBSERVE"),
     )
-    intent_router_enabled: bool = Field(
+    # Phase 2.2 Agent 2 — Knowledge & Retrieval (progressive). Default OFF.
+    knowledge_agent_observe: bool = Field(
         default=False,
-        validation_alias=AliasChoices("INTENT_ROUTER_ENABLED"),
+        validation_alias=AliasChoices("KNOWLEDGE_AGENT_OBSERVE"),
+    )
+    knowledge_agent_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("KNOWLEDGE_AGENT_ENABLED"),
     )
 
     @property

@@ -1,0 +1,60 @@
+{
+  "n": 18,
+  "mean_total_ms": 2.648,
+  "median_total_ms": 2.545,
+  "p95_total_ms": 3.928,
+  "mean_place_ms": 2.123,
+  "mean_knowledge_ms": 0.375,
+  "index_size": 70,
+  "strategy": "structured_first_tfidf_fallback_no_vector",
+  "samples_preview": [
+    {
+      "intent": "PLACE_SEARCH",
+      "places": 8,
+      "knowledge": 3,
+      "total_ms": 1.794,
+      "place_ms": 0.809,
+      "knowledge_ms": 0.84
+    },
+    {
+      "intent": "PLACE_DETAILS",
+      "places": 3,
+      "knowledge": 3,
+      "total_ms": 3.772,
+      "place_ms": 3.378,
+      "knowledge_ms": 0.244
+    },
+    {
+      "intent": "NATURE",
+      "places": 8,
+      "knowledge": 3,
+      "total_ms": 3.811,
+      "place_ms": 3.373,
+      "knowledge_ms": 0.289
+    },
+    {
+      "intent": "CULTURE",
+      "places": 8,
+      "knowledge": 5,
+      "total_ms": 2.47,
+      "place_ms": 2.007,
+      "knowledge_ms": 0.294
+    },
+    {
+      "intent": "FOOD",
+      "places": 5,
+      "knowledge": 6,
+      "total_ms": 2.621,
+      "place_ms": 2.288,
+      "knowledge_ms": 0.184
+    },
+    {
+      "intent": "BUDGET_TRIP",
+      "places": 11,
+      "knowledge": 3,
+      "total_ms": 1.466,
+      "place_ms": 0.791,
+      "knowledge_ms": 0.522
+    }
+  ]
+}
