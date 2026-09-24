@@ -142,6 +142,30 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "lamnso",
         "nso",
     ),
+    "extreme-nord": (
+        "extreme-nord",
+        "extreme nord",
+        "extrême-nord",
+        "extrême nord",
+        "far north",
+        "far-north",
+        "maroua",
+        "waza",
+        "rhumsiki",
+        "roumsiki",
+        "kapsiki",
+        "mandara",
+        "maga",
+        "mofou",
+        "kousseri",
+        "kousséri",
+        "yagoua",
+        "mora",
+        "kaele",
+        "kaélé",
+        "soya",
+        "brochette",
+    ),
 }
 
 
@@ -171,7 +195,7 @@ def _trigger_hits(q: str, region_id: str, tokens: tuple[str, ...]) -> bool:
     return False
 
 
-@lru_cache(maxsize=8)
+@lru_cache(maxsize=16)
 def _load_pack(region_id: str) -> dict:
     path = _DATA / f"{region_id}_culture.json"
     return json.loads(path.read_text(encoding="utf-8"))
@@ -199,6 +223,8 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "poisson",
             "eru",
             "okok",
+            "soya",
+            "brochette",
             "cafe",
             "café",
         )
@@ -217,6 +243,8 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "fang",
             "beti",
             "pidgin",
+            "peul",
+            "lamidat",
             "danse",
             "masque",
             "protocole",

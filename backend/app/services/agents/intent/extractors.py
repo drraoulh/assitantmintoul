@@ -66,6 +66,14 @@ _CITIES: dict[str, str] = {
     "nkambe": "Nkambe",
     "mbengwi": "Mbengwi",
     "ndop": "Ndop",
+    "waza": "Waza",
+    "rhumsiki": "Rhumsiki",
+    "roumsiki": "Rhumsiki",
+    "maga": "Maga",
+    "mora": "Mora",
+    "yagoua": "Yagoua",
+    "kousseri": "Kousséri",
+    "kaele": "Kaélé",
 }
 
 _REGIONS: dict[str, str] = {
@@ -84,7 +92,10 @@ _REGIONS: dict[str, str] = {
     "northwest": "Nord-Ouest",
     "extreme-nord": "Extrême-Nord",
     "extreme nord": "Extrême-Nord",
+    "extrême-nord": "Extrême-Nord",
+    "extrême nord": "Extrême-Nord",
     "far north": "Extrême-Nord",
+    "far-north": "Extrême-Nord",
     "adamaoua": "Adamaoua",
     "adamawa": "Adamaoua",
     "sud": "Sud",
@@ -113,6 +124,23 @@ _REGION_SAFE_SUBSTRING = {
         r"(?:\br[eé]gion\s+(?:du\s+)?sud\b|\bsud\s+(?:du\s+)?cameroun\b|"
         r"\bdans\s+le\s+sud\b|\bau\s+sud\s+(?:du\s+)?cameroun\b|"
         r"\bsouth\s+region\b|\bsouth\s+cameroon\b)",
+        re.IGNORECASE,
+    ),
+    "nord": re.compile(
+        r"(?:\br[eé]gion\s+(?:du\s+)?nord(?![- ]?ouest)\b|"
+        r"\bnord(?![- ]?ouest)\s+(?:du\s+)?cameroun\b|"
+        r"\bdans\s+le\s+nord(?![- ]?ouest)\b|"
+        r"\bau\s+nord(?![- ]?ouest)\s+(?:du\s+)?cameroun\b|"
+        r"\bvisiter\s+le\s+nord(?![- ]?ouest)\b|"
+        r"\bnorth(?![- ]?west)\s+region\b|"
+        r"\bnorth(?![- ]?west)\s+cameroon\b)",
+        re.IGNORECASE,
+    ),
+    "north": re.compile(
+        r"(?:\bnorth(?![- ]?west)\s+region\b|"
+        r"\bnorth(?![- ]?west)\s+cameroon\b|"
+        r"\bregion\s+of\s+the\s+north(?![- ]?west)\b|"
+        r"\bvisit\s+(?:the\s+)?north(?![- ]?west)\b)",
         re.IGNORECASE,
     ),
 }
@@ -144,6 +172,10 @@ _NORD_OUEST_CULTURE = re.compile(
     r"station\s+hill|savanna\s+botanic)\b",
     re.IGNORECASE,
 )
+_EXTREME_NORD_CULTURE = re.compile(
+    r"\b(waza|rhumsiki|roumsiki|kapsiki|mandara|mofou|lac\s+de\s+maga)\b",
+    re.IGNORECASE,
+)
 
 # Named places often asked about specifically (PLACE_DETAILS).
 _KNOWN_PLACES: dict[str, str] = {
@@ -154,7 +186,7 @@ _KNOWN_PLACES: dict[str, str] = {
     "monument de la reunification": "Monument de la Réunification",
     "chutes de la lobé": "Chutes de la Lobé",
     "chutes de la lobe": "Chutes de la Lobé",
-    "parc de waza": "Parc de Waza",
+    "parc de waza": "Parc national de Waza",
     "reserve du dja": "Réserve du Dja",
     "lac tchad": "Lac Tchad",
     "lac baleng": "Lac Baleng",
@@ -226,6 +258,11 @@ _KNOWN_PLACES: dict[str, str] = {
     "chefferie d'oku": "La Chefferie D'oku",
     "chefferie d oku": "La Chefferie D'oku",
     "savanna botanic": "Savanna Botanic Garden De Bamenda",
+    "parc national de waza": "Parc national de Waza",
+    "pic kapsiki": "Rhumsiki et pic Kapsiki",
+    "monts mandara": "Monts Mandara (depuis Maroua)",
+    "lac de maga": "Lac De Maga",
+    "gorges de kola": "Les Gorges De Kola",
 }
 
 _DURATION = re.compile(
@@ -344,6 +381,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Nord-Ouest"
         if slots.location is None:
             slots.location = "Nord-Ouest"
+
+    if slots.region is None and _EXTREME_NORD_CULTURE.search(raw):
+        slots.region = "Extrême-Nord"
+        if slots.location is None:
+            slots.location = "Extrême-Nord"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

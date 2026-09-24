@@ -762,3 +762,104 @@ async def test_nord_ouest_food_query_injects_culture(geo_on):
     assert any((k.source_id or "") == "culture:nord-ouest" for k in result.knowledge.knowledge)
     text = result.final_response.text.casefold()
     assert "achu" in text or "plat" in text or "restaurant" in text or "marché" in text or "marche" in text
+
+
+def test_extreme_nord_admin_and_maroua():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Maroua")
+    assert chain is not None
+    assert chain["region"] == "Extrême-Nord"
+    assert chain["is_region_capital"] is True
+    assert chain["division"] == "Diamaré"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "extreme-nord"]) == 6
+
+
+def test_extreme_nord_not_maroua():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région de l’Extrême-Nord c’est Maroua nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_waza_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le parc de Waza ?", language="fr")
+    assert facts
+    assert "Extrême-Nord" in facts[0].text_fr or "Waza" in facts[0].text_fr
+
+
+def test_rhumsiki_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est Rhumsiki ?", language="fr")
+    assert facts
+    assert "Extrême-Nord" in facts[0].text_fr or "Mandara" in facts[0].text_fr
+
+
+def test_extreme_nord_culture_soya(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques à Maroua ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "soya" in blob or "brochette" in blob or "mil" in blob
+    assert any((e.source_id or "") == "culture:extreme-nord" for e in ev)
+
+
+def test_extreme_nord_no_invented_hotels():
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache, _load_pack
+
+    clear_culture_cache()
+    pack = _load_pack("extreme-nord")
+    assert pack.get("hotels_verified") == []
+    assert pack.get("hotels_policy")
+
+
+def test_waza_sets_extreme_nord_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi du parc de Waza").region == "Extrême-Nord"
+    assert extract_slots("Que visiter à Rhumsiki ?").city == "Rhumsiki"
+
+
+@pytest.mark.asyncio
+async def test_visit_maroua_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Maroua que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "waza" not in cities
+    assert "rhumsiki" not in cities
+
+
+@pytest.mark.asyncio
+async def test_extreme_nord_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques de l’Extrême-Nord ?",
+        mode="text",
+        locale="fr",
+    )
+    assert any((k.source_id or "") == "culture:extreme-nord" for k in result.knowledge.knowledge)

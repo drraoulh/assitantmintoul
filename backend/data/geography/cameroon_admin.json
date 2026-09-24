@@ -367,6 +367,60 @@
       "capital_city_id": "ndop",
       "source": "Départements de la région du Nord-Ouest",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "diamare",
+      "name_fr": "Diamaré",
+      "name_en": "Diamaré",
+      "region_id": "extreme-nord",
+      "capital_city_id": "maroua",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-kani",
+      "name_fr": "Mayo-Kani",
+      "name_en": "Mayo-Kani",
+      "region_id": "extreme-nord",
+      "capital_city_id": "kaele",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-sava",
+      "name_fr": "Mayo-Sava",
+      "name_en": "Mayo-Sava",
+      "region_id": "extreme-nord",
+      "capital_city_id": "mora",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-tsanaga",
+      "name_fr": "Mayo-Tsanaga",
+      "name_en": "Mayo-Tsanaga",
+      "region_id": "extreme-nord",
+      "capital_city_id": "mokolo",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "logone-chari",
+      "name_fr": "Logone-et-Chari",
+      "name_en": "Logone-et-Chari",
+      "region_id": "extreme-nord",
+      "capital_city_id": "kousseri",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mayo-danay",
+      "name_fr": "Mayo-Danay",
+      "name_en": "Mayo-Danay",
+      "region_id": "extreme-nord",
+      "capital_city_id": "yagoua",
+      "source": "Départements de la région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -480,8 +534,9 @@
       "aliases": [
         "maroua"
       ],
-      "source": "Chef-lieu de la région de l'Extrême-Nord",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région de l’Extrême-Nord / département du Diamaré",
+      "verified_at": "2026-09-24",
+      "division_id": "diamare"
     },
     {
       "id": "garoua",
@@ -1060,6 +1115,121 @@
       ],
       "source": "Chef-lieu du Ngo-Ketunjia, région du Nord-Ouest",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "waza",
+      "name_fr": "Waza",
+      "name_en": "Waza",
+      "entity_type": "city",
+      "division_id": "logone-chari",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "waza"
+      ],
+      "source": "Parc national de Waza, région de l’Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "rhumsiki",
+      "name_fr": "Rhumsiki",
+      "name_en": "Rhumsiki",
+      "entity_type": "city",
+      "division_id": "mayo-tsanaga",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "rhumsiki",
+        "roumsiki"
+      ],
+      "source": "Village et pic Kapsiki, Mayo-Tsanaga, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mokolo",
+      "name_fr": "Mokolo",
+      "name_en": "Mokolo",
+      "entity_type": "city",
+      "division_id": "mayo-tsanaga",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "mokolo"
+      ],
+      "source": "Chef-lieu du Mayo-Tsanaga, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mora",
+      "name_fr": "Mora",
+      "name_en": "Mora",
+      "entity_type": "city",
+      "division_id": "mayo-sava",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "mora"
+      ],
+      "source": "Chef-lieu du Mayo-Sava, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kousseri",
+      "name_fr": "Kousséri",
+      "name_en": "Kousseri",
+      "entity_type": "city",
+      "division_id": "logone-chari",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "kousseri",
+        "kousséri"
+      ],
+      "source": "Chef-lieu du Logone-et-Chari, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "yagoua",
+      "name_fr": "Yagoua",
+      "name_en": "Yagoua",
+      "entity_type": "city",
+      "division_id": "mayo-danay",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "yagoua"
+      ],
+      "source": "Chef-lieu du Mayo-Danay, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kaele",
+      "name_fr": "Kaélé",
+      "name_en": "Kaele",
+      "entity_type": "city",
+      "division_id": "mayo-kani",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "kaele",
+        "kaélé"
+      ],
+      "source": "Chef-lieu du Mayo-Kani, Extrême-Nord",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "maga",
+      "name_fr": "Maga",
+      "name_en": "Maga",
+      "entity_type": "city",
+      "division_id": "mayo-danay",
+      "region_id": "extreme-nord",
+      "is_region_capital": false,
+      "aliases": [
+        "maga"
+      ],
+      "source": "Lac de Maga, Mayo-Danay, Extrême-Nord",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1469,6 +1639,30 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Zone Fungom (Lac Kuk)",
       "source": "Fiche Lac Kuk",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kapsiki",
+      "name_fr": "Pic Kapsiki",
+      "name_en": "Kapsiki Peak",
+      "city_id": "rhumsiki",
+      "division_id": "mayo-tsanaga",
+      "region_id": "extreme-nord",
+      "relation_to_city": "IN",
+      "notes_fr": "Pic Kapsiki à Rhumsiki",
+      "source": "Fiche Rhumsiki",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mandara",
+      "name_fr": "Monts Mandara",
+      "name_en": "Mandara Mountains",
+      "city_id": "maroua",
+      "division_id": "mayo-tsanaga",
+      "region_id": "extreme-nord",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Chaîne Mandara accessible depuis Maroua / Mokolo",
+      "source": "Fiche Monts Mandara",
       "verified_at": "2026-09-24"
     }
   ]

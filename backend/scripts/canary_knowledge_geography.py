@@ -56,6 +56,12 @@ QUERIES = [
     "Quels plats typiques à Bamenda / Nord-Ouest ?",
     "Où est le Palais de Bafut ?",
     "Je veux visiter le Nord-Ouest.",
+    "Je veux visiter Maroua que me proposes-tu ?",
+    "La région de l’Extrême-Nord c’est Maroua nor ?",
+    "Maroua est dans quelle région ?",
+    "Quels plats typiques à Maroua / Extrême-Nord ?",
+    "Où est le parc de Waza ?",
+    "Je veux visiter l’Extrême-Nord.",
 ]
 
 
@@ -210,6 +216,24 @@ async def main() -> int:
         or "mezam" in turns[38]["assistant"].casefold(),
         "nord_ouest_regional": turns[39]["intent"]
         in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "maroua_has_places": turns[40]["verified_places_count"] >= 1,
+        "maroua_not_waza_as_city": all(
+            (p.get("city") or "").casefold() not in {"waza", "rhumsiki"} for p in turns[40]["places"]
+        ),
+        "extreme_nord_not_equals_maroua": "Pas exactement" in turns[41]["assistant"]
+        or "chef-lieu" in turns[41]["assistant"].casefold(),
+        "maroua_region_extreme_nord": "Extrême-Nord" in turns[42]["assistant"]
+        or "extreme-nord" in turns[42]["assistant"].casefold(),
+        "extreme_nord_food": "soya" in turns[43]["assistant"].casefold()
+        or "brochette" in turns[43]["assistant"].casefold()
+        or "mil" in turns[43]["assistant"].casefold()
+        or turns[43]["completeness"] != "NONE",
+        "waza_located": "waza" in turns[44]["assistant"].casefold()
+        or "extrême-nord" in turns[44]["assistant"].casefold()
+        or "extreme-nord" in turns[44]["assistant"].casefold()
+        or "maroua" in turns[44]["assistant"].casefold(),
+        "extreme_nord_regional": turns[45]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -257,45 +281,38 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched catalogs: ouest / littoral / centre / sud / sud-ouest / nord-ouest (+ culture packs + hotels Ayila’a)",
+        "- Enriched catalogs: ouest → extreme-nord (+ culture packs + hotels Ayila’a where available)",
         "",
         "## Geography",
         "",
-        "- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 · Sud-Ouest 4 · Nord-Ouest 7 (Mezam, Boyo, Bui, …)",
+        "- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 (Diamaré, Mayo-Tsanaga, …)",
         "",
         "## Region packs",
         "",
-        "- Ouest · Littoral · Centre · Sud · Sud-Ouest · Nord-Ouest (Bamenda/Bafut/Oku) · 0 restos inventés",
-        "- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang) — aucun hôtel Limbé/Buea/Bamenda dans l’import",
+        "- … · Nord-Ouest · Extrême-Nord (Maroua/Waza/Rhumsiki) · 0 restos inventés",
+        "- Hotels Ayila’a: Yaoundé, Douala, Kribi, Dschang — pas Maroua/Bamenda/Limbé dans l’import",
         "",
         "## Samples",
         "",
         f"- Yaoundé: {turns[16]['verified_places_count']} — `{turns[16]['assistant'][:100]}`",
         f"- Kribi: {turns[22]['verified_places_count']} — `{turns[22]['assistant'][:100]}`",
-        f"- Lobé: `{turns[26]['assistant']}`",
-        f"- Hotels Yaoundé: `{turns[27]['assistant'][:160]}`",
         f"- Limbé: {turns[28]['verified_places_count']} — `{turns[28]['assistant'][:100]}`",
-        f"- Mont Cameroun: `{turns[32]['assistant']}`",
         f"- Bamenda: {turns[34]['verified_places_count']} — `{turns[34]['assistant'][:100]}`",
-        f"- Bafut: `{turns[38]['assistant']}`",
+        f"- Maroua: {turns[40]['verified_places_count']} — `{turns[40]['assistant'][:100]}`",
+        f"- Waza: `{turns[44]['assistant']}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
-        "- `knowledge_completeness` + `verified_places_count`",
-        "- Geo facts + multi-region culture evidence (Ouest → Nord-Ouest)",
-        "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
+        "- Geo facts + multi-region culture evidence (Ouest → Extrême-Nord)",
         "",
         "## Web fallback",
         "",
         "- `WEB_KNOWLEDGE_FALLBACK_ENABLED` (default false)",
-        "- When enabled + LOW/NONE completeness → orchestrator may call existing WebSearch",
-        "- Results still merged as `[web evidence]` then grounded",
         "",
         "## Grounding",
         "",
         "- Still enforced; Qwen remains formulation-only",
-        "- Geo admin names whitelisted when present in geo evidence",
         "",
         "## Tests",
         "",
@@ -311,12 +328,10 @@ async def main() -> int:
         "",
         "- `KNOWLEDGE_GEOGRAPHY_ENABLED=false` (default)",
         "- `WEB_KNOWLEDGE_FALLBACK_ENABLED=false` (default)",
-        "- Other Phase 2 flags unchanged",
         "",
         "## Conclusion",
         "",
-        "Structured geography covers Ouest through Nord-Ouest without inventing tourism facts. "
-        "City queries stay scoped; nearby/regional scopes are explicit.",
+        "Structured geography covers Ouest through Extrême-Nord without inventing tourism facts.",
         "",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")

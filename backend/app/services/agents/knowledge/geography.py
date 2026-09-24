@@ -102,6 +102,12 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["north west"] = rid
             idx.alias_to_region["region du nord-ouest"] = rid
             idx.alias_to_region["region nord-ouest"] = rid
+        elif rid == "extreme-nord":
+            idx.alias_to_region["far north"] = rid
+            idx.alias_to_region["far-north"] = rid
+            idx.alias_to_region["extreme nord"] = rid
+            idx.alias_to_region["region de l extreme-nord"] = rid
+            idx.alias_to_region["region extreme-nord"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -310,6 +316,34 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
+        (
+            "extreme-nord" in q
+            or "extreme nord" in q
+            or "far north" in q
+            or "far-north" in q
+        )
+        and "maroua" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Extrême-Nord",
+                relation="IS_NOT_EQUIVALENT",
+                object="Maroua",
+                text_fr=(
+                    "Pas exactement. L’Extrême-Nord est une région du Cameroun, "
+                    "et Maroua en est le chef-lieu (Waza / Rhumsiki sont des sites majeurs)."
+                ),
+                text_en=(
+                    "Not exactly. The Far North is a region of Cameroon, "
+                    "and Maroua is its capital (Waza / Rhumsiki are major sites)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("extreme-nord", "maroua", "waza"),
+            )
+        ]
+
+    if (
         not compound_ouest
         and ("sud" in q or "south" in q)
         and "kribi" in q
@@ -360,6 +394,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Buea est le chef-lieu de la région du Sud-Ouest du Cameroun."
                     elif rid == "nord-ouest":
                         text_fr = "Bamenda est le chef-lieu de la région du Nord-Ouest du Cameroun."
+                    elif rid == "extreme-nord":
+                        text_fr = "Maroua est le chef-lieu de la région de l’Extrême-Nord du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -521,6 +557,52 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Waza
+    if "waza" in q and re.search(
+        r"o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion|parc",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Parc national de Waza",
+                relation="LOCATED_IN",
+                object="Waza / Extrême-Nord",
+                text_fr=(
+                    "Le parc national de Waza se trouve dans la région de l’Extrême-Nord "
+                    "(accès typique depuis Maroua — vérifier saison et sécurité)."
+                ),
+                text_en=(
+                    "Waza National Park is in the Far North region "
+                    "(typical access from Maroua — check season and security)."
+                ),
+                source="Sites touristiques Extrême-Nord / Waza",
+                entity_ids=("waza", "maroua", "extreme-nord"),
+            )
+        ]
+
+    # Rhumsiki / Kapsiki
+    if ("rhumsiki" in q or "roumsiki" in q or "kapsiki" in q) and re.search(
+        r"o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Rhumsiki",
+                relation="LOCATED_IN",
+                object="Rhumsiki / Mayo-Tsanaga / Extrême-Nord",
+                text_fr=(
+                    "Rhumsiki et le pic Kapsiki se trouvent dans les monts Mandara "
+                    "(département du Mayo-Tsanaga, région de l’Extrême-Nord)."
+                ),
+                text_en=(
+                    "Rhumsiki and Kapsiki peak are in the Mandara Mountains "
+                    "(Mayo-Tsanaga department, Far North region)."
+                ),
+                source="Sites touristiques Extrême-Nord / Rhumsiki",
+                entity_ids=("rhumsiki", "mayo-tsanaga", "extreme-nord"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -575,6 +657,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région du Sud-Ouest du Cameroun."
                 elif rid == "nord-ouest":
                     text_fr = f"{cname} se trouve dans la région du Nord-Ouest du Cameroun."
+                elif rid == "extreme-nord":
+                    text_fr = f"{cname} se trouve dans la région de l’Extrême-Nord du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -666,10 +750,15 @@ def is_geo_simple_query(query: str) -> bool:
         r"nord[- ]?ouest.{0,40}c[' ]?est.{0,20}bamenda",
         r"r[eé]gion\s+du\s+nord[- ]?ouest.{0,30}bamenda",
         r"bamenda.{0,40}c[' ]?est.{0,20}nord[- ]?ouest",
+        r"extreme[- ]?nord.{0,40}c[' ]?est.{0,20}maroua",
+        r"r[eé]gion\s+(?:de\s+l['’])?extreme[- ]?nord.{0,30}maroua",
+        r"maroua.{0,40}c[' ]?est.{0,20}extreme[- ]?nord",
         r"mont\s+cameroun|mount\s+cameroon",
         r"korup",
         r"(?:palais|chefferie)\s+(?:de\s+)?bafut",
         r"lac\s+oku",
+        r"(?:parc\s+(?:national\s+)?(?:de\s+)?)?waza",
+        r"rhumsiki|kapsiki",
     )
     if any(re.search(p, q) for p in patterns):
         return True

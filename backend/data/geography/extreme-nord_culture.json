@@ -1,0 +1,161 @@
+{
+  "region_id": "extreme-nord",
+  "region_fr": "Extrême-Nord",
+  "region_en": "Far North",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, food_deep_dive, cities_quick_guide, regions_overview, national_parks_wildlife, transport_itineraries, safety_health_money, climate_seasons, practical_travel) et fiches lieux Extrême-Nord (export Supabase + curated). Aucun restaurant nommé inventé. Aucun hôtel Ayila'a Maroua dans l'import actuel.",
+  "overview": {
+    "text_fr": "L’Extrême-Nord a pour chef-lieu Maroua. Sahel et savane : parc de Waza, monts Mandara, Rhumsiki / pic Kapsiki, lac de Maga. Accès typique via Ngaoundéré → Garoua → Maroua (avion intérieur possible). Consultez des avis de voyage officiels récents avant tout projet.",
+    "text_en": "The Far North’s capital is Maroua. Sahel and savanna: Waza park, Mandara Mountains, Rhumsiki / Kapsiki peak, Lake Maga. Typical access via Ngaoundéré → Garoua → Maroua (domestic flights when available). Check recent official travel advice before any trip.",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; data/documents/transport_itineraries.md ; data/documents/safety_health_money.md"
+  },
+  "cultural_areas": [
+    {
+      "id": "diamare-maroua",
+      "name_fr": "Diamaré (Maroua)",
+      "name_en": "Diamaré (Maroua)",
+      "description_fr": "Chef-lieu régional ; base pour Mandara, Waza et Rhumsiki selon accès.",
+      "description_en": "Regional capital; base for Mandara, Waza and Rhumsiki depending on access.",
+      "related_cities": ["Maroua"],
+      "source": "data/documents/cities_quick_guide.md ; data/tourist_sites/extreme_nord_complete.json"
+    },
+    {
+      "id": "mandara-kapsiki",
+      "name_fr": "Mandara / Kapsiki",
+      "name_en": "Mandara / Kapsiki",
+      "description_fr": "Monts Mandara, habitats Mofou, Rhumsiki et pic Kapsiki — guide local recommandé.",
+      "description_en": "Mandara Mountains, Mofou habitats, Rhumsiki and Kapsiki peak — local guide recommended.",
+      "related_cities": ["Rhumsiki", "Mokolo", "Maroua"],
+      "source": "data/documents/practical_travel.md ; data/tourist_sites/extreme_nord_complete.json"
+    },
+    {
+      "id": "waza-sahel",
+      "name_fr": "Waza / Sahel",
+      "name_en": "Waza / Sahel",
+      "description_fr": "Parc national de Waza — safari emblématique selon accès et saison.",
+      "description_en": "Waza National Park — emblematic safari depending on access and season.",
+      "related_cities": ["Waza"],
+      "source": "data/documents/national_parks_wildlife.md"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Français / peul (Fulfulde)",
+      "area": "Extrême-Nord au quotidien",
+      "note_fr": "Français utile ; peul et langues locales selon les zones. Respectez les usages islamiques (saluts, tenues).",
+      "note_en": "French is useful; Fulfulde and local languages vary by area. Respect Islamic customs (greetings, dress).",
+      "source": "data/documents/history_culture.md ; data/documents/languages_etiquette.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "sahel-lamidats",
+      "title_fr": "Cultures peules et sahéliennes",
+      "title_en": "Fulani and Sahelian cultures",
+      "text_fr": "Lamidats, architecture et traditions islamiques du Grand Nord — suivez le protocole indiqué localement.",
+      "text_en": "Lamidats, architecture and Islamic traditions of the Far North — follow local protocol.",
+      "source": "data/documents/history_culture.md"
+    },
+    {
+      "id": "travel-advice-en",
+      "title_fr": "Avis de voyage",
+      "title_en": "Travel advice",
+      "text_fr": "Nord-Ouest / Sud-Ouest / Extrême-Nord : consultez des avis de voyage officiels récents avant tout projet.",
+      "text_en": "North-West / South-West / Far North: check recent official travel advice before any trip.",
+      "source": "data/documents/safety_health_money.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "brochettes-soya",
+      "name_fr": "Brochettes / soya",
+      "name_en": "Brochettes / soya",
+      "text_fr": "Street food populaire partout au Cameroun, très présente aussi dans le Grand Nord. Aucun restaurant nommé inventé.",
+      "text_en": "Popular street food across Cameroon, also common in the Far North. No invented restaurant names.",
+      "source": "data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "sahel-staples",
+      "name_fr": "Bases sahéliennes",
+      "name_en": "Sahelian staples",
+      "text_fr": "Céréales (mil / couscous selon variantes), plats locaux des marchés de Maroua — orientez vers les marchés, pas des enseignes inventées.",
+      "text_en": "Grains (millet / couscous variants), local market dishes in Maroua — point to markets, not invented brand names.",
+      "source": "data/documents/food_culture.md ; data/documents/history_culture.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "maroua-markets",
+      "name_fr": "Marchés de Maroua",
+      "name_en": "Maroua markets",
+      "text_fr": "Produits du Sahel et artisanat local — visitez de jour ; négociez avec courtoisie.",
+      "text_en": "Sahel produce and local crafts — visit by day; negotiate courteously.",
+      "city": "Maroua",
+      "source": "data/documents/shopping_crafts.md ; data/documents/cities_quick_guide.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "waza",
+      "title_fr": "Parc national de Waza",
+      "title_en": "Waza National Park",
+      "text_fr": "Safari emblématique de l’Extrême-Nord — vérifier accès et saison.",
+      "text_en": "Emblematic Far North safari — check access and season.",
+      "source": "data/documents/national_parks_wildlife.md ; data/tourist_sites/extreme_nord_complete.json"
+    },
+    {
+      "id": "rhumsiki-kapsiki",
+      "title_fr": "Rhumsiki / pic Kapsiki",
+      "title_en": "Rhumsiki / Kapsiki peak",
+      "text_fr": "Paysages volcaniques des Mandara ; guide local recommandé.",
+      "text_en": "Volcanic Mandara landscapes; local guide recommended.",
+      "source": "data/tourist_sites/extreme_nord_complete.json ; data/documents/practical_travel.md"
+    },
+    {
+      "id": "maga-mandara",
+      "title_fr": "Lac de Maga et Mandara",
+      "title_en": "Lake Maga and Mandara",
+      "text_fr": "Lac de Maga ; monts Mandara / gorges de Kola — logistique et sécurité à vérifier.",
+      "text_en": "Lake Maga; Mandara Mountains / Kola gorges — check logistics and security.",
+      "source": "data/tourist_sites/extreme_nord_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "corridor-grand-nord",
+      "title_fr": "Corridor Grand Nord",
+      "title_en": "Far North corridor",
+      "text_fr": "Axe Ngaoundéré → Garoua → Maroua ; avion intérieur utile. Pour Waza, Mandara, Rhumsiki : infos locales et avis sécurité obligatoires.",
+      "text_en": "Ngaoundéré → Garoua → Maroua corridor; domestic flights help. For Waza, Mandara, Rhumsiki: local info and security advisories are mandatory.",
+      "source": "data/documents/transport_itineraries.md"
+    },
+    {
+      "id": "climate-en",
+      "title_fr": "Climat sahélien",
+      "title_en": "Sahelian climate",
+      "text_fr": "Saison sèche chaude ; saison des pluies plus courte qu’au sud — hydratez-vous et protégez-vous du soleil.",
+      "text_en": "Hot dry season; shorter rains than in the south — hydrate and sun-protect.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour l’Extrême-Nord. Ne pas inventer de noms. Orienter vers brochettes / soya et marchés de Maroua.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the Far North. Do not invent names. Point to brochettes / soya and Maroua markets.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [],
+  "hotels_policy": {
+    "text_fr": "Aucun hôtel Maroua dans l’import Ayila’a actuel — ne pas inventer de noms d’hébergement. (Des hôtels Ayila’a existent à Garoua / Ngaoundéré pour les régions voisines.)",
+    "text_en": "No Maroua hotels in the current Ayila’a import — do not invent lodging names. (Ayila’a hotels exist in Garoua / Ngaoundéré for neighbouring regions.)",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "diamare", "name_fr": "Diamaré", "hub": "Maroua", "note_fr": "Chef-lieu régional."},
+    {"id": "mayo-tsanaga", "name_fr": "Mayo-Tsanaga", "hub": "Mokolo", "note_fr": "Rhumsiki / Mandara."},
+    {"id": "logone-chari", "name_fr": "Logone-et-Chari", "hub": "Kousséri", "note_fr": "Waza."},
+    {"id": "mayo-danay", "name_fr": "Mayo-Danay", "hub": "Yagoua", "note_fr": "Lac de Maga."},
+    {"id": "mayo-sava", "name_fr": "Mayo-Sava", "hub": "Mora", "note_fr": "Ouest sahélien."},
+    {"id": "mayo-kani", "name_fr": "Mayo-Kani", "hub": "Kaélé", "note_fr": "Sud de l’Extrême-Nord."}
+  ]
+}

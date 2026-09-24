@@ -102,6 +102,18 @@ _NOT_BAMENDA = {
     "douala",
     "buea",
 }
+_NOT_MAROUA = {
+    "waza",
+    "rhumsiki",
+    "maga",
+    "boboyo",
+    "kola",
+    "garoua",
+    "douala",
+    "yaounde",
+    "yaoundé",
+    "mokolo",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -117,6 +129,9 @@ _REGION_ALIASES = {
     "south-west": "sud-ouest",
     "southwest": "sud-ouest",
     "sud ouest": "sud-ouest",
+    "far north": "extreme-nord",
+    "far-north": "extreme-nord",
+    "extreme nord": "extreme-nord",
 }
 
 
@@ -230,6 +245,8 @@ class PlaceRetriever:
                     continue
                 if hub == "bamenda" and place_city in _NOT_BAMENDA:
                     continue
+                if hub == "maroua" and place_city in _NOT_MAROUA:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -282,6 +299,11 @@ class PlaceRetriever:
                                 "station-hill",
                                 "fungom",
                             } and "bamenda" not in place_city:
+                                continue
+                        elif hub == "maroua":
+                            if place_city not in {
+                                "mandara",
+                            } and "maroua" not in place_city:
                                 continue
                         else:
                             continue

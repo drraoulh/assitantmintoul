@@ -1,25 +1,5 @@
 [
   {
-    "id": "parc-waza",
-    "name": "Parc national de Waza",
-    "city": "Waza",
-    "region": "Extrême-Nord",
-    "category": "park",
-    "summary_fr": "Parc emblématique de savane du Extrême-Nord (éléphants, antilopes, oiseaux selon saison). Safari dans un paysage sahélien.",
-    "summary_en": "Iconic Far North savannah park (elephants, antelopes, birds depending on season). Safari in a Sahelian landscape.",
-    "tips_fr": "Accès et sécurité à vérifier impérativement. Meilleure observation souvent en saison sèche près des points d'eau. Guide et véhicule 4x4 recommandés.",
-    "tips_en": "Access and security must be checked. Wildlife viewing often best in the dry season near water. Guide and 4x4 recommended.",
-    "tags": [
-      "waza",
-      "parc",
-      "park",
-      "safari",
-      "extrême-nord",
-      "éléphant",
-      "wildlife"
-    ]
-  },
-  {
     "id": "parc-dja",
     "name": "Réserve de faune du Dja",
     "city": "Djoum / Dja",
