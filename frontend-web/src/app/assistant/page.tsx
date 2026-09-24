@@ -1,14 +1,27 @@
-import { Suspense } from 'react';
+import { AssistantChat } from '@/components/assistant/AssistantChat';
 
-import { AssistantPageClient } from '@/components/assistant/AssistantChat';
-import { Skeleton } from '@/components/ui';
+/**
+ * Server page — pass searchParams as props so we do NOT call useSearchParams().
+ * That avoids Next.js `BAILOUT_TO_CLIENT_SIDE_RENDERING`, which previously left
+ * production /assistant showing only the site header + footer until JS hydrated.
+ */
+type AssistantSearchParams = {
+  q?: string;
+  voice?: string;
+};
 
-export default function AssistantPage() {
+export default async function AssistantPage({
+  searchParams,
+}: {
+  searchParams: Promise<AssistantSearchParams>;
+}) {
+  const params = await searchParams;
+  const initialQuestion = params.q?.trim() || undefined;
+  const autoVoice = params.voice === '1';
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 md:px-6">
-      <Suspense fallback={<Skeleton className="h-[70vh] w-full" />}>
-        <AssistantPageClient />
-      </Suspense>
+      <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
 import { Button, ErrorState, Input } from '@/components/ui';
@@ -268,15 +267,24 @@ export function AssistantChat({
           }}
         />
         <Input
+          id="assistant-message"
+          name="message"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={t('home.placeholder')}
           className="min-w-[12rem] flex-1"
+          autoComplete="off"
+          enterKeyHint="send"
         />
-        <Button type="button" variant="secondary" onClick={() => void startVoice()}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => void startVoice()}
+          aria-label={t('assistant.voice')}
+        >
           🎙️
         </Button>
-        <Button type="submit" disabled={sending}>
+        <Button type="submit" disabled={sending} aria-label={t('assistant.send')}>
           ➤
         </Button>
       </form>
@@ -310,11 +318,4 @@ async function playChunk(b64: string) {
     });
   }
   playing = false;
-}
-
-export function AssistantPageClient() {
-  const params = useSearchParams();
-  const q = params.get('q') ?? undefined;
-  const voice = params.get('voice') === '1';
-  return <AssistantChat initialQuestion={q} autoVoice={voice} />;
 }
