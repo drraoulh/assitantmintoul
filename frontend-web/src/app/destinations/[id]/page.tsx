@@ -9,6 +9,7 @@ import { PageTransition } from '@/components/motion';
 import { Badge, Button, ErrorState, Skeleton } from '@/components/ui';
 import { fetchTouristSite, friendlyError, listTouristSites } from '@/lib/api/client';
 import { useLocale } from '@/lib/i18n';
+import { resolvePlaceImage } from '@/lib/place-images';
 import { addPlaceToTrip } from '@/lib/trip-store';
 import type { TouristSite } from '@/lib/types';
 
@@ -82,14 +83,16 @@ export default function DestinationDetailPage() {
         ]
       : [];
 
+  const cover = resolvePlaceImage(site);
+
   return (
     <PageTransition>
       <div className="mx-auto max-w-6xl px-4 py-8 md:px-6 md:py-12">
         <div className="relative overflow-hidden rounded-[1.5rem]">
-          {site.images[0] ? (
+          {cover ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={site.images[0]}
+              src={cover}
               alt={site.name}
               className="h-72 w-full object-cover md:h-[28rem]"
             />
@@ -100,14 +103,14 @@ export default function DestinationDetailPage() {
               </h1>
             </div>
           )}
-          {site.images[0] ? (
+          {cover ? (
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
           ) : null}
         </div>
 
         <div className="mt-8 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            {site.images[0] ? (
+            {cover ? (
               <h1 className="font-display text-4xl font-bold text-[var(--green-deep)]">
                 {site.name}
               </h1>
@@ -180,16 +183,16 @@ export default function DestinationDetailPage() {
               <Button
                 type="button"
                 onClick={() => {
-                  addPlaceToTrip({
-                    id: site.id,
-                    name: site.name,
-                    city: site.city,
-                    region: site.region,
-                    category: site.category,
-                    imageUrl: site.images[0],
-                    latitude: site.latitude,
-                    longitude: site.longitude,
-                  });
+                addPlaceToTrip({
+                  id: site.id,
+                  name: site.name,
+                  city: site.city,
+                  region: site.region,
+                  category: site.category,
+                  imageUrl: cover ?? site.images[0],
+                  latitude: site.latitude,
+                  longitude: site.longitude,
+                });
                   setAdded(true);
                 }}
               >

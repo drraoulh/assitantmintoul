@@ -8,6 +8,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 import { Badge, Button } from '@/components/ui';
 import { useLocale } from '@/lib/i18n';
+import { resolvePlaceImage } from '@/lib/place-images';
 import { addPlaceToTrip } from '@/lib/trip-store';
 import type { TouristSite } from '@/lib/types';
 
@@ -16,6 +17,7 @@ type PlaceLike =
   | {
       id: string;
       name: string;
+      slug?: string | null;
       city?: string | null;
       region?: string | null;
       category?: string | null;
@@ -31,17 +33,16 @@ type PlaceLike =
 export function PlaceCard({
   site,
   href,
+  featured = false,
 }: {
   site: PlaceLike;
   href?: string;
+  featured?: boolean;
 }) {
   const { t } = useLocale();
   const reduce = useReducedMotion();
   const [added, setAdded] = useState(false);
-  const image =
-    ('images' in site && site.images?.[0]) ||
-    ('image_url' in site && site.image_url) ||
-    null;
+  const image = resolvePlaceImage(site);
   const link = href ?? `/destinations/${encodeURIComponent(site.id)}`;
   const price =
     ('price' in site && site.price) ||
@@ -52,12 +53,10 @@ export function PlaceCard({
 
   return (
     <motion.article
-      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-[var(--shadow-soft)]"
-      whileHover={
-        reduce
-          ? undefined
-          : { y: -3, transition: { duration: 0.25 } }
-      }
+      className={`overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-[var(--shadow-soft)] ${
+        featured ? 'min-w-[16.5rem] snap-start sm:min-w-[18rem]' : ''
+      }`}
+      whileHover={reduce ? undefined : { y: -3, transition: { duration: 0.25 } }}
     >
       <Link href={link} className="block overflow-hidden">
         <div className="relative aspect-[16/10] bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--gold)]/30">
@@ -67,7 +66,7 @@ export function PlaceCard({
               alt={site.name}
               fill
               className="object-cover transition duration-500 hover:scale-[1.03]"
-              sizes="(max-width:768px) 100vw, 33vw"
+              sizes="(max-width:768px) 85vw, 33vw"
               unoptimized
             />
           ) : (
@@ -78,6 +77,11 @@ export function PlaceCard({
             </div>
           )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/35 to-transparent" />
+          {site.category ? (
+            <span className="absolute left-3 top-3 rounded-full bg-black/40 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white backdrop-blur-sm">
+              {site.category}
+            </span>
+          ) : null}
         </div>
       </Link>
       <div className="space-y-3 p-4">
@@ -91,7 +95,6 @@ export function PlaceCard({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {site.category ? <Badge>{site.category}</Badge> : null}
           {price ? <Badge tone="gold">{price}</Badge> : null}
         </div>
         {'description' in site && site.description ? (

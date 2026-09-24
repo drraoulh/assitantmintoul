@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { Map as MapIcon, Search } from 'lucide-react';
 
-import { CameroonSilhouette } from '@/components/maps/CameroonSilhouette';
 import { TourismMap } from '@/components/maps/TourismMap';
 import { PlaceCard } from '@/components/places/PlaceCard';
+import { RegionCoverCard } from '@/components/places/RegionCoverCard';
 import { PageTransition, SlideUp } from '@/components/motion';
 import {
   Button,
@@ -32,6 +32,8 @@ const CATEGORY_FILTERS = [
   { id: 'culture', label: 'Culture' },
   { id: 'heritage', label: 'Patrimoine' },
   { id: 'activity', label: 'Activités' },
+  { id: 'beach', label: 'Plages' },
+  { id: 'park', label: 'Parcs' },
 ] as const;
 
 export default function ExplorerPage() {
@@ -152,37 +154,31 @@ export default function ExplorerPage() {
           </div>
         ) : null}
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <h2 className="mt-10 font-display text-2xl font-semibold text-[var(--green-deep)]">
+          Les 10 régions
+        </h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {loading
             ? Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-28 w-full" />
+                <Skeleton key={i} className="aspect-[5/3] w-full" />
               ))
-            : REGIONS.map((r) => {
-                const count = counts[r.id] ?? 0;
-                const name = locale === 'fr' ? r.nameFr : r.nameEn;
-                return (
-                  <button
-                    key={r.id}
-                    type="button"
-                    onClick={() => setRegion(r.apiRegion)}
-                    className={`rounded-2xl border px-4 py-4 text-left transition hover:-translate-y-0.5 ${
-                      region === r.apiRegion
-                        ? 'border-[var(--gold)] bg-[var(--mint-soft)]'
-                        : 'border-[var(--line)] bg-white'
-                    }`}
-                  >
-                    <p className="font-semibold text-[var(--green-deep)]">{name}</p>
-                    <p className="mt-1 text-xs text-[var(--muted)]">
-                      {count > 0 ? `${count} ${t('explorer.count')}` : r.capitalFr}
-                    </p>
-                  </button>
-                );
-              })}
+            : REGIONS.map((r) => (
+                <RegionCoverCard
+                  key={r.id}
+                  region={r}
+                  count={counts[r.id]}
+                  locale={locale}
+                  active={region === r.apiRegion}
+                  onClick={() =>
+                    setRegion((prev) => (prev === r.apiRegion ? '' : r.apiRegion))
+                  }
+                />
+              ))}
         </div>
 
         <div className="mt-10 flex items-center justify-between gap-3">
           <h2 className="font-display text-2xl font-semibold text-[var(--green-deep)]">
-            Lieux
+            Lieux {region ? `· ${region}` : ''}
           </h2>
           <Button
             type="button"
@@ -210,10 +206,7 @@ export default function ExplorerPage() {
             ) : null}
           </div>
           <div className={`${showMap ? 'block' : 'hidden'} lg:block`}>
-            <div className="sticky top-24 space-y-4">
-              <div className="flex justify-center py-2">
-                <CameroonSilhouette size="sm" showPoints={false} glow={false} />
-              </div>
+            <div className="sticky top-24">
               <TourismMap markers={markers} className="h-[28rem]" />
             </div>
           </div>
@@ -223,6 +216,10 @@ export default function ExplorerPage() {
           Voir aussi{' '}
           <Link href="/destinations" className="text-[var(--green)] underline">
             toutes les destinations
+          </Link>{' '}
+          ·{' '}
+          <Link href="/culture" className="text-[var(--green)] underline">
+            culture &amp; histoire
           </Link>
           .
         </p>

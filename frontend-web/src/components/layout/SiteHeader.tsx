@@ -174,6 +174,13 @@ export function SiteHeader() {
               Assistant IA
             </Link>
             <Link
+              href="/culture"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[var(--ink)] hover:bg-[var(--mint-soft)]"
+            >
+              Culture
+            </Link>
+            <Link
               href="/vision"
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-[var(--ink)] hover:bg-[var(--mint-soft)]"
@@ -210,6 +217,7 @@ export function SiteFooter() {
           {[
             ['/explorer', 'Explorer'],
             ['/destinations', 'Destinations'],
+            ['/culture', 'Culture'],
             ['/planifier', 'Planifier'],
             ['/hotels', 'Hébergements'],
             ['/assistant', 'Assistant IA'],

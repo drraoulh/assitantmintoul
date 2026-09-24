@@ -1,0 +1,128 @@
+{
+  "parc-dja": {
+    "id": "parc-dja",
+    "localPath": "/places/parc-dja.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AThe_Dja_Faunal_Reserve%2C_South_Cameroon%2C_with_the_location_of_9_transects.jpg",
+    "license": "CC BY 4.0",
+    "artist": "Sonké, B.; Couvreur, T",
+    "bytes": 95365,
+    "commonsTitle": "File:The Dja Faunal Reserve, South Cameroon, with the location of 9 transects.jpg"
+  },
+  "parc-waza": {
+    "id": "parc-waza",
+    "localPath": "/places/parc-waza.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AEarth_from_Space-_Waza_National_Park%2C_Cameroon_ESA507712.jpg",
+    "license": "Attribution",
+    "artist": "European Space Agency",
+    "bytes": 643371,
+    "commonsTitle": "File:Earth from Space- Waza National Park, Cameroon ESA507712.jpg"
+  },
+  "chutes-de-la-lobe": {
+    "id": "chutes-de-la-lobe",
+    "localPath": "/places/chutes-de-la-lobe.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ALes_chutes_de_la_lob%C3%A9_kribi_cameroon1.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Blaizo 237",
+    "bytes": 332168,
+    "commonsTitle": "File:Les chutes de la lobé kribi cameroon1.jpg"
+  },
+  "mont-cameroun": {
+    "id": "mont-cameroun",
+    "localPath": "/places/mont-cameroun.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AGrassland_region_of_the_Buea_Mountain_%28_Mount_Cameroon%29.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Adesolive",
+    "bytes": 227597,
+    "commonsTitle": "File:Grassland region of the Buea Mountain ( Mount Cameroon).jpg"
+  },
+  "rhumsiki": {
+    "id": "rhumsiki",
+    "localPath": "/places/rhumsiki.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ANorthern_Cameroon_banner_Rhumsiki_with_Kapsiki_Peak.jpg",
+    "license": "CC BY 2.0",
+    "artist": "Alfred Weidinger",
+    "bytes": 58790,
+    "commonsTitle": "File:Northern Cameroon banner Rhumsiki with Kapsiki Peak.jpg"
+  },
+  "parc-korup": {
+    "id": "parc-korup",
+    "localPath": "/places/parc-korup.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AKorup_National_Park%2C_Cameroon_01.jpg",
+    "license": "CC0",
+    "artist": "Adesolive",
+    "bytes": 803988,
+    "commonsTitle": "File:Korup National Park, Cameroon 01.jpg"
+  },
+  "kribi-plages": {
+    "id": "kribi-plages",
+    "localPath": "/places/kribi-plages.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ACameroon_banner_Kribi_beach_with_boats.jpg",
+    "license": "CC BY-SA 3.0",
+    "artist": "Kribi.jpg: ymea\nderivative work: Jjtkk",
+    "bytes": 87184,
+    "commonsTitle": "File:Cameroon banner Kribi beach with boats.jpg"
+  },
+  "palais-royal-foumban": {
+    "id": "palais-royal-foumban",
+    "localPath": "/places/palais-royal-foumban.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ABamun_sultan_palace.jpg",
+    "license": "CC BY-SA 3.0",
+    "artist": "",
+    "bytes": 794412,
+    "commonsTitle": "File:Bamun sultan palace.jpg"
+  },
+  "chefferie-bandjoun": {
+    "id": "chefferie-bandjoun",
+    "localPath": "/places/chefferie-bandjoun.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AA_hut_at_Bandjoun_palace.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Josephine Lifanje",
+    "bytes": 206574,
+    "commonsTitle": "File:A hut at Bandjoun palace.jpg"
+  },
+  "monument-reunification-yaounde": {
+    "id": "monument-reunification-yaounde",
+    "localPath": "/places/monument-reunification-yaounde.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AYaound%C3%A9_du_monument_de_la_r%C3%A9unification_1.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Franco237",
+    "bytes": 205402,
+    "commonsTitle": "File:Yaoundé du monument de la réunification 1.jpg"
+  },
+  "down-beach-limbe": {
+    "id": "down-beach-limbe",
+    "localPath": "/places/down-beach-limbe.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ASeme_beach_limbe_Cameroon.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Blaizo 237",
+    "bytes": 440090,
+    "commonsTitle": "File:Seme beach limbe Cameroon.jpg"
+  },
+  "parc-national-benoue": {
+    "id": "parc-national-benoue",
+    "localPath": "/places/parc-national-benoue.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3AL%27abreuvoir_des_annimaux_au_parc_national_de_la_benou%C3%A9_au_Cameroun_2.jpg",
+    "license": "CC0",
+    "artist": "OUMAROU OB",
+    "bytes": 353954,
+    "commonsTitle": "File:L'abreuvoir des annimaux au parc national de la benoué au Cameroun 2.jpg"
+  },
+  "lac-barombi-mbo": {
+    "id": "lac-barombi-mbo",
+    "localPath": "/places/lac-barombi-mbo.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3ALac_Barombi_Mbo_-_Barombi_Mbo_Crater_Lake_-_Region_du_Sud-ouest_-_Cameroun.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Eric Joel MAMA NKE",
+    "bytes": 686325,
+    "commonsTitle": "File:Lac Barombi Mbo - Barombi Mbo Crater Lake - Region du Sud-ouest - Cameroun.jpg"
+  },
+  "jardin-botanique-limbe": {
+    "id": "jardin-botanique-limbe",
+    "localPath": "/places/jardin-botanique-limbe.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File%3APlants_Limbe_Botanical_Garden_20.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Adesolive",
+    "bytes": 665264,
+    "commonsTitle": "File:Plants Limbe Botanical Garden 20.jpg"
+  }
+}

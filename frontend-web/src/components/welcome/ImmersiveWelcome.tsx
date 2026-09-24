@@ -67,12 +67,15 @@ export function hasSeenIntro(): boolean {
   }
 }
 
-/** Light haptic — safe no-op when Vibration API is unavailable. */
-function haptic(pattern: number | number[] = 18) {
+/** Light haptic — works on most Android browsers; iOS Safari does not support Vibration API. */
+function haptic(pattern: number | number[] = [28, 40, 28]) {
   try {
-    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-      navigator.vibrate(pattern);
-    }
+    if (typeof navigator === 'undefined') return;
+    const vibrate = navigator.vibrate?.bind(navigator);
+    if (typeof vibrate !== 'function') return;
+    // Cancel any ongoing vibration then pulse
+    vibrate(0);
+    vibrate(pattern);
   } catch {
     /* ignore */
   }
@@ -138,7 +141,7 @@ export function ImmersiveWelcome({
       if (finishingRef.current) return;
 
       clearHold();
-      haptic(12);
+      haptic([40, 50, 40]);
 
       const delay = reduceRef.current ? 280 : holdFor(fromPhase);
       holdTimerRef.current = window.setTimeout(() => {
@@ -146,7 +149,7 @@ export function ImmersiveWelcome({
 
         if (fromPhase === 'brand') {
           setPhase('cta');
-          haptic(28);
+          haptic([50, 60, 50]);
           return;
         }
 
@@ -154,11 +157,15 @@ export function ImmersiveWelcome({
         const next = AUTO_SCENES[idx + 1];
         if (!next) {
           setPhase('cta');
-          haptic(28);
+          haptic([50, 60, 50]);
           return;
         }
         setPhase(next);
-        haptic(next === 'brand' || next === 'miniature' ? [22, 35, 22] : 22);
+        haptic(
+          next === 'brand' || next === 'miniature'
+            ? [45, 55, 45]
+            : [35, 45, 35],
+        );
       }, delay);
     },
     [clearHold],

@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
@@ -13,25 +13,20 @@ import {
   Sparkles,
   Utensils,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { FadeIn, SlideUp, StaggerContainer, StaggerItem } from '@/components/motion';
+import { FadeIn, SlideUp } from '@/components/motion';
 import { PlaceCard } from '@/components/places/PlaceCard';
+import { RegionCoverGrid } from '@/components/places/RegionCoverCard';
 import { Button, Input, Skeleton } from '@/components/ui';
 import { ImmersiveWelcome } from '@/components/welcome/ImmersiveWelcome';
 import { listTouristSites } from '@/lib/api/client';
 import { APP_NAME } from '@/lib/config';
 import { useLocale } from '@/lib/i18n';
+import { MUST_SEE_IDS, resolvePlaceImage } from '@/lib/place-images';
 import { REGIONS } from '@/lib/regions';
 import { isHotelCategory } from '@/lib/utils/response';
 import type { TouristSite } from '@/lib/types';
-
-const CameroonSilhouette = dynamic(
-  () =>
-    import('@/components/maps/CameroonSilhouette').then((m) => m.CameroonSilhouette),
-  { ssr: false, loading: () => <Skeleton className="mx-auto h-48 w-40" /> },
-);
 
 const QUICK = [
   {
@@ -47,7 +42,7 @@ const QUICK = [
   {
     icon: Backpack,
     label: 'Découvrir la culture',
-    href: '/assistant?q=Parle-moi%20de%20la%20culture%20et%20des%20chefferies%20au%20Cameroun',
+    href: '/culture',
   },
   {
     icon: Sparkles,
@@ -66,7 +61,7 @@ export default function HomePage() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
   const [q, setQ] = useState('');
-  const [places, setPlaces] = useState<TouristSite[]>([]);
+  const [allPlaces, setAllPlaces] = useState<TouristSite[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loadingPlaces, setLoadingPlaces] = useState(true);
   const onIntroComplete = useCallback(() => setReady(true), []);
@@ -79,7 +74,7 @@ export default function HomePage() {
         const res = await listTouristSites();
         if (cancelled) return;
         const sites = res.items.filter((s) => !isHotelCategory(s.category));
-        setPlaces(sites.slice(0, 6));
+        setAllPlaces(sites);
         const next: Record<string, number> = {};
         for (const r of REGIONS) {
           next[r.id] = res.items.filter(
@@ -98,6 +93,29 @@ export default function HomePage() {
     };
   }, [ready]);
 
+  const mustSee = useMemo(() => {
+    const byId = new Map(allPlaces.map((p) => [p.id, p]));
+    const ordered: TouristSite[] = [];
+    for (const id of MUST_SEE_IDS) {
+      const hit = byId.get(id);
+      if (hit) ordered.push(hit);
+    }
+    if (ordered.length >= 4) return ordered;
+    // Fallback: prefer places that have a resolvable image
+    const extras = allPlaces.filter(
+      (p) => !ordered.some((o) => o.id === p.id) && resolvePlaceImage(p),
+    );
+    return [...ordered, ...extras].slice(0, 10);
+  }, [allPlaces]);
+
+  const experiences = useMemo(() => {
+    const nature = allPlaces.filter((p) => /nature|park|beach/i.test(p.category)).slice(0, 3);
+    const culture = allPlaces
+      .filter((p) => /culture|heritage|museum/i.test(p.category))
+      .slice(0, 3);
+    return [...nature, ...culture].slice(0, 6);
+  }, [allPlaces]);
+
   function onAsk(e: FormEvent) {
     e.preventDefault();
     const message = q.trim();
@@ -115,7 +133,6 @@ export default function HomePage() {
       <div
         className={`transition-opacity duration-700 ${ready ? 'opacity-100' : 'opacity-0'}`}
       >
-        {/* Conversational hero */}
         <section className="relative overflow-hidden">
           <div
             className="pointer-events-none absolute inset-0 opacity-80"
@@ -131,7 +148,7 @@ export default function HomePage() {
                 Que souhaitez-vous découvrir au Cameroun ?
               </h1>
               <p className="mt-3 text-[var(--muted)]">
-                {APP_NAME} — votre guide intelligent pour explorer, planifier et voyager.
+                {APP_NAME} — sites, culture, nature et planification, en un seul guide intelligent.
               </p>
             </SlideUp>
 
@@ -183,83 +200,75 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Explore Cameroon */}
-        <section className="mx-auto max-w-6xl px-4 py-14 md:px-6">
-          <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
-            <SlideUp className="text-center lg:text-left">
-              <div className="mx-auto lg:mx-0">
-                <CameroonSilhouette size="md" glow />
-              </div>
-            </SlideUp>
+        {/* Destinations populaires — catalogue style */}
+        <section className="mx-auto max-w-6xl px-4 py-12 md:px-6">
+          <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-display text-3xl font-bold text-[var(--green-deep)]">
-                Explorez le Cameroun
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--gold)]">
+                Destinations populaires
+              </p>
+              <h2 className="mt-1 font-display text-3xl font-bold text-[var(--green-deep)]">
+                Les incontournables
               </h2>
               <p className="mt-2 text-[var(--muted)]">
-                10 régions. Des dizaines d&apos;expériences vérifiées.
+                Sites vérifiés dans la base SmartMboa — photos Wikimedia / sources exportées.
               </p>
-              <StaggerContainer className="mt-6 grid gap-3 sm:grid-cols-2">
-                {REGIONS.map((r) => {
-                  const count = counts[r.id];
-                  return (
-                    <StaggerItem key={r.id}>
-                      <Link
-                        href={`/destinations?region=${encodeURIComponent(r.apiRegion)}`}
-                        className="group block rounded-2xl border border-[var(--line)] bg-white px-4 py-3 transition hover:-translate-y-0.5 hover:border-[var(--gold)]/50 hover:shadow-[var(--shadow-soft)]"
-                      >
-                        <p className="font-semibold text-[var(--green-deep)]">{r.nameFr}</p>
-                        <p className="text-sm text-[var(--muted)]">
-                          {r.capitalFr}
-                          {typeof count === 'number' && count > 0
-                            ? ` · ${count} lieux`
-                            : ''}
-                        </p>
-                      </Link>
-                    </StaggerItem>
-                  );
-                })}
-              </StaggerContainer>
-              <div className="mt-6">
-                <Button href="/explorer" variant="outline">
-                  Voir l&apos;explorateur
-                  <ArrowRight className="h-4 w-4" aria-hidden />
-                </Button>
-              </div>
             </div>
+            <Button href="/explorer" variant="outline" className="hidden sm:inline-flex">
+              Tout explorer
+            </Button>
+          </div>
+
+          <div className="mt-6 flex gap-4 overflow-x-auto no-scrollbar pb-2 snap-x">
+            {loadingPlaces
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-72 w-72 shrink-0" />
+                ))
+              : mustSee.map((site) => (
+                  <PlaceCard key={site.id} site={site} featured />
+                ))}
           </div>
         </section>
 
-        {/* Popular destinations */}
-        <section className="bg-[var(--mint-soft)]/60 py-14">
+        {/* Expériences */}
+        <section className="bg-[var(--mint-soft)]/70 py-14">
           <div className="mx-auto max-w-6xl px-4 md:px-6">
             <h2 className="font-display text-3xl font-bold text-[var(--green-deep)]">
-              Destinations vérifiées
+              Expériences incontournables
             </h2>
             <p className="mt-2 text-[var(--muted)]">
-              Issus de la base SmartMboa — aucune invention côté interface.
+              Nature, patrimoine et culture — uniquement des lieux présents dans notre catalogue.
             </p>
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {loadingPlaces
                 ? Array.from({ length: 3 }).map((_, i) => (
                     <Skeleton key={i} className="h-72 w-full" />
                   ))
-                : places.map((site) => <PlaceCard key={site.id} site={site} />)}
+                : experiences.map((site) => <PlaceCard key={site.id} site={site} />)}
             </div>
-            {!loadingPlaces && places.length === 0 ? (
+            {!loadingPlaces && experiences.length === 0 ? (
               <p className="mt-6 text-sm text-[var(--muted)]">
-                Les destinations se chargeront dès que l&apos;API sera disponible.
+                Les expériences se chargeront dès que l&apos;API sera disponible.
               </p>
             ) : null}
-            <div className="mt-8">
-              <Button href="/destinations" variant="secondary">
-                Toutes les destinations
-              </Button>
-            </div>
+          </div>
+        </section>
+
+        {/* 10 régions */}
+        <section className="mx-auto max-w-6xl px-4 py-14 md:px-6">
+          <h2 className="font-display text-3xl font-bold text-[var(--green-deep)]">
+            Explorer les 10 régions
+          </h2>
+          <p className="mt-2 text-[var(--muted)]">
+            De Yaoundé à Maroua, chaque région a sa personnalité.
+          </p>
+          <div className="mt-8">
+            <RegionCoverGrid counts={counts} />
           </div>
         </section>
 
         {/* Capabilities */}
-        <section className="mx-auto max-w-6xl px-4 py-14 md:px-6">
+        <section className="mx-auto max-w-6xl px-4 pb-14 md:px-6">
           <h2 className="font-display text-3xl font-bold text-[var(--green-deep)]">
             Ce que {APP_NAME} peut faire
           </h2>
@@ -299,7 +308,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Final CTA */}
         <section className="bg-[var(--green-deep)] py-16 text-white">
           <div className="mx-auto max-w-3xl px-4 text-center md:px-6">
             <h2 className="font-display text-3xl font-bold md:text-4xl">
