@@ -72,17 +72,25 @@ async def voice_session(websocket: WebSocket) -> None:
     turn_task: asyncio.Task | None = None
     interrupt_event = asyncio.Event()
 
-    async def cancel_turn() -> None:
+    async def cancel_turn(*, notify: bool = True) -> None:
+        """Cancel the in-flight turn.
+
+        Only emit ``interrupted`` when a turn was actually running. Emitting on
+        every new utterance (including the first) made the client void its
+        stream-idle waiter and cut early-play audio mid-sentence.
+        """
         nonlocal turn_task
         interrupt_event.set()
-        if turn_task and not turn_task.done():
+        had_running = turn_task is not None and not turn_task.done()
+        if had_running:
             turn_task.cancel()
             try:
                 await turn_task
             except (asyncio.CancelledError, Exception):
                 pass
         turn_task = None
-        await _send(websocket, {"type": "interrupted"})
+        if notify and had_running:
+            await _send(websocket, {"type": "interrupted"})
 
     async def run_turn(
         *,
@@ -221,6 +229,7 @@ async def voice_session(websocket: WebSocket) -> None:
             first_token_marked = False
             first_tts_enqueue_marked = False
             first_chunker_text = False
+            generating_status_sent = False
             tts_seq = 0
             llm_trace_payload: dict[str, Any] | None = None
             llm_trace = LlmStreamTrace(
@@ -297,14 +306,16 @@ async def voice_session(websocket: WebSocket) -> None:
                             )
                             await tts_queue.put((tts_seq, sentence, put_at))
                             tts_seq += 1
-                        await _send(
-                            websocket,
-                            {
-                                "type": "status",
-                                "phase": "generating",
-                                "turn_id": timer.turn_id,
-                            },
-                        )
+                        if not generating_status_sent:
+                            generating_status_sent = True
+                            await _send(
+                                websocket,
+                                {
+                                    "type": "status",
+                                    "phase": "generating",
+                                    "turn_id": timer.turn_id,
+                                },
+                            )
                     elif etype == "done":
                         mark("llm_end")
                         conversation_id = str(event.get("conversation_id") or conversation_id)
@@ -440,7 +451,7 @@ async def voice_session(websocket: WebSocket) -> None:
     except WebSocketDisconnect:
         logger.info("voice ws disconnected")
     finally:
-        await cancel_turn()
+        await cancel_turn(notify=False)
 
 
 async def _tts_worker(

@@ -85,6 +85,9 @@ export function useContinuousVoiceSession({
   const streamPlayerRef = useRef<ProgressiveMp3Player | null>(null);
   const streamIdleResolveRef = useRef<(() => void) | null>(null);
   const streamIdlePromiseRef = useRef<Promise<void>>(Promise.resolve());
+  /** Server finished generating this turn (turn_done). Needed so inter-sentence
+   * gaps do not look "idle" and re-arm the mic mid-reply. */
+  const turnGenerationDoneRef = useRef(false);
   const progressiveCapableRef = useRef(
     Platform.OS === 'web' && supportsMediaSourceMp3(),
   );
@@ -148,12 +151,14 @@ export function useContinuousVoiceSession({
     audioBuffersRef.current.clear();
     playChainRef.current = Promise.resolve();
     streamMetricsRef.current = {};
+    turnGenerationDoneRef.current = false;
     streamIdleResolveRef.current?.();
     streamIdleResolveRef.current = null;
     streamIdlePromiseRef.current = Promise.resolve();
   }, []);
 
   const armStreamIdle = useCallback(() => {
+    turnGenerationDoneRef.current = false;
     let resolveIdle: (() => void) | null = null;
     streamIdlePromiseRef.current = new Promise<void>((resolve) => {
       resolveIdle = resolve;
@@ -162,6 +167,19 @@ export function useContinuousVoiceSession({
       resolveIdle?.();
       streamIdleResolveRef.current = null;
     };
+  }, []);
+
+  const maybeResolveStreamIdle = useCallback(() => {
+    if (!turnGenerationDoneRef.current) {
+      return;
+    }
+    if (schedulerRef.current.currentPlaying != null) {
+      return;
+    }
+    if (schedulerRef.current.sequences.size > 0) {
+      return;
+    }
+    streamIdleResolveRef.current?.();
   }, []);
 
   useEffect(() => {
@@ -277,12 +295,11 @@ export function useContinuousVoiceSession({
                 progressiveCapableRef.current,
               );
               void applyPlayActionRef.current(next).then(() => {
-                if (schedulerRef.current.sequences.size === 0) {
-                  streamIdleResolveRef.current?.();
-                }
+                maybeResolveStreamIdle();
               });
             },
             onError: () => {
+              // Hard failure — do not wait for turn_done / remaining sequences.
               streamIdleResolveRef.current?.();
             },
           });
@@ -304,9 +321,7 @@ export function useContinuousVoiceSession({
                     false,
                   );
                   await applyPlayActionRef.current(next);
-                  if (schedulerRef.current.sequences.size === 0) {
-                    streamIdleResolveRef.current?.();
-                  }
+                  maybeResolveStreamIdle();
                 })
                 .catch(() => undefined);
             }
@@ -335,9 +350,7 @@ export function useContinuousVoiceSession({
             }
             const next = schedulerRef.current.onPlaybackFinished(action.index, false);
             await applyPlayActionRef.current(next);
-            if (schedulerRef.current.sequences.size === 0) {
-              streamIdleResolveRef.current?.();
-            }
+            maybeResolveStreamIdle();
           })
           .catch(() => undefined);
         return;
@@ -352,7 +365,15 @@ export function useContinuousVoiceSession({
         streamPlayerRef.current?.end();
       }
     },
-    [bytesToBase64, logClientPerf, logTtfa, playBase64Mp3, setSessionPhase, t],
+    [
+      bytesToBase64,
+      logClientPerf,
+      logTtfa,
+      maybeResolveStreamIdle,
+      playBase64Mp3,
+      setSessionPhase,
+      t,
+    ],
   );
 
   useEffect(() => {
@@ -386,7 +407,11 @@ export function useContinuousVoiceSession({
             event.phase === 'retrieving' ||
             event.phase === 'generating'
           ) {
-            setSessionPhase('thinking', t('voice.thinkingShort'));
+            // Do not regress speaking → thinking while early-play audio is out;
+            // token-level "generating" used to flip the UI and invite mic re-arm.
+            if (phaseRef.current !== 'speaking') {
+              setSessionPhase('thinking', t('voice.thinkingShort'));
+            }
           } else if (event.phase === 'speaking') {
             setSessionPhase('speaking', t('voice.speakingInterrupt'));
             busyRef.current = false;
@@ -508,18 +533,13 @@ export function useContinuousVoiceSession({
           if (user && assistant) {
             onExchange?.(user, assistant);
           }
-          // If nothing was played (or already finished), unblock the turn waiter.
-          if (
-            !schedulerRef.current.hasStartedPlayback ||
-            (schedulerRef.current.currentPlaying == null &&
-              schedulerRef.current.sequences.size === 0)
-          ) {
-            streamIdleResolveRef.current?.();
-          }
-          void Promise.race([
-            playChainRef.current,
-            streamIdlePromiseRef.current,
-          ]).finally(() => {
+          turnGenerationDoneRef.current = true;
+          // Unblock when generation is done and nothing is left to play
+          // (including the no-audio case). Inter-sentence gaps must NOT idle.
+          maybeResolveStreamIdle();
+          // Wait for stream idle only — playChain is often already resolved on
+          // the progressive MSE path, so racing it finished the turn mid-speech.
+          void streamIdlePromiseRef.current.finally(() => {
             turnResolveRef.current?.();
             turnResolveRef.current = null;
             turnRejectRef.current = null;
@@ -527,7 +547,17 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'interrupted': {
+          const turnPending = turnResolveRef.current != null;
+          const hadPlayback = schedulerRef.current.hasStartedPlayback;
           resetVoiceStream();
+          if (turnPending && !hadPlayback) {
+            // Spurious cancel before first audio — keep waiting for this turn.
+            armStreamIdle();
+            break;
+          }
+          turnResolveRef.current?.();
+          turnResolveRef.current = null;
+          turnRejectRef.current = null;
           break;
         }
         case 'error': {
@@ -543,10 +573,12 @@ export function useContinuousVoiceSession({
     },
     [
       applyPlayAction,
+      armStreamIdle,
       bytesToBase64,
       decodeBase64ToBytes,
       logClientPerf,
       logTtfa,
+      maybeResolveStreamIdle,
       onExchange,
       playBase64Mp3,
       resetVoiceStream,
@@ -770,8 +802,10 @@ export function useContinuousVoiceSession({
       if (!activeRef.current) {
         return;
       }
+      // Progressive MSE does not advance playChain — only streamIdle tracks
+      // audible completion. Racing a resolved playChain cut TTS mid-sentence
+      // by re-arming the mic (stopSpeaking / allowsRecording duck).
       await Promise.race([
-        playChainRef.current,
         streamIdlePromiseRef.current,
         new Promise<void>((resolve) => setTimeout(resolve, 120_000)),
       ]);
