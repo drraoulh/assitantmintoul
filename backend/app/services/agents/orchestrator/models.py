@@ -24,6 +24,20 @@ class OrchestrationTimings(BaseModel):
     total_ms: float | None = None
 
 
+class OrchestrationContext(BaseModel):
+    """Agents 1–3 output before Agent 4 presentation (Phase 2.6 streaming)."""
+
+    intent: IntentResult
+    knowledge: KnowledgeResult
+    plan: TourismPlan | None = None
+    timings: OrchestrationTimings = Field(default_factory=OrchestrationTimings)
+    agents_called: list[str] = Field(default_factory=list)
+    request_id: str | None = None
+    mode: str = "text"
+    vision_summary: str | None = None
+    web_hit_count: int = 0
+
+
 class OrchestrationResult(BaseModel):
     """Full orchestration outcome — coordinator output only."""
 

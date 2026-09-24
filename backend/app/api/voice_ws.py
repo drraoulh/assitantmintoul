@@ -30,9 +30,18 @@ def _split_ready_sentences(
     first_chunk: bool = False,
 ) -> tuple[list[str], str]:
     """Delegate to Phase 1.2 voice_chunker (early first-phrase flush)."""
+    from app.core.config import get_settings
     from app.services.speech.voice_chunker import split_ready_phrases
 
-    return split_ready_phrases(buffer, first_chunk=first_chunk)
+    settings = get_settings()
+    soft = settings.voice_stream_min_chars or None
+    hard = settings.voice_stream_max_chars or None
+    return split_ready_phrases(
+        buffer,
+        first_chunk=first_chunk,
+        soft_len=soft,
+        hard_len=hard,
+    )
 
 
 async def _send(ws: WebSocket, payload: dict[str, Any]) -> None:
@@ -204,7 +213,17 @@ async def voice_session(websocket: WebSocket) -> None:
                 return
 
             reply_parts: list[str] = []
-            tts_queue: asyncio.Queue[tuple[int, str, float] | None] = asyncio.Queue()
+            from app.core.config import get_settings as _get_settings
+
+            _vs = _get_settings()
+            _qmax = (
+                int(_vs.voice_tts_queue_maxsize)
+                if _vs.voice_llm_streaming_enabled and _vs.voice_tts_queue_maxsize > 0
+                else 0
+            )
+            tts_queue: asyncio.Queue[tuple[int, str, float] | None] = asyncio.Queue(
+                maxsize=_qmax
+            )
             tts_task = asyncio.create_task(
                 _tts_worker(
                     websocket,
@@ -290,11 +309,22 @@ async def voice_session(websocket: WebSocket) -> None:
                                     sequence_id=tts_seq,
                                 )
                                 first_tts_enqueue_marked = True
+                                logger.info(
+                                    "[VOICE] text_chunk_ready size=%s first=1",
+                                    len(sentence),
+                                )
+                            else:
+                                logger.info(
+                                    "[VOICE] text_chunk_ready size=%s",
+                                    len(sentence),
+                                )
                             mark(
                                 "tts_queue_put",
                                 sequence_id=tts_seq,
                                 chars=len(sentence),
                             )
+                            if tts_seq == 0:
+                                logger.info("[VOICE] tts_started chunk=1")
                             await tts_queue.put((tts_seq, sentence, put_at))
                             tts_seq += 1
                         await _send(
@@ -632,6 +662,7 @@ async def _tts_worker(
                     mark("audio_first_chunk_sent")
                     marks["time_to_first_audio"] = marks["audio_first_chunk_sent"]
                     timer.mark("time_to_first_audio", marks["time_to_first_audio"])
+                    logger.info("[VOICE] first_audio_chunk")
                     first = False
             if fish_trace.get("tts_complete") is not None and chrono is not None:
                 if not any(e["event"] == "tts_response_complete" for e in chrono.events):
@@ -654,6 +685,7 @@ async def _tts_worker(
                     "backend_send_timestamp": time.time(),
                 },
             )
+            logger.info("[VOICE] audio_done index=%s", index)
             if index == 0:
                 mark("audio_done_sent", sequence_id=seq_id)
             index += 1

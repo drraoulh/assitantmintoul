@@ -614,23 +614,46 @@ class HuggingFaceAIService(AIService):
     ) -> AsyncIterator[dict[str, Any]]:
         """Serve a turn through AgentOrchestrator (Agents 1–4).
 
-        Deterministic Agent 4 by default (protects voice TTFA). Emits the same
-        token/done event shape as the LLM path so the voice chunker/TTS keep working.
+        Voice + USE_LLM + VOICE_LLM_STREAMING_ENABLED:
+            Agents 1–3 prepare, then Qwen tokens stream live into the voice
+            chunker/TTS worker (true overlap).
+
+        Otherwise:
+            Full Agent 4 result, then token emit (deterministic or complete-then-speak).
         """
         from app.services.agents.orchestrator import AgentOrchestrator
+        from app.services.agents.response.agent import ResponseGenerator
+        from app.services.agents.response.fallback import render_deterministic
         from app.services.speech.voice_chunker import (
             append_token,
             flush_remainder,
             split_ready_phrases,
         )
 
+        settings = get_settings()
+        if settings.agent_orchestrator_force_fail:
+            raise RuntimeError("AGENT_ORCHESTRATOR_FORCE_FAIL canary injection")
+
+        use_llm = bool(settings.agent_orchestrator_use_llm)
+        true_stream = bool(
+            brief and use_llm and settings.voice_llm_streaming_enabled
+        )
+
+        if true_stream:
+            async for event in self._stream_via_orchestrator_true_stream(
+                message,
+                thread_id=thread_id,
+                brief=brief,
+                locale=locale,
+                timer=timer,
+                turn_id=turn_id,
+                trace=trace,
+            ):
+                yield event
+            return
+
+        # --- Legacy orchestrator path: complete Agent 4 then emit tokens ---
         with timer.phase("orchestrator"):
-            if get_settings().agent_orchestrator_force_fail:
-                raise RuntimeError(
-                    "AGENT_ORCHESTRATOR_FORCE_FAIL canary injection"
-                )
-            settings = get_settings()
-            use_llm = bool(settings.agent_orchestrator_use_llm)
             llm_complete = None
             if use_llm:
                 llm_complete = self._make_agent4_llm_complete(brief=brief, trace=trace)
@@ -659,7 +682,8 @@ class HuggingFaceAIService(AIService):
         orch_obs = result.observability()
         llm_meta = getattr(self, "_last_agent4_llm", None) or {}
         orch_obs["llm"] = {
-            "use_llm_flag": bool(get_settings().agent_orchestrator_use_llm),
+            "use_llm_flag": use_llm,
+            "streaming": False,
             "model": self._model,
             "calls": int(llm_meta.get("calls") or 0),
             "http_status": llm_meta.get("http_status"),
@@ -670,7 +694,6 @@ class HuggingFaceAIService(AIService):
         trace.set_meta(agent_orchestrator=orch_obs)
 
         intent = result.intent
-        # Map intent → legacy route fields for WS clients expecting route events.
         skip_kb = intent.intent in {"CLARIFICATION", "SIMPLE_QA"} and not intent.needs_places
         skip_web = not intent.needs_web
         yield {
@@ -697,7 +720,6 @@ class HuggingFaceAIService(AIService):
                 )
             )
 
-        # Fake-stream tokens so voice early-play / chunker keep the same contract.
         timer.mark("rag", 0.0)
         timer.mark("web", float(result.timings.web_ms or 0.0))
         timer.mark("prompt", 0.0)
@@ -710,7 +732,6 @@ class HuggingFaceAIService(AIService):
 
         phrase_buf = ""
         first_phrase = True
-        # Emit word-sized chunks for TTS early play (same as progressive tokens).
         parts = reply.split(" ")
         first_token = True
         for i, word in enumerate(parts):
@@ -748,6 +769,245 @@ class HuggingFaceAIService(AIService):
             "conversation_id": thread_id,
             "text": reply,
             "sources": [source.model_dump() for source in sources],
+            "metrics": timer.as_dict(),
+            "llm_trace": trace.as_dict(),
+            "orchestrator": orch_obs,
+        }
+
+    async def _stream_via_orchestrator_true_stream(
+        self,
+        message: str,
+        *,
+        thread_id: str,
+        brief: bool,
+        locale: str,
+        timer: PhaseTimer,
+        turn_id: str | None,
+        trace: LlmStreamTrace,
+    ) -> AsyncIterator[dict[str, Any]]:
+        """True Qwen STREAM → token events (voice WS chunker/TTS overlaps)."""
+        from app.services.agents.orchestrator import AgentOrchestrator
+        from app.services.agents.response.agent import ResponseGenerator
+        from app.services.agents.response.fallback import render_deterministic
+        from app.services.agents.response.context import (
+            map_response_type,
+            resolve_language,
+        )
+        from app.services.agents.response.models import FinalResponse, SourceReference
+
+        logger.info("[VOICE] qwen_stream_started")
+        orch = AgentOrchestrator(
+            prefer_deterministic=True,
+            web_search=self._web,
+            rag=self._rag,
+        )
+        with timer.phase("orchestrator_prepare"):
+            ctx = await orch.prepare(
+                message,
+                mode="voice" if brief else "text",
+                locale=locale,
+                request_id=turn_id,
+            )
+
+        timer.mark("agent_orchestrator", ctx.timings.total_ms or 0.0)
+        if ctx.timings.intent_ms is not None:
+            timer.mark("intent_router", ctx.timings.intent_ms)
+        if ctx.timings.knowledge_ms is not None:
+            timer.mark("knowledge_agent", ctx.timings.knowledge_ms)
+        if ctx.timings.planner_ms is not None:
+            timer.mark("tourism_planner", ctx.timings.planner_ms)
+
+        agents_called = list(ctx.agents_called) + ["response"]
+        intent = ctx.intent
+        knowledge = ctx.knowledge
+        plan = ctx.plan
+
+        orch_obs: dict[str, Any] = {
+            "request_id": ctx.request_id,
+            "intent": intent.intent,
+            "mode": ctx.mode,
+            "agents_called": agents_called,
+            "intent_ms": ctx.timings.intent_ms,
+            "knowledge_ms": ctx.timings.knowledge_ms,
+            "planner_ms": ctx.timings.planner_ms,
+            "streaming": True,
+            "llm": {
+                "use_llm_flag": True,
+                "streaming": True,
+                "model": self._model,
+                "calls": 0,
+            },
+        }
+        trace.set_meta(agent_orchestrator=orch_obs)
+
+        skip_kb = intent.intent in {"CLARIFICATION", "SIMPLE_QA"} and not intent.needs_places
+        skip_web = not intent.needs_web
+        yield {
+            "type": "route",
+            "kind": "orchestrated_stream",
+            "skip_kb": skip_kb,
+            "skip_web": skip_web,
+            "reason": f"orchestrator_stream:{intent.intent}",
+            "intent": intent.observability(),
+            "orchestrator": orch_obs,
+        }
+
+        generator = ResponseGenerator(prefer_deterministic=True)
+        messages = generator.build_messages(
+            message,
+            intent,
+            knowledge,
+            plan,
+            response_mode="voice" if brief else "text",
+            locale=locale,
+        )
+
+        self._last_agent4_llm = {
+            "calls": 1,
+            "http_status": None,
+            "ttft_ms": None,
+            "total_ms": None,
+            "model": self._model,
+            "streaming": True,
+        }
+        body: dict[str, Any] = {
+            "model": self._model,
+            "messages": messages,
+            "temperature": 0.45,
+            "max_tokens": self._voice_max_tokens if brief else self._max_tokens,
+            "stream": True,
+            "chat_template_kwargs": {"enable_thinking": False},
+        }
+
+        reply_parts: list[str] = []
+        fallback_used = False
+        qwen_finished = False
+        first_token = True
+        llm_started = time.perf_counter()
+        text_chunks_emitted = 0
+
+        timer.mark("rag", 0.0)
+        timer.mark("web", float(ctx.timings.web_ms or 0.0))
+        timer.mark("prompt", 0.0)
+        timer.mark("grounding", 0.0)
+        timer.mark("cache_hit", 0.0)
+        trace.set_meta(orchestrator_enabled=True, voice_llm_streaming=True)
+
+        try:
+            async for token in self._iter_completion_tokens(body, trace=trace):
+                if first_token:
+                    ttft = (time.perf_counter() - llm_started) * 1000.0
+                    timer.mark("llm_ttft", ttft)
+                    timer.mark("app_ttft", (time.perf_counter() - trace.wall0) * 1000)
+                    self._last_agent4_llm["ttft_ms"] = round(ttft, 1)
+                    self._last_agent4_llm["http_status"] = int(
+                        getattr(self, "_last_hf_http_status", 200) or 200
+                    )
+                    first_token = False
+                    trace.note_first_token(chars=len(token))
+                    logger.info("[VOICE] first_llm_token")
+                reply_parts.append(token)
+                text_chunks_emitted += 1
+                yield {"type": "token", "text": token}
+            qwen_finished = True
+            logger.info("[VOICE] qwen_stream_finished")
+        except Exception as exc:  # noqa: BLE001
+            status = getattr(self, "_last_hf_http_status", None)
+            self._last_agent4_llm["http_status"] = status
+            self._last_agent4_llm["error"] = type(exc).__name__
+            self._last_agent4_llm["total_ms"] = round(
+                (time.perf_counter() - llm_started) * 1000.0, 1
+            )
+            logger.exception("[VOICE] qwen_stream_failed using deterministic fallback")
+            # Max 1 LLM call — do not retry. Fallback only if nothing spoken yet
+            # OR append remaining via deterministic only when empty.
+            if not reply_parts:
+                fallback_used = True
+                language = resolve_language(intent, locale)
+                text = render_deterministic(
+                    message,
+                    intent,
+                    knowledge,
+                    plan,
+                    language=language,
+                    response_mode="voice" if brief else "text",
+                )
+                for i, word in enumerate(text.split(" ")):
+                    piece = word if i == 0 else f" {word}"
+                    reply_parts.append(piece)
+                    yield {"type": "token", "text": piece}
+            # If partial tokens already sent, keep them — no second LLM.
+            qwen_finished = True
+
+        llm_total = (time.perf_counter() - llm_started) * 1000.0
+        self._last_agent4_llm["total_ms"] = round(llm_total, 1)
+        self._last_agent4_llm["calls"] = 1
+        timer.mark("llm", llm_total)
+        timer.mark("response_agent", llm_total)
+        timer.mark("text_chunks_count", float(text_chunks_emitted))
+
+        reply = "".join(reply_parts).strip()
+        if not reply:
+            raise GenerationFailedError("Orchestrator stream returned an empty answer.")
+
+        language = resolve_language(intent, locale)
+        response_type = map_response_type(intent, plan)
+        sources = [
+            SourceReference(source_id=s.source_id, name=s.name, url=s.url)
+            for s in knowledge.sources
+            if s.source_id
+        ]
+        final = FinalResponse(
+            text=reply,
+            language=language,
+            response_type=response_type,
+            response_mode="voice" if brief else "text",
+            sources=sources,
+            warnings=list(knowledge.missing_information)[:4],
+            confidence=0.7,
+            fallback_used=fallback_used,
+            request_id=ctx.request_id,
+            llm_ttft_ms=self._last_agent4_llm.get("ttft_ms"),
+            llm_generation_ms=self._last_agent4_llm.get("total_ms"),
+            total_agent4_ms=self._last_agent4_llm.get("total_ms"),
+        )
+
+        orch_obs["response_type"] = final.response_type
+        orch_obs["llm"] = {
+            "use_llm_flag": True,
+            "streaming": True,
+            "model": self._model,
+            "calls": 1,
+            "http_status": self._last_agent4_llm.get("http_status"),
+            "ttft_ms": self._last_agent4_llm.get("ttft_ms"),
+            "total_ms": self._last_agent4_llm.get("total_ms"),
+            "fallback_used": fallback_used,
+            "qwen_finished": qwen_finished,
+            "text_token_events": text_chunks_emitted,
+        }
+        orch_obs["agents_called"] = agents_called
+        trace.set_meta(agent_orchestrator=orch_obs)
+        logger.info("[VOICE] final_text_flush chars=%s", len(reply))
+
+        await self._store.add_messages(
+            thread_id,
+            [("user", message), ("assistant", reply)],
+        )
+        if getattr(self._store, "last_trace", None) is not None:
+            trace.set_meta(store_persist=self._store.last_trace.as_dict())
+        trace.note_llm_end()
+        yield {
+            "type": "done",
+            "conversation_id": thread_id,
+            "text": reply,
+            "sources": [
+                ChatSource(
+                    title=s.name or s.source_id,
+                    organization=None,
+                    url=s.url,
+                ).model_dump()
+                for s in sources
+            ],
             "metrics": timer.as_dict(),
             "llm_trace": trace.as_dict(),
             "orchestrator": orch_obs,

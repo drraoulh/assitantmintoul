@@ -243,6 +243,27 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("AGENT_ORCHESTRATOR_USE_LLM"),
     )
+    # Phase 2.6 — true Qwen → TTS streaming (voice only). Default OFF.
+    # When true with ORCHESTRATOR_ENABLED + USE_LLM, Agent 4 streams Qwen tokens
+    # into the existing voice chunker/TTS worker without waiting for full reply.
+    voice_llm_streaming_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("VOICE_LLM_STREAMING_ENABLED"),
+    )
+    # Bounded TTS text queue for backpressure (0 = unbounded / legacy).
+    voice_tts_queue_maxsize: int = Field(
+        default=4,
+        validation_alias=AliasChoices("VOICE_TTS_QUEUE_MAXSIZE", "TEXT_QUEUE_MAXSIZE"),
+    )
+    # Optional overrides for voice chunker (0 = keep module defaults).
+    voice_stream_min_chars: int = Field(
+        default=0,
+        validation_alias=AliasChoices("VOICE_STREAM_MIN_CHARS"),
+    )
+    voice_stream_max_chars: int = Field(
+        default=0,
+        validation_alias=AliasChoices("VOICE_STREAM_MAX_CHARS"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

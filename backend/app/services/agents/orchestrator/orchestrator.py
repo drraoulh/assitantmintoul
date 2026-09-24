@@ -18,6 +18,7 @@ from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.agent import KnowledgeAgent
 from app.services.agents.knowledge.models import KnowledgeEvidence, KnowledgeResult
 from app.services.agents.orchestrator.models import (
+    OrchestrationContext,
     OrchestrationResult,
     OrchestrationTimings,
 )
@@ -66,18 +67,18 @@ class AgentOrchestrator:
         self._llm_complete = llm_complete
         self._web_max = web_search_max_results
 
-    async def run(
+    async def prepare(
         self,
         user_query: str,
         *,
-        conversation_context: Any = None,  # noqa: ARG002 — reserved for future turns
         mode: Mode | str = "text",
         language: str | None = None,
         locale: str | None = None,
         image_context: bytes | None = None,
         image_mime: str = "image/jpeg",
         request_id: str | None = None,
-    ) -> OrchestrationResult:
+    ) -> OrchestrationContext:
+        """Run Agents 1–3 only (no Agent 4). Used by true Qwen→TTS streaming."""
         started = time.perf_counter()
         rid = request_id or uuid.uuid4().hex[:12]
         response_mode = "voice" if mode == "voice" else "text"
@@ -86,12 +87,11 @@ class AgentOrchestrator:
         timings = OrchestrationTimings()
 
         logger.info(
-            "orchestration_started request_id=%s mode=%s",
+            "orchestration_prepare_started request_id=%s mode=%s",
             rid,
             response_mode,
         )
 
-        # --- Agent 1: Intent ---
         t_intent = time.perf_counter()
         intent = classify_intent(
             user_query,
@@ -114,7 +114,6 @@ class AgentOrchestrator:
         plan: TourismPlan | None = None
         web_hit_count = 0
 
-        # --- Vision (existing Gemini service; never replaced) ---
         if intent.needs_vision and image_context and self._vision is not None:
             logger.info("vision_started request_id=%s", rid)
             t_vis = time.perf_counter()
@@ -128,26 +127,13 @@ class AgentOrchestrator:
                 vision_summary = None
             timings.vision_ms = round((time.perf_counter() - t_vis) * 1000.0, 3)
             agents_called.append("vision")
-            logger.info(
-                "vision_completed request_id=%s vision_ms=%s",
-                rid,
-                timings.vision_ms,
-            )
 
-        # --- Agent 2: Knowledge (conditional) ---
         if self._should_retrieve_knowledge(intent):
             logger.info("knowledge_started request_id=%s", rid)
             t_know = time.perf_counter()
             knowledge = await self._run_knowledge(user_query, intent, rid)
             timings.knowledge_ms = round((time.perf_counter() - t_know) * 1000.0, 3)
             agents_called.append("knowledge")
-            logger.info(
-                "knowledge_completed request_id=%s knowledge_ms=%s source=%s places=%s",
-                rid,
-                timings.knowledge_ms,
-                knowledge.source,
-                len(knowledge.places),
-            )
         else:
             knowledge = self._empty_knowledge(user_query, intent, rid)
             if intent.intent == "BOOKING" and not self._booking_available:
@@ -155,7 +141,6 @@ class AgentOrchestrator:
                     dict.fromkeys([*knowledge.missing_information, "live_availability"])
                 )
 
-        # --- Web search (only when needs_web; reuse existing service) ---
         if intent.needs_web and self._web is not None:
             logger.info("web_started request_id=%s", rid)
             t_web = time.perf_counter()
@@ -167,16 +152,11 @@ class AgentOrchestrator:
             timings.web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
             web_hit_count = len(hits)
             if hits:
-                knowledge = self._merge_web_evidence(knowledge, hits, user_query, intent, rid)
+                knowledge = self._merge_web_evidence(
+                    knowledge, hits, user_query, intent, rid
+                )
             agents_called.append("web")
-            logger.info(
-                "web_completed request_id=%s web_ms=%s hits=%s",
-                rid,
-                timings.web_ms,
-                web_hit_count,
-            )
 
-        # --- Agent 3: Tourism Planner (conditional + sufficient knowledge) ---
         if intent.needs_planner and self._knowledge_usable_for_planner(knowledge):
             logger.info("planner_started request_id=%s", rid)
             t_plan = time.perf_counter()
@@ -188,47 +168,17 @@ class AgentOrchestrator:
             )
             timings.planner_ms = round((time.perf_counter() - t_plan) * 1000.0, 3)
             agents_called.append("planner")
-            logger.info(
-                "planner_completed request_id=%s planner_ms=%s feasibility=%s",
-                rid,
-                timings.planner_ms,
-                plan.feasibility,
-            )
         elif intent.needs_planner and knowledge is not None:
-            # Skip planner when Agent 2 cannot feed it — Agent 4 gets insufficient path.
             logger.info(
                 "planner_skipped request_id=%s reason=insufficient_knowledge",
                 rid,
             )
 
-        # --- Agent 4: Response Generator (always last) ---
-        logger.info("response_started request_id=%s", rid)
-        t_resp = time.perf_counter()
-        final = await self._run_response(
-            user_query,
-            intent,
-            knowledge,
-            plan,
-            response_mode=response_mode,
-            locale=locale_eff,
-            request_id=rid,
-            vision_summary=vision_summary,
-        )
-        timings.response_ms = round((time.perf_counter() - t_resp) * 1000.0, 3)
-        agents_called.append("response")
-        logger.info(
-            "response_completed request_id=%s response_ms=%s response_type=%s",
-            rid,
-            timings.response_ms,
-            final.response_type,
-        )
-
         timings.total_ms = round((time.perf_counter() - started) * 1000.0, 3)
-        result = OrchestrationResult(
+        return OrchestrationContext(
             intent=intent,
             knowledge=knowledge,
             plan=plan,
-            final_response=final,
             timings=timings,
             agents_called=agents_called,
             request_id=rid,
@@ -236,10 +186,69 @@ class AgentOrchestrator:
             vision_summary=vision_summary,
             web_hit_count=web_hit_count,
         )
-        logger.info(
-            "orchestration_completed %s",
-            result.observability(),
+
+    async def run(
+        self,
+        user_query: str,
+        *,
+        conversation_context: Any = None,  # noqa: ARG002 — reserved for future turns
+        mode: Mode | str = "text",
+        language: str | None = None,
+        locale: str | None = None,
+        image_context: bytes | None = None,
+        image_mime: str = "image/jpeg",
+        request_id: str | None = None,
+    ) -> OrchestrationResult:
+        started = time.perf_counter()
+        ctx = await self.prepare(
+            user_query,
+            mode=mode,
+            language=language,
+            locale=locale,
+            image_context=image_context,
+            image_mime=image_mime,
+            request_id=request_id,
         )
+        locale_eff = locale or language
+        agents_called = list(ctx.agents_called)
+        timings = ctx.timings.model_copy()
+
+        logger.info("response_started request_id=%s", ctx.request_id)
+        t_resp = time.perf_counter()
+        final = await self._run_response(
+            user_query,
+            ctx.intent,
+            ctx.knowledge,
+            ctx.plan,
+            response_mode=ctx.mode,
+            locale=locale_eff,
+            request_id=ctx.request_id or "",
+            vision_summary=ctx.vision_summary,
+        )
+        timings.response_ms = round((time.perf_counter() - t_resp) * 1000.0, 3)
+        agents_called.append("response")
+        logger.info(
+            "response_completed request_id=%s response_ms=%s response_type=%s",
+            ctx.request_id,
+            timings.response_ms,
+            final.response_type,
+        )
+
+        timings.total_ms = round((time.perf_counter() - started) * 1000.0, 3)
+        result = OrchestrationResult(
+            intent=ctx.intent,
+            knowledge=ctx.knowledge,
+            plan=ctx.plan,
+            final_response=final,
+            timings=timings,
+            agents_called=agents_called,
+            request_id=ctx.request_id,
+            mode=ctx.mode,
+            vision_summary=ctx.vision_summary,
+            web_hit_count=ctx.web_hit_count,
+            fallback_used=final.fallback_used,
+        )
+        logger.info("orchestration_completed %s", result.observability())
         return result
 
     def _should_retrieve_knowledge(self, intent: IntentResult) -> bool:

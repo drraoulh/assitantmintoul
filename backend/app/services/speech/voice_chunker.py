@@ -35,14 +35,20 @@ def split_ready_phrases(
     buffer: str,
     *,
     first_chunk: bool = False,
+    soft_len: int | None = None,
+    hard_len: int | None = None,
 ) -> tuple[list[str], str]:
     """Return ready TTS phrases and the incomplete leftover buffer."""
     if not buffer:
         return [], ""
 
     soft_min = FIRST_SOFT_MIN if first_chunk else LATER_SOFT_MIN
-    soft_len = FIRST_SOFT if first_chunk else LATER_SOFT
-    hard_len = FIRST_HARD if first_chunk else LATER_HARD
+    soft = soft_len if soft_len and soft_len > 0 else (
+        FIRST_SOFT if first_chunk else LATER_SOFT
+    )
+    hard = hard_len if hard_len and hard_len > 0 else (
+        FIRST_HARD if first_chunk else LATER_HARD
+    )
 
     # 1) Hard sentence boundaries — allow shorter spoken sentences.
     parts = _SENTENCE_END.split(buffer)
@@ -56,7 +62,7 @@ def split_ready_phrases(
         buffer = leftover or buffer
 
     # 2) Soft punctuation — mainly for the opening clause.
-    if first_chunk or len(buffer) >= soft_len:
+    if first_chunk or len(buffer) >= soft:
         soft_parts = _SOFT_PUNCT.split(buffer)
         if len(soft_parts) > 1:
             *complete, tail = soft_parts
@@ -67,8 +73,8 @@ def split_ready_phrases(
                 return ready, leftover
 
     # 3) Hard length flush on a word boundary (never mid-word).
-    if len(buffer) >= hard_len and " " in buffer:
-        cut = buffer.rfind(" ", 0, hard_len)
+    if len(buffer) >= hard and " " in buffer:
+        cut = buffer.rfind(" ", 0, hard)
         if cut >= soft_min:
             return [buffer[:cut].strip()], buffer[cut:].lstrip()
 
