@@ -278,8 +278,52 @@ class HuggingFaceAIService(AIService):
                         knowledge_obs.total_agent2_ms or 0.0,
                     )
                     trace.set_meta(knowledge_agent=knowledge_obs.observability())
+
+                    if get_settings().tourism_planner_observe:
+                        from app.services.agents.planner import build_tourism_plan
+
+                        plan_obs = build_tourism_plan(
+                            message,
+                            intent_obs,
+                            knowledge_obs,
+                            request_id=turn_id,
+                        )
+                        timer.mark(
+                            "tourism_planner",
+                            plan_obs.total_planner_ms or 0.0,
+                        )
+                        trace.set_meta(tourism_planner=plan_obs.observability())
                 except Exception:  # noqa: BLE001
                     logger.exception("knowledge_agent_observe_failed")
+
+            elif get_settings().tourism_planner_observe:
+                # Planner observe without knowledge observe: still run Agent1→2→3 for metrics.
+                try:
+                    from app.services.agents.intent import classify_intent
+                    from app.services.agents.knowledge import retrieve_knowledge
+                    from app.services.agents.planner import build_tourism_plan
+
+                    intent_obs = classify_intent(
+                        message,
+                        locale=locale,
+                        mode="voice" if brief else "text",
+                        request_id=turn_id,
+                    )
+                    knowledge_obs = await retrieve_knowledge(
+                        message,
+                        intent_obs,
+                        request_id=turn_id,
+                    )
+                    plan_obs = build_tourism_plan(
+                        message,
+                        intent_obs,
+                        knowledge_obs,
+                        request_id=turn_id,
+                    )
+                    timer.mark("tourism_planner", plan_obs.total_planner_ms or 0.0)
+                    trace.set_meta(tourism_planner=plan_obs.observability())
+                except Exception:  # noqa: BLE001
+                    logger.exception("tourism_planner_observe_failed")
 
             # Safe response cache for exact greetings / chitchat (no KB, no personalization).
             cached = _simple_reply_cache_get(message, locale, brief) if route.skip_kb else None

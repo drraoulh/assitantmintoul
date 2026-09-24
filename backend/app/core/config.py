@@ -202,6 +202,15 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("KNOWLEDGE_AGENT_ENABLED"),
     )
+    # Phase 2.3 Agent 3 — Tourism Planner (progressive). Default OFF.
+    tourism_planner_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("TOURISM_PLANNER_OBSERVE"),
+    )
+    tourism_planner_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("TOURISM_PLANNER_ENABLED"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:
