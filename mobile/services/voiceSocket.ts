@@ -17,8 +17,16 @@ export type VoiceServerEvent =
       data: string;
       text?: string;
       turn_id?: string;
+      backend_send_timestamp?: number;
+      backend_send_elapsed_ms?: number;
     }
-  | { type: 'audio_done'; index: number; sequence_id?: number; turn_id?: string }
+  | {
+      type: 'audio_done';
+      index: number;
+      sequence_id?: number;
+      turn_id?: string;
+      backend_send_timestamp?: number;
+    }
   | {
       type: 'turn_done';
       metrics?: Record<string, unknown>;
@@ -78,7 +86,30 @@ export class VoiceSocket {
     socket.onerror = (error) => this.handlers.onError?.(error);
     socket.onmessage = (message) => {
       try {
-        const payload = JSON.parse(String(message.data)) as VoiceServerEvent;
+        const receivedAt = Date.now();
+        const payload = JSON.parse(String(message.data)) as VoiceServerEvent & {
+          frontend_receive_timestamp?: number;
+        };
+        payload.frontend_receive_timestamp = receivedAt;
+        if (payload.type === 'audio_chunk' && (payload.part ?? 0) === 0) {
+          const backendTs = payload.backend_send_timestamp;
+          const transitMs =
+            typeof backendTs === 'number' ? Math.round(receivedAt - backendTs * 1000) : undefined;
+          // Phase 1.3 TTFA — no secrets / no audio payloads.
+          console.info(
+            '[TTFA TRACE]',
+            JSON.stringify({
+              event: 'ws_audio_received',
+              turn_id: payload.turn_id,
+              sequence_id: payload.sequence_id ?? payload.index,
+              part: payload.part ?? 0,
+              frontend_receive_timestamp: receivedAt,
+              backend_send_timestamp: backendTs,
+              backend_to_frontend_ms: transitMs,
+              backend_send_elapsed_ms: payload.backend_send_elapsed_ms,
+            }),
+          );
+        }
         this.handlers.onEvent(payload);
       } catch {
         // ignore malformed frames

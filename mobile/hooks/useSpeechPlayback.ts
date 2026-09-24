@@ -151,6 +151,19 @@ export function useSpeechPlayback() {
   }, []);
 
   const playBytes = useCallback(async (audio: ArrayBuffer, index: number) => {
+    const logPlay = (event: string, extra?: Record<string, number | string | undefined>) => {
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event,
+          index,
+          bytes: audio.byteLength,
+          ts: Date.now(),
+          ...extra,
+        }),
+      );
+    };
+
     if (Platform.OS === 'web') {
       const AudioCtor = (globalThis as { Audio?: typeof Audio }).Audio;
       if (!AudioCtor) {
@@ -165,19 +178,34 @@ export function useSpeechPlayback() {
         URL.revokeObjectURL(pendingBlobUrlRef.current);
         pendingBlobUrlRef.current = null;
       }
+      logPlay('audio_decode_start');
       const blob = new Blob([audio], { type: 'audio/mpeg' });
       const url = URL.createObjectURL(blob);
       pendingBlobUrlRef.current = url;
+      logPlay('audio_decode_end');
 
       await new Promise<void>((resolve, reject) => {
+        let playedLogged = false;
+        const markPlayed = (via: string) => {
+          if (playedLogged || index !== 0) {
+            return;
+          }
+          playedLogged = true;
+          logPlay('first_audio_actually_played', { via });
+          logPlay('audio_player_start', { via });
+        };
         const cleanup = () => {
           element.onended = null;
           element.onerror = null;
+          element.onplaying = null;
           element.loop = false;
           if (pendingBlobUrlRef.current === url) {
             URL.revokeObjectURL(url);
             pendingBlobUrlRef.current = null;
           }
+        };
+        element.onplaying = () => {
+          markPlayed('onplaying');
         };
         element.onended = () => {
           cleanup();
@@ -199,37 +227,48 @@ export function useSpeechPlayback() {
         element.loop = false;
         element.volume = 1;
         element.src = url;
+        if (index === 0) {
+          logPlay('first_audio_play_command');
+        }
         const playAttempt = element.play();
         if (playAttempt && typeof playAttempt.then === 'function') {
-          playAttempt.catch(async (error) => {
-            try {
-              element.loop = true;
-              element.src = SILENT_WAV;
-              element.volume = 0.001;
-              await element.play();
-              element.loop = false;
-              element.volume = 1;
-              element.src = url;
-              await element.play();
-            } catch {
-              cleanup();
-              reject(error);
-            }
-          });
+          playAttempt
+            .then(() => {
+              markPlayed('play_promise');
+            })
+            .catch(async (error) => {
+              try {
+                element.loop = true;
+                element.src = SILENT_WAV;
+                element.volume = 0.001;
+                await element.play();
+                element.loop = false;
+                element.volume = 1;
+                element.src = url;
+                await element.play();
+                markPlayed('unlock_retry');
+              } catch {
+                cleanup();
+                reject(error);
+              }
+            });
         }
       });
       return;
     }
 
+    logPlay('audio_decode_start');
     const file = new File(Paths.cache, `tts-${Date.now()}-${index}.mp3`);
     file.create({ overwrite: true });
     file.write(new Uint8Array(audio));
+    logPlay('audio_decode_end');
 
     const player = createAudioPlayer({ uri: file.uri });
     playerRef.current = player;
 
     try {
       await new Promise<void>((resolve, reject) => {
+        let playedLogged = false;
         const subscription = player.addListener(
           'playbackStatusUpdate',
           (status) => {
@@ -238,12 +277,20 @@ export function useSpeechPlayback() {
               reject(new Error(status.error));
               return;
             }
+            if (status.playing && index === 0 && !playedLogged) {
+              playedLogged = true;
+              logPlay('first_audio_actually_played');
+              logPlay('audio_player_start');
+            }
             if (status.didJustFinish) {
               subscription.remove();
               resolve();
             }
           },
         );
+        if (index === 0) {
+          logPlay('first_audio_play_command');
+        }
         player.play();
       });
     } finally {
@@ -349,6 +396,16 @@ export function useSpeechPlayback() {
 
   const playBase64Mp3 = useCallback(
     async (base64: string, index: number) => {
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event: 'audio_decode_start',
+          index,
+          base64_chars: base64.length,
+          ts: Date.now(),
+          source: 'playBase64Mp3',
+        }),
+      );
       const decode =
         typeof atob === 'function'
           ? (value: string) => atob(value)
@@ -378,6 +435,16 @@ export function useSpeechPlayback() {
       for (let i = 0; i < binary.length; i += 1) {
         bytes[i] = binary.charCodeAt(i);
       }
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event: 'audio_decode_end',
+          index,
+          bytes: bytes.byteLength,
+          ts: Date.now(),
+          source: 'playBase64Mp3',
+        }),
+      );
       await playBytes(
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
         index,

@@ -83,6 +83,9 @@ export function useContinuousVoiceSession({
     firstAudioChunk?: number;
     audioDone?: number;
     turnDone?: number;
+    firstSpeech?: number;
+    firstPlayCommand?: number;
+    firstActuallyPlayed?: number;
   } | null>(null);
 
   const logClientPerf = useCallback((label: string, extra?: Record<string, number>) => {
@@ -100,6 +103,23 @@ export function useContinuousVoiceSession({
     // No secrets / no audio payloads — diagnostics only.
     console.info('[VOICE CLIENT PERF]', JSON.stringify(line));
   }, []);
+
+  const logTtfa = useCallback(
+    (event: string, extra?: Record<string, number | string | undefined>) => {
+      const perf = clientPerfRef.current;
+      const base = perf?.sendStart ?? perf?.recordEnd ?? Date.now();
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event,
+          turn_id: perf?.turnId,
+          elapsed_from_send_ms: Date.now() - base,
+          ...extra,
+        }),
+      );
+    },
+    [],
+  );
 
   useEffect(() => {
     if (phaseRef.current === 'idle') {
@@ -206,9 +226,21 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'audio_chunk': {
+          const receiveTs =
+            (event as VoiceServerEvent & { frontend_receive_timestamp?: number })
+              .frontend_receive_timestamp ?? Date.now();
           if (perf && perf.firstAudioChunk == null) {
-            perf.firstAudioChunk = Date.now();
+            perf.firstAudioChunk = receiveTs;
             logClientPerf('first_audio_chunk');
+            logTtfa('ws_audio_received', {
+              sequence_id: event.sequence_id ?? event.index,
+              part: event.part ?? 0,
+              backend_send_timestamp: event.backend_send_timestamp,
+              backend_to_frontend_ms:
+                typeof event.backend_send_timestamp === 'number'
+                  ? Math.round(receiveTs - event.backend_send_timestamp * 1000)
+                  : undefined,
+            });
             // Phase 1.2: flip UI to speaking as soon as first bytes arrive —
             // do not wait for the full sentence MP3 (audio_done).
             setSessionPhase('speaking', t('voice.speakingInterrupt'));
@@ -218,7 +250,22 @@ export function useContinuousVoiceSession({
             break;
           }
           try {
+            if (perf && perf.firstAudioChunk === receiveTs) {
+              logTtfa('audio_decode_start', {
+                sequence_id: event.sequence_id ?? event.index,
+              });
+            }
             const part = decodeBase64ToBytes(event.data);
+            if (perf && perf.firstAudioChunk === receiveTs) {
+              logTtfa('audio_decode_end', {
+                sequence_id: event.sequence_id ?? event.index,
+                bytes: part.byteLength,
+              });
+              logTtfa('audio_queue_push', {
+                sequence_id: event.sequence_id ?? event.index,
+                buffered_parts: (audioBuffersRef.current.get(event.index) || []).length + 1,
+              });
+            }
             const prev = audioBuffersRef.current.get(event.index) || [];
             prev.push(part);
             audioBuffersRef.current.set(event.index, prev);
@@ -230,15 +277,22 @@ export function useContinuousVoiceSession({
         case 'audio_done': {
           if (perf) {
             perf.audioDone = Date.now();
-            if (perf.firstAudioChunk != null && (perf as { firstSpeech?: number }).firstSpeech == null) {
-              (perf as { firstSpeech?: number }).firstSpeech = Date.now();
-              logClientPerf('first_speech_play', {
-                time_to_first_speech_ms:
+            if (perf.firstAudioChunk != null && perf.firstSpeech == null) {
+              // Note: actual audible play is logged below after playBase64Mp3 starts.
+              // Historically this mark fired at audio_done (= buffer complete), NOT play.
+              logClientPerf('audio_done_before_play', {
+                time_to_audio_done_ms:
                   Date.now() - (perf.sendStart ?? perf.recordEnd ?? Date.now()),
+                wait_after_first_chunk_ms: Date.now() - perf.firstAudioChunk,
               });
             }
           }
           logClientPerf('audio_done');
+          logTtfa('audio_done_received', {
+            sequence_id: event.sequence_id ?? event.index,
+            wait_after_first_chunk_ms:
+              perf?.firstAudioChunk != null ? Date.now() - perf.firstAudioChunk : undefined,
+          });
           if (!playBase64Mp3) {
             break;
           }
@@ -251,12 +305,28 @@ export function useContinuousVoiceSession({
           setSessionPhase('speaking', t('voice.speakingInterrupt'));
           busyRef.current = false;
           // Ordered playback chain: sequence 0 → 1 → 2 … (never reorder).
+          // Phase 1.3 finding surface: play waits for audio_done (full MP3), not first chunk.
           playChainRef.current = playChainRef.current
             .then(async () => {
               if (!activeRef.current || phaseRef.current === 'idle') {
                 return;
               }
+              if (perf && perf.firstPlayCommand == null && event.index === 0) {
+                perf.firstPlayCommand = Date.now();
+                logTtfa('first_audio_play_command', {
+                  sequence_id: event.sequence_id ?? event.index,
+                  since_first_chunk_ms:
+                    perf.firstAudioChunk != null
+                      ? Date.now() - perf.firstAudioChunk
+                      : undefined,
+                });
+                logClientPerf('first_speech_play_command');
+              }
               await playBase64Mp3(base64, event.index);
+              if (perf && perf.firstActuallyPlayed == null && event.index === 0) {
+                // playBase64Mp3 resolves when playback *ends*; mark start via hook logs.
+                perf.firstSpeech = Date.now();
+              }
             })
             .catch(() => undefined);
           break;
@@ -293,7 +363,16 @@ export function useContinuousVoiceSession({
           break;
       }
     },
-    [bytesToBase64, decodeBase64ToBytes, logClientPerf, onExchange, playBase64Mp3, setSessionPhase, t],
+    [
+      bytesToBase64,
+      decodeBase64ToBytes,
+      logClientPerf,
+      logTtfa,
+      onExchange,
+      playBase64Mp3,
+      setSessionPhase,
+      t,
+    ],
   );
 
   const ensureSocket = useCallback(async (): Promise<VoiceSocket | null> => {

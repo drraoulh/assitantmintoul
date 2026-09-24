@@ -37,11 +37,16 @@ class CompositeSpeechService(SpeechService):
             )
         return await self._tts.synthesize(text)
 
-    async def synthesize_stream(self, text: str) -> AsyncIterator[bytes]:
+    async def synthesize_stream(
+        self,
+        text: str,
+        *,
+        trace: dict | None = None,
+    ) -> AsyncIterator[bytes]:
         if self._tts is None:
             raise SpeechUnavailableError(
                 "Text-to-speech is disabled. "
                 "Set TTS_PROVIDER=fish and FISH_AUDIO_API_KEY."
             )
-        async for chunk in self._tts.synthesize_stream(text):
+        async for chunk in self._tts.synthesize_stream(text, trace=trace):
             yield chunk
