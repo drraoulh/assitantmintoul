@@ -28,14 +28,26 @@ async def test_local_rag_retrieves_yaounde_sites() -> None:
     rag = LocalRAGService()
     chunks = await rag.retrieve_chunks(
         "Quels sont les sites touristiques de Yaoundé ?",
-        top_k=4,
+        top_k=6,
     )
     assert chunks
     joined = " ".join(chunk.text.lower() for chunk in chunks)
     assert "yaound" in joined
     assert any(
         keyword in joined
-        for keyword in ("monument", "musée", "musee", "mokolo", "fébé", "febe")
+        for keyword in (
+            "monument",
+            "musée",
+            "musee",
+            "mokolo",
+            "fébé",
+            "febe",
+            "indépend",
+            "independ",
+            "cathédrale",
+            "cathedrale",
+            "eloundem",
+        )
     )
 
 

@@ -19,7 +19,14 @@
     "douala_region_littoral": true,
     "littoral_food_ndole": true,
     "sawa_culture": true,
-    "littoral_regional": true
+    "littoral_regional": true,
+    "yaounde_has_places": true,
+    "yaounde_not_mbalmayo_as_only": true,
+    "centre_not_equals_yaounde": true,
+    "yaounde_region_centre": true,
+    "centre_food": true,
+    "mokolo_or_culture": true,
+    "centre_regional": true
   },
   "turns": [
     {
@@ -52,7 +59,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 46.2
+      "ms": 54.2
     },
     {
       "query": "C’est tout ?",
@@ -67,7 +74,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Pouvez-vous préciser un peu ce que vous recherchez ?",
-      "ms": 4.0
+      "ms": 5.1
     },
     {
       "query": "La région de l’Ouest c’est Bafoussam nor ?",
@@ -83,7 +90,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Ouest est une région du Cameroun, et Bafoussam en est le chef-lieu.",
-      "ms": 5.2
+      "ms": 6.5
     },
     {
       "query": "Bafoussam est dans quelle région ?",
@@ -99,7 +106,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bafoussam se trouve dans la région de l’Ouest du Cameroun.",
-      "ms": 4.7
+      "ms": 5.5
     },
     {
       "query": "Que visiter autour de Bafoussam ?",
@@ -131,7 +138,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 6.2
+      "ms": 7.5
     },
     {
       "query": "Je veux visiter l’Ouest du Cameroun.",
@@ -188,7 +195,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Chutes De Nsem-Tsa\n- La Falaise De Foreke\n- La Grotte De Demvoh\n- Palais royal de Foumban\n- Chefferie de Bafoussam\n- Base Nautique De Dschang\n- Cascades De Dschang\n- Centre Climatique De Dschang",
-      "ms": 9.5
+      "ms": 10.3
     },
     {
       "query": "Quels plats typiques de l’Ouest ?",
@@ -204,7 +211,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts plateaux : Le café des h",
-      "ms": 8.8
+      "ms": 10.3
     },
     {
       "query": "Parle-moi des traditions bamiléké et Bamoun",
@@ -231,7 +238,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés :\n- Protocole des chefferies : Dans les c",
-      "ms": 10.0
+      "ms": 11.1
     },
     {
       "query": "Où est le lac Mbapit ?",
@@ -247,7 +254,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban (département du Noun, région de l’Ouest).",
-      "ms": 4.7
+      "ms": 5.4
     },
     {
       "query": "Hôtel à Dschang ?",
@@ -269,7 +276,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 1 lieu(x) vérifié(s) autour de Dschang dans ma base :\n- Adys Hotel Dschang Officiel\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 5.2
+      "ms": 6.2
     },
     {
       "query": "Je veux visiter Douala que me proposes-tu ?",
@@ -326,7 +333,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Douala dans ma base :\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Ile De Manoka\n- Jardin Botanique Agrotech\n- La Maison Omaj\n- La Nouvelle Liberte\n- La Pagode",
-      "ms": 8.5
+      "ms": 9.6
     },
     {
       "query": "La région du Littoral c’est Douala nor ?",
@@ -342,7 +349,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Littoral est une région du Cameroun, et Douala en est le chef-lieu.",
-      "ms": 4.5
+      "ms": 5.7
     },
     {
       "query": "Douala est dans quelle région ?",
@@ -358,7 +365,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Douala se trouve dans la région du Littoral du Cameroun.",
-      "ms": 4.5
+      "ms": 5.5
     },
     {
       "query": "Quels plats typiques de Douala / Littoral ?",
@@ -385,13 +392,13 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Marchés de Bamenda",
-          "city": "Bamenda",
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
           "scope": "UNKNOWN"
         },
         {
-          "name": "Plages de Kribi",
-          "city": "Kribi",
+          "name": "Marchés de Bamenda",
+          "city": "Bamenda",
           "scope": "UNKNOWN"
         }
       ],
@@ -400,7 +407,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Ndolé : Plat emblématique surtout associé à Douala / Littoral : feuilles amères, arachide, poisson ou viande.\n- Poissons et cuisine urbaine : Douala offre une scène resto urbaine (quartiers Akwa, Bonapriso…) avec poissons et spécialités locales — goûtez le ndolé ; signalez les",
-      "ms": 11.5
+      "ms": 15.1
     },
     {
       "query": "Parle-moi de la culture Sawa",
@@ -432,7 +439,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Le Littoral a pour chef-lieu Douala, capitale économique et hub aérien du Cameroun. Cultures Sawa, estuaire du Wouri, quartiers Bonanjo / Akwa / Bonapriso, et portes vers Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) et Yabassi (Nkam).\nRepères culturels documentés :\n- Patrimoine Sawa : Douala illustre le littoral urba",
-      "ms": 7.9
+      "ms": 9.3
     },
     {
       "query": "Je veux visiter le Littoral.",
@@ -489,11 +496,231 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Quartier Bonanjo (Douala)\n- Chutes d’Ekom-Nkam\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Gorges De La Sanaga\n- Ile De Manoka\n- Jardin Botanique Agrotech",
-      "ms": 10.1
+      "ms": 10.3
+    },
+    {
+      "query": "Je veux visiter Yaoundé que me proposes-tu ?",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Abali Gallery",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Basilique Marie Reine Des Apotres",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Cathédrale Notre-Dame-des-Victoires",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Centre International De L'artisanat De Yaoundé",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Galerie Arts Negro",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Galerie Atelier D'art Afrobantu Mekouti",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Yaoundé dans ma base :\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé\n- Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)\n- Galerie Arts Negro\n- Galerie Ateli",
+      "ms": 9.6
+    },
+    {
+      "query": "La région du Centre c’est Yaoundé nor ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Pas exactement. Le Centre est une région du Cameroun, et Yaoundé en est le chef-lieu (capitale politique).",
+      "ms": 5.3
+    },
+    {
+      "query": "Yaoundé est dans quelle région ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Yaoundé se trouve dans la région du Centre du Cameroun.",
+      "ms": 16.4
+    },
+    {
+      "query": "Quels plats typiques à Yaoundé ?",
+      "intent": "FOOD",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "La Place De L'indépendance",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Lac De Bayomen",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Quartier Mvog-Mbi / vie nocturne & restauration",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Marché Mokolo",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 5,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Plats typiques documentés dans ma base :\n- Poulet DG : Poulet sauté avec plantains et légumes, très présent en restauration urbaine à Yaoundé.\n- Cuisine de quartier / marchés : Yaoundé offre restos de quartier et marchés (Mokolo) pour produits locaux — goûtez aussi ndolé, plantains ; signalez les allergies. Aucun resta",
+      "ms": 14.9
+    },
+    {
+      "query": "Parle-moi du marché Mokolo",
+      "intent": "PLACE_DETAILS",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Centre International De L'artisanat De Yaoundé",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Marché Mokolo",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        }
+      ],
+      "completeness": "MEDIUM",
+      "verified_places_count": 3,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Centre International De L'artisanat De Yaoundé se trouve à Yaoundé. Centre International De L'artisanat De Yaoundé. Situé à Carrefour Intendance, près du marché central, à Yaoundé, le Centre International de l'Artisanat de Yaoundé est un espace dédié à la promotion des produits artisanaux camerounais. Ce site touristiq",
+      "ms": 16.0
+    },
+    {
+      "query": "Je veux visiter la région du Centre.",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Le Lac Guéré",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Les Cascades De Poupouma",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Musée national du Cameroun",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Abali Gallery",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Basilique Marie Reine Des Apotres",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Cathédrale Notre-Dame-des-Victoires",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        },
+        {
+          "name": "Centre International De L'artisanat De Yaoundé",
+          "city": "Yaoundé",
+          "scope": "IN_REGION"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- L’île  Des Cocotiers Soa\n- Le Lac Guéré\n- Les Cascades De Poupouma\n- Musée national du Cameroun\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé",
+      "ms": 9.8
     }
   ],
-  "total_conversation_ms": 151.5,
-  "pytest": "236 passed, 1 warning in 1.76s",
+  "total_conversation_ms": 249.7,
+  "pytest": "1 failed, 241 passed, 1 warning in 1.98s",
   "flags_default": {
     "KNOWLEDGE_GEOGRAPHY_ENABLED": false,
     "WEB_KNOWLEDGE_FALLBACK_ENABLED": false
