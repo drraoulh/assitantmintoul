@@ -1,0 +1,138 @@
+{
+  "summary": {
+    "receive_to_play_start_ms": {
+      "avg": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "n": 3
+    },
+    "play_start_to_audio_done_ms": {
+      "avg": 808.7,
+      "min": 650.5,
+      "max": 1024.9,
+      "n": 3
+    },
+    "receive_to_audio_done_ms_OLD_WAIT": {
+      "avg": 808.7,
+      "min": 650.5,
+      "max": 1024.9,
+      "n": 3
+    },
+    "fish_ttfb_ms": {
+      "avg": 578.1,
+      "min": 549.1,
+      "max": 613.5,
+      "n": 3
+    },
+    "backend_first_audio_ms": null,
+    "backend_first_audio_approx_ms": {
+      "avg": 6732.7,
+      "min": 6604.2,
+      "max": 6864.2,
+      "n": 3
+    }
+  },
+  "runs": [
+    {
+      "invalid": false,
+      "label": "food_0",
+      "frag": "Comm ence z par le nd olé,",
+      "frag_chars": 26,
+      "marks_ms": {
+        "llm_start": 0.0,
+        "llm_first_token": 2739.4,
+        "chunker_first_flush": 2792.9,
+        "llm_end": 6290.7,
+        "tts_request": 6290.7,
+        "frontend_audio_received_seq0": 6864.2,
+        "frontend_play_start": 6864.2,
+        "audio_done_received": 7514.7
+      },
+      "fish_ttfb_ms": 549.1,
+      "fish_total_ms": 1199.5,
+      "receive_to_play_start_ms": 0.0,
+      "play_start_to_audio_done_ms": 650.5,
+      "receive_to_audio_done_ms": 650.5,
+      "actions": [
+        "start",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append"
+      ],
+      "started_before_done": true
+    },
+    {
+      "invalid": false,
+      "label": "food_1",
+      "frag": "Comm ence z par le nd olé,",
+      "frag_chars": 26,
+      "marks_ms": {
+        "llm_start": 0.0,
+        "llm_first_token": 2633.7,
+        "chunker_first_flush": 2688.4,
+        "llm_end": 6116.1,
+        "tts_request": 6116.2,
+        "frontend_audio_received_seq0": 6729.7,
+        "frontend_play_start": 6729.8,
+        "audio_done_received": 7480.5
+      },
+      "fish_ttfb_ms": 613.5,
+      "fish_total_ms": 1364.3,
+      "receive_to_play_start_ms": 0.0,
+      "play_start_to_audio_done_ms": 750.8,
+      "receive_to_audio_done_ms": 750.8,
+      "actions": [
+        "start",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append"
+      ],
+      "started_before_done": true
+    },
+    {
+      "invalid": false,
+      "label": "nature_0",
+      "frag": "Comm ence z par le Parc National de la Lob é",
+      "frag_chars": 44,
+      "marks_ms": {
+        "llm_start": 0.0,
+        "llm_first_token": 2596.8,
+        "chunker_first_flush": 2678.2,
+        "llm_end": 6032.6,
+        "tts_request": 6032.7,
+        "frontend_audio_received_seq0": 6604.2,
+        "frontend_play_start": 6604.3,
+        "audio_done_received": 7629.1
+      },
+      "fish_ttfb_ms": 571.6,
+      "fish_total_ms": 1596.4,
+      "receive_to_play_start_ms": 0.0,
+      "play_start_to_audio_done_ms": 1024.9,
+      "receive_to_audio_done_ms": 1024.9,
+      "actions": [
+        "start",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append",
+        "append"
+      ],
+      "started_before_done": true
+    },
+    {
+      "invalid": true,
+      "reason": "HF_402",
+      "label": "nature_1"
+    }
+  ]
+}

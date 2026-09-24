@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import time
 from dataclasses import dataclass
 from typing import Any
@@ -12,6 +13,16 @@ from typing import Any
 from app.services.rag.chunk import KnowledgeChunk
 
 logger = logging.getLogger(__name__)
+
+_PUNCT = re.compile(r"[^\w\s]+", re.UNICODE)
+_WS = re.compile(r"\s+")
+
+
+def normalize_cache_query(query: str) -> str:
+    """Collapse punctuation/case so near-identical questions share a cache key."""
+    folded = query.strip().casefold()
+    folded = _PUNCT.sub(" ", folded)
+    return _WS.sub(" ", folded).strip()
 
 
 @dataclass
@@ -21,10 +32,21 @@ class _MemoryEntry:
 
 
 class RetrievalCache:
-    """Cache Top-K retrieval results by normalized query + top_k."""
+    """Cache Top-K retrieval results by normalized query + top_k.
 
-    def __init__(self, ttl_seconds: float = 300.0, redis_url: str = "") -> None:
+    Phase 1: avoid re-running tokenization + TF-IDF for identical / near-identical
+    questions within TTL. Does not cache live web or LLM answers.
+    """
+
+    def __init__(
+        self,
+        ttl_seconds: float = 300.0,
+        redis_url: str = "",
+        *,
+        max_entries: int = 512,
+    ) -> None:
         self._ttl = max(1.0, ttl_seconds)
+        self._max_entries = max(32, max_entries)
         self._memory: dict[str, _MemoryEntry] = {}
         self._redis = None
         url = (redis_url or "").strip()
@@ -41,9 +63,8 @@ class RetrievalCache:
 
     @staticmethod
     def _key(query: str, top_k: int) -> str:
-        digest = hashlib.sha256(
-            f"{top_k}|{query.strip().casefold()}".encode()
-        ).hexdigest()
+        normalized = normalize_cache_query(query)
+        digest = hashlib.sha256(f"{top_k}|{normalized}".encode()).hexdigest()
         return f"rag:v1:{digest}"
 
     def get(self, query: str, top_k: int) -> list[KnowledgeChunk] | None:
@@ -77,6 +98,14 @@ class RetrievalCache:
                 )
             except Exception:
                 logger.exception("RAG Redis set failed")
+        if len(self._memory) >= self._max_entries:
+            # Drop oldest expired first, else arbitrary eviction of one key.
+            now = time.time()
+            expired = [k for k, v in self._memory.items() if v.expires_at < now]
+            for k in expired[: max(1, len(expired))]:
+                self._memory.pop(k, None)
+            if len(self._memory) >= self._max_entries:
+                self._memory.pop(next(iter(self._memory)), None)
         self._memory[key] = _MemoryEntry(
             expires_at=time.time() + self._ttl,
             payload=payload,

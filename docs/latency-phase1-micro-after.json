@@ -1,0 +1,192 @@
+{
+  "label": "phase1-micro-after",
+  "rag_warm_ms": 7521.2,
+  "chunk_count": 318,
+  "results": [
+    {
+      "probe": "simple",
+      "message": "Bonjour",
+      "route": {
+        "kind": "simple",
+        "skip_kb": true,
+        "skip_web": true,
+        "reason": "greeting_or_chitchat"
+      },
+      "first": {
+        "label": "micro:simple",
+        "turn_id": "0918d59031",
+        "started_wall_ms": 1790227760919.7,
+        "total_ms": 0.3,
+        "phases_ms": {
+          "routing": 0.2,
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.0
+        }
+      },
+      "cached": {
+        "label": "micro:simple:cached",
+        "turn_id": "214393175a",
+        "started_wall_ms": 1790227760920.0,
+        "total_ms": 0.0,
+        "phases_ms": {
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.0
+        }
+      },
+      "prompt_chars": 3505,
+      "chunks": 0
+    },
+    {
+      "probe": "food",
+      "message": "Quels plats camerounais dois-je goûter ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "first": {
+        "label": "micro:food",
+        "turn_id": "0908bd8104",
+        "started_wall_ms": 1790227760920.0,
+        "total_ms": 2.5,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 2.2,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 2.4
+        }
+      },
+      "cached": {
+        "label": "micro:food:cached",
+        "turn_id": "0b11eaf24e",
+        "started_wall_ms": 1790227760922.4,
+        "total_ms": 0.1,
+        "phases_ms": {
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.1
+        }
+      },
+      "prompt_chars": 5613,
+      "chunks": 4
+    },
+    {
+      "probe": "kb_city",
+      "message": "Que visiter à Yaoundé ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "first": {
+        "label": "micro:kb_city",
+        "turn_id": "67fa3a5cf5",
+        "started_wall_ms": 1790227760922.6,
+        "total_ms": 5.0,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 4.7,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 4.8
+        }
+      },
+      "cached": {
+        "label": "micro:kb_city:cached",
+        "turn_id": "caebf8da6e",
+        "started_wall_ms": 1790227760927.5,
+        "total_ms": 0.1,
+        "phases_ms": {
+          "rag": 0.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.1
+        }
+      },
+      "prompt_chars": 6403,
+      "chunks": 4
+    },
+    {
+      "probe": "circuit",
+      "message": "Propose un circuit nature au Cameroun.",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "first": {
+        "label": "micro:circuit",
+        "turn_id": "4a5039feb8",
+        "started_wall_ms": 1790227760927.6,
+        "total_ms": 3.6,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 2.3,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 2.4
+        }
+      },
+      "cached": {
+        "label": "micro:circuit:cached",
+        "turn_id": "0edefafa5f",
+        "started_wall_ms": 1790227760930.1,
+        "total_ms": 1.1,
+        "phases_ms": {
+          "rag": 1.0,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 1.1
+        }
+      },
+      "prompt_chars": 6402,
+      "chunks": 4
+    },
+    {
+      "probe": "voice_prompt",
+      "message": "Bonjour, que puis-je visiter au Cameroun ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "first": {
+        "label": "micro:voice_prompt",
+        "turn_id": "bf5cbfcc87",
+        "started_wall_ms": 1790227760931.2,
+        "total_ms": 777.6,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 4.7,
+          "web": 441.7,
+          "prompt": 0.0,
+          "grounding": 446.5
+        }
+      },
+      "cached": {
+        "label": "micro:voice_prompt:cached",
+        "turn_id": "35d42a14a0",
+        "started_wall_ms": 1790227761377.8,
+        "total_ms": 331.1,
+        "phases_ms": {
+          "rag": 0.1,
+          "web": 330.9,
+          "prompt": 0.0,
+          "grounding": 331.1
+        }
+      },
+      "prompt_chars": 6540,
+      "chunks": 3
+    }
+  ]
+}

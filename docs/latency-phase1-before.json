@@ -1,0 +1,52 @@
+{
+  "label": "before",
+  "results": [
+    {
+      "probe": "simple",
+      "message": "Bonjour",
+      "route": {
+        "kind": "simple",
+        "skip_kb": true,
+        "skip_web": true,
+        "reason": "greeting_or_chitchat"
+      },
+      "reply_preview": "[error] Hugging Face Inference Providers are busy or unavailable. Try again shortly.",
+      "metrics": {
+        "label": "before:simple",
+        "total_ms": 9896.0,
+        "phases_ms": {
+          "route": 0.0,
+          "route_kind_simple": 1.0,
+          "grounding": 0.0,
+          "llm": 2351.9,
+          "tts_ttfb": 1284.4,
+          "tts": 4153.7
+        }
+      }
+    },
+    {
+      "probe": "grounded",
+      "message": "Que visiter à Yaoundé en deux jours ?",
+      "route": {
+        "kind": "grounded",
+        "skip_kb": false,
+        "skip_web": false,
+        "reason": "needs_knowledge"
+      },
+      "reply_preview": "En deux jours à Yaoundé, commencez par la Place de l'Indépendance et le Rond-Point patriotique pour l'histoire, puis explorez le Centre International de l'Artis",
+      "metrics": {
+        "label": "before:grounded",
+        "total_ms": 17516.6,
+        "phases_ms": {
+          "route": 0.0,
+          "route_kind_simple": 0.0,
+          "grounding": 5285.4,
+          "llm_ttft": 278.8,
+          "llm": 1353.8,
+          "tts_ttfb": 573.1,
+          "tts": 5529.2
+        }
+      }
+    }
+  ]
+}

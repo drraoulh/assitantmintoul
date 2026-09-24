@@ -69,7 +69,8 @@ LOCALE_PROMPTS = {
 
 VOICE_STYLE_PROMPT = """## Voice mode
 The answer will be read aloud, so keep it spoken-friendly:
-- 3 sentences maximum, about 45 words, no preamble.
+- Open with ONE short sentence (under 12 words) that gives the main tip immediately.
+- Then at most 2 more short sentences (~45 words total), no preamble.
 - Plain sentences only: no markdown, no lists, no headings, no URLs, no emoji.
 - Give the single most useful fact or tip, then optionally offer one short follow-up question.
 - Language: obey Preferred UI language strictly (English UI → English speech; French UI → French speech).

@@ -11,9 +11,10 @@ import { Platform } from 'react-native';
 import { useLocale } from '../i18n';
 import { synthesizeSpeech } from '../services/api';
 
-// Fish Audio synthesis time grows with the text, so speak in chunks: the first
-// sentence starts playing while the rest is still being synthesized.
-const MAX_SEGMENT_CHARS = 180;
+// Fish TTS latency grows with text length. HTTP fallback speaks short segments
+// so the first audible audio starts while later segments synthesize.
+const MAX_SEGMENT_CHARS = 120;
+const FIRST_SEGMENT_CHARS = 48;
 
 // Tiny silent WAV — played inside a user gesture to unlock Safari/Chrome autoplay.
 const SILENT_WAV =
@@ -31,19 +32,31 @@ function splitForSpeech(text: string): string[] {
   const sentences = text.match(/[^.!?…]+[.!?…]*/g) ?? [text];
   const segments: string[] = [];
   let current = '';
+  let isFirst = true;
 
   for (const sentence of sentences) {
     const piece = sentence.trim();
     if (!piece) {
       continue;
     }
+    const limit = isFirst ? FIRST_SEGMENT_CHARS : MAX_SEGMENT_CHARS;
     if (!current) {
       current = piece;
-    } else if (current.length + piece.length + 1 <= MAX_SEGMENT_CHARS) {
+    } else if (current.length + piece.length + 1 <= limit) {
       current = `${current} ${piece}`;
     } else {
       segments.push(current);
+      isFirst = false;
       current = piece;
+    }
+    // Force-flush a long first sentence early for time-to-first-speech.
+    if (isFirst && current.length >= FIRST_SEGMENT_CHARS) {
+      const cut = current.lastIndexOf(' ', FIRST_SEGMENT_CHARS);
+      if (cut >= 20) {
+        segments.push(current.slice(0, cut).trim());
+        current = current.slice(cut).trim();
+        isFirst = false;
+      }
     }
   }
   if (current) {
@@ -138,6 +151,19 @@ export function useSpeechPlayback() {
   }, []);
 
   const playBytes = useCallback(async (audio: ArrayBuffer, index: number) => {
+    const logPlay = (event: string, extra?: Record<string, number | string | undefined>) => {
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event,
+          index,
+          bytes: audio.byteLength,
+          ts: Date.now(),
+          ...extra,
+        }),
+      );
+    };
+
     if (Platform.OS === 'web') {
       const AudioCtor = (globalThis as { Audio?: typeof Audio }).Audio;
       if (!AudioCtor) {
@@ -152,19 +178,34 @@ export function useSpeechPlayback() {
         URL.revokeObjectURL(pendingBlobUrlRef.current);
         pendingBlobUrlRef.current = null;
       }
+      logPlay('audio_decode_start');
       const blob = new Blob([audio], { type: 'audio/mpeg' });
       const url = URL.createObjectURL(blob);
       pendingBlobUrlRef.current = url;
+      logPlay('audio_decode_end');
 
       await new Promise<void>((resolve, reject) => {
+        let playedLogged = false;
+        const markPlayed = (via: string) => {
+          if (playedLogged || index !== 0) {
+            return;
+          }
+          playedLogged = true;
+          logPlay('first_audio_actually_played', { via });
+          logPlay('audio_player_start', { via });
+        };
         const cleanup = () => {
           element.onended = null;
           element.onerror = null;
+          element.onplaying = null;
           element.loop = false;
           if (pendingBlobUrlRef.current === url) {
             URL.revokeObjectURL(url);
             pendingBlobUrlRef.current = null;
           }
+        };
+        element.onplaying = () => {
+          markPlayed('onplaying');
         };
         element.onended = () => {
           cleanup();
@@ -186,37 +227,48 @@ export function useSpeechPlayback() {
         element.loop = false;
         element.volume = 1;
         element.src = url;
+        if (index === 0) {
+          logPlay('first_audio_play_command');
+        }
         const playAttempt = element.play();
         if (playAttempt && typeof playAttempt.then === 'function') {
-          playAttempt.catch(async (error) => {
-            try {
-              element.loop = true;
-              element.src = SILENT_WAV;
-              element.volume = 0.001;
-              await element.play();
-              element.loop = false;
-              element.volume = 1;
-              element.src = url;
-              await element.play();
-            } catch {
-              cleanup();
-              reject(error);
-            }
-          });
+          playAttempt
+            .then(() => {
+              markPlayed('play_promise');
+            })
+            .catch(async (error) => {
+              try {
+                element.loop = true;
+                element.src = SILENT_WAV;
+                element.volume = 0.001;
+                await element.play();
+                element.loop = false;
+                element.volume = 1;
+                element.src = url;
+                await element.play();
+                markPlayed('unlock_retry');
+              } catch {
+                cleanup();
+                reject(error);
+              }
+            });
         }
       });
       return;
     }
 
+    logPlay('audio_decode_start');
     const file = new File(Paths.cache, `tts-${Date.now()}-${index}.mp3`);
     file.create({ overwrite: true });
     file.write(new Uint8Array(audio));
+    logPlay('audio_decode_end');
 
     const player = createAudioPlayer({ uri: file.uri });
     playerRef.current = player;
 
     try {
       await new Promise<void>((resolve, reject) => {
+        let playedLogged = false;
         const subscription = player.addListener(
           'playbackStatusUpdate',
           (status) => {
@@ -225,12 +277,20 @@ export function useSpeechPlayback() {
               reject(new Error(status.error));
               return;
             }
+            if (status.playing && index === 0 && !playedLogged) {
+              playedLogged = true;
+              logPlay('first_audio_actually_played');
+              logPlay('audio_player_start');
+            }
             if (status.didJustFinish) {
               subscription.remove();
               resolve();
             }
           },
         );
+        if (index === 0) {
+          logPlay('first_audio_play_command');
+        }
         player.play();
       });
     } finally {
@@ -336,6 +396,16 @@ export function useSpeechPlayback() {
 
   const playBase64Mp3 = useCallback(
     async (base64: string, index: number) => {
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event: 'audio_decode_start',
+          index,
+          base64_chars: base64.length,
+          ts: Date.now(),
+          source: 'playBase64Mp3',
+        }),
+      );
       const decode =
         typeof atob === 'function'
           ? (value: string) => atob(value)
@@ -365,6 +435,16 @@ export function useSpeechPlayback() {
       for (let i = 0; i < binary.length; i += 1) {
         bytes[i] = binary.charCodeAt(i);
       }
+      console.info(
+        '[TTFA TRACE]',
+        JSON.stringify({
+          event: 'audio_decode_end',
+          index,
+          bytes: bytes.byteLength,
+          ts: Date.now(),
+          source: 'playBase64Mp3',
+        }),
+      );
       await playBytes(
         bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength),
         index,

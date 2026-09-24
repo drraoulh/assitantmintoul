@@ -1,0 +1,193 @@
+{
+  "note": "Opportunistic valid stream runs while credits flickered; protocol target was 3×5 but HF 402 limited n.",
+  "per_model": {
+    "Qwen/Qwen3.5-9B:fastest": {
+      "valid_n": 3,
+      "failed_n": 1,
+      "wall_to_first_token_ms": {
+        "avg": 412.2,
+        "median": 282.0,
+        "min": 245.6,
+        "max": 709.0,
+        "n": 3
+      },
+      "time_to_first_phrase_ms": {
+        "avg": 531.6,
+        "median": 388.1,
+        "min": 386.5,
+        "max": 820.3,
+        "n": 3
+      },
+      "total_generation_ms": {
+        "avg": 1126.4,
+        "median": 1243.3,
+        "min": 792.7,
+        "max": 1343.1,
+        "n": 3
+      },
+      "cold_ttft_ms": {
+        "avg": 709.0,
+        "median": 709.0,
+        "min": 709.0,
+        "max": 709.0,
+        "n": 1
+      },
+      "warm_ttft_ms": {
+        "avg": 263.8,
+        "median": 263.8,
+        "min": 245.6,
+        "max": 282.0,
+        "n": 2
+      },
+      "samples": [
+        {
+          "qid": "yaounde",
+          "ttft": 709.0,
+          "phrase": 820.3,
+          "total": 1343.1,
+          "reply": "À Yaoundé, commencez par La Place de l'Indépendance pour sentir l'histoire du 1er janvier 1960.\nVisitez ensuite le Centre International de l'Artisanat à Carrefour Intendance pour voir des objets faits",
+          "first_phrase": "À Ya ound é, commence z par La Place de l'Ind é"
+        },
+        {
+          "qid": "yaounde",
+          "ttft": 245.6,
+          "phrase": 386.5,
+          "total": 792.7,
+          "reply": "À Yaoundé, commencez par la Place de l'Indépendance pour sentir l'histoire du 1er janvier 1960.\nVisitez ensuite le Centre International de l'Artisanat à Carrefour Intendance pour voir des objets uniqu",
+          "first_phrase": "À Ya ound é, commence z par la Place de l'Ind é"
+        },
+        {
+          "qid": "yaounde",
+          "ttft": 282.0,
+          "phrase": 388.1,
+          "total": 1243.3,
+          "reply": "À Yaoundé, commencez par la Place de l'Indépendance, ce monument historique où le Cameroun a obtenu son autonomie en 1960.\n\nVous pouvez ensuite explorer le Centre International de l'Artisanat pour déc",
+          "first_phrase": "À Ya ound é, commence z par la Place de l'Ind é"
+        }
+      ]
+    },
+    "meta-llama/Llama-3.1-8B-Instruct:fastest": {
+      "valid_n": 1,
+      "failed_n": 1,
+      "wall_to_first_token_ms": {
+        "avg": 733.9,
+        "median": 733.9,
+        "min": 733.9,
+        "max": 733.9,
+        "n": 1
+      },
+      "time_to_first_phrase_ms": {
+        "avg": 818.3,
+        "median": 818.3,
+        "min": 818.3,
+        "max": 818.3,
+        "n": 1
+      },
+      "total_generation_ms": {
+        "avg": 1217.6,
+        "median": 1217.6,
+        "min": 1217.6,
+        "max": 1217.6,
+        "n": 1
+      },
+      "cold_ttft_ms": {
+        "avg": 733.9,
+        "median": 733.9,
+        "min": 733.9,
+        "max": 733.9,
+        "n": 1
+      },
+      "warm_ttft_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "samples": [
+        {
+          "qid": "yaounde",
+          "ttft": 733.9,
+          "phrase": 818.3,
+          "total": 1217.6,
+          "reply": "La Place De L'indépendance est un site historique et symbolique marquant un tournant décisif dans l'histoire du Cameroun. Vous pouvez également visiter le Centre International De L'artisanat De Yaound",
+          "first_phrase": "La Place De L'ind é pend ance est un site"
+        }
+      ]
+    }
+  },
+  "runs": [
+    {
+      "valid": true,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "qid": "yaounde",
+      "run_i": 0,
+      "cold": true,
+      "wall_to_first_token_ms": 709.0,
+      "time_to_first_phrase_ms": 820.3,
+      "total_generation_ms": 1343.1,
+      "output_chars": 340,
+      "stream_chunks": 90,
+      "first_phrase": "À Ya ound é, commence z par La Place de l'Ind é",
+      "reply": "À Yaoundé, commencez par La Place de l'Indépendance pour sentir l'histoire du 1er janvier 1960.\nVisitez ensuite le Centre International de l'Artisanat à Carrefour Intendance pour voir des objets faits main.\nN'oubliez pas de goûter un ndolé au marché central avant de partir.\nAvez-vous besoin de conseils pour les transports vers ces lieux ?"
+    },
+    {
+      "valid": true,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "qid": "yaounde",
+      "run_i": 1,
+      "cold": false,
+      "wall_to_first_token_ms": 245.6,
+      "time_to_first_phrase_ms": 386.5,
+      "total_generation_ms": 792.7,
+      "output_chars": 275,
+      "stream_chunks": 73,
+      "first_phrase": "À Ya ound é, commence z par la Place de l'Ind é",
+      "reply": "À Yaoundé, commencez par la Place de l'Indépendance pour sentir l'histoire du 1er janvier 1960.\nVisitez ensuite le Centre International de l'Artisanat à Carrefour Intendance pour voir des objets uniques.\nJe peux vous proposer un itinéraire de deux jours si vous le souhaitez."
+    },
+    {
+      "valid": true,
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "qid": "yaounde",
+      "run_i": 2,
+      "cold": false,
+      "wall_to_first_token_ms": 282.0,
+      "time_to_first_phrase_ms": 388.1,
+      "total_generation_ms": 1243.3,
+      "output_chars": 419,
+      "stream_chunks": 101,
+      "first_phrase": "À Ya ound é, commence z par la Place de l'Ind é",
+      "reply": "À Yaoundé, commencez par la Place de l'Indépendance, ce monument historique où le Cameroun a obtenu son autonomie en 1960.\n\nVous pouvez ensuite explorer le Centre International de l'Artisanat pour découvrir des créations locales et admirer les chutes de Mbang-Ebongo, situées juste à côté à Bareko.\n\nSouhaitez-vous des conseils pour organiser votre visite ou préférez-vous connaître les meilleurs endroits pour manger ?"
+    },
+    {
+      "valid": true,
+      "model": "meta-llama/Llama-3.1-8B-Instruct:fastest",
+      "qid": "yaounde",
+      "run_i": 0,
+      "cold": true,
+      "wall_to_first_token_ms": 733.9,
+      "time_to_first_phrase_ms": 818.3,
+      "total_generation_ms": 1217.6,
+      "output_chars": 318,
+      "stream_chunks": 88,
+      "first_phrase": "La Place De L'ind é pend ance est un site",
+      "reply": "La Place De L'indépendance est un site historique et symbolique marquant un tournant décisif dans l'histoire du Cameroun. Vous pouvez également visiter le Centre International De L'artisanat De Yaoundé, un espace dédié à la promotion des produits artisanaux camerounais. Quels sont vos intérêts spécifiques à Yaoundé ?"
+    },
+    {
+      "valid": false,
+      "error": "FAILED — HTTP 402 (credits depleted)",
+      "model": "meta-llama/Llama-3.1-8B-Instruct:fastest",
+      "qid": "yaounde",
+      "run_i": 1,
+      "cold": false
+    },
+    {
+      "valid": false,
+      "error": "FAILED — HTTP 402 (credits depleted)",
+      "model": "Qwen/Qwen3.5-9B:fastest",
+      "qid": "food",
+      "run_i": 0,
+      "cold": false
+    }
+  ]
+}

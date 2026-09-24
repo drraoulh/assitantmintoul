@@ -1,0 +1,65 @@
+{
+  "method": "composite: STT/TTS isolated (n=5 valid) + text n=3 valid + Phase1 after voice_prompt success (HF credits later 402 for full voice n=5)",
+  "STT_all": {
+    "avg": 230.7,
+    "min": 102.5,
+    "max": 737.1
+  },
+  "STT_warm": {
+    "avg": 104.2,
+    "min": 102.5,
+    "max": 105.4
+  },
+  "Routing": {
+    "avg": 0.1,
+    "min": 0,
+    "max": 1,
+    "note": "local regex"
+  },
+  "RAG": {
+    "avg": 6.2,
+    "min": 3,
+    "max": 7,
+    "note": "hydrated TF-IDF"
+  },
+  "Grounding": {
+    "avg": 753.5,
+    "min": 4,
+    "max": 753.5,
+    "note": "voice_prompt had web=747ms"
+  },
+  "LLM_TTFT": {
+    "avg": 1030.2,
+    "from": "voice_prompt success"
+  },
+  "LLM_total": {
+    "avg": 1956.5,
+    "from": "voice_prompt success"
+  },
+  "TTS_TTFB": {
+    "avg": 549.8,
+    "min": 437.6,
+    "max": 720.2
+  },
+  "TTS_total_isolated": {
+    "avg": 2949.6,
+    "min": 2567.4,
+    "max": 3510.8
+  },
+  "Premier_audio_est_ms": 3220.2,
+  "TOTAL_voice_est_with_STT_ms": 14984.1,
+  "TEXT_valid": {
+    "ttft_avg": 254.7,
+    "llm_avg": 2900.1,
+    "total_avg": 8240.8,
+    "n": 3
+  },
+  "cold": {
+    "local_rag_warm_ms": 8.6,
+    "render_health_ms": 302.3,
+    "render_status": 200,
+    "note": "Render Free cold start is not fully reproducible here; render_health_ms includes network + possible spin-up.",
+    "app_env": "development"
+  },
+  "voice_runs_invalid_hf402": 5
+}

@@ -1,0 +1,408 @@
+{
+  "label": "voice-diag-phase1.1",
+  "voice_phrase": "Bonjour, propose-moi une activité nature au Cameroun.",
+  "text_phrase": "Quels plats camerounais dois-je goûter ?",
+  "n_requested": 5,
+  "valid_voice_n": 0,
+  "valid_text_n": 3,
+  "summary": {
+    "STT": {
+      "avg": 230.7,
+      "min": 102.5,
+      "max": 737.1,
+      "n": 5
+    },
+    "Routing": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "RAG": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "Grounding": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "LLM_TTFT": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "LLM_total": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "TTS_TTFB": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "TTS_total_first": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "Premier_audio": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "TOTAL": {
+      "avg": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "TEXT_TTFT": {
+      "avg": 254.7,
+      "min": 237.1,
+      "max": 266.1,
+      "n": 3
+    },
+    "TEXT_LLM": {
+      "avg": 2900.1,
+      "min": 2712.1,
+      "max": 3027.2,
+      "n": 3
+    },
+    "TEXT_TOTAL": {
+      "avg": 8240.8,
+      "min": 8033.6,
+      "max": 8359.3,
+      "n": 3
+    },
+    "TTS_isolated_TTFB": {
+      "avg": 549.8,
+      "min": 437.6,
+      "max": 720.2,
+      "n": 5
+    },
+    "TTS_isolated_total": {
+      "avg": 2949.6,
+      "min": 2567.4,
+      "max": 3510.8,
+      "n": 5
+    }
+  },
+  "stt": [
+    {
+      "i": 0,
+      "stt_ms": 737.1,
+      "text": "Bonjour, propose-moi une activité nature au Cameroun.",
+      "lang": "fr"
+    },
+    {
+      "i": 1,
+      "stt_ms": 102.5,
+      "text": "Bonjour, propose-moi une activité nature au Cameroun.",
+      "lang": "fr"
+    },
+    {
+      "i": 2,
+      "stt_ms": 104.3,
+      "text": "Bonjour, propose-moi une activité nature au Cameroun.",
+      "lang": "fr"
+    },
+    {
+      "i": 3,
+      "stt_ms": 105.4,
+      "text": "Bonjour, propose-moi une activité nature au Cameroun.",
+      "lang": "fr"
+    },
+    {
+      "i": 4,
+      "stt_ms": 104.4,
+      "text": "Bonjour, propose-moi une activité nature au Cameroun.",
+      "lang": "fr"
+    }
+  ],
+  "tts_isolated": [
+    {
+      "i": 0,
+      "ttfb_ms": 626.0,
+      "total_ms": 2567.4,
+      "bytes": 81919
+    },
+    {
+      "i": 1,
+      "ttfb_ms": 465.2,
+      "total_ms": 2653.6,
+      "bytes": 84844
+    },
+    {
+      "i": 2,
+      "ttfb_ms": 720.2,
+      "total_ms": 3510.8,
+      "bytes": 83590
+    },
+    {
+      "i": 3,
+      "ttfb_ms": 500.0,
+      "total_ms": 2941.7,
+      "bytes": 83590
+    },
+    {
+      "i": 4,
+      "ttfb_ms": 437.6,
+      "total_ms": 3074.5,
+      "bytes": 82754
+    }
+  ],
+  "text": [
+    {
+      "i": 0,
+      "invalid": false,
+      "reason": "",
+      "reply_preview": "Cameroon offers a rich culinary mosaic reflecting its diverse regions. Here are essential dishes to ",
+      "metrics": {
+        "label": "text:0",
+        "turn_id": "ac2c015024",
+        "started_wall_ms": 1790228331651.3,
+        "total_ms": 8329.4,
+        "phases_ms": {
+          "routing": 0.2,
+          "rag": 2.2,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 2.3,
+          "llm_ttft": 261.0,
+          "llm": 2961.0
+        }
+      }
+    },
+    {
+      "i": 1,
+      "invalid": false,
+      "reason": "",
+      "reply_preview": "Cameroon is a culinary mosaic where every region offers a distinct taste.\n\n*   **Ndolé** : The natio",
+      "metrics": {
+        "label": "text:1",
+        "turn_id": "fb302c2755",
+        "started_wall_ms": 1790228339980.7,
+        "total_ms": 8033.6,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm_ttft": 237.1,
+          "llm": 2712.1
+        }
+      }
+    },
+    {
+      "i": 2,
+      "invalid": false,
+      "reason": "",
+      "reply_preview": "Cameroon is \"Africa in miniature\" with rich culinary traditions blending coast, highlands, and savan",
+      "metrics": {
+        "label": "text:2",
+        "turn_id": "d0a8f9832a",
+        "started_wall_ms": 1790228348014.3,
+        "total_ms": 8359.3,
+        "phases_ms": {
+          "routing": 0.0,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm_ttft": 266.1,
+          "llm": 3027.2
+        }
+      }
+    },
+    {
+      "i": 3,
+      "invalid": true,
+      "reason": "HF_402",
+      "reply_preview": "",
+      "metrics": {
+        "label": "text:3",
+        "turn_id": "28a4fcdbb7",
+        "started_wall_ms": 1790228356373.7,
+        "total_ms": 2421.6,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 61.1
+        }
+      }
+    },
+    {
+      "i": 4,
+      "invalid": true,
+      "reason": "HF_402",
+      "reply_preview": "",
+      "metrics": {
+        "label": "text:4",
+        "turn_id": "80555588b7",
+        "started_wall_ms": 1790228358795.3,
+        "total_ms": 2485.1,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 74.8
+        }
+      }
+    }
+  ],
+  "voice": [
+    {
+      "i": 0,
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 138.8,
+        "llm_start": 138.8
+      },
+      "metrics": {
+        "label": "voice:0",
+        "turn_id": "29d34c8ccc",
+        "started_wall_ms": 1790228361397.6,
+        "total_ms": 2579.0,
+        "phases_ms": {
+          "stt": 138.8,
+          "routing": 0.1,
+          "rag": 3.8,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 4.0,
+          "llm": 55.3
+        }
+      }
+    },
+    {
+      "i": 1,
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 122.8,
+        "llm_start": 122.8
+      },
+      "metrics": {
+        "label": "voice:1",
+        "turn_id": "4c8856474f",
+        "started_wall_ms": 1790228363976.6,
+        "total_ms": 2556.6,
+        "phases_ms": {
+          "stt": 122.8,
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.3,
+          "llm": 61.0
+        }
+      }
+    },
+    {
+      "i": 2,
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 146.4,
+        "llm_start": 146.4
+      },
+      "metrics": {
+        "label": "voice:2",
+        "turn_id": "71c98871ec",
+        "started_wall_ms": 1790228366533.2,
+        "total_ms": 2566.3,
+        "phases_ms": {
+          "stt": 146.3,
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.3,
+          "llm": 57.1
+        }
+      }
+    },
+    {
+      "i": 3,
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 129.6,
+        "llm_start": 129.6
+      },
+      "metrics": {
+        "label": "voice:3",
+        "turn_id": "8eeb4a2168",
+        "started_wall_ms": 1790228369099.6,
+        "total_ms": 2531.1,
+        "phases_ms": {
+          "stt": 129.5,
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 54.3
+        }
+      }
+    },
+    {
+      "i": 4,
+      "invalid": true,
+      "reason": "HF_402",
+      "marks_ms": {
+        "request_received": 0.0,
+        "stt_start": 0.0,
+        "stt_end": 139.1,
+        "llm_start": 139.1
+      },
+      "metrics": {
+        "label": "voice:4",
+        "turn_id": "ed6c976b46",
+        "started_wall_ms": 1790228371630.7,
+        "total_ms": 2550.8,
+        "phases_ms": {
+          "stt": 139.1,
+          "routing": 0.2,
+          "rag": 0.2,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.4,
+          "llm": 59.0
+        }
+      }
+    }
+  ],
+  "cold_vs_warm": {
+    "local_rag_warm_ms": 8.6,
+    "render_health_ms": 302.3,
+    "render_status": 200,
+    "note": "Render Free cold start is not fully reproducible here; render_health_ms includes network + possible spin-up.",
+    "app_env": "development"
+  }
+}

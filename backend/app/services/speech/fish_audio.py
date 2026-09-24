@@ -9,6 +9,7 @@ from app.core.config import Settings, get_settings
 from app.core.exceptions import SpeechUnavailableError, SynthesisFailedError
 from app.core.http import shared_async_client
 from app.services.speech.base import SpeechService
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,12 @@ class FishAudioTTSService(SpeechService):
             raise SynthesisFailedError("Fish Audio returned empty audio.")
         return audio
 
-    async def synthesize_stream(self, text: str) -> AsyncIterator[bytes]:
+    async def synthesize_stream(
+        self,
+        text: str,
+        *,
+        trace: dict | None = None,
+    ) -> AsyncIterator[bytes]:
         payload, headers = self._prepare(text)
         timeout = httpx.Timeout(
             self._settings.fish_audio_timeout_seconds,
@@ -99,6 +105,10 @@ class FishAudioTTSService(SpeechService):
             timeout_seconds=self._settings.fish_audio_timeout_seconds,
         )
 
+        t0 = time.perf_counter()
+        if trace is not None:
+            trace["tts_request_start"] = t0
+
         try:
             async with client.stream(
                 "POST",
@@ -107,6 +117,11 @@ class FishAudioTTSService(SpeechService):
                 json=payload,
                 timeout=timeout,
             ) as response:
+                if trace is not None:
+                    trace["tts_connection_established"] = time.perf_counter()
+                    trace["connection_latency_ms"] = round(
+                        (trace["tts_connection_established"] - t0) * 1000, 1
+                    )
                 if response.status_code == 401:
                     raise SpeechUnavailableError(
                         "Fish Audio rejected the API key. Check FISH_AUDIO_API_KEY."
@@ -126,9 +141,20 @@ class FishAudioTTSService(SpeechService):
                         "Fish Audio could not synthesize speech."
                     )
 
+                first = True
                 async for chunk in response.aiter_bytes(chunk_size=4096):
                     if chunk:
+                        if first and trace is not None:
+                            now = time.perf_counter()
+                            trace["tts_first_byte"] = now
+                            trace["ttfb_ms"] = round((now - t0) * 1000, 1)
+                            first = False
                         yield chunk
+                if trace is not None:
+                    trace["tts_complete"] = time.perf_counter()
+                    trace["total_tts_ms"] = round(
+                        (trace["tts_complete"] - t0) * 1000, 1
+                    )
         except httpx.TimeoutException as exc:
             raise SynthesisFailedError(
                 "Fish Audio took too long to synthesize speech."

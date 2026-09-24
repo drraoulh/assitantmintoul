@@ -84,8 +84,10 @@ class OllamaAIService(AIService):
         brief: bool = False,
         locale: str = "fr",
     ) -> ChatResponse:
-        thread_id = await self._store.start(conversation_id)
-        history = await self._store.get_messages(thread_id)
+        thread_id, history = await self._store.prepare_for_generation(
+            conversation_id,
+            limit=self._voice_history_n if brief else self._history_n,
+        )
         history_window = self._voice_history_n if brief else self._history_n
         grounding = await build_grounded_system_prompt(
             message,
@@ -107,8 +109,10 @@ class OllamaAIService(AIService):
             {"role": "user", "content": f"{message}{locale_user_suffix(locale)}"},
         ]
         reply = await self._complete(payload_messages, brief=brief)
-        await self._store.add_message(thread_id, "user", message)
-        await self._store.add_message(thread_id, "assistant", reply)
+        await self._store.add_messages(
+            thread_id,
+            [("user", message), ("assistant", reply)],
+        )
 
         return ChatResponse(
             conversation_id=thread_id,

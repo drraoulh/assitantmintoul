@@ -1,0 +1,1003 @@
+{
+  "phase": "1.9",
+  "model": "Qwen/Qwen3.5-9B:fastest",
+  "runs_requested": 3,
+  "valid_total": 3,
+  "failed_total": 3,
+  "failure_reasons": [
+    "FAILED_HTTP_402"
+  ],
+  "prompt_profiles": [
+    {
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "route": "grounded",
+      "skip_kb": false,
+      "prepare_ms": 0.1,
+      "grounding_ms": 2.0,
+      "rag_ms": 1.9,
+      "system_chars": 5137,
+      "system_tokens_est": 1285,
+      "history_chars": 0,
+      "history_tokens_est": 0,
+      "user_chars": 40,
+      "user_tokens_est": 10,
+      "total_chars": 5177,
+      "total_tokens_est": 1295,
+      "max_tokens": 140,
+      "history_window": 3,
+      "kb_chunks": 3
+    },
+    {
+      "question": "Que puis-je visiter à Yaoundé ?",
+      "route": "grounded",
+      "skip_kb": false,
+      "prepare_ms": 0.0,
+      "grounding_ms": 4.9,
+      "rag_ms": 4.8,
+      "system_chars": 5759,
+      "system_tokens_est": 1440,
+      "history_chars": 0,
+      "history_tokens_est": 0,
+      "user_chars": 31,
+      "user_tokens_est": 8,
+      "total_chars": 5790,
+      "total_tokens_est": 1448,
+      "max_tokens": 140,
+      "history_window": 3,
+      "kb_chunks": 3
+    },
+    {
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "route": "grounded",
+      "skip_kb": false,
+      "prepare_ms": 0.0,
+      "grounding_ms": 2.2,
+      "rag_ms": 2.1,
+      "system_chars": 5612,
+      "system_tokens_est": 1403,
+      "history_chars": 0,
+      "history_tokens_est": 0,
+      "user_chars": 44,
+      "user_tokens_est": 11,
+      "total_chars": 5656,
+      "total_tokens_est": 1414,
+      "max_tokens": 140,
+      "history_window": 3,
+      "kb_chunks": 3
+    }
+  ],
+  "audit_summary": "Sur chemin voice warm : store≈0, RAG≈2–5 ms, app_ttft≈provider_ttfh≈350–420 ms (aligné Phase 1.5). Aucune latence locale cachée avant HF. Prompt ≈1.3–1.4k tokens (sys+KB) — déjà borné ; ne pas le couper sans preuve. Pics 2–3 s = queue/cold HF. Warm TLS au boot = handshake local seulement.",
+  "optimizations": [
+    "Warm HF (+Fish) HTTP/TLS connections at API startup",
+    "Voice chunker FIRST_HARD 48→40 (earlier first TTS flush)",
+    "Cached static skip_kb voice/text system prompts"
+  ],
+  "chunker_ab": {},
+  "chunker_best": "soft32_hard40 (production)",
+  "runs": [
+    {
+      "scenario": "warm",
+      "run_i": 0,
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "valid": true,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "conversation_id": "dbb7c338-ad68-4fcf-8689-2277e7dfe408",
+      "marks_ms": {
+        "user_speech_end": 0.0,
+        "llm_prepare_start": 0.0,
+        "llm_prepare_end": 424.2,
+        "llm_first_token": 424.2,
+        "llm_first_phrase": 475.2,
+        "tts_request_start": 475.3,
+        "tts_first_audio_byte": 992.1,
+        "frontend_playback_start": 992.1,
+        "llm_end": 2551.1
+      },
+      "TTFA_ms": 992.1,
+      "prompt_prep_ms": 0.3,
+      "provider_ttfh_ms": 423.7,
+      "stream_parse_ms": 0.2,
+      "app_ttft_ms": 424.2,
+      "first_phrase_ms": 475.2,
+      "chunker_wait_ms": 51.0,
+      "tts_ttfb_ms": 503.4,
+      "store_ms": 0.0,
+      "store_mode": "prepare_no_db",
+      "http_client_warm": true,
+      "fallback_used": false,
+      "first_frag_chars": 37,
+      "first_frag": "Comm ence z impér ativement par le nd",
+      "llm_trace": {
+        "turn_id": "p19-warm-0",
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "cold": false,
+        "llm_prepare_ms": 0.3,
+        "provider_ttfh_ms": 423.7,
+        "stream_parse_ms": 0.2,
+        "app_ttft_ms": 424.2,
+        "first_useful_text_ms": 424.2,
+        "first_phrase_ready_ms": 475.2,
+        "generation_ms": 2551.0,
+        "provider_attempt_count": 1,
+        "retry_count": 0,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "http_status": 200,
+        "error": null,
+        "events": [
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "conversation_store_start_done",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "mode": "prepare_no_db"
+          },
+          {
+            "event": "conversation_history_loaded",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.1,
+            "history_len": 0,
+            "limit": 3
+          },
+          {
+            "event": "routing_done",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.0,
+            "kind": "grounded",
+            "skip_kb": false
+          },
+          {
+            "event": "prompt_ready",
+            "elapsed_ms": 0.2,
+            "delta_ms": 0.1,
+            "system_chars": 5137,
+            "kb_chunks": 3,
+            "grounding_ms": 0.1,
+            "rag_ms": 0.1
+          },
+          {
+            "event": "request_object_created",
+            "elapsed_ms": 0.2,
+            "delta_ms": 0.0,
+            "message_count": 2,
+            "history_window": 3
+          },
+          {
+            "event": "stream_body_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.1,
+            "max_tokens": 140,
+            "temperature": 0.45
+          },
+          {
+            "event": "headers_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "http_client_selected",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "warm": true,
+            "base_url": "https://router.huggingface.co/v1"
+          },
+          {
+            "event": "provider_call_started",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "http_request_dispatched",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "provider_response_headers",
+            "elapsed_ms": 424.0,
+            "delta_ms": 423.7,
+            "http_status": 200,
+            "provider_ttfh_ms": 423.7
+          },
+          {
+            "event": "stream_iterator_created",
+            "elapsed_ms": 424.0,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "first_stream_event",
+            "elapsed_ms": 424.1,
+            "delta_ms": 0.1,
+            "kind": "sse_data",
+            "provider_ttfh_ms": 423.7
+          },
+          {
+            "event": "first_token",
+            "elapsed_ms": 424.2,
+            "delta_ms": 0.1,
+            "chars": 4,
+            "app_ttft_ms": 424.2,
+            "stream_parse_ms": 0.2
+          },
+          {
+            "event": "first_useful_text",
+            "elapsed_ms": 424.2,
+            "delta_ms": 0.0,
+            "chars": 4,
+            "preview": "Comm"
+          },
+          {
+            "event": "first_phrase_ready",
+            "elapsed_ms": 475.2,
+            "delta_ms": 51.0,
+            "chars": 37,
+            "preview": "Comm ence z impér ativement par le nd"
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 2551.0,
+            "delta_ms": 2075.8,
+            "generation_ms": 2551.0
+          }
+        ],
+        "meta": {
+          "store": {
+            "total_ms": 0.0,
+            "ops": [
+              {
+                "name": "prepare_skip_db_new_thread",
+                "start_ms": 0.0,
+                "end_ms": 0.0,
+                "duration_ms": 0.0
+              }
+            ],
+            "meta": {
+              "conversation_id_given": false,
+              "limit": 3,
+              "mode": "prepare_no_db"
+            }
+          },
+          "http_client_warm": true,
+          "store_persist": {
+            "total_ms": 1495.9,
+            "ops": [
+              {
+                "name": "session_open",
+                "start_ms": 0.0,
+                "end_ms": 0.1,
+                "duration_ms": 0.0
+              },
+              {
+                "name": "db_connection_acquire",
+                "start_ms": 0.1,
+                "end_ms": 719.2,
+                "duration_ms": 719.1
+              },
+              {
+                "name": "conversation_get",
+                "start_ms": 719.2,
+                "end_ms": 933.7,
+                "duration_ms": 214.5
+              },
+              {
+                "name": "conversation_create",
+                "start_ms": 933.8,
+                "end_ms": 933.9,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "message_insert",
+                "start_ms": 933.9,
+                "end_ms": 934.0,
+                "duration_ms": 0.1,
+                "count": 2
+              },
+              {
+                "name": "commit",
+                "start_ms": 934.0,
+                "end_ms": 1495.7,
+                "duration_ms": 561.7
+              }
+            ],
+            "meta": {}
+          }
+        }
+      },
+      "phases": null
+    },
+    {
+      "scenario": "warm",
+      "run_i": 1,
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "valid": true,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "conversation_id": "2f59e95c-332a-4c3a-95be-87adb2ca259c",
+      "marks_ms": {
+        "user_speech_end": 0.0,
+        "llm_prepare_start": 0.0,
+        "llm_prepare_end": 351.6,
+        "llm_first_token": 351.6,
+        "llm_first_phrase": 617.5,
+        "tts_request_start": 617.5,
+        "tts_first_audio_byte": 1100.8,
+        "frontend_playback_start": 1100.8,
+        "llm_end": 3724.0
+      },
+      "TTFA_ms": 1100.8,
+      "prompt_prep_ms": 0.3,
+      "provider_ttfh_ms": 351.0,
+      "stream_parse_ms": 0.2,
+      "app_ttft_ms": 351.5,
+      "first_phrase_ms": 617.4,
+      "chunker_wait_ms": 265.9,
+      "tts_ttfb_ms": 483.2,
+      "store_ms": 0.0,
+      "store_mode": "prepare_no_db",
+      "http_client_warm": true,
+      "fallback_used": false,
+      "first_frag_chars": 26,
+      "first_frag": "Comm ence z par le nd olé,",
+      "llm_trace": {
+        "turn_id": "p19-warm-1",
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "cold": false,
+        "llm_prepare_ms": 0.3,
+        "provider_ttfh_ms": 351.0,
+        "stream_parse_ms": 0.2,
+        "app_ttft_ms": 351.5,
+        "first_useful_text_ms": 351.5,
+        "first_phrase_ready_ms": 617.4,
+        "generation_ms": 3723.9,
+        "provider_attempt_count": 1,
+        "retry_count": 0,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "http_status": 200,
+        "error": null,
+        "events": [
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "conversation_store_start_done",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "mode": "prepare_no_db"
+          },
+          {
+            "event": "conversation_history_loaded",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "history_len": 0,
+            "limit": 3
+          },
+          {
+            "event": "routing_done",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.1,
+            "kind": "grounded",
+            "skip_kb": false
+          },
+          {
+            "event": "prompt_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.2,
+            "system_chars": 5137,
+            "kb_chunks": 3,
+            "grounding_ms": 0.1,
+            "rag_ms": 0.1
+          },
+          {
+            "event": "request_object_created",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "message_count": 2,
+            "history_window": 3
+          },
+          {
+            "event": "stream_body_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "max_tokens": 140,
+            "temperature": 0.45
+          },
+          {
+            "event": "headers_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "http_client_selected",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "warm": true,
+            "base_url": "https://router.huggingface.co/v1"
+          },
+          {
+            "event": "provider_call_started",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "http_request_dispatched",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "provider_response_headers",
+            "elapsed_ms": 351.3,
+            "delta_ms": 351.0,
+            "http_status": 200,
+            "provider_ttfh_ms": 351.0
+          },
+          {
+            "event": "stream_iterator_created",
+            "elapsed_ms": 351.3,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "first_stream_event",
+            "elapsed_ms": 351.5,
+            "delta_ms": 0.2,
+            "kind": "sse_data",
+            "provider_ttfh_ms": 351.0
+          },
+          {
+            "event": "first_token",
+            "elapsed_ms": 351.5,
+            "delta_ms": 0.0,
+            "chars": 4,
+            "app_ttft_ms": 351.5,
+            "stream_parse_ms": 0.2
+          },
+          {
+            "event": "first_useful_text",
+            "elapsed_ms": 351.5,
+            "delta_ms": 0.0,
+            "chars": 4,
+            "preview": "Comm"
+          },
+          {
+            "event": "first_phrase_ready",
+            "elapsed_ms": 617.4,
+            "delta_ms": 265.9,
+            "chars": 26,
+            "preview": "Comm ence z par le nd olé,"
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3723.9,
+            "delta_ms": 3106.5,
+            "generation_ms": 3723.9
+          }
+        ],
+        "meta": {
+          "store": {
+            "total_ms": 0.0,
+            "ops": [
+              {
+                "name": "prepare_skip_db_new_thread",
+                "start_ms": 0.0,
+                "end_ms": 0.0,
+                "duration_ms": 0.0
+              }
+            ],
+            "meta": {
+              "conversation_id_given": false,
+              "limit": 3,
+              "mode": "prepare_no_db"
+            }
+          },
+          "http_client_warm": true,
+          "store_persist": {
+            "total_ms": 1529.2,
+            "ops": [
+              {
+                "name": "session_open",
+                "start_ms": 0.0,
+                "end_ms": 0.1,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "db_connection_acquire",
+                "start_ms": 0.1,
+                "end_ms": 735.3,
+                "duration_ms": 735.2
+              },
+              {
+                "name": "conversation_get",
+                "start_ms": 735.3,
+                "end_ms": 951.4,
+                "duration_ms": 216.0
+              },
+              {
+                "name": "conversation_create",
+                "start_ms": 951.4,
+                "end_ms": 951.5,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "message_insert",
+                "start_ms": 951.5,
+                "end_ms": 951.5,
+                "duration_ms": 0.1,
+                "count": 2
+              },
+              {
+                "name": "commit",
+                "start_ms": 951.6,
+                "end_ms": 1529.0,
+                "duration_ms": 577.4
+              }
+            ],
+            "meta": {}
+          }
+        }
+      },
+      "phases": null
+    },
+    {
+      "scenario": "warm",
+      "run_i": 2,
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "valid": true,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "conversation_id": "319ac326-07c0-4ca9-825e-2de7c5b80fb0",
+      "marks_ms": {
+        "user_speech_end": 0.0,
+        "llm_prepare_start": 0.0,
+        "llm_prepare_end": 392.3,
+        "llm_first_token": 392.3,
+        "llm_first_phrase": 850.6,
+        "tts_request_start": 850.7,
+        "tts_first_audio_byte": 1427.2,
+        "frontend_playback_start": 1427.2,
+        "llm_end": 2821.9
+      },
+      "TTFA_ms": 1427.2,
+      "prompt_prep_ms": 0.3,
+      "provider_ttfh_ms": 391.7,
+      "stream_parse_ms": 0.2,
+      "app_ttft_ms": 392.2,
+      "first_phrase_ms": 850.6,
+      "chunker_wait_ms": 458.3,
+      "tts_ttfb_ms": 576.4,
+      "store_ms": 0.0,
+      "store_mode": "prepare_no_db",
+      "http_client_warm": true,
+      "fallback_used": false,
+      "first_frag_chars": 26,
+      "first_frag": "Comm ence z par le nd olé,",
+      "llm_trace": {
+        "turn_id": "p19-warm-2",
+        "model": "Qwen/Qwen3.5-9B:fastest",
+        "cold": false,
+        "llm_prepare_ms": 0.3,
+        "provider_ttfh_ms": 391.7,
+        "stream_parse_ms": 0.2,
+        "app_ttft_ms": 392.2,
+        "first_useful_text_ms": 392.2,
+        "first_phrase_ready_ms": 850.6,
+        "generation_ms": 2821.8,
+        "provider_attempt_count": 1,
+        "retry_count": 0,
+        "fallback_used": false,
+        "fallback_reason": null,
+        "http_status": 200,
+        "error": null,
+        "events": [
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "conversation_store_start_done",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "mode": "prepare_no_db"
+          },
+          {
+            "event": "conversation_history_loaded",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "history_len": 0,
+            "limit": 3
+          },
+          {
+            "event": "routing_done",
+            "elapsed_ms": 0.1,
+            "delta_ms": 0.1,
+            "kind": "grounded",
+            "skip_kb": false
+          },
+          {
+            "event": "prompt_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.2,
+            "system_chars": 5137,
+            "kb_chunks": 3,
+            "grounding_ms": 0.1,
+            "rag_ms": 0.1
+          },
+          {
+            "event": "request_object_created",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "message_count": 2,
+            "history_window": 3
+          },
+          {
+            "event": "stream_body_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "max_tokens": 140,
+            "temperature": 0.45
+          },
+          {
+            "event": "headers_ready",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "http_client_selected",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "warm": true,
+            "base_url": "https://router.huggingface.co/v1"
+          },
+          {
+            "event": "provider_call_started",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "http_request_dispatched",
+            "elapsed_ms": 0.3,
+            "delta_ms": 0.0,
+            "attempt": 1
+          },
+          {
+            "event": "provider_response_headers",
+            "elapsed_ms": 392.1,
+            "delta_ms": 391.8,
+            "http_status": 200,
+            "provider_ttfh_ms": 391.7
+          },
+          {
+            "event": "stream_iterator_created",
+            "elapsed_ms": 392.1,
+            "delta_ms": 0.0
+          },
+          {
+            "event": "first_stream_event",
+            "elapsed_ms": 392.2,
+            "delta_ms": 0.1,
+            "kind": "sse_data",
+            "provider_ttfh_ms": 391.7
+          },
+          {
+            "event": "first_token",
+            "elapsed_ms": 392.2,
+            "delta_ms": 0.0,
+            "chars": 4,
+            "app_ttft_ms": 392.2,
+            "stream_parse_ms": 0.2
+          },
+          {
+            "event": "first_useful_text",
+            "elapsed_ms": 392.3,
+            "delta_ms": 0.1,
+            "chars": 4,
+            "preview": "Comm"
+          },
+          {
+            "event": "first_phrase_ready",
+            "elapsed_ms": 850.6,
+            "delta_ms": 458.3,
+            "chars": 26,
+            "preview": "Comm ence z par le nd olé,"
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 2821.8,
+            "delta_ms": 1971.2,
+            "generation_ms": 2821.8
+          }
+        ],
+        "meta": {
+          "store": {
+            "total_ms": 0.0,
+            "ops": [
+              {
+                "name": "prepare_skip_db_new_thread",
+                "start_ms": 0.0,
+                "end_ms": 0.0,
+                "duration_ms": 0.0
+              }
+            ],
+            "meta": {
+              "conversation_id_given": false,
+              "limit": 3,
+              "mode": "prepare_no_db"
+            }
+          },
+          "http_client_warm": true,
+          "store_persist": {
+            "total_ms": 1483.1,
+            "ops": [
+              {
+                "name": "session_open",
+                "start_ms": 0.0,
+                "end_ms": 0.1,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "db_connection_acquire",
+                "start_ms": 0.1,
+                "end_ms": 713.4,
+                "duration_ms": 713.3
+              },
+              {
+                "name": "conversation_get",
+                "start_ms": 713.5,
+                "end_ms": 922.7,
+                "duration_ms": 209.3
+              },
+              {
+                "name": "conversation_create",
+                "start_ms": 922.8,
+                "end_ms": 922.8,
+                "duration_ms": 0.1
+              },
+              {
+                "name": "message_insert",
+                "start_ms": 922.9,
+                "end_ms": 922.9,
+                "duration_ms": 0.1,
+                "count": 2
+              },
+              {
+                "name": "commit",
+                "start_ms": 922.9,
+                "end_ms": 1483.0,
+                "duration_ms": 560.0
+              }
+            ],
+            "meta": {}
+          }
+        }
+      },
+      "phases": null
+    },
+    {
+      "scenario": "new_thread",
+      "run_i": 0,
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "valid": false,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "error": "FAILED_HTTP_402"
+    },
+    {
+      "scenario": "new_thread",
+      "run_i": 1,
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "valid": false,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "error": "FAILED_HTTP_402"
+    },
+    {
+      "scenario": "new_thread",
+      "run_i": 2,
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "valid": false,
+      "chunker_first_soft": 32,
+      "chunker_first_hard": 40,
+      "error": "FAILED_HTTP_402"
+    }
+  ],
+  "scenario_stats": {
+    "new_thread": {
+      "valid_n": 0,
+      "TTFA_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "provider_ttfh_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "app_ttft_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "chunker_wait_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "tts_ttfb_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "store_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      },
+      "prompt_prep_ms": {
+        "avg": null,
+        "median": null,
+        "min": null,
+        "max": null,
+        "p95": null,
+        "n": 0
+      }
+    },
+    "warm": {
+      "valid_n": 3,
+      "TTFA_ms": {
+        "avg": 1173.4,
+        "median": 1100.8,
+        "min": 992.1,
+        "max": 1427.2,
+        "p95": null,
+        "n": 3
+      },
+      "provider_ttfh_ms": {
+        "avg": 388.8,
+        "median": 391.7,
+        "min": 351.0,
+        "max": 423.7,
+        "p95": null,
+        "n": 3
+      },
+      "app_ttft_ms": {
+        "avg": 389.3,
+        "median": 392.2,
+        "min": 351.5,
+        "max": 424.2,
+        "p95": null,
+        "n": 3
+      },
+      "chunker_wait_ms": {
+        "avg": 258.4,
+        "median": 265.9,
+        "min": 51.0,
+        "max": 458.3,
+        "p95": null,
+        "n": 3
+      },
+      "tts_ttfb_ms": {
+        "avg": 521.0,
+        "median": 503.4,
+        "min": 483.2,
+        "max": 576.4,
+        "p95": null,
+        "n": 3
+      },
+      "store_ms": {
+        "avg": 0.0,
+        "median": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p95": null,
+        "n": 3
+      },
+      "prompt_prep_ms": {
+        "avg": 0.3,
+        "median": 0.3,
+        "min": 0.3,
+        "max": 0.3,
+        "p95": null,
+        "n": 3
+      }
+    }
+  },
+  "ttfa_global": {
+    "avg": 1173.4,
+    "median": 1100.8,
+    "min": 992.1,
+    "max": 1427.2,
+    "p95": null,
+    "n": 3
+  },
+  "before_phase18": {
+    "TTFA_ms": {
+      "avg": 1652.5,
+      "median": 1080.6
+    },
+    "LLM_TTFT": {
+      "avg": 912.4
+    },
+    "Chunker": {
+      "avg": 245.9
+    },
+    "TTS_TTFB": {
+      "avg": 489.5
+    },
+    "Store": {
+      "avg": 0.4
+    },
+    "RAG": {
+      "avg": 0.0
+    }
+  },
+  "stage_comparison": {
+    "RAG": {
+      "before": 0.0,
+      "after": 0.0,
+      "gain": 0.0
+    },
+    "Store": {
+      "before": 0.4,
+      "after": 0.0,
+      "gain": "0.4"
+    },
+    "LLM TTFT": {
+      "before": 912.4,
+      "after": 389.3,
+      "gain": "523.1"
+    },
+    "Chunker": {
+      "before": 245.9,
+      "after": 258.4,
+      "gain": "-12.5"
+    },
+    "TTS TTFB": {
+      "before": 489.5,
+      "after": 521.0,
+      "gain": "-31.5"
+    },
+    "TTFA": {
+      "before": 1080.6,
+      "after": 1100.8,
+      "gain": "-20.2"
+    }
+  },
+  "breakdown": "warm n=3: store=0.0 provider_ttfh=388.8 app_ttft=389.3 chunker_wait=258.4 tts_ttfb=521.0 TTFA_median=1100.8",
+  "decision": "**A (warm) avec réserve C** — TTFA médian warm **1100.8 ms** (n=3, min 992 / max 1427) : assez bas pour stopper l’optimisation vocale applicative. La variance cold HF (Phase 1.8 max ~3465 ms) reste un risque provider, pas un bug store/RAG.",
+  "bottleneck_primary": "Fish TTS TTFB (~521 ms avg warm)",
+  "bottleneck_secondary": "LLM provider TTFT (~389 ms avg warm)",
+  "optimization_summary": "Warm HF (+Fish) HTTP/TLS connections at API startup; Voice chunker FIRST_HARD 48→40 (earlier first TTS flush); Cached static skip_kb voice/text system prompts",
+  "gain_summary": "Warm TTFA médian stable ~1.1 s (Phase 1.8 1080.6 → 1.9 1100.8). LLM app_ttft warm 389 ms (vs 912 avg Phase 1.8 incl. cold). Pas de gain TTFA spectaculaire : le plancher est maintenant Fish TTFB + LLM TTFT.",
+  "recommendation": "Passer à la prochaine phase produit. Ne plus optimiser le pipeline vocal applicatif sauf régression mesurée. Surveiller cold starts HF en prod.",
+  "pytest": "89 passed"
+}

@@ -34,6 +34,16 @@ def _uses_pgbouncer(url: str) -> bool:
 
 
 def _engine_options(url: str) -> dict[str, Any]:
+    """Build SQLAlchemy engine options for local Postgres vs Supabase pooler.
+
+    Supabase transaction/session pooler (pgbouncer) does not support
+    server-side prepared statements or long-lived client pools well.
+    → ``NullPool``: open a connection per checkout, close on return.
+    Render free has few concurrent workers, so this is the safe default.
+
+    Direct (non-pooler) URLs keep a small AsyncAdaptedQueuePool with
+    pre-ping so recycled connections survive brief network blips.
+    """
     connect_args: dict[str, Any] = {}
     if not _is_local(url):
         # Managed Postgres (Supabase) only accepts TLS connections.
@@ -44,8 +54,16 @@ def _engine_options(url: str) -> dict[str, Any]:
         # Disable asyncpg prepared-statement caches for pgbouncer compatibility.
         connect_args["statement_cache_size"] = 0
         connect_args["prepared_statement_cache_size"] = 0
+        # NullPool: no held connections across requests (required with pgbouncer
+        # transaction mode). Do not set pool_size / max_overflow here.
         options["poolclass"] = NullPool
         options.pop("pool_pre_ping")
+    elif not _is_local(url):
+        # Direct remote Postgres (rare): tiny pool sized for Render free.
+        options["pool_size"] = 2
+        options["max_overflow"] = 2
+        options["pool_timeout"] = 15
+        options["pool_recycle"] = 280  # under typical 5min idle cutoffs
     return options
 
 

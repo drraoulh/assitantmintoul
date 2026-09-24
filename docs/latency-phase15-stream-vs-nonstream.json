@@ -1,0 +1,69 @@
+{
+  "question": "Que puis-je visiter à Yaoundé ?",
+  "stream_runs": [
+    {
+      "ok": true,
+      "ttft": 523.3,
+      "phrase": 799.9,
+      "total": 2312.5,
+      "chars": 330,
+      "reply": "À Yaoundé, commencez par La Place de l'Indépendance, le symbole historique de notre indépendance en 1960.\n\nVisitez ensuite le Centre International de l'Artisanat pour voir les méti",
+      "chunks": 89,
+      "model": "Qwen/Qwen3.5-9B:fastest"
+    },
+    {
+      "ok": true,
+      "ttft": 803.0,
+      "phrase": 889.8,
+      "total": 1241.5,
+      "chars": 285,
+      "reply": "La Place de l'Indépendance est un site historique et symbolique à visiter à Yaoundé. C'est là que le Cameroun a proclamé son indépendance en 1960. Vous pouvez également visiter le ",
+      "chunks": 80,
+      "model": "meta-llama/Llama-3.1-8B-Instruct:fastest"
+    },
+    {
+      "ok": false,
+      "error": "You have depleted your monthly included credits. Purchase pre-paid credits to continue using Inference Providers. Alternatively, subscribe to PRO to get 20x mor",
+      "model": "google/gemma-3-4b-it:fastest"
+    },
+    {
+      "ok": false,
+      "error": "You have depleted your monthly included credits. Purchase pre-paid credits to continue using Inference Providers. Alternatively, subscribe to PRO to get 20x mor",
+      "model": "Qwen/Qwen3-4B-Instruct-2507:fastest"
+    }
+  ],
+  "nonstream_runs": [
+    {
+      "ok": true,
+      "http": 200,
+      "total": 3501.0,
+      "chars": 492,
+      "reply": "À Yaoundé, commencez par la Place de l'Indépendance, le cœur historique où le Cameroun a accédé à sa souveraineté en 1960.\n\nVisitez ensuite le Centre International de l'Artisanat p",
+      "note": "stream=false full response (NOT production TTFT)",
+      "model": "Qwen/Qwen3.5-9B:fastest"
+    },
+    {
+      "ok": true,
+      "http": 200,
+      "total": 1194.4,
+      "chars": 404,
+      "reply": "La Place De L'indépendance est un site historique incontournable à visiter à Yaoundé. Situé à Hippodrome, sur l'Avenue de l'Indépendance, ce lieu marque un tournant décisif dans l'",
+      "note": "stream=false full response (NOT production TTFT)",
+      "model": "meta-llama/Llama-3.1-8B-Instruct:fastest"
+    },
+    {
+      "ok": false,
+      "http": 402,
+      "error": "{\"error\":\"You have depleted your monthly included credits. Purchase pre-paid credits to continue using Inference Provide",
+      "total": 66.8,
+      "model": "google/gemma-3-4b-it:fastest"
+    },
+    {
+      "ok": false,
+      "http": 402,
+      "error": "{\"error\":\"You have depleted your monthly included credits. Purchase pre-paid credits to continue using Inference Provide",
+      "total": 56.1,
+      "model": "Qwen/Qwen3-4B-Instruct-2507:fastest"
+    }
+  ]
+}
