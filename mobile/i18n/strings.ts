@@ -3,9 +3,9 @@ import type { AppLocale, TranslationKey } from './types';
 const fr: Record<TranslationKey, string> = {
   tagline: 'Découvrez le Cameroun autrement',
   'status.checking': 'Connexion…',
-  'status.waking': 'Réveil du serveur (30–60 s)…',
+  'status.waking': 'Connexion au serveur…',
   'status.online': 'Connecté',
-  'status.offline': 'Hors ligne',
+  'status.offline': 'Connexion au serveur…',
   'a11y.history': 'Ouvrir l’historique des conversations',
   'a11y.newChat': 'Nouvelle conversation',
   'a11y.checkServer': 'Vérifier la connexion au serveur',
@@ -138,9 +138,9 @@ const fr: Record<TranslationKey, string> = {
 const en: Record<TranslationKey, string> = {
   tagline: 'Discover Cameroon differently',
   'status.checking': 'Connecting…',
-  'status.waking': 'Waking the server (30–60 s)…',
+  'status.waking': 'Connecting to server…',
   'status.online': 'Online',
-  'status.offline': 'Offline',
+  'status.offline': 'Connecting to server…',
   'a11y.history': 'Open conversation history',
   'a11y.newChat': 'New conversation',
   'a11y.checkServer': 'Check server connection',

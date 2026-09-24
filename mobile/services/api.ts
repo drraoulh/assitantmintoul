@@ -182,9 +182,13 @@ export type ImageUploadInput = {
   base64?: string | null;
 };
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+async function request<T>(
+  path: string,
+  init?: RequestInit,
+  timeoutMs: number = REQUEST_TIMEOUT_MS,
+): Promise<T> {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -210,8 +214,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 }
 
-export function fetchHealth(): Promise<HealthResponse> {
-  return request<HealthResponse>('/api/health');
+/** Short timeout so cold-start wake loops can retry quickly. */
+export const HEALTH_PROBE_TIMEOUT_MS = 20_000;
+
+export function fetchHealth(
+  timeoutMs: number = HEALTH_PROBE_TIMEOUT_MS,
+): Promise<HealthResponse> {
+  return request<HealthResponse>('/api/health', undefined, timeoutMs);
 }
 
 export function sendChatMessage(payload: ChatRequest): Promise<ChatResponse> {

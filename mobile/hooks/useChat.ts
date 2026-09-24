@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useLocale } from '../i18n';
 import {
@@ -21,6 +21,11 @@ import type {
   ConversationTurn,
 } from '../types/chat';
 
+/** Keep Render free tier warm (sleeps after ~15 min idle). */
+const KEEP_ALIVE_MS = 3 * 60 * 1000;
+/** Pause between wake attempts after the initial burst. */
+const WAKE_RETRY_MS = 5_000;
+
 function createId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -36,10 +41,14 @@ function toChatMessages(turns: ConversationTurn[]): ChatMessage[] {
 
 function isLikelyOffline(error: unknown): boolean {
   if (error instanceof ApiError) {
+    // Timeouts / 5xx while the free instance boots still mean "waking".
+    if (error.status === 504 || error.status === 502 || error.status === 503) {
+      return true;
+    }
     return false;
   }
   const message = error instanceof Error ? error.message : String(error ?? '');
-  return /failed to fetch|network request failed|load failed|networkerror|econnrefused|enotfound/i.test(
+  return /failed to fetch|network request failed|load failed|networkerror|econnrefused|enotfound|aborted|timeout/i.test(
     message,
   );
 }
@@ -55,6 +64,7 @@ export function useChat() {
   const [isSending, setIsSending] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [backendStatus, setBackendStatus] = useState<BackendStatus>('checking');
+  const healthGenRef = useRef(0);
 
   const errorText = useCallback(
     (error: unknown): string => {
@@ -70,60 +80,121 @@ export function useChat() {
   );
 
   const checkHealth = useCallback(async () => {
+    const gen = ++healthGenRef.current;
+    const stillCurrent = () => gen === healthGenRef.current;
+
     setBackendStatus('checking');
-    // Render free tier cold-start can take ~30–60s; keep pinging before offline.
-    const delays = [0, 2000, 4000, 8000, 12000, 15000, 20000];
-    for (let attempt = 0; attempt < delays.length; attempt += 1) {
-      if (delays[attempt] > 0) {
-        await sleep(delays[attempt]);
+    // Burst first: Render free cold-start is often 30–90s.
+    const burstDelays = [0, 1500, 3000, 5000, 8000, 12000, 15000];
+    for (let attempt = 0; attempt < burstDelays.length; attempt += 1) {
+      if (!stillCurrent()) {
+        return;
+      }
+      if (burstDelays[attempt] > 0) {
+        await sleep(burstDelays[attempt]);
+      }
+      if (!stillCurrent()) {
+        return;
       }
       if (attempt >= 1) {
         setBackendStatus('waking');
       }
       try {
         await fetchHealth();
-        setBackendStatus('online');
+        if (stillCurrent()) {
+          setBackendStatus('online');
+        }
         return;
       } catch {
         // keep trying while the free instance wakes up
       }
     }
-    setBackendStatus('offline');
+
+    // Never stick on "Hors ligne" — keep waking until the API answers.
+    if (stillCurrent()) {
+      setBackendStatus('waking');
+    }
+    while (stillCurrent()) {
+      await sleep(WAKE_RETRY_MS);
+      if (!stillCurrent()) {
+        return;
+      }
+      try {
+        await fetchHealth();
+        if (stillCurrent()) {
+          setBackendStatus('online');
+        }
+        return;
+      } catch {
+        if (stillCurrent()) {
+          setBackendStatus('waking');
+        }
+      }
+    }
   }, []);
+
+  const recoverConnection = useCallback(() => {
+    setBackendStatus('waking');
+    void checkHealth();
+  }, [checkHealth]);
 
   useEffect(() => {
     void checkHealth();
   }, [checkHealth]);
 
-  // Keep the free Render API warm while the jury tab stays open.
+  // Keep the free Render API warm while the tab stays open.
   useEffect(() => {
     const id = setInterval(() => {
       void fetchHealth()
         .then(() => setBackendStatus('online'))
         .catch(() => {
-          // Soft fail — next user action / checkHealth can recover.
+          setBackendStatus('waking');
+          void checkHealth();
         });
-    }, 4 * 60 * 1000);
+    }, KEEP_ALIVE_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [checkHealth]);
 
-  const openConversation = useCallback(async (id: string) => {
-    setIsLoadingHistory(true);
-    try {
-      const history = await fetchConversation(id);
-      setMessages(toChatMessages(history.messages));
-      setConversationId(history.conversation_id);
-      setBackendStatus('online');
-      return true;
-    } catch (error) {
-      if (isLikelyOffline(error)) {
-        setBackendStatus('offline');
-      }
-      return false;
-    } finally {
-      setIsLoadingHistory(false);
+  // Re-probe when the jury tab comes back to the foreground.
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
     }
-  }, []);
+    const onVisibility = () => {
+      if (document.visibilityState !== 'visible') {
+        return;
+      }
+      void fetchHealth()
+        .then(() => setBackendStatus('online'))
+        .catch(() => {
+          setBackendStatus('waking');
+          void checkHealth();
+        });
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [checkHealth]);
+
+  const openConversation = useCallback(
+    async (id: string) => {
+      setIsLoadingHistory(true);
+      try {
+        const history = await fetchConversation(id);
+        setMessages(toChatMessages(history.messages));
+        setConversationId(history.conversation_id);
+        setBackendStatus('online');
+        return true;
+      } catch (error) {
+        if (isLikelyOffline(error)) {
+          recoverConnection();
+        }
+        return false;
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    },
+    [recoverConnection],
+  );
 
   const startNewConversation = useCallback(async () => {
     setMessages([]);
@@ -192,7 +263,7 @@ export function useChat() {
         return response.message;
       } catch (error) {
         if (isLikelyOffline(error)) {
-          setBackendStatus('offline');
+          recoverConnection();
         }
         const message = errorText(error);
         setMessages((current) => [
@@ -210,7 +281,7 @@ export function useChat() {
         setIsSending(false);
       }
     },
-    [conversationId, errorText, isSending, locale],
+    [conversationId, errorText, isSending, locale, recoverConnection],
   );
 
   const sendImage = useCallback(
@@ -261,7 +332,7 @@ export function useChat() {
         return response.message;
       } catch (error) {
         if (isLikelyOffline(error)) {
-          setBackendStatus('offline');
+          recoverConnection();
         }
         const message = errorText(error);
         setMessages((current) => [
@@ -279,7 +350,7 @@ export function useChat() {
         setIsSending(false);
       }
     },
-    [conversationId, errorText, isSending, locale, t],
+    [conversationId, errorText, isSending, locale, recoverConnection, t],
   );
 
   const appendExchange = useCallback((userText: string, assistantText: string) => {

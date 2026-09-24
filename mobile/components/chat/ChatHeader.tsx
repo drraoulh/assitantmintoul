@@ -21,14 +21,16 @@ export function ChatHeader({
 }: ChatHeaderProps) {
   const { t, locale, toggleLocale } = useLocale();
 
+  // Never surface sticky "Hors ligne" — treat legacy offline as waking.
+  const displayStatus: BackendStatus =
+    status === 'offline' ? 'waking' : status;
+
   const statusLabel =
-    status === 'checking'
+    displayStatus === 'checking'
       ? t('status.checking')
-      : status === 'waking'
+      : displayStatus === 'waking'
         ? t('status.waking')
-        : status === 'online'
-          ? t('status.online')
-          : t('status.offline');
+        : t('status.online');
 
   return (
     <View style={styles.wrap}>
@@ -74,7 +76,7 @@ export function ChatHeader({
         onPress={onStatusPress}
         style={styles.statusChip}
       >
-        <View style={[styles.dot, styles[status]]} />
+        <View style={[styles.dot, styles[displayStatus]]} />
         <Text style={styles.statusText}>{statusLabel}</Text>
       </Pressable>
 
