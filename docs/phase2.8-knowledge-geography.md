@@ -13,7 +13,7 @@ Status: **PASS**
 
 ## Geography
 
-- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 (Diamaré, Mayo-Tsanaga, …)
+- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 · Adamaoua 5
 
 ## Region packs
 
@@ -37,6 +37,14 @@ Status: **PASS**
 - Habitats Mofou
 - Monts Mand`
 - Waza: `Le parc national de Waza se trouve dans la région de l’Extrême-Nord (accès typique depuis Maroua — vérifier saison et sécurité).`
+- Ngaoundéré: 8 — `J’ai actuellement 8 lieu(x) vérifié(s) autour de Ngaoundéré dans ma base :
+- Lac Tison
+- Chute De Bi`
+- Oasis: `J’ai actuellement 2 lieu(x) vérifié(s) autour de Ngaoundéré dans ma base :
+- Hôtel Oasis
+- Lac Mballang
+
+Je peux te prés`
 
 ## Agent 2
 
@@ -53,13 +61,13 @@ Status: **PASS**
 
 ## Tests
 
-- 3 failed, 273 passed, 1 warning in 2.79s
-- Checks: {"bafoussam_has_places": true, "bafoussam_not_foumban_as_city": true, "ouest_not_equals_bafoussam": true, "bafoussam_region_ouest": true, "geo_no_planner": true, "around_has_places": true, "ouest_regional": true, "ouest_food_mentions_achu": true, "ouest_culture_evidence": true, "mbapit_located": true, "dschang_hotel_or_soft": true, "douala_has_places": true, "douala_not_edea_as_city": true, "littoral_not_equals_douala": true, "douala_region_littoral": true, "littoral_food_ndole": true, "sawa_culture": true, "littoral_regional": true, "yaounde_has_places": true, "yaounde_not_mbalmayo_as_only": true, "centre_not_equals_yaounde": true, "yaounde_region_centre": true, "centre_food": true, "mokolo_or_culture": true, "centre_regional": true, "kribi_has_places": true, "sud_not_equals_kribi": true, "kribi_region_sud": true, "kribi_food_poisson": true, "lobe_located": true, "yaounde_hotels": true, "limbe_has_places": true, "limbe_not_buea_as_city": true, "sud_ouest_not_equals_buea": true, "buea_region_sud_ouest": true, "sud_ouest_food_eru": true, "mont_cameroun_located": true, "sud_ouest_regional": true, "bamenda_has_places": true, "bamenda_not_bafut_as_city": true, "nord_ouest_not_equals_bamenda": true, "bamenda_region_nord_ouest": true, "nord_ouest_food_achu": true, "bafut_located": true, "nord_ouest_regional": true, "maroua_has_places": true, "maroua_not_waza_as_city": true, "extreme_nord_not_equals_maroua": true, "maroua_region_extreme_nord": true, "extreme_nord_food": true, "waza_located": true, "extreme_nord_regional": true}
+- 3 failed, 280 passed, 1 warning in 3.28s
+- Checks: {"bafoussam_has_places": true, "bafoussam_not_foumban_as_city": true, "ouest_not_equals_bafoussam": true, "bafoussam_region_ouest": true, "geo_no_planner": true, "around_has_places": true, "ouest_regional": true, "ouest_food_mentions_achu": true, "ouest_culture_evidence": true, "mbapit_located": true, "dschang_hotel_or_soft": true, "douala_has_places": true, "douala_not_edea_as_city": true, "littoral_not_equals_douala": true, "douala_region_littoral": true, "littoral_food_ndole": true, "sawa_culture": true, "littoral_regional": true, "yaounde_has_places": true, "yaounde_not_mbalmayo_as_only": true, "centre_not_equals_yaounde": true, "yaounde_region_centre": true, "centre_food": true, "mokolo_or_culture": true, "centre_regional": true, "kribi_has_places": true, "sud_not_equals_kribi": true, "kribi_region_sud": true, "kribi_food_poisson": true, "lobe_located": true, "yaounde_hotels": true, "limbe_has_places": true, "limbe_not_buea_as_city": true, "sud_ouest_not_equals_buea": true, "buea_region_sud_ouest": true, "sud_ouest_food_eru": true, "mont_cameroun_located": true, "sud_ouest_regional": true, "bamenda_has_places": true, "bamenda_not_bafut_as_city": true, "nord_ouest_not_equals_bamenda": true, "bamenda_region_nord_ouest": true, "nord_ouest_food_achu": true, "bafut_located": true, "nord_ouest_regional": true, "maroua_has_places": true, "maroua_not_waza_as_city": true, "extreme_nord_not_equals_maroua": true, "maroua_region_extreme_nord": true, "extreme_nord_food": true, "waza_located": true, "extreme_nord_regional": true, "ngaoundere_has_places": true, "ngaoundere_not_banyo_as_city": true, "adamaoua_not_equals_ngaoundere": true, "ngaoundere_region_adamaoua": true, "adamaoua_food": true, "tison_located": true, "ngaoundere_hotel_oasis": true}
 
 ## Performance
 
-- Full conversation: **520.9 ms** (deterministic Agent 4, no LLM)
-- Geo simple turn: **6.1 ms**, planner=False
+- Full conversation: **685.1 ms** (deterministic Agent 4, no LLM)
+- Geo simple turn: **7.0 ms**, planner=False
 
 ## Flags
 
@@ -68,4 +76,4 @@ Status: **PASS**
 
 ## Conclusion
 
-Structured geography covers Ouest through Extrême-Nord without inventing tourism facts.
+Structured geography covers Ouest through Adamaoua without inventing tourism facts.
