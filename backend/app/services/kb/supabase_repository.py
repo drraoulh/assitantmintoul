@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from app.core.database import AsyncSessionLocal
 from app.schemas.tourism import SourceRecord, TouristSiteRecord
 from app.services.rag.chunk import KnowledgeChunk
+from app.services.tourism.image_index import enrich_images
 
 logger = logging.getLogger(__name__)
 
@@ -187,6 +188,11 @@ class SupabaseKnowledgeRepository:
                 activities.append(f"meilleure période: {row['best_period']}")
 
             place_id = str(row["id"])
+            images = enrich_images(
+                images_by_place.get(place_id, []),
+                slug=str(row["slug"]),
+                place_id=place_id,
+            )
             records.append(
                 TouristSiteRecord(
                     id=place_id,
@@ -204,7 +210,7 @@ class SupabaseKnowledgeRepository:
                     opening_hours=None,
                     price=price,
                     languages=["fr", "en"],
-                    images=images_by_place.get(place_id, []),
+                    images=images,
                     sources=sources,
                 )
             )

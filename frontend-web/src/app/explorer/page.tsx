@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -16,6 +17,7 @@ function regionMatches(siteRegion: string, apiRegion: string): boolean {
 export default function ExplorerPage() {
   const { t, locale } = useLocale();
   const [counts, setCounts] = useState<Record<string, number>>({});
+  const [covers, setCovers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,11 +29,18 @@ export default function ExplorerPage() {
       try {
         const res = await listTouristSites();
         if (cancelled) return;
-        const next: Record<string, number> = {};
+        const nextCounts: Record<string, number> = {};
+        const nextCovers: Record<string, string> = {};
         for (const r of REGIONS) {
-          next[r.id] = res.items.filter((s) => regionMatches(s.region, r.apiRegion)).length;
+          const regionSites = res.items.filter((s) =>
+            regionMatches(s.region, r.apiRegion),
+          );
+          nextCounts[r.id] = regionSites.length;
+          const cover = regionSites.find((s) => s.images?.[0])?.images?.[0];
+          if (cover) nextCovers[r.id] = cover;
         }
-        setCounts(next);
+        setCounts(nextCounts);
+        setCovers(nextCovers);
       } catch (e) {
         if (!cancelled) setError(friendlyError(e));
       } finally {
@@ -63,6 +72,7 @@ export default function ExplorerPage() {
             ))
           : REGIONS.map((r) => {
               const count = counts[r.id] ?? 0;
+              const cover = covers[r.id];
               const name = locale === 'fr' ? r.nameFr : r.nameEn;
               const capital = locale === 'fr' ? r.capitalFr : r.capitalEn;
               return (
@@ -71,7 +81,18 @@ export default function ExplorerPage() {
                   className="flex flex-col justify-between rounded-3xl border border-[var(--line)] bg-white p-6 shadow-sm"
                 >
                   <div>
-                    <div className="h-28 rounded-2xl bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--yellow)]/50" />
+                    <div className="relative h-28 overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--green-deep)] via-[var(--green)] to-[var(--yellow)]/50">
+                      {cover ? (
+                        <Image
+                          src={cover}
+                          alt={name}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width:768px) 100vw, 33vw"
+                          unoptimized
+                        />
+                      ) : null}
+                    </div>
                     <h2 className="mt-4 font-display text-2xl text-[var(--green-deep)]">
                       {name}
                     </h2>

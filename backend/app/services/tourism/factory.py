@@ -5,6 +5,7 @@ import logging
 from app.core.config import get_settings
 from app.schemas.tourism import TouristSiteRecord
 from app.services.tourism.catalog import SiteCatalog
+from app.services.tourism.image_index import enrich_images
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,7 @@ async def warm_tourism_knowledge(*, sync: bool = False) -> dict[str, int]:
             logger.exception("Plain place listing also failed")
 
     if records:
+        records = [_with_cover_image(site) for site in records]
         set_site_catalog(SiteCatalog(sites=records))
         stats["places"] = len(records)
     else:
@@ -112,15 +114,24 @@ async def _list_sites_without_geometry(repo) -> list[TouristSiteRecord]:
         ).mappings().all()
     for row in rows:
         records.append(
-            TouristSiteRecord(
-                id=str(row["id"]),
-                name=str(row["name"]),
-                slug=str(row["slug"]),
-                region=str(row["region"]),
-                city=str(row["city"]),
-                category=str(row["category"]),
-                description=str(row["description"]),
-                culture=str(row["culture"]).strip() if row.get("culture") else None,
+            _with_cover_image(
+                TouristSiteRecord(
+                    id=str(row["id"]),
+                    name=str(row["name"]),
+                    slug=str(row["slug"]),
+                    region=str(row["region"]),
+                    city=str(row["city"]),
+                    category=str(row["category"]),
+                    description=str(row["description"]),
+                    culture=str(row["culture"]).strip() if row.get("culture") else None,
+                )
             )
         )
     return records
+
+
+def _with_cover_image(site: TouristSiteRecord) -> TouristSiteRecord:
+    images = enrich_images(site.images, slug=site.slug, place_id=site.id)
+    if images == site.images:
+        return site
+    return site.model_copy(update={"images": images})

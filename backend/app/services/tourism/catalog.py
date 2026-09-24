@@ -8,6 +8,7 @@ from pathlib import Path
 
 from app.schemas.tourism import SourceRecord, TouristSiteRecord
 from app.services.rag.loader import default_data_root
+from app.services.tourism.image_index import enrich_images
 
 logger = logging.getLogger(__name__)
 
@@ -146,11 +147,15 @@ def _to_record(item: dict) -> TouristSiteRecord | None:
             for lang in (item.get("languages") or [])
             if str(lang).strip()
         ],
-        images=[
-            str(image).strip()
-            for image in (item.get("images") or [])
-            if str(image).strip()
-        ],
+        images=enrich_images(
+            [
+                str(image).strip()
+                for image in (item.get("images") or [])
+                if str(image).strip()
+            ],
+            slug=slug,
+            place_id=site_id,
+        ),
         sources=_to_sources(item.get("sources")),
     ) if description or tips or name else None
 
