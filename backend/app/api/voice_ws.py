@@ -100,22 +100,36 @@ async def voice_session(websocket: WebSocket) -> None:
         audio_b64: str | None = None,
         mime: str = "audio/m4a",
         locale: str = "fr",
+        client_turn_id: str | None = None,
     ) -> None:
         nonlocal conversation_id
         interrupt_event.clear()
         timer = PhaseTimer("voice_ws")
-        await _send(websocket, {"type": "status", "phase": "starting"})
+        if client_turn_id:
+            timer.turn_id = f"{client_turn_id[:8]}-{timer.turn_id}"
+        marks: dict[str, float] = {"request_received": 0.0}
+        wall0 = time.perf_counter()
+
+        def mark(name: str) -> float:
+            elapsed = round((time.perf_counter() - wall0) * 1000, 1)
+            marks[name] = elapsed
+            return elapsed
+
+        await _send(websocket, {"type": "status", "phase": "starting", "turn_id": timer.turn_id})
 
         try:
             user_text = (text or "").strip()
             if audio_b64 and not user_text:
                 await _send(websocket, {"type": "status", "phase": "transcribing"})
+                mark("stt_start")
                 with timer.phase("stt"):
                     audio_bytes = base64.b64decode(audio_b64)
+                    mark("audio_decoded")
                     user_text, language = await speech.transcribe(
                         audio_bytes=audio_bytes,
                         mime_type=mime or "audio/m4a",
                     )
+                mark("stt_end")
                 await _send(
                     websocket,
                     {
@@ -123,6 +137,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         "text": user_text,
                         "language": language,
                         "latency_ms": timer.phases.get("stt"),
+                        "turn_id": timer.turn_id,
                     },
                 )
 
@@ -136,6 +151,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         if locale != "en"
                         else "No speech detected.",
                         "recoverable": True,
+                        "turn_id": timer.turn_id,
                     },
                 )
                 return
@@ -144,6 +160,7 @@ async def voice_session(websocket: WebSocket) -> None:
                 return
 
             await _send(websocket, {"type": "status", "phase": "thinking"})
+            mark("llm_pipeline_start")
 
             if not isinstance(ai, HuggingFaceAIService):
                 # Non-streaming backends: one-shot then TTS.
@@ -155,21 +172,43 @@ async def voice_session(websocket: WebSocket) -> None:
                         locale=locale,
                     )
                 conversation_id = response.conversation_id
-                await _send(websocket, {"type": "assistant_text", "text": response.message})
-                await _emit_tts(websocket, speech, response.message, timer, interrupt_event)
+                mark("llm_end")
+                await _send(
+                    websocket,
+                    {
+                        "type": "assistant_text",
+                        "text": response.message,
+                        "turn_id": timer.turn_id,
+                    },
+                )
+                mark("tts_start")
+                await _emit_tts(
+                    websocket, speech, response.message, timer, interrupt_event, marks, wall0
+                )
+                mark("turn_end")
+                _log_voice_perf(timer, marks)
                 timer.log()
                 await _send(
                     websocket,
-                    {"type": "turn_done", "metrics": timer.as_dict(), "conversation_id": conversation_id},
+                    {
+                        "type": "turn_done",
+                        "metrics": {**timer.as_dict(), "marks_ms": marks},
+                        "conversation_id": conversation_id,
+                        "turn_id": timer.turn_id,
+                    },
                 )
                 return
 
             reply_parts: list[str] = []
             tts_queue: asyncio.Queue[str | None] = asyncio.Queue()
             tts_task = asyncio.create_task(
-                _tts_worker(websocket, speech, tts_queue, timer, interrupt_event)
+                _tts_worker(
+                    websocket, speech, tts_queue, timer, interrupt_event, marks, wall0
+                )
             )
             sentence_buffer = ""
+            first_token_marked = False
+            first_tts_enqueue_marked = False
 
             try:
                 async for event in ai.stream_response(
@@ -183,30 +222,59 @@ async def voice_session(websocket: WebSocket) -> None:
                         break
                     etype = event.get("type")
                     if etype == "route":
-                        await _send(websocket, {**event})
+                        mark("routing_end")
+                        await _send(websocket, {**event, "turn_id": timer.turn_id})
                         await _send(
                             websocket,
                             {
                                 "type": "status",
                                 "phase": "retrieving" if not event.get("skip_kb") else "generating",
+                                "turn_id": timer.turn_id,
                             },
                         )
                     elif etype == "token":
                         piece = str(event.get("text") or "")
+                        if not first_token_marked:
+                            mark("llm_first_token")
+                            first_token_marked = True
                         reply_parts.append(piece)
                         sentence_buffer += piece
-                        await _send(websocket, {"type": "token", "text": piece})
+                        await _send(
+                            websocket,
+                            {"type": "token", "text": piece, "turn_id": timer.turn_id},
+                        )
                         ready, sentence_buffer = _split_ready_sentences(sentence_buffer)
                         for sentence in ready:
+                            if not first_tts_enqueue_marked:
+                                mark("tts_first_fragment")
+                                first_tts_enqueue_marked = True
                             await tts_queue.put(sentence)
-                        await _send(websocket, {"type": "status", "phase": "generating"})
+                        await _send(
+                            websocket,
+                            {
+                                "type": "status",
+                                "phase": "generating",
+                                "turn_id": timer.turn_id,
+                            },
+                        )
                     elif etype == "done":
+                        mark("llm_end")
                         conversation_id = str(event.get("conversation_id") or conversation_id)
                         full = str(event.get("text") or "".join(reply_parts)).strip()
                         if sentence_buffer.strip():
+                            if not first_tts_enqueue_marked:
+                                mark("tts_first_fragment")
+                                first_tts_enqueue_marked = True
                             await tts_queue.put(sentence_buffer.strip())
                             sentence_buffer = ""
-                        await _send(websocket, {"type": "assistant_text", "text": full})
+                        await _send(
+                            websocket,
+                            {
+                                "type": "assistant_text",
+                                "text": full,
+                                "turn_id": timer.turn_id,
+                            },
+                        )
                     elif etype == "error":
                         await _send(
                             websocket,
@@ -215,6 +283,7 @@ async def voice_session(websocket: WebSocket) -> None:
                                 "code": event.get("code") or "llm_error",
                                 "message": event.get("message") or "LLM error",
                                 "recoverable": True,
+                                "turn_id": timer.turn_id,
                             },
                         )
                         break
@@ -228,13 +297,16 @@ async def voice_session(websocket: WebSocket) -> None:
             if interrupt_event.is_set():
                 return
 
+            mark("turn_end")
+            _log_voice_perf(timer, marks)
             timer.log()
             await _send(
                 websocket,
                 {
                     "type": "turn_done",
-                    "metrics": timer.as_dict(),
+                    "metrics": {**timer.as_dict(), "marks_ms": marks},
                     "conversation_id": conversation_id,
+                    "turn_id": timer.turn_id,
                 },
             )
         except asyncio.CancelledError:
@@ -248,6 +320,7 @@ async def voice_session(websocket: WebSocket) -> None:
                     "code": "turn_failed",
                     "message": str(exc) or "Voice turn failed",
                     "recoverable": True,
+                    "turn_id": timer.turn_id,
                 },
             )
 
@@ -273,6 +346,7 @@ async def voice_session(websocket: WebSocket) -> None:
                         audio_b64=payload.get("audio_base64") or payload.get("data"),
                         mime=str(payload.get("mime_type") or payload.get("mime") or "audio/m4a"),
                         locale=turn_locale,
+                        client_turn_id=str(payload.get("turn_id") or "") or None,
                     )
 
                 turn_task = asyncio.create_task(_runner())
@@ -294,21 +368,32 @@ async def voice_session(websocket: WebSocket) -> None:
         await cancel_turn()
 
 
+
 async def _tts_worker(
     websocket: WebSocket,
     speech: Any,
     queue: asyncio.Queue[str | None],
     timer: PhaseTimer,
     interrupt_event: asyncio.Event,
+    marks: dict[str, float] | None = None,
+    wall0: float | None = None,
 ) -> None:
     index = 0
     first = True
+    marks = marks if marks is not None else {}
+    wall0 = wall0 if wall0 is not None else time.perf_counter()
+
+    def mark(name: str) -> None:
+        marks[name] = round((time.perf_counter() - wall0) * 1000, 1)
+
     while True:
         sentence = await queue.get()
         if sentence is None:
             break
         if interrupt_event.is_set():
             break
+        if first:
+            mark("tts_start")
         await _send(websocket, {"type": "status", "phase": "speaking"})
         try:
             phase_name = "tts_first" if first else f"tts_{index}"
@@ -327,16 +412,23 @@ async def _tts_worker(
                         "part": chunk_index,
                         "data": encoded,
                         "text": sentence if chunk_index == 0 else "",
+                        "turn_id": timer.turn_id,
                     },
                 )
                 chunk_index += 1
                 if first:
-                    timer.mark("tts_ttfb", (time.perf_counter() - begin) * 1000)
+                    ttfb = (time.perf_counter() - begin) * 1000
+                    timer.mark("tts_ttfb", ttfb)
                     timer.mark("first_audio", (time.perf_counter() - timer.started_at) * 1000)
+                    mark("tts_first_byte")
+                    mark("audio_first_chunk_sent")
                     first = False
             elapsed = (time.perf_counter() - begin) * 1000
             timer.mark(phase_name, elapsed)
-            await _send(websocket, {"type": "audio_done", "index": index})
+            await _send(
+                websocket,
+                {"type": "audio_done", "index": index, "turn_id": timer.turn_id},
+            )
             index += 1
         except Exception as exc:  # noqa: BLE001
             logger.exception("TTS stream failed")
@@ -347,8 +439,10 @@ async def _tts_worker(
                     "code": "tts_failed",
                     "message": str(exc) or "TTS failed",
                     "recoverable": True,
+                    "turn_id": timer.turn_id,
                 },
             )
+    mark("tts_end")
 
 
 async def _emit_tts(
@@ -357,11 +451,35 @@ async def _emit_tts(
     text: str,
     timer: PhaseTimer,
     interrupt_event: asyncio.Event,
+    marks: dict[str, float] | None = None,
+    wall0: float | None = None,
 ) -> None:
     queue: asyncio.Queue[str | None] = asyncio.Queue()
-    # Split into sentence-sized pieces for earlier first audio.
     parts = [p.strip() for p in _SENTENCE_END.split(text) if p.strip()] or [text]
     for part in parts:
         await queue.put(part)
     await queue.put(None)
-    await _tts_worker(websocket, speech, queue, timer, interrupt_event)
+    await _tts_worker(
+        websocket, speech, queue, timer, interrupt_event, marks, wall0
+    )
+
+
+def _log_voice_perf(timer: PhaseTimer, marks: dict[str, float]) -> None:
+    """Emit a dedicated [VOICE PERF] chronology for Phase 1.1 diagnostics."""
+    phases = timer.phases
+    lines = [
+        f"[VOICE PERF] turn={timer.turn_id}",
+        *[f"[VOICE PERF] {name} = {ms:.1f} ms" for name, ms in marks.items()],
+        f"[VOICE PERF] STT        {phases.get('stt', 0):.0f} ms",
+        f"[VOICE PERF] ROUTING    {phases.get('routing', 0):.0f} ms",
+        f"[VOICE PERF] RAG        {phases.get('rag', 0):.0f} ms",
+        f"[VOICE PERF] GROUNDING  {phases.get('grounding', 0):.0f} ms",
+        f"[VOICE PERF] LLM TTFT   {phases.get('llm_ttft', 0):.0f} ms",
+        f"[VOICE PERF] LLM TOTAL  {phases.get('llm', 0):.0f} ms",
+        f"[VOICE PERF] TTS TTFB   {phases.get('tts_ttfb', 0):.0f} ms",
+        f"[VOICE PERF] TTS FIRST  {phases.get('tts_first', 0):.0f} ms",
+        f"[VOICE PERF] FIRST AUDIO {phases.get('first_audio', marks.get('audio_first_chunk_sent', 0)):.0f} ms",
+        f"[VOICE PERF] TOTAL      {timer.total_ms:.0f} ms",
+    ]
+    for line in lines:
+        logger.info("%s", line)

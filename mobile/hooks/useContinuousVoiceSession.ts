@@ -74,10 +74,33 @@ export function useContinuousVoiceSession({
   const socketRef = useRef<VoiceSocket | null>(null);
   const audioBuffersRef = useRef<Map<number, Uint8Array[]>>(new Map());
   const playChainRef = useRef(Promise.resolve());
-  const turnResolveRef = useRef<(() => void) | null>(null);
-  const turnRejectRef = useRef<((error: Error) => void) | null>(null);
-  const assistantAccRef = useRef('');
-  const userTextRef = useRef('');
+  const clientPerfRef = useRef<{
+    turnId: string;
+    recordStart?: number;
+    recordEnd?: number;
+    sendStart?: number;
+    firstToken?: number;
+    assistantText?: number;
+    firstAudioChunk?: number;
+    audioDone?: number;
+    turnDone?: number;
+  } | null>(null);
+
+  const logClientPerf = useCallback((label: string, extra?: Record<string, number>) => {
+    const perf = clientPerfRef.current;
+    if (!perf) {
+      return;
+    }
+    const base = perf.sendStart ?? perf.recordEnd ?? perf.recordStart ?? Date.now();
+    const line = {
+      turnId: perf.turnId,
+      label,
+      sinceSendMs: Date.now() - base,
+      ...extra,
+    };
+    // No secrets / no audio payloads — diagnostics only.
+    console.info('[VOICE CLIENT PERF]', JSON.stringify(line));
+  }, []);
 
   useEffect(() => {
     if (phaseRef.current === 'idle') {
@@ -140,6 +163,7 @@ export function useContinuousVoiceSession({
       if (!activeRef.current) {
         return;
       }
+      const perf = clientPerfRef.current;
 
       switch (event.type) {
         case 'status': {
@@ -161,19 +185,32 @@ export function useContinuousVoiceSession({
           const text = (event.text || '').trim();
           userTextRef.current = text;
           setLastUserText(text);
+          logClientPerf('transcript');
           break;
         }
         case 'token': {
+          if (perf && perf.firstToken == null) {
+            perf.firstToken = Date.now();
+            logClientPerf('first_token');
+          }
           assistantAccRef.current += event.text || '';
           setLastAssistantText(assistantAccRef.current);
           break;
         }
         case 'assistant_text': {
+          if (perf) {
+            perf.assistantText = Date.now();
+          }
+          logClientPerf('assistant_text');
           assistantAccRef.current = event.text || assistantAccRef.current;
           setLastAssistantText(assistantAccRef.current);
           break;
         }
         case 'audio_chunk': {
+          if (perf && perf.firstAudioChunk == null) {
+            perf.firstAudioChunk = Date.now();
+            logClientPerf('first_audio_chunk');
+          }
           if (!playBase64Mp3) {
             break;
           }
@@ -188,6 +225,10 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'audio_done': {
+          if (perf) {
+            perf.audioDone = Date.now();
+          }
+          logClientPerf('audio_done');
           if (!playBase64Mp3) {
             break;
           }
@@ -210,6 +251,10 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'turn_done': {
+          if (perf) {
+            perf.turnDone = Date.now();
+          }
+          logClientPerf('turn_done');
           const user = userTextRef.current;
           const assistant = assistantAccRef.current;
           if (user && assistant) {
@@ -227,6 +272,7 @@ export function useContinuousVoiceSession({
           break;
         }
         case 'error': {
+          logClientPerf('error');
           turnRejectRef.current?.(new Error(event.message));
           turnResolveRef.current = null;
           turnRejectRef.current = null;
@@ -236,7 +282,7 @@ export function useContinuousVoiceSession({
           break;
       }
     },
-    [bytesToBase64, decodeBase64ToBytes, onExchange, playBase64Mp3, setSessionPhase, t],
+    [bytesToBase64, decodeBase64ToBytes, logClientPerf, onExchange, playBase64Mp3, setSessionPhase, t],
   );
 
   const ensureSocket = useCallback(async (): Promise<VoiceSocket | null> => {
@@ -335,6 +381,11 @@ export function useContinuousVoiceSession({
       }
 
       recorder.record();
+      clientPerfRef.current = {
+        turnId: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        recordStart: Date.now(),
+      };
+      console.info('[VOICE CLIENT PERF]', JSON.stringify({ turnId: clientPerfRef.current.turnId, label: 'record_start' }));
       setSessionPhase('listening', t('voice.listeningAction'));
     } catch (error) {
       if (!activeRef.current) {
@@ -425,13 +476,24 @@ export function useContinuousVoiceSession({
       setLastAssistantText('');
       setSessionPhase('transcribing', t('voice.understanding'));
 
+      const turnId =
+        clientPerfRef.current?.turnId ||
+        `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+      if (!clientPerfRef.current) {
+        clientPerfRef.current = { turnId };
+      }
+      clientPerfRef.current.recordEnd = Date.now();
+      logClientPerf('record_end');
+
       const audioBase64 = await uriToBase64(uri);
       const turnPromise = new Promise<void>((resolve, reject) => {
         turnResolveRef.current = resolve;
         turnRejectRef.current = reject;
       });
 
-      socket.sendAudioBase64(audioBase64, mimeFromRecordingUri(uri), locale);
+      clientPerfRef.current.sendStart = Date.now();
+      logClientPerf('send_audio');
+      socket.sendAudioBase64(audioBase64, mimeFromRecordingUri(uri), locale, turnId);
       await turnPromise;
 
       if (!activeRef.current) {
@@ -443,7 +505,7 @@ export function useContinuousVoiceSession({
       }
       await finishTurn(t('voice.idleHint'));
     },
-    [finishTurn, locale, recorder.uri, setSessionPhase, t],
+    [finishTurn, locale, logClientPerf, recorder.uri, setSessionPhase, t],
   );
 
   const processUtterance = useCallback(async () => {

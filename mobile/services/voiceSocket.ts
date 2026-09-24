@@ -91,20 +91,22 @@ export class VoiceSocket {
     this.socket.send(JSON.stringify(payload));
   }
 
-  sendText(text: string, locale: 'fr' | 'en' = 'fr'): void {
-    this.send({ type: 'text', text, locale });
+  sendText(text: string, locale: 'fr' | 'en' = 'fr', turnId?: string): void {
+    this.send({ type: 'text', text, locale, turn_id: turnId });
   }
 
   sendAudioBase64(
     audioBase64: string,
     mimeType = 'audio/m4a',
     locale: 'fr' | 'en' = 'fr',
+    turnId?: string,
   ): void {
     this.send({
       type: 'audio',
       audio_base64: audioBase64,
       mime_type: mimeType,
       locale,
+      turn_id: turnId,
     });
   }
 
