@@ -7,7 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { CameroonMapIntro } from '@/components/intro/CameroonMapIntro';
 import { IntroControls } from '@/components/intro/IntroControls';
 import { IntroText, ReducedIntroCopy } from '@/components/intro/IntroText';
-import { introHaptic, triggerHaptic, unlockHaptics } from '@/lib/haptics';
+import { bindHapticsGestureUnlock, introHaptic, triggerHaptic, unlockHaptics } from '@/lib/haptics';
 import {
   AUTO_PHASES,
   hasSeenIntro,
@@ -126,6 +126,12 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
     [goNext],
   );
 
+  // Any touchstart / click / pointerdown anywhere unlocks vibrate (Android).
+  // iOS has no Vibration API — this is a no-op there.
+  useEffect(() => {
+    return bindHapticsGestureUnlock();
+  }, []);
+
   // Boot once — typewriter drives pace after INTRO breath
   useEffect(() => {
     if (startedRef.current) return;
@@ -183,7 +189,9 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
           transition={{ duration: reduce ? 0.25 : 0.9, ease: EASE }}
           role="dialog"
           aria-label="Introduction SmartMboa — Cameroun"
-          onPointerDown={() => unlockHaptics()}
+          onPointerDown={unlockHaptics}
+          onTouchStart={unlockHaptics}
+          onClick={unlockHaptics}
         >
           <div
             className="pointer-events-none absolute inset-0"
