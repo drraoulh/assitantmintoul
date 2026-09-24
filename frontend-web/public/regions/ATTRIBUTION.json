@@ -1,0 +1,122 @@
+{
+  "centre": {
+    "id": "centre",
+    "localPath": "/regions/centre.jpg",
+    "sourceFile": "Yaoundé vue du monument de la réunification.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Yaound%C3%A9_vue_du_monument_de_la_r%C3%A9unification.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Franco237",
+    "description": "This is an image with the theme \"Home + Habitat in Africa\" from:",
+    "bytes": 335518,
+    "width": 1280,
+    "height": 853
+  },
+  "littoral": {
+    "id": "littoral",
+    "localPath": "/regions/littoral.jpg",
+    "sourceFile": "Premier pont sur le Wouri à Douala Cameroun.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Premier_pont_sur_le_Wouri_%C3%A0_Douala_Cameroun.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Kondah",
+    "description": "This is an image with the theme \"Africa on the Move or Transport\" from: Cameroon",
+    "bytes": 244409,
+    "width": 1280,
+    "height": 720
+  },
+  "ouest": {
+    "id": "ouest",
+    "localPath": "/regions/ouest.jpg",
+    "sourceFile": "Bandjoun palace, community hall.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Bandjoun_palace%2C_community_hall.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Josephine Lifanje",
+    "description": "A beautiful traditional hut of the Bandjoun chiefdom is located in the west region of Cameroon.",
+    "bytes": 222010,
+    "width": 1280,
+    "height": 738
+  },
+  "nord-ouest": {
+    "id": "nord-ouest",
+    "localPath": "/regions/nord-ouest.jpg",
+    "sourceFile": "Lake Oku Cameroon.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Lake_Oku_Cameroon.jpg",
+    "license": "Public domain",
+    "artist": "No machine-readable author provided. Nickaj assumed (based on copyright claims).",
+    "description": "Description:Lake Oku, Northwest Province, Cameroon. Author: own work",
+    "bytes": 211726,
+    "width": 1280,
+    "height": 845
+  },
+  "sud-ouest": {
+    "id": "sud-ouest",
+    "localPath": "/regions/sud-ouest.jpg",
+    "sourceFile": "Landscape of Mount Cameroon.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Landscape_of_Mount_Cameroon.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Buma Peter",
+    "description": "Beautiful views on Mount Cameroon National Park, located in the South west region of Cameroon.",
+    "bytes": 300066,
+    "width": 1280,
+    "height": 720
+  },
+  "nord": {
+    "id": "nord",
+    "localPath": "/regions/nord.jpg",
+    "sourceFile": "Les touristes au parc national de la bénoué au Cameroun 10.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Les_touristes_au_parc_national_de_la_b%C3%A9nou%C3%A9_au_Cameroun_10.jpg",
+    "license": "CC0",
+    "artist": "OUMAROU OB",
+    "description": "Ce fichier représente les touristes au parc national de la bénoué",
+    "bytes": 533435,
+    "width": 1280,
+    "height": 960
+  },
+  "extreme-nord": {
+    "id": "extreme-nord",
+    "localPath": "/regions/extreme-nord.jpg",
+    "sourceFile": "Moody sunrise in Rhumsiki.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Moody_sunrise_in_Rhumsiki.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "The Taxi Photographer",
+    "description": "This is an image with the theme \"Climate &amp; Weather in Africa\" from: Cameroon",
+    "bytes": 133274,
+    "width": 1280,
+    "height": 853
+  },
+  "adamaoua": {
+    "id": "adamaoua",
+    "localPath": "/regions/adamaoua.jpg",
+    "sourceFile": "LAC TISON.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:LAC_TISON.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Xwky",
+    "description": "cette image prise le 27/03/2022 montre le lac tison à Ngaoundere au cameroun qui est un site touristique attrayant de la région .",
+    "bytes": 464279,
+    "width": 1280,
+    "height": 960
+  },
+  "est": {
+    "id": "est",
+    "localPath": "/regions/est.jpg",
+    "sourceFile": "Dja Faunal Reserve-109438.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Dja_Faunal_Reserve-109438.jpg",
+    "license": "CC BY-SA 3.0 igo",
+    "artist": "C. Hance",
+    "description": "Dja Faunal Reserve (Cameroon)",
+    "bytes": 351180,
+    "width": 1280,
+    "height": 960
+  },
+  "sud": {
+    "id": "sud",
+    "localPath": "/regions/sud.jpg",
+    "sourceFile": "Chutes de la Lobé.jpg",
+    "sourcePage": "https://commons.wikimedia.org/wiki/File:Chutes_de_la_Lob%C3%A9.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Aseret Zardep",
+    "description": "One of the few waterfalls in the world that fall straight into the ocean. Kribi, Cameroon.",
+    "bytes": 279977,
+    "width": 1280,
+    "height": 785
+  }
+}
