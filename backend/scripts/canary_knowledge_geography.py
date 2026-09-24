@@ -26,6 +26,12 @@ QUERIES = [
     "Parle-moi des traditions bamiléké et Bamoun",
     "Où est le lac Mbapit ?",
     "Hôtel à Dschang ?",
+    "Je veux visiter Douala que me proposes-tu ?",
+    "La région du Littoral c’est Douala nor ?",
+    "Douala est dans quelle région ?",
+    "Quels plats typiques de Douala / Littoral ?",
+    "Parle-moi de la culture Sawa",
+    "Je veux visiter le Littoral.",
 ]
 
 
@@ -103,6 +109,21 @@ async def main() -> int:
         "dschang_hotel_or_soft": "adys" in turns[9]["assistant"].casefold()
         or "dschang" in turns[9]["assistant"].casefold()
         or turns[9]["verified_places_count"] >= 1,
+        "douala_has_places": turns[10]["verified_places_count"] >= 1,
+        "douala_not_edea_as_city": all(
+            (p.get("city") or "").casefold() not in {"edéa", "edea", "nkongsamba"}
+            for p in turns[10]["places"]
+        ),
+        "littoral_not_equals_douala": "Pas exactement" in turns[11]["assistant"]
+        or "chef-lieu" in turns[11]["assistant"].casefold(),
+        "douala_region_littoral": "Littoral" in turns[12]["assistant"],
+        "littoral_food_ndole": "ndol" in turns[13]["assistant"].casefold()
+        or turns[13]["completeness"] != "NONE",
+        "sawa_culture": turns[14]["completeness"] != "NONE"
+        or "sawa" in turns[14]["assistant"].casefold()
+        or "douala" in turns[14]["assistant"].casefold(),
+        "littoral_regional": turns[15]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -150,36 +171,35 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched local catalog: `data/tourist_sites/ouest_complete.json` (+ culture pack)",
+        "- Enriched local catalogs: `ouest_complete.json`, `littoral_complete.json` (+ culture packs)",
         "",
         "## Geography",
         "",
         "- 10 regions with chef-lieux",
-        "- Ouest: 8 départements (Mifi, Noun, Menoua, Bamboutos, Haut-Nkam, Hauts-Plateaux, Koung-Khi, Ndé)",
-        "- Bafoussam → Mifi → Ouest; is_region_capital=true",
-        "- Localities: Baleng, Bamougoum, Mbapit, Foumbot, Santchou, Balatchi, …",
+        "- Ouest: 8 départements · Littoral: 4 (Wouri, Sanaga-Maritime, Moungo, Nkam)",
+        "- Bafoussam → Mifi → Ouest; Douala → Wouri → Littoral",
         "",
         "## Ouest enrichment",
         "",
-        "- ~30 lieux touristiques sourcés (Supabase + curated)",
-        "- Culture pack: plats (achu, koki…), traditions, langues, artisanat, hôtel Adys",
-        "- Restaurants nommés vérifiés: **aucun** (policy anti-invention)",
+        "- ~30 lieux · culture pack (achu, koki, chefferies, Adys) · 0 restos inventés",
         "",
-        "## Bafoussam",
+        "## Littoral enrichment",
         "",
-        f"- Visit query places: {turns[0]['verified_places_count']}",
-        f"- Preview: `{turns[0]['assistant'][:200]}`",
-        f"- Region Q: `{turns[3]['assistant']}`",
-        f"- Ouest≠Bafoussam: `{turns[2]['assistant']}`",
-        f"- Food: `{turns[6]['assistant'][:180]}`",
-        f"- Culture: `{turns[7]['assistant'][:180]}`",
-        f"- Mbapit: `{turns[8]['assistant']}`",
+        "- ~31 lieux · culture pack (ndolé, Sawa, Duala, Krystal Palace) · 0 restos inventés",
+        "",
+        "## Samples",
+        "",
+        f"- Bafoussam visit: {turns[0]['verified_places_count']} places — `{turns[0]['assistant'][:160]}`",
+        f"- Douala visit: {turns[10]['verified_places_count']} places — `{turns[10]['assistant'][:160]}`",
+        f"- Littoral≠Douala: `{turns[11]['assistant']}`",
+        f"- Ndolé: `{turns[13]['assistant'][:180]}`",
+        f"- Sawa: `{turns[14]['assistant'][:180]}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
         "- `knowledge_completeness` + `verified_places_count`",
-        "- Geo facts + Ouest culture evidence injected as KnowledgeEvidence",
+        "- Geo facts + multi-region culture evidence (Ouest, Littoral)",
         "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
         "",
         "## Web fallback",

@@ -160,6 +160,42 @@
       "capital_city_id": "foumban",
       "source": "Départements de la région de l’Ouest (découpage administratif du Cameroun)",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "wouri",
+      "name_fr": "Wouri",
+      "name_en": "Wouri",
+      "region_id": "littoral",
+      "capital_city_id": "douala",
+      "source": "Départements de la région du Littoral (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "sanaga-maritime",
+      "name_fr": "Sanaga-Maritime",
+      "name_en": "Sanaga-Maritime",
+      "region_id": "littoral",
+      "capital_city_id": "edea",
+      "source": "Départements de la région du Littoral (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "moungo",
+      "name_fr": "Moungo",
+      "name_en": "Moungo",
+      "region_id": "littoral",
+      "capital_city_id": "nkongsamba",
+      "source": "Départements de la région du Littoral (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nkam",
+      "name_fr": "Nkam",
+      "name_en": "Nkam",
+      "region_id": "littoral",
+      "capital_city_id": "yabassi",
+      "source": "Départements de la région du Littoral (découpage administratif du Cameroun)",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -226,13 +262,14 @@
       "name_fr": "Douala",
       "name_en": "Douala",
       "entity_type": "city",
-      "division_id": null,
+      "division_id": "wouri",
       "region_id": "littoral",
       "is_region_capital": true,
       "aliases": [
-        "douala"
+        "douala",
+        "duala"
       ],
-      "source": "Chef-lieu de la région du Littoral",
+      "source": "Chef-lieu de la région du Littoral / département du Wouri",
       "verified_at": "2026-09-24"
     },
     {
@@ -466,6 +503,77 @@
       ],
       "source": "Ville du département bamboutos, région de l’Ouest",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "edea",
+      "name_fr": "Edéa",
+      "name_en": "Edéa",
+      "entity_type": "city",
+      "division_id": "sanaga-maritime",
+      "region_id": "littoral",
+      "is_region_capital": false,
+      "aliases": [
+        "edéa",
+        "edea"
+      ],
+      "source": "Ville du département de la Sanaga-Maritime, région du Littoral",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nkongsamba",
+      "name_fr": "Nkongsamba",
+      "name_en": "Nkongsamba",
+      "entity_type": "city",
+      "division_id": "moungo",
+      "region_id": "littoral",
+      "is_region_capital": false,
+      "aliases": [
+        "nkongsamba"
+      ],
+      "source": "Ville du département du Moungo, région du Littoral",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "melong",
+      "name_fr": "Melong",
+      "name_en": "Melong",
+      "entity_type": "city",
+      "division_id": "moungo",
+      "region_id": "littoral",
+      "is_region_capital": false,
+      "aliases": [
+        "melong"
+      ],
+      "source": "Ville du département du Moungo (chutes d’Ekom-Nkam), région du Littoral",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "yabassi",
+      "name_fr": "Yabassi",
+      "name_en": "Yabassi",
+      "entity_type": "city",
+      "division_id": "nkam",
+      "region_id": "littoral",
+      "is_region_capital": false,
+      "aliases": [
+        "yabassi"
+      ],
+      "source": "Chef-lieu du département du Nkam, région du Littoral",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mouanko",
+      "name_fr": "Mouanko",
+      "name_en": "Mouanko",
+      "entity_type": "city",
+      "division_id": "sanaga-maritime",
+      "region_id": "littoral",
+      "is_region_capital": false,
+      "aliases": [
+        "mouanko"
+      ],
+      "source": "Localité / commune de la Sanaga-Maritime (île de Mouanko), région du Littoral",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -611,6 +719,78 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Localité du lac Bamendjing (département des Bamboutos)",
       "source": "Fiche lieu Lac Bamendjing",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bonanjo",
+      "name_fr": "Bonanjo",
+      "name_en": "Bonanjo",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier patrimonial / administratif de Douala",
+      "source": "Fiches lieux Douala / Bonanjo",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "akwa",
+      "name_fr": "Akwa",
+      "name_en": "Akwa",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier central / commercial de Douala",
+      "source": "Fiches lieux Douala / Akwa",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bonapriso",
+      "name_fr": "Bonapriso",
+      "name_en": "Bonapriso",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier résidentiel / resto de Douala",
+      "source": "Fiches lieux Douala / Bonapriso",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "deido",
+      "name_fr": "Deido",
+      "name_en": "Deido",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier historique de Douala",
+      "source": "Fiches lieux Douala / Deido",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bonamoussadi",
+      "name_fr": "Bonamoussadi",
+      "name_en": "Bonamoussadi",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "IN",
+      "notes_fr": "Quartier de Douala (parc de Bonamoussadi)",
+      "source": "Fiche lieu Parc De Bonamoussadi",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "manoka",
+      "name_fr": "Manoka",
+      "name_en": "Manoka",
+      "city_id": "douala",
+      "division_id": "wouri",
+      "region_id": "littoral",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Île / zone estuaire près de Douala",
+      "source": "Fiche lieu Ile De Manoka",
       "verified_at": "2026-09-24"
     }
   ]

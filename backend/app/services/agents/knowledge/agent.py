@@ -106,17 +106,24 @@ class KnowledgeAgent:
                     source_type="structured_geo",
                 ),
             ]
-        if any((k.source_id or "") == "culture:ouest" for k in knowledge):
-            if not any(s.source_id == "culture:ouest" for s in sources):
-                sources = [
-                    *sources,
-                    SourceEvidence(
-                        source_id="culture:ouest",
-                        name="Ouest culture pack (dishes, traditions, crafts)",
-                        url=None,
-                        source_type="structured_culture",
-                    ),
-                ]
+        culture_ids = {
+            (k.source_id or "")
+            for k in knowledge
+            if (k.source_id or "").startswith("culture:")
+        }
+        for cid in sorted(culture_ids):
+            if any(s.source_id == cid for s in sources):
+                continue
+            region_label = cid.split(":", 1)[-1].title()
+            sources = [
+                *sources,
+                SourceEvidence(
+                    source_id=cid,
+                    name=f"{region_label} culture pack (dishes, traditions, crafts)",
+                    url=None,
+                    source_type="structured_culture",
+                ),
+            ]
         source_ms = (time.perf_counter() - src_started) * 1000.0
 
         missing = detect_missing(places, knowledge, intent.intent)

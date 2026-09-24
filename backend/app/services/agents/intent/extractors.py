@@ -43,6 +43,9 @@ _CITIES: dict[str, str] = {
     "santchou": "Santchou",
     "edea": "Edéa",
     "nkongsamba": "Nkongsamba",
+    "melong": "Melong",
+    "yabassi": "Yabassi",
+    "mouanko": "Mouanko",
 }
 
 _REGIONS: dict[str, str] = {
@@ -81,9 +84,13 @@ _REGION_SAFE_SUBSTRING = {
     ),
 }
 
-# Cultural area cues → Ouest (no city invented).
+# Cultural area cues → region (no city invented).
 _OUEST_CULTURE = re.compile(
     r"\b(bamoun|bamum|bamil[eé]k[eé]|grassfields|chefferies?\s+de\s+l['’]?ouest)\b",
+    re.IGNORECASE,
+)
+_LITTORAL_CULTURE = re.compile(
+    r"\b(sawa|ndol[eé]|wouri|bonanjo|duala)\b",
     re.IGNORECASE,
 )
 
@@ -113,6 +120,19 @@ _KNOWN_PLACES: dict[str, str] = {
     "haras de balatchi": "Le Haras De Balatchi",
     "falaise de foreke": "La Falaise De Foreke",
     "falaise de foréké": "La Falaise De Foreke",
+    "quartier bonanjo": "Quartier Bonanjo (Douala)",
+    "bonanjo": "Quartier Bonanjo (Douala)",
+    "palais de la culture": "Palais De La Culture Du Peuple Sawa",
+    "musee maritime": "Musée Maritime De Douala",
+    "musée maritime": "Musée Maritime De Douala",
+    "chutes d'ekom": "Chutes d’Ekom-Nkam",
+    "chutes d ekom": "Chutes d’Ekom-Nkam",
+    "ekom-nkam": "Chutes d’Ekom-Nkam",
+    "ekom nkam": "Chutes d’Ekom-Nkam",
+    "pont du wouri": "Pont Du Wouri",
+    "fleuve wouri": "Fleuve Wouri",
+    "ile de manoka": "Ile De Manoka",
+    "île de manoka": "Ile De Manoka",
     "rhumsiki": "Rhumsiki",
     "korup": "Korup",
 }
@@ -208,6 +228,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Ouest"
         if slots.location is None:
             slots.location = "Ouest"
+
+    if slots.region is None and _LITTORAL_CULTURE.search(raw):
+        slots.region = "Littoral"
+        if slots.location is None:
+            slots.location = "Littoral"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

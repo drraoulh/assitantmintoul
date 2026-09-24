@@ -248,6 +248,82 @@ def test_ouest_no_invented_restaurant_names_in_culture():
     assert pack["restaurants_policy"]["verified_named_restaurants"] == []
 
 
+def test_littoral_admin_and_capital():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Douala")
+    assert chain is not None
+    assert chain["region"] == "Littoral"
+    assert chain["division"] == "Wouri"
+    assert chain["is_region_capital"] is True
+    idx = load_geography()
+    litt_divs = [d for d in idx.divisions.values() if d.get("region_id") == "littoral"]
+    assert len(litt_divs) == 4
+
+
+def test_littoral_not_douala():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Littoral c’est Douala nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_littoral_culture_ndole(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques de Douala ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "ndol" in blob
+    assert any((e.source_id or "") == "culture:littoral" for e in ev)
+
+
+def test_sawa_sets_littoral_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Culture Sawa à découvrir").region == "Littoral"
+
+
+@pytest.mark.asyncio
+async def test_visit_douala_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Douala que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "nkongsamba" not in cities
+    assert "edéa" not in cities and "edea" not in cities
+
+
+@pytest.mark.asyncio
+async def test_littoral_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques du Littoral ?",
+        mode="text",
+        locale="fr",
+    )
+    assert any((k.source_id or "") == "culture:littoral" for k in result.knowledge.knowledge)
+    text = result.final_response.text.casefold()
+    assert "ndol" in text or "plat" in text
+
+
 def test_intent_extracts_bandjoun_and_mbouda():
     from app.services.agents.intent.extractors import extract_slots
 

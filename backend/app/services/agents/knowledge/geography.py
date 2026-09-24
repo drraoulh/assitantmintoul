@@ -165,7 +165,7 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
     q = fold(query)
     lang = "en" if (language or "fr").lower().startswith("en") else "fr"
 
-    # Region ≈ city confusion (Ouest == Bafoussam?)
+    # Region ≈ city confusion (Ouest == Bafoussam? / Littoral == Douala?)
     if (
         ("ouest" in q or "west" in q)
         and "bafoussam" in q
@@ -189,6 +189,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    if (
+        "littoral" in q
+        and "douala" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Littoral",
+                relation="IS_NOT_EQUIVALENT",
+                object="Douala",
+                text_fr=(
+                    "Pas exactement. Le Littoral est une région du Cameroun, "
+                    "et Douala en est le chef-lieu."
+                ),
+                text_en=(
+                    "Not exactly. The Littoral is a region of Cameroon, "
+                    "and Douala is its capital (chef-lieu)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("littoral", "douala"),
+            )
+        ]
+
     # Capital / chef-lieu of a region
     if re.search(r"capitale|chef[- ]lieu|capital\s+of", q):
         rid = _find_region_in_query(q, idx)
@@ -204,6 +227,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                 else:
                     if rid == "ouest":
                         text_fr = "Bafoussam est le chef-lieu de la région de l’Ouest du Cameroun."
+                    elif rid == "littoral":
+                        text_fr = "Douala est le chef-lieu de la région du Littoral du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -303,6 +328,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             else:
                 if rid == "ouest":
                     text_fr = f"{cname} se trouve dans la région de l’Ouest du Cameroun."
+                elif rid == "littoral":
+                    text_fr = f"{cname} se trouve dans la région du Littoral du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -376,6 +403,9 @@ def is_geo_simple_query(query: str) -> bool:
         r"(?:lac|mont|lake|mount)?\s*mbapit",
         r"o[uù]\s+est\s+(?:le\s+|la\s+|l['’])?(?:lac|mont|lake|mount)?\s*mbapit",
         r"where\s+is\s+(?:lake\s+|mount\s+)?mbapit",
+        r"littoral.{0,30}douala",
+        r"douala.{0,30}littoral",
+        r"c[' ]?est\s+douala",
     )
     if any(re.search(p, q) for p in patterns):
         return True

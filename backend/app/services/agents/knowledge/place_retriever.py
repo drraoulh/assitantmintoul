@@ -34,6 +34,18 @@ _NOT_BAFOUSSAM = {
     "santchou",
     "noun",
 }
+_NOT_DOUALA = {
+    "edea",
+    "edéa",
+    "nkongsamba",
+    "melong",
+    "yabassi",
+    "mouanko",
+    "kribi",
+    "limbe",
+    "limbé",
+    "buea",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -149,6 +161,8 @@ class PlaceRetriever:
                 # Exclude other West cities from Bafoussam city queries
                 if hub == "bafoussam" and place_city in _NOT_BAFOUSSAM:
                     continue
+                if hub == "douala" and place_city in _NOT_DOUALA:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -157,7 +171,20 @@ class PlaceRetriever:
                     scope = "NEARBY"
                     if not want_nearby and place_city not in nearby_keys - {hub}:
                         # keep only explicit nearby localities from geo graph
-                        if place_city not in {"baleng", "bamougoum"} and "bafoussam" not in place_city:
+                        if hub == "bafoussam":
+                            if place_city not in {"baleng", "bamougoum"} and "bafoussam" not in place_city:
+                                continue
+                        elif hub == "douala":
+                            if place_city not in {
+                                "bonanjo",
+                                "akwa",
+                                "bonapriso",
+                                "deido",
+                                "bonamoussadi",
+                                "manoka",
+                            } and "douala" not in place_city:
+                                continue
+                        else:
                             continue
                 else:
                     continue

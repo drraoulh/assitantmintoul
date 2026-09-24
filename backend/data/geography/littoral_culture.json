@@ -1,0 +1,170 @@
+{
+  "region_id": "littoral",
+  "region_fr": "Littoral",
+  "region_en": "Littoral",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, food_deep_dive, shopping_crafts, cities_quick_guide, regions_overview, climate_seasons, transport_itineraries, interests_itineraries, languages_etiquette), stay-cities (Duala), fiches lieux Littoral, et hôtel Ayila'a. Aucun restaurant nommé inventé.",
+  "overview": {
+    "text_fr": "Le Littoral a pour chef-lieu Douala, capitale économique et hub aérien du Cameroun. Cultures Sawa, estuaire du Wouri, quartiers Bonanjo / Akwa / Bonapriso, et portes vers Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) et Yabassi (Nkam).",
+    "text_en": "The Littoral’s capital is Douala, Cameroon’s economic capital and main air hub. Sawa cultures, the Wouri estuary, Bonanjo / Akwa / Bonapriso districts, and gateways to Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) and Yabassi (Nkam).",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; cameroon_admin.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "sawa-littoral",
+      "name_fr": "Espace Sawa (Littoral)",
+      "name_en": "Sawa area (Littoral)",
+      "description_fr": "Cultures Sawa du littoral : liens maritimes, Duala, patrimoine urbain de Douala (Bonanjo, palais de la culture, musée maritime).",
+      "description_en": "Coastal Sawa cultures: maritime links, Duala language, Douala urban heritage (Bonanjo, culture palace, maritime museum).",
+      "related_cities": ["Douala", "Edéa", "Mouanko", "Yabassi"],
+      "source": "data/documents/history_culture.md"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Duala",
+      "area": "Douala et côte Sawa",
+      "note_fr": "Salut de référence : Mbolo. On ne précipite pas le salut.",
+      "note_en": "Reference greeting: Mbolo. Do not rush the greeting.",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    },
+    {
+      "name": "Français / Camfranglais",
+      "area": "Douala urbain",
+      "note_fr": "Français dominant au quotidien ; mix français-anglais fréquent en ville.",
+      "note_en": "French dominates daily life; French–English mix is common in the city.",
+      "source": "data/documents/languages_etiquette.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "sawa-heritage",
+      "title_fr": "Patrimoine Sawa",
+      "title_en": "Sawa heritage",
+      "text_fr": "Douala illustre le littoral urbain Sawa : fleuve Wouri, héritage portuaire, scènes culturelles (Doual’art, palais de la culture du peuple Sawa, musée maritime).",
+      "text_en": "Douala illustrates urban Sawa coast life: Wouri river, port heritage, cultural scenes (Doual’art, Sawa culture palace, maritime museum).",
+      "source": "data/documents/history_culture.md ; data/tourist_sites/littoral_complete.json"
+    },
+    {
+      "id": "bonanjo-port",
+      "title_fr": "Bonanjo / héritage portuaire",
+      "title_en": "Bonanjo / port heritage",
+      "text_fr": "Bonanjo concentre l’héritage administratif et colonial / portuaire de Douala ; les visites guidées aident à lire l’architecture et l’histoire du quartier.",
+      "text_en": "Bonanjo concentrates Douala’s administrative and colonial / port heritage; guided walks help read the district’s architecture and history.",
+      "source": "data/documents/interests_itineraries.md ; data/documents/cities_quick_guide.md"
+    },
+    {
+      "id": "market-etiquette",
+      "title_fr": "Marchés et savoir-vivre",
+      "title_en": "Markets and etiquette",
+      "text_fr": "Au marché central de Douala et ailleurs : saluer, négocier avec courtoisie. Demandez avant de photographier personnes ou lieux sensibles.",
+      "text_en": "At Douala’s central market and elsewhere: greet first, negotiate courteously. Ask before photographing people or sensitive places.",
+      "source": "data/documents/languages_etiquette.md ; data/documents/shopping_crafts.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "ndole",
+      "name_fr": "Ndolé",
+      "name_en": "Ndolé",
+      "text_fr": "Plat emblématique surtout associé à Douala / Littoral : feuilles amères, arachide, poisson ou viande.",
+      "text_en": "Iconic dish strongly associated with Douala / Littoral: bitter leaves, peanut, fish or meat.",
+      "source": "data/documents/food_culture.md ; data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "poisson-littoral",
+      "name_fr": "Poissons et cuisine urbaine",
+      "name_en": "Fish and urban cuisine",
+      "text_fr": "Douala offre une scène resto urbaine (quartiers Akwa, Bonapriso…) avec poissons et spécialités locales — goûtez le ndolé ; signalez les allergies.",
+      "text_en": "Douala has an urban restaurant scene (Akwa, Bonapriso…) with fish and local specialties — try ndolé; state allergies clearly.",
+      "source": "data/documents/interests_itineraries.md ; data/documents/languages_etiquette.md"
+    },
+    {
+      "id": "poulet-dg",
+      "name_fr": "Poulet DG",
+      "name_en": "Poulet DG",
+      "text_fr": "Poulet sauté avec plantains et légumes, populaire en restauration urbaine (y compris Douala).",
+      "text_en": "Sautéed chicken with plantains and vegetables, popular in urban restaurants (including Douala).",
+      "source": "data/documents/food_culture.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "douala-central-market",
+      "name_fr": "Marché central de Douala",
+      "name_en": "Douala central market",
+      "text_fr": "Bon lieu pour fruits tropicaux, produits du quotidien, wax et paniers — négociez avec courtoisie.",
+      "text_en": "Good place for tropical fruit, everyday goods, wax cloth and baskets — negotiate courteously.",
+      "city": "Douala",
+      "source": "data/documents/food_culture.md ; data/documents/shopping_crafts.md ; data/tourist_sites/douala.json"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "wouri-estuary",
+      "title_fr": "Wouri, mangroves et îles",
+      "title_en": "Wouri, mangroves and islands",
+      "text_fr": "Fleuve Wouri, pont du Wouri, île de Manoka, mangroves / estuaire ; sorties nature avec organisateurs locaux selon saison et sécurité.",
+      "text_en": "Wouri river, Wouri bridge, Manoka island, mangrove estuary; nature outings with local organisers by season and safety.",
+      "source": "data/tourist_sites/littoral_complete.json"
+    },
+    {
+      "id": "ekom-sanaga",
+      "title_fr": "Cascades et Sanaga",
+      "title_en": "Falls and Sanaga",
+      "text_fr": "Chutes d’Ekom-Nkam (Melong / Nkongsamba), gorges de la Sanaga et chutes près d’Edéa, mont Nlonako.",
+      "text_en": "Ekom-Nkam falls (Melong / Nkongsamba), Sanaga gorges and falls near Edéa, Mount Nlonako.",
+      "source": "data/tourist_sites/littoral_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "hub-douala",
+      "title_fr": "Hub Douala",
+      "title_en": "Douala hub",
+      "text_fr": "Aéroport de Douala (DLA) : principale hub internationale. Départs typiques vers Kribi, Limbé/Buea, Yaoundé (via Edéa) ou l’Ouest.",
+      "text_en": "Douala airport (DLA): main international hub. Typical departures toward Kribi, Limbe/Buea, Yaoundé (via Edéa) or the West.",
+      "source": "data/documents/transport_itineraries.md ; data/documents/regions_overview.md"
+    },
+    {
+      "id": "climate-littoral",
+      "title_fr": "Climat littoral",
+      "title_en": "Littoral climate",
+      "text_fr": "Douala / littoral : chaud, humide, pluies fréquentes — vêtements légers + imperméable.",
+      "text_en": "Douala / coast: hot, humid, frequent rain — light clothes + rain jacket.",
+      "source": "data/documents/climate_seasons.md"
+    },
+    {
+      "id": "two-day-douala",
+      "title_fr": "Exemple 2 jours à Douala",
+      "title_en": "Sample 2 days in Douala",
+      "text_fr": "Jour 1 : Bonanjo / centre, marché ou déjeuner (ndolé), fin d’après-midi Akwa / bord de Wouri. Jour 2 selon envie culture ou nature (mangroves / départ côte).",
+      "text_en": "Day 1: Bonanjo / centre, market or lunch (ndolé), late afternoon Akwa / Wouri. Day 2 culture or nature (mangroves / coast departure) as preferred.",
+      "source": "data/documents/interests_itineraries.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Littoral (export places sans restauration). Ne pas inventer de noms. Orienter vers ndolé, scène urbaine Akwa/Bonapriso (sans noms inventés), marché central, et restaurants d’hôtels documentés le cas échéant.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the Littoral (places export excluded restaurants). Do not invent names. Point to ndolé, the Akwa/Bonapriso urban scene (without invented names), the central market, and documented hotel restaurants when available.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [
+    {
+      "id": "krystal-palace-douala",
+      "name": "Krystal Palace Douala",
+      "city": "Douala",
+      "neighbourhood": "Akwa",
+      "text_fr": "Hôtel à Akwa (boulevard de la Liberté), documenté sur Ayila’a ; vue sur le Wouri mentionnée.",
+      "text_en": "Hotel in Akwa (Boulevard de la Liberté), documented on Ayila’a; Wouri view mentioned.",
+      "source": "https://ayilaa.com (imports/camerounai-stay-language-games/data/hotels.ts)",
+      "source_note": "Ayila'a · hotels category"
+    }
+  ],
+  "divisions_snapshot": [
+    {"id": "wouri", "name_fr": "Wouri", "hub": "Douala", "note_fr": "Chef-lieu régional ; Bonanjo, Akwa, Wouri, musées, marché."},
+    {"id": "sanaga-maritime", "name_fr": "Sanaga-Maritime", "hub": "Edéa", "note_fr": "Sanaga, gorges et chutes ; axe Douala–Yaoundé."},
+    {"id": "moungo", "name_fr": "Moungo", "hub": "Nkongsamba", "note_fr": "Ekom-Nkam, mont Nlonako, Melong."},
+    {"id": "nkam", "name_fr": "Nkam", "hub": "Yabassi", "note_fr": "Yabassi / Siga Bonjo ; accès estuaire / Nkam."}
+  ]
+}

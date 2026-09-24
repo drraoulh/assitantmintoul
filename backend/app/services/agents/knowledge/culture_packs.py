@@ -11,55 +11,68 @@ from app.services.agents.knowledge.place_store import fold
 
 _DATA = Path(__file__).resolve().parents[4] / "data" / "geography"
 
+# region_id → query tokens that activate the pack
+_PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
+    "ouest": (
+        "ouest",
+        "west",
+        "bafoussam",
+        "foumban",
+        "dschang",
+        "bandjoun",
+        "mbouda",
+        "bafang",
+        "bangangte",
+        "baham",
+        "batcham",
+        "batoufam",
+        "bana",
+        "penka",
+        "grassfields",
+        "bamoun",
+        "bamum",
+        "bamileke",
+        "bamiléké",
+        "achu",
+        "koki",
+        "chefferie",
+        "mbapit",
+    ),
+    "littoral": (
+        "littoral",
+        "douala",
+        "duala",
+        "edea",
+        "edéa",
+        "nkongsamba",
+        "melong",
+        "yabassi",
+        "mouanko",
+        "sawa",
+        "ndole",
+        "ndolé",
+        "wouri",
+        "bonanjo",
+        "akwa",
+        "bonapriso",
+        "deido",
+        "manoka",
+        "ekom",
+    ),
+}
 
-@lru_cache(maxsize=4)
-def _load_ouest() -> dict:
-    path = _DATA / "ouest_culture.json"
+
+@lru_cache(maxsize=8)
+def _load_pack(region_id: str) -> dict:
+    path = _DATA / f"{region_id}_culture.json"
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def clear_culture_cache() -> None:
-    _load_ouest.cache_clear()
+    _load_pack.cache_clear()
 
 
-def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[KnowledgeEvidence]:
-    """Return structured culture/food evidence when the query targets Ouest themes."""
-    q = fold(query)
-    ouest_hit = any(
-        tok in q
-        for tok in (
-            "ouest",
-            "west",
-            "bafoussam",
-            "foumban",
-            "dschang",
-            "bandjoun",
-            "mbouda",
-            "bafang",
-            "bangangte",
-            "baham",
-            "batcham",
-            "batoufam",
-            "bana",
-            "penka",
-            "grassfields",
-            "bamoun",
-            "bamum",
-            "bamileke",
-            "bamiléké",
-            "achu",
-            "koki",
-            "chefferie",
-            "mbapit",
-        )
-    )
-    if not ouest_hit:
-        return []
-
-    pack = _load_ouest()
-    lang = "en" if (language or "fr").lower().startswith("en") else "fr"
-    out: list[KnowledgeEvidence] = []
-
+def _intent_flags(q: str) -> dict[str, bool]:
     want_food = any(
         t in q
         for t in (
@@ -71,6 +84,8 @@ def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[Know
             "gastronomie",
             "achu",
             "koki",
+            "ndole",
+            "ndolé",
             "cafe",
             "café",
         )
@@ -84,73 +99,93 @@ def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[Know
             "bamoun",
             "bamum",
             "bamil",
+            "sawa",
             "danse",
             "masque",
             "protocole",
             "langue",
             "language",
+            "patrimoine",
         )
     )
     want_craft = any(
-        t in q for t in ("artisan", "sculpture", "bronze", "marché", "market", "craft", "tissu")
+        t in q for t in ("artisan", "sculpture", "bronze", "marché", "market", "craft", "tissu", "wax")
     )
     want_hotel = any(t in q for t in ("hotel", "hôtel", "heberg", "héberg", "dormir", "stay"))
     want_nature = any(
-        t in q for t in ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise")
+        t in q
+        for t in ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise", "mangrove", "plage", "fleuve", "ile", "île")
     )
     want_practical = any(
-        t in q for t in ("itineraire", "itinéraire", "comment aller", "climat", "saison", "corridor")
+        t in q
+        for t in ("itineraire", "itinéraire", "comment aller", "climat", "saison", "corridor", "aeroport", "aéroport")
     )
-    # Broad Ouest tourism → include a short culture blurb
-    broad = any(t in q for t in ("visiter", "visite", "touris", "que faire", "propos", "decouvrir", "découvrir"))
+    broad = any(
+        t in q for t in ("visiter", "visite", "touris", "que faire", "propos", "decouvrir", "découvrir")
+    )
+    return {
+        "food": want_food,
+        "trad": want_trad,
+        "craft": want_craft,
+        "hotel": want_hotel,
+        "nature": want_nature,
+        "practical": want_practical,
+        "broad": broad,
+    }
+
+
+def _pack_evidence(region_id: str, pack: dict, *, language: str, flags: dict[str, bool]) -> list[KnowledgeEvidence]:
+    lang = "en" if (language or "fr").lower().startswith("en") else "fr"
+    source_id = f"culture:{region_id}"
+    out: list[KnowledgeEvidence] = []
 
     overview = pack.get("overview") or {}
-    if broad or want_trad:
+    if flags["broad"] or flags["trad"]:
         text = overview.get("text_en") if lang == "en" else overview.get("text_fr")
         if text:
             out.append(
                 KnowledgeEvidence(
-                    chunk_id="culture-overview-ouest",
+                    chunk_id=f"culture-overview-{region_id}",
                     content=str(text),
-                    source_id="culture:ouest",
-                    title="Ouest overview",
+                    source_id=source_id,
+                    title=f"{region_id} overview",
                     score=0.88,
                 )
             )
 
-    if want_food or broad:
+    if flags["food"] or flags["broad"]:
         for dish in pack.get("dishes", []):
             text = dish.get("text_en") if lang == "en" else dish.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-dish-{dish.get('id')}",
+                    chunk_id=f"culture-dish-{region_id}-{dish.get('id')}",
                     content=str(text or ""),
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=dish.get("name_fr") or dish.get("name_en"),
                     score=0.8,
                 )
             )
         policy = pack.get("restaurants_policy") or {}
         pol = policy.get("text_en") if lang == "en" else policy.get("text_fr")
-        if pol and want_food:
+        if pol and flags["food"]:
             out.append(
                 KnowledgeEvidence(
-                    chunk_id="culture-resto-policy-ouest",
+                    chunk_id=f"culture-resto-policy-{region_id}",
                     content=str(pol),
-                    source_id="culture:ouest",
-                    title="Restaurants Ouest (policy)",
+                    source_id=source_id,
+                    title=f"Restaurants {region_id} (policy)",
                     score=0.9,
                 )
             )
 
-    if want_trad or broad:
+    if flags["trad"] or flags["broad"]:
         for trad in pack.get("traditions", []):
             text = trad.get("text_en") if lang == "en" else trad.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-trad-{trad.get('id')}",
+                    chunk_id=f"culture-trad-{region_id}-{trad.get('id')}",
                     content=str(text or ""),
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=trad.get("title_fr") or trad.get("title_en"),
                     score=0.82,
                 )
@@ -162,67 +197,84 @@ def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[Know
                 content = f"{content}: {note}"
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-lang-{fold(str(lang_row.get('name') or 'x'))[:24]}",
+                    chunk_id=f"culture-lang-{region_id}-{fold(str(lang_row.get('name') or 'x'))[:20]}",
                     content=content,
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=lang_row.get("name"),
                     score=0.75,
                 )
             )
 
-    if want_craft or broad:
+    if flags["craft"] or flags["broad"]:
         for craft in pack.get("markets_and_crafts", []):
             text = craft.get("text_en") if lang == "en" else craft.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-craft-{craft.get('id')}",
+                    chunk_id=f"culture-craft-{region_id}-{craft.get('id')}",
                     content=str(text or ""),
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=craft.get("name_fr") or craft.get("name_en"),
                     score=0.8,
                 )
             )
 
-    if want_nature or broad:
+    if flags["nature"] or flags["broad"]:
         for nat in pack.get("nature_highlights", []):
             text = nat.get("text_en") if lang == "en" else nat.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-nature-{nat.get('id')}",
+                    chunk_id=f"culture-nature-{region_id}-{nat.get('id')}",
                     content=str(text or ""),
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=nat.get("title_fr") or nat.get("title_en"),
                     score=0.78,
                 )
             )
 
-    if want_practical or broad:
+    if flags["practical"] or flags["broad"]:
         for tip in pack.get("practical", []):
             text = tip.get("text_en") if lang == "en" else tip.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-practical-{tip.get('id')}",
+                    chunk_id=f"culture-practical-{region_id}-{tip.get('id')}",
                     content=str(text or ""),
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=tip.get("title_fr") or tip.get("title_en"),
                     score=0.77,
                 )
             )
 
-    if want_hotel:
+    if flags["hotel"]:
         for hotel in pack.get("hotels_verified", []):
             text = hotel.get("text_en") if lang == "en" else hotel.get("text_fr")
             out.append(
                 KnowledgeEvidence(
-                    chunk_id=f"culture-hotel-{hotel.get('id')}",
+                    chunk_id=f"culture-hotel-{region_id}-{hotel.get('id')}",
                     content=f"{hotel.get('name')}: {text}",
-                    source_id="culture:ouest",
+                    source_id=source_id,
                     title=hotel.get("name"),
                     score=0.85,
                 )
             )
 
-    # Deduplicate by chunk_id while preserving order
+    return out
+
+
+def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[KnowledgeEvidence]:
+    """Return structured culture/food evidence for matching region packs."""
+    q = fold(query)
+    flags = _intent_flags(q)
+    out: list[KnowledgeEvidence] = []
+
+    for region_id, tokens in _PACK_TRIGGERS.items():
+        if not any(tok in q for tok in tokens):
+            continue
+        try:
+            pack = _load_pack(region_id)
+        except (OSError, json.JSONDecodeError, FileNotFoundError):
+            continue
+        out.extend(_pack_evidence(region_id, pack, language=language, flags=flags))
+
     seen: set[str] = set()
     unique: list[KnowledgeEvidence] = []
     for ev in out:
@@ -230,4 +282,9 @@ def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[Know
             continue
         seen.add(ev.chunk_id)
         unique.append(ev)
-    return unique[:14]
+    return unique[:16]
+
+
+# Back-compat for tests that imported _load_ouest
+def _load_ouest() -> dict:
+    return _load_pack("ouest")

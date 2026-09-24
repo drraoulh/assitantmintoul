@@ -1,23 +1,5 @@
 [
   {
-    "id": "ile-manoka",
-    "name": "Zone mangroves / estuaire autour de Douala",
-    "city": "Douala",
-    "region": "Littoral",
-    "category": "nature",
-    "summary_fr": "Autour de Douala: mangroves, bras de mer et villages côtiers. Sorties nature possibles avec opérateurs locaux (selon saison et sécurité).",
-    "summary_en": "Around Douala: mangroves, tidal channels and coastal villages. Nature outings possible with local operators (by season and safety).",
-    "tips_fr": "Allez avec un organisateur connu; moustiques fréquents.",
-    "tips_en": "Go with a known organiser; mosquitoes common.",
-    "tags": [
-      "douala",
-      "mangrove",
-      "nature",
-      "littoral",
-      "estuaire"
-    ]
-  },
-  {
     "id": "sangmelima",
     "name": "Sangmélima",
     "city": "Sangmélima",
@@ -32,42 +14,6 @@
       "sud",
       "route",
       "forêt"
-    ]
-  },
-  {
-    "id": "edéa",
-    "name": "Edéa",
-    "city": "Edéa",
-    "region": "Littoral",
-    "category": "city",
-    "summary_fr": "Ville sur la Sanaga, entre Douala et Yaoundé. Connue pour le barrage et le passage de la grande route des deux capitales.",
-    "summary_en": "Town on the Sanaga between Douala and Yaoundé. Known for the dam and the main highway linking the two capitals.",
-    "tips_fr": "Souvent une pause trajet plutôt qu'une destination longue.",
-    "tips_en": "Often a journey stop rather than a long stay.",
-    "tags": [
-      "edéa",
-      "edea",
-      "sanaga",
-      "littoral",
-      "route"
-    ]
-  },
-  {
-    "id": "nkongsamba",
-    "name": "Nkongsamba",
-    "city": "Nkongsamba",
-    "region": "Littoral",
-    "category": "city",
-    "summary_fr": "Ville au pied des montagnes Manengouba / région du Moungo. Porte vers paysages volcaniques de l'Ouest-Littoral.",
-    "summary_en": "Town at the foot of the Manengouba mountains / Moungo area. Gateway to volcanic landscapes of the West-Littoral.",
-    "tips_fr": "Base possible pour randonnées régionales avec guide.",
-    "tips_en": "Possible base for regional hikes with a guide.",
-    "tags": [
-      "nkongsamba",
-      "manengouba",
-      "littoral",
-      "randonnée",
-      "hiking"
     ]
   }
 ]

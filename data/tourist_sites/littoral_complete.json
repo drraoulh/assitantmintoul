@@ -1,0 +1,887 @@
+[
+  {
+    "id": "chutes-ekom-nkam",
+    "name": "Chutes d’Ekom-Nkam",
+    "city": "Melong",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Près de Melong (Moungo), les chutes d'Ekom-Nkam culminent à environ 80 m au-dessus d'une forêt dense. Observation, randonnée et photo y sont les activités phares ; le site a même servi de décor de cinéma (dont Greystoke / Tarzan).",
+    "summary_en": "Near Melong (Moungo), Ekom-Nkam Falls drop about 80 m through dense forest. Viewing, hiking and photography are the highlights; the site has also appeared on screen (including Greystoke / Tarzan).",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Accès payant modeste avec guides communautaires. Environs : lacs de Melong, mont Manengouba et sources thermales de Njombé.",
+    "latitude": 5.0667,
+    "longitude": 9.9833,
+    "price": "3000 XAF",
+    "tags": [
+      "melong",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Chutes d’Ekom-Nkam",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "chutes-de-mbang-ebongo-bareko",
+    "name": "Chutes De Mbang-Ebongo",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Chutes De Mbang-Ebongo. Situé à Bareko, dans la localité de Mbang Ebongo, non loin de Douala, les Chutes de Mbang-Ebongo sont un véritable joyau naturel niché au c&oelig;ur d'une végétation luxuriante. Ce site touristique unique est classé parmi les plus belles chutes d'eau du Cameroun, offrant un décor idyllique pour les amoureux de nature, de détente et de randonnée écologique. Parmi les attractions phares, on retrouve la contemplation des chutes majestueuses, la randonnée à travers la forêt environnante, des séances photos naturelles, des pique-niques en pleine nature, ainsi que des moments de méditation bercés par le son apaisant de l'eau. Le site est accessible aussi bien aux adultes qu'aux enfants, ce qui en fait une destination familiale idéale. L'entrée est en général gratuite, bien que certaines visites guidées ou excursions organisées puissent impliquer de petits frais de parti",
+    "summary_en": "Chutes De Mbang-Ebongo. Located à Bareko, dans la localité de Mbang Ebongo, non loin de Douala, les Chutes de Mbang-Ebongo sont un véritable joyau naturel niché au c&oelig;ur d'une végétation luxuriante. Ce tourist site unique est classé parmi les plus belles chutes d'eau du Cameroon, offrant un décor idyllique pour les amoureux de nature, de détente et de randonnée écologique. Parmi les attractions phares, on retrouve la contemplation des chutes majestueuses, la randonnée à travers la forêt environnante, des séances photos naturelles, des pique-niques en pleine nature, ainsi que des moments de méditation bercés par le son apaisant de l'eau. Le site est accessible aussi bien aux adultes qu'aux enfants, ce qui en fait une destination familiale idéale. L'entrée est en général gratuite, bien que certaines visites guidées ou excursions organisées puissent impliquer de petits frais de partici",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bareko · Ville : Douala · Localisation : Mbang Ebongo · Catégories : Sites Touristiques, Chutes",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Chutes De Mbang-Ebongo",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "doual-art-bonanjo",
+    "name": "Doual'art",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "museum",
+    "summary_fr": "Situé à Bonanjo, Place du gouvernement, Douala, Doual'art est une galerie d'art urbain et contemporain. L'établissement expose des artistes locaux et internationaux depuis plus de quinze ans, mettant en valeur la richesse artistique de l'Afrique. Un jardin verdoyant ajoute une atmosphère charmante à cet espace. Doual'art propose des expositions d'art urbain et contemporain, des interventions artistiques dans l'espace public, et des événements culturels. L'établissement est adapté à tous les âges, avec des expositions accessibles et des activités éducatives. L'accès à la galerie est gratuit. Le nombre de places assises est limité. Doual'art est une galerie d'art. L'établissement n'offre pas de services de restauration ou de boissons. La réservation n'est pas nécessaire. La livraison n'est pas applicable. Un parking est disponible à proximité. Les évaluations et avis sur Doual'art sont gén",
+    "summary_en": "Located à Bonanjo, Place du gouvernement, Douala, Doual'art is a galerie d'art urbain et contemporain. L'établissement expose des artistes locaux et internationaux depuis plus de quinze ans, mettant en valeur la richesse artistique de l'Afrique. Un jardin verdoyant ajoute une atmosphère charmante à cet espace. Doual'art features des expositions d'art urbain et contemporain, des interventions artistiques dans l'espace public, et des événements culturels. L'établissement est adapté à tous les âges, avec des expositions accessibles et des activités éducatives. L'accès à la galerie est gratuit. Le nombre de places assises est limité. Doual'art is a galerie d'art. L'établissement n'offers pas de services de restauration ou de boissons. La réservation n'est pas nécessaire. La livraison n'est pas applicable. Un parking est disponible à proximité. Les évaluations et avis sur Doual'art sont génér",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bonanjo · Ville : Douala · Localisation : Place du gouvernement · Catégories : Sites Touristiques, GALLERIE D'ART",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Doual'art",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "fleuve-dibamba-dibamba",
+    "name": "Fleuve Dibamba",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "Fleuve Dibamba. Situé à Dibamba, après Yassa en direction d' Edea, le fleuve Dibamba est une merveille naturelle de la région du Littoral au Cameroun. Ce fleuve majestueux limite Douala par le sud et se jette dans l' Océan Atlantique, formant un écosystème unique grâce à ses forêts de mangroves qui s'étendent jusqu'au point Souelaba. Avec une longueur de 150 km et un bassin de 2 400 km&sup2;, le Dibamba est un joyau écologique et un lieu idéal pour des activités en plein air, offrant une expérience immersive dans la nature. Les attractions et activités proposées autour du fleuve Dibamba sont variées et adaptées à tous les âges: • Exploration des forêts de mangroves, véritable sanctuaire pour la biodiversité locale. • Observation de la faune et de la flore lors de balades guidées le long des rives du fleuve. • Activités nautiques telles que le cano&euml; ou la pêche traditionnelle, permet",
+    "summary_en": "Fleuve Dibamba. Located à Dibamba, après Yassa en direction d' Edea, le fleuve Dibamba is a merveille naturelle de la région du Littoral au Cameroon. Ce fleuve majestueux limite Douala par le sud et se jette dans l' Océan Atlantique, formant un écosystème unique grâce à ses forêts de mangroves qui s'étendent jusqu'au point Souelaba. Avec une longueur de 150 km et un bassin de 2 400 km&sup2;, le Dibamba is a joyau écologique et un lieu idéal pour des activités en plein air, offrant une expérience immersive dans la nature. Les attractions et activités proposées autour du fleuve Dibamba sont variées et adaptées à tous les âges: • Exploration des forêts de mangroves, véritable sanctuaire pour la biodiversité locale. • Observation de la faune et de la flore lors de balades guidées le long des rives du fleuve. • Activités nautiques telles que le cano&euml; ou la pêche traditionnelle, permettan",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Dibamba · Ville : Douala · Localisation : Après Yassa en allant à Edea · Catégories : Sites Touristiques, Fleuve",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": "1000 XAF",
+    "tags": [
+      "douala",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Fleuve Dibamba",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "gorges-de-la-sanaga-sanaga",
+    "name": "Gorges De La Sanaga",
+    "city": "Edéa",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "Gorges De La Sanaga. Situé le long de la rivière Sanaga, à Edéa, les Gorges de la Sanaga constituent un site touristique naturel d'exception, formé de cours d'eau sinueux, de cascades pittoresques et de falaises escarpées. Ce lieu emblématique de la région littorale séduit par sa beauté sauvage et son atmosphère apaisante, idéale pour les amateurs de nature et de paysages impressionnants. Les activités phares comprennent la randonnée, l' observation des oiseaux, les balades en pirogue et la photographie de paysages. Le site est adapté à tous les âges, autant pour les enfants que pour les adultes, grâce à son accès facile et à la diversité des activités de plein air qu'il propose. L'accès est généralement gratuit, bien que certains guides ou activités encadrées puissent être payants selon les prestataires locaux. Les Gorges de la Sanaga ne disposent pas d'infrastructures formelles de rest",
+    "summary_en": "Gorges De La Sanaga. Located le long de la rivière Sanaga, à Edéa, les Gorges de la Sanaga constituent un tourist site naturel d'exception, formé de cours d'eau sinueux, de cascades pittoresques et de falaises escarpées. Ce lieu emblématique de la région littorale séduit par sa beauté sauvage et son atmosphère apaisante, idéale pour les amateurs de nature et de paysages impressionnants. Les activités phares comprennent la randonnée, l' observation des oiseaux, les balades en pirogue et la photographie de paysages. Le site est adapté à tous les âges, autant pour les enfants que pour les adultes, grâce à son accès facile et à la diversité des activités de plein air qu'il propose. L'accès est généralement gratuit, bien que certains guides ou activités encadrées puissent être payants selon les prestataires locaux. Les Gorges de la Sanaga ne disposent pas d'infrastructures formelles de restau",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Sanaga · Ville : Edéa · Localisation : Le long de la rivière · Catégories : Sites Touristiques, ROCHER",
+    "latitude": 3.8,
+    "longitude": 10.13,
+    "price": null,
+    "tags": [
+      "edea",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Gorges De La Sanaga",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "ile-de-manoka-manoka",
+    "name": "Ile De Manoka",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Ile De Manoka. Situé à Manoka, une île paradisiaque de l'arrondissement de Douala VIème dans la région littorale camerounaise, cet endroit enchanteur est niché à 35 minutes au large du petit port de pêche de Youpwé, accessible par pirogue hors bord. L'île de Manoka se distingue par ses vastes plages au sable fin et blanc, offrant un cadre idéal pour les amateurs de nature et de détente. Bien que difficile d'accès, cette destination émergente s'impose comme un lieu prometteur pour les activités en plein air et les escapades exotiques. L'île de Manoka regorge d'activités qui raviront les visiteurs en quête d'aventure ou de tranquillité. Les attractions phares incluent la baignade dans les eaux cristallines, les longues promenades le long des plages immaculées et l'observation de la faune marine lors de sorties en pirogue. Ce site convient à tous les âges: les enfants peuvent jouer sur le s",
+    "summary_en": "Ile De Manoka. Located à Manoka, une île paradisiaque de l'arrondissement de Douala VIème dans la region littorale camerounaise, cet endroit enchanteur est niché à 35 minutes au large du petit port de pêche de Youpwé, accessible par pirogue hors bord. L'île de Manoka se distingue par ses vastes plages au sable fin et blanc, offrant un cadre idéal pour les amateurs de nature et de détente. Bien que difficile d'accès, cette destination émergente s'impose comme un lieu prometteur pour les activités en plein air et les escapades exotiques. L'île de Manoka regorge d'activités qui raviront les visiteurs en quête d'aventure ou de tranquillité. Les attractions phares incluent la baignade dans les eaux cristallines, les longues promenades le long des plages immaculées et l'observation de la faune marine lors de sorties en pirogue. Ce site convient à tous les âges: les enfants peuvent jouer sur le",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Manoka · Ville : Douala · Localisation : A 35 minutes au large du petit port de pêche de Youpwé · Catégories : Sites Touristiques, ILE",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Ile De Manoka",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "jardin-botanique-agrotech-massoumbou",
+    "name": "Jardin Botanique Agrotech",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Jardin Botanique Agrotech. Situé à Yabassi, à une dizaine de kilomètres du Carrefour PK21, Massoumbou, Douala, le Jardin Botanique AGROTECH est un site naturel qui met en valeur la flore locale tout en étant un centre éducatif sur l'agriculture et la botanique. Ce lieu paisible est parfait pour les amoureux de la nature et ceux intéressés par l'écologie. Les activités phares proposées comprennent des visites guidées du jardin, où les visiteurs peuvent découvrir différentes espèces de plantes et d'arbres. Le site offre également des ateliers éducatifs sur l'agriculture durable et la conservation des plantes, ce qui le rend intéressant pour tous les âges, notamment pour les enfants et les groupes scolaires. Le Jardin Botanique AGROTECH dispose de plusieurs services tels qu'un petit bar, des espaces de restauration, et des aires de pique-nique. Un parking est également disponible pour les v",
+    "summary_en": "Jardin Botanique Agrotech. Located à Yabassi, à une dizaine de kilomètres du Carrefour PK21, Massoumbou, Douala, le Jardin Botanique AGROTECH is a site naturel qui met en valeur la flore locale tout en étant un centre éducatif sur l'agriculture et la botanique. Ce lieu paisible est parfait pour les amoureux de la nature et ceux intéressés par l'écologie. Les activités phares proposées comprennent des visites guidées du jardin, où les visiteurs peuvent découvrir différentes espèces de plantes et d'arbres. Le site offers également des ateliers éducatifs sur l'agriculture durable et la conservation des plantes, ce qui le rend intéressant pour tous les âges, notamment pour les enfants et les groupes scolaires. Le Jardin Botanique AGROTECH dispose de plusieurs services tels qu'un petit bar, des espaces de restauration, et des aires de pique-nique. Un parking est également disponible pour les ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Massoumbou · Ville : Douala · Localisation : Yabassi, à une dizaine de kilomètres du Carrefour PK21 · Catégories : Sites Touristiques, Parcs",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Jardin Botanique Agrotech",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "l-ile-de-mouanko-a-quelque-metre-de-la-plage-de-yoyo",
+    "name": "L'ile De Mouanko",
+    "city": "Mouanko",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "L'ile De Mouanko. Situé à Mouanko, dans le département de la Sanaga-Maritime, à quelques mètres de la plage de Yôyo, l' île de Mouanko est une destination touristique unique qui met en valeur la richesse naturelle et historique du Cameroun. Ce site d'exception est reconnu pour ses paysages impressionnants, sa faune remarquable et son importance historique. Parmi les attractions phares, on retrouve la plage de Yôyo, une étendue de sable blanc doré qui offre un cadre idyllique pour la détente et les activités balnéaires. L' île aux singes, un petit parc naturel, permet aux visiteurs d'observer des chimpanzés, gorilles et autres primates dans leur habitat. Le site historique de Mariemberg, quant à lui, abrite la première église construite par les Allemands au Cameroun, un vestige important du passé colonial du pays. Adaptée à tous les âges, cette destination convient aussi bien aux familles",
+    "summary_en": "L'ile De Mouanko. Located à Mouanko, dans le département de la Sanaga-Maritime, à quelques mètres de la plage de Yôyo, l' île de Mouanko is a destination touristique unique qui met en valeur la richesse naturelle et historique du Cameroon. Ce site d'exception est reconnu pour ses paysages impressionnants, sa faune remarquable et son importance historique. Parmi les attractions phares, on retrouve la plage de Yôyo, une étendue de sable blanc doré qui offers un cadre idyllique pour la détente et les activités balnéaires. L' île aux singes, un petit parc naturel, allows aux visiteurs d'observer des chimpanzés, gorilles et autres primates dans leur habitat. Le site historique de Mariemberg, quant à lui, abrite la première église construite par les Allemands au Cameroon, un vestige important du passé colonial du pays. Adaptée à tous les âges, cette destination convient aussi bien aux familles",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : A quelque mètre de la plage de Yôyo · Ville : Mouanko · Localisation : Dans le département de la Sanaga-Maritime · Catégories : Sites Touristiques, ILE",
+    "latitude": 3.62,
+    "longitude": 9.78,
+    "price": null,
+    "tags": [
+      "mouanko",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "L'ile De Mouanko",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-chute-de-khone-ngwa",
+    "name": "La Chute De Khone",
+    "city": "Nkongsamba",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "La Chute De Khone. La Chute de Kone est un site naturel situé à Ngwa, à seulement 5 km de Nkongsamba, sur les flancs du majestueux Mont Nlonako, qui culmine à 1822 m d'altitude. Ce lieu magnifique, au paysage impressionnant, abrite une chute d'eau spectaculaire qui se déverse avec grâce dans un cadre idyllique, parfait pour les amoureux de la nature. Les principales attractions et activités comprennent des excursions pour admirer la chute d'eau ainsi que des randonnées autour du Mont Nlonako. Le site est accessible à tous les âges, avec des activités adaptées aux familles et aux enfants. L'endroit offre aussi une vue panoramique sur les montagnes environnantes et la forêt luxuriante. Concernant les services, le site propose des restaurations locales, et des options de réservation pour les groupes ou les visites guidées. Il n'y a pas d'informations précises sur les options d'alcool, mais ",
+    "summary_en": "La Chute De Khone. La Chute de Kone is a site naturel situé à Ngwa, à seulement 5 km de Nkongsamba, sur les flancs du majestueux Mont Nlonako, qui culmine à 1822 m d'altitude. Ce lieu magnifique, au paysage impressionnant, abrite une chute d'eau spectaculaire qui se déverse avec grâce dans un cadre idyllique, parfait pour les amoureux de la nature. Les principales attractions et activités comprennent des excursions pour admirer la chute d'eau ainsi que des randonnées autour du Mont Nlonako. Le site est accessible à tous les âges, avec des activités adaptées aux familles et aux enfants. L'endroit offers aussi une vue panoramique sur les montagnes environnantes et la forêt luxuriante. Concernant les services, le site features des restaurations locales, et des options de réservation pour les groupes ou les visites guidées. Il n'y a pas d'informations précises sur les options d'alcool, mais ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ngwa · Ville : Nkongsamba · Localisation : Sur les flancs du mont Nlonako · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 4.954,
+    "longitude": 9.94,
+    "price": null,
+    "tags": [
+      "nkongsamba",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "La Chute De Khone",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-chute-de-ndog-batoogue-ndog-batoogue",
+    "name": "La Chute De Ndog Batooguè",
+    "city": "Edéa",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "La Chute De Ndog Batooguè. Situé à Ndog Batooguè, dans l'arrondissement de Ndom, département de la Sanaga Maritime, non loin d' édéa, La Chute de Ndog Batooguè est un joyau naturel spectaculaire de 100 mètres de haut, niché dans une forêt tropicale luxuriante. Ce site exceptionnel, agrémenté d'un arbre plusieurs fois centenaire, offre un cadre idyllique pour les amoureux de la nature. Classé dans la catégorie des sites touristiques, ce lieu se distingue aussi par sa quiétude et sa végétation dense. Parmi les activités phares, les visiteurs peuvent profiter de randonnées, photographie de paysages, balades guidées dans la forêt, ainsi que découvertes botaniques autour de l'arbre ancestral. Le site est adapté à tous les âges, aussi bien aux familles, groupes scolaires qu'aux amateurs d'écotourisme. L'accès est gratuit, et bien que le lieu ne soit pas une salle aménagée avec des places assis",
+    "summary_en": "La Chute De Ndog Batooguè. Located à Ndog Batooguè, dans l'arrondissement de Ndom, département de la Sanaga Maritime, non loin d' édéa, La Chute de Ndog Batooguè is a joyau naturel spectaculaire de 100 mètres de haut, niché dans une forêt tropicale luxuriante. Ce site exceptionnel, agrémenté d'un arbre plusieurs fois centenaire, offers un cadre idyllique pour les amoureux de la nature. Classé dans la catégorie des sites touristiques, ce lieu se distingue aussi par sa quiétude et sa végétation dense. Parmi les activités phares, les visiteurs peuvent profiter de randonnées, photographie de paysages, balades guidées dans la forêt, ainsi que découvertes botaniques autour de l'arbre ancestral. Le site est adapté à tous les âges, aussi bien aux familles, groupes scolaires qu'aux amateurs d'écotourisme. L'accès est gratuit, et bien que le lieu ne soit pas une salle aménagée avec des places assi",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ndog Batooguè · Ville : Edea · Localisation : Ndom · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 3.8,
+    "longitude": 10.13,
+    "price": null,
+    "tags": [
+      "edea",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "La Chute De Ndog Batooguè",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-maison-omaj-ndokoti",
+    "name": "La Maison Omaj",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "La Maison Omaj. Située à Ndokoti, face au China Mall sur le Boulevard Fadil, à Douala, La Maison OMAJ est un centre culturel urbain vibrant dédié à la promotion des arts contemporains et de la culture camerounaise. Ce lieu, à la fois moderne et accueillant, est un véritable carrefour artistique, favorisant l'éclosion des talents et l'interaction entre passionnés de culture, artistes, curieux et professionnels. Les activités phares de la Maison OMAJ incluent des projections de films, des spectacles de comédie, des rencontres artistiques, des expositions d'art visuel, des concerts live, des conférences et des ateliers créatifs. Grâce à la modularité de ses espaces, elle accueille un large éventail d'événements toute l'année. Le lieu est ouvert à tous les âges, ce qui en fait un espace idéal pour les enfants, adolescents, adultes et même seniors, chacun pouvant y trouver une activité adapté",
+    "summary_en": "La Maison Omaj. Located à Ndokoti, face au China Mall sur le Boulevard Fadil, à Douala, La Maison OMAJ is a centre culturel urbain vibrant dédié à la promotion des arts contemporains et de la culture camerounaise. Ce lieu, à la fois moderne et accueillant, is a véritable carrefour artistique, favorisant l'éclosion des talents et l'interaction entre passionnés de culture, artistes, curieux et professionnels. Les activités phares de la Maison OMAJ incluent des projections de films, des spectacles de comédie, des rencontres artistiques, des expositions d'art visuel, des concerts live, des conférences et des ateliers créatifs. Grâce à la modularité de ses espaces, elle accueille un large éventail d'événements toute l'année. Le lieu est ouvert à tous les âges, ce qui en fait un espace idéal pour les enfants, adolescents, adultes et même seniors, chacun pouvant y trouver une activité adaptée. ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ndokoti · Ville : Douala · Localisation : Face China mall · Catégories : Sites Touristiques, Centre culturel",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "La Maison Omaj",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-nouvelle-liberte-deido",
+    "name": "La Nouvelle Liberte",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "heritage",
+    "summary_fr": "La Nouvelle Liberte. Situé au Rond-point Deido, dans le quartier animé de Deido à Douala, le monument La Nouvelle Liberté est une œuvre d'art emblématique qui attire l'attention de tous. Ce monument représente un robot stylisé, tenant un globe terrestre sur sa tête tout en étant posé sur une seule jambe, symbole d'équilibre et de modernité. Bien qu'il ne s'agisse pas d'un lieu traditionnel de divertissement comme un cinéma ou un complexe sportif, ce site offre une expérience unique mêlant art, culture et découverte urbaine. Le monument La Nouvelle Liberté est avant tout un point de repère visuel incontournable pour les habitants et les visiteurs. Il est idéal pour prendre des photos souvenirs, organiser des séances photo artistiques ou simplement admirer son design futuriste. Ce lieu convient à tous les âges: les enfants seront fascinés par la forme inhabituelle du robot, tandis que les ",
+    "summary_en": "La Nouvelle Liberte. Located au Rond-point Deido, dans le quartier animé de Deido à Douala, le monument La Nouvelle Liberté is a œuvre d'art emblématique qui attire l'attention de tous. Ce monument représente un robot stylisé, tenant un globe terrestre sur sa tête tout en étant posé sur une seule jambe, symbole d'équilibre et de modernité. Bien qu'il ne s'agisse pas d'un lieu traditionnel de divertissement comme un cinéma ou un complexe sportif, ce site offers une expérience unique mêlant art, culture et découverte urbaine. Le monument La Nouvelle Liberté est avant tout un point de repère visuel must-see pour les habitants et les visiteurs. Il est idéal pour prendre des photos souvenirs, organiser des séances photo artistiques ou simplement admirer son design futuriste. Ce lieu convient à tous les âges: les enfants seront fascinés par la forme inhabituelle du robot, tandis que les adulte",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Deido · Ville : Douala · Localisation : Rond point · Catégories : Sites Touristiques, Monument",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "La Nouvelle Liberte",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-pagode-bonanjo",
+    "name": "La Pagode",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "La Pagode. Situé à Bonanjo, à l'angle de la place du Gouvernement, dans la ville de Douala, La Pagode est un monument historique unique construit en 1905 par Auguste Manga Ndoumbé. Ce bâtiment, inspiré des styles indien et asiatique alors très populaires, ne correspond pas aux lieux de divertissement classiques comme un cinéma ou une salle de concert. Cependant, il s'impose comme un symbole architectural et culturel majeur de la période coloniale allemande. La Pagode attire les visiteurs par son architecture exceptionnelle et sa valeur historique. Les principales attractions incluent l'observation de sa structure unique, la prise de photos souvenirs et la découverte de son histoire à travers des panneaux explicatifs. Ce lieu convient à tous les âges: les enfants pourront admirer les détails architecturaux, tandis que les adultes apprécieront le récit historique qui accompagne ce monument",
+    "summary_en": "La Pagode. Located à Bonanjo, à l'angle de la place du Gouvernement, dans la city of Douala, La Pagode is a monument historique unique construit en 1905 par Auguste Manga Ndoumbé. Ce bâtiment, inspiré des styles indien et asiatique alors très populaires, ne correspond pas aux lieux de divertissement classiques comme un cinéma ou une salle de concert. Cependant, il s'impose comme un symbole architectural et culturel majeur de la période coloniale allemande. La Pagode attire les visiteurs par son architecture exceptionnelle et sa valeur historique. Les principales attractions incluent l'observation de sa structure unique, la prise de photos souvenirs et la découverte de son histoire à travers des panneaux explicatifs. Ce lieu convient à tous les âges: les enfants pourront admirer les détails architecturaux, tandis que les adultes apprécieront le récit historique qui accompagne ce monument.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bonanjo · Ville : Douala · Localisation : A l'angle de la place du Gouvernement · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "La Pagode",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "le-mont-de-nlonako-nlonako",
+    "name": "Le Mont De Nlonako",
+    "city": "Nkongsamba",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Le Mont De Nlonako. Situé à Nlonako, à seulement 8 kilomètres au sud-est de Nkongsamba, dans la région du Littoral au Cameroun, le Mont Nlonak o se dresse fièrement comme un sentinelle majestueuse. Il culminant à 1 822 mètres d'altitude, offre aux visiteurs un panorama à couper le souffle sur les paysages verdoyants de la région. La végétation luxuriante, composée de forêts denses et de savanes parsemées d'arbres, abrite une faune riche et variée. On y rencontre des singes, des antilopes, des oiseaux et même des éléphants. Les pentes du mont sont également parsemées de cascades et de sources d'eau cristalline, invitant les randonneurs à la détente et à la contemplation. L'ascension du Mont Nlonako est une expérience inoubliable pour les amateurs de randonnée. Le sentier sinueux serpente à travers la forêt, offrant des vues imprenables sur les vallées environnantes. Le sommet récompense l",
+    "summary_en": "Le Mont De Nlonako. Located à Nlonako, à seulement 8 kilomètres au sud-est de Nkongsamba, dans la région du Littoral au Cameroon, le Mont Nlonak o se dresse fièrement comme un sentinelle majestueuse. Il culminant à 1 822 mètres d'altitude, offers aux visiteurs un panorama à couper le souffle sur les paysages verdoyants de la région. La végétation luxuriante, composée de forêts denses et de savanes parsemées d'arbres, abrite une faune riche et variée. On y rencontre des singes, des antilopes, des oiseaux et même des éléphants. Les pentes du mont sont également parsemées de cascades et de sources d'eau cristalline, invitant les randonneurs à la détente et à la contemplation. L'ascension du Mont Nlonako is a expérience inoubliable pour les amateurs de randonnée. Le sentier sinueux serpente à travers la forêt, offrant des vues imprenables sur les vallées environnantes. Le sommet récompense l",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Nlonako · Ville : Nkongsamba · Localisation : 8 kilomètres au sud-est de Nkongsamba · Catégories : Sites Touristiques, Mont",
+    "latitude": 4.954,
+    "longitude": 9.94,
+    "price": null,
+    "tags": [
+      "nkongsamba",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Le Mont De Nlonako",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "les-chutes-d-ekom-nkam-ekom-nkam",
+    "name": "Les Chutes D'ekom Nkam",
+    "city": "Nkongsamba",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Les Chutes D'ekom Nkam. Situé à Ekom Nkam, à proximité de Melong et de la ville dynamique de Nkongsamba, dans le département du Moungo, les Chutes d'Ekom Nkam figurent parmi les plus impressionnantes merveilles naturelles du Cameroun. Dominant la végétation luxuriante du peuple Baréko, ces chutes d'eau spectaculaires culminent à 80 mètres de hauteur, offrant un spectacle d'une beauté saisissante. Bien qu'il ne s'agisse pas d'un salon de beauté ou d'un institut de bien-être, ce site incarne une forme unique de ressourcement visuel et naturel. Les attractions et activités proposées sur le site incluent l' observation des chutes, la randonnée pédestre, la visite guidée du site et la photographie de paysages époustouflants. L'endroit est adapté à tous les âges, offrant à la fois des parcours accessibles pour les enfants et des zones plus sauvages pour les adultes aventuriers. L'accès au site",
+    "summary_en": "Les Chutes D'ekom Nkam. Located à Ekom Nkam, à proximité de Melong et de la ville dynamique de Nkongsamba, dans le département du Moungo, les Chutes d'Ekom Nkam figurent parmi les plus impressionnantes merveilles naturelles du Cameroon. Dominant la végétation luxuriante du peuple Baréko, ces chutes d'eau spectaculaires culminent à 80 mètres de hauteur, offrant un spectacle d'une beauté saisissante. Bien qu'il ne s'agisse pas d'un salon de beauté ou d'un institut de bien-être, ce site incarne une forme unique de ressourcement visuel et naturel. Les attractions et activités proposées sur le site incluent l' observation des chutes, la randonnée pédestre, la visite guidée du site et la photographie de paysages époustouflants. L'endroit est adapté à tous les âges, offrant à la fois des parcours accessibles pour les enfants et des zones plus sauvages pour les adultes aventuriers. L'accès au si",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Ekom Nkam · Ville : Nkongsamba · Localisation : A proximité de Melong · Catégories : Sites Touristiques, CHUTTE D'EAU",
+    "latitude": 4.954,
+    "longitude": 9.94,
+    "price": null,
+    "tags": [
+      "nkongsamba",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Les Chutes D'ekom Nkam",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "les-gites-d-ewodi-siga-bonjo",
+    "name": "Les Gites D'ewodi",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "Les Gites D'ewodi. Situé à Bona'anja-Siga Bonjo, dans le c anton Wouri à environ 20 km de Douala, le complexe des Gîtes d'Ewodi est un véritable havre de paix aux potentialités naturelles, culturelles et artistiques. Ce site d'exception attire les visiteurs par so n cadre idyllique et sa capacité à offrir une expérience immersive dans la richesse du patrimoine local. Pour accéder à ce lieu enchanteur, deux options de transport sont possibles. La première est la voie fluviale par le fleuve Wouri, offrant une navigation paisible sur environ 20 km, où les visiteurs peuvent apprécier la beauté des paysages environnants. La s econde option, la voie terrestre, s'étend sur environ 50 km en passant par Souza, Fiko et Magamba, permettant de découvrir des panoramas idylliques tout au long du parcours. Le complexe d'Ewodi propose un hébergement de qualité, adapté à tous les budgets. à partir de 15 ",
+    "summary_en": "Les Gites D'ewodi. Located à Bona'anja-Siga Bonjo, dans le c anton Wouri à environ 20 km de Douala, le complexe des Gîtes d'Ewodi is a véritable havre de paix aux potentialités naturelles, culturelles et artistiques. Ce site d'exception attire les visiteurs par so n cadre idyllique et sa capacité à offrir une expérience immersive dans la richesse du patrimoine local. Pour accéder à ce lieu enchanteur, deux options de transport sont possibles. La première est la voie fluviale par le fleuve Wouri, offrant une navigation paisible sur environ 20 km, où les visiteurs peuvent apprécier la beauté des paysages environnants. La s econde option, la voie terrestre, s'étend sur environ 50 km en passant par Souza, Fiko et Magamba, permettant de découvrir des panoramas idylliques tout au long du parcours. Le complexe d'Ewodi features un hébergement de qualité, adapté à tous les budgets. à partir de 15",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Siga-Bonjo · Ville : Douala · Localisation : Siga-Bonjo · Catégories : Sites Touristiques, Site touristique avec hébergements",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": "15000 XAF",
+    "tags": [
+      "douala",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Les Gites D'ewodi",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "musee-maritime-de-douala-bonanjo",
+    "name": "Musée Maritime De Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "museum",
+    "summary_fr": "Musée Maritime De Douala. Situé à Bonanjo, un quartier prestigieux de Douala, le Musée Maritime de Douala est niché entre l' hôtel Sawa et l' hôtel Pullman, offrant une expérience culturelle unique dans un cadre architectural moderne. Ce musée, construit sur une superficie de 600 m&sup2; et réparti sur trois étages, est dédié à la valorisation du patrimoine maritime camerounais. Il s'agit d'un espace éducatif et ludique qui explore l'histoire des ports, des navires et des échanges commerciaux le long de la côte camerounaise. Plutôt qu'un lieu de divertissement classique comme un cinéma ou un complexe sportif, ce musée propose une immersion fascinante dans le monde maritime. Le Musée Maritime de Douala propose des expositions thématiques captivantes réparties sur ses trois étages. Les visiteurs peuvent découvrir l'homme dans son milieu naturel, l'évolution des types de navires dans les po",
+    "summary_en": "Musée Maritime De Douala (Douala). museum Maritime De Douala. Located à Bonanjo, un quartier prestigieux de Douala, le museum Maritime de Douala est niché entre l' hôtel Sawa et l' hôtel Pullman, offrant une expérience culturelle unique dans un cadre architectural moderne. Ce museum, construit sur une superficie de 600 m&sup2; et réparti sur trois étages, est dédié à la valorisation du patrimoine maritime camerounais. Il s'agit d'un espace éducatif et ludique qui explore l'histoire des ports, des navires et des échanges commerciaux le long de la côte camerounaise. Plutôt qu'un lieu de divertissement classique comme un cinéma ou un complexe sportif, ce museum features une immersion fascinante dans le monde maritime. Le museum Maritime de Douala features des expositions thématiques captivantes réparties sur ses trois étages. Les visiteurs peuvent découvrir l'homme dans son milieu naturel, ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bonanjo · Ville : Douala · Localisation : A côté de l’hôtel Sawa et de l’hôtel Pullman · Catégories : Sites Touristiques, Musée",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": "2000 XAF",
+    "tags": [
+      "douala",
+      "littoral",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Musée Maritime De Douala",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "palais-de-la-culture-du-peuple-sawa-besseke",
+    "name": "Palais De La Culture Du Peuple Sawa",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "museum",
+    "summary_fr": "Palais De La Culture Du Peuple Sawa. Le Palais de la Culture du peuple Sawa est un complexe culturel situé à Besseke, dans le quartier Bonandjo, à Douala, Cameroun. Inauguré en décembre 2023, il a pour mission de promouvoir et de valoriser la culture Sawa à travers divers espaces dédiés à l'art et à la culture. Ce palais comprend un musée, une salle de concert, une salle de théâtre, et un centre de documentation. Le musée présente des objets culturels emblématiques des Sawa, tels que des sculptures, des masques, des instruments de musique, et des textiles traditionnels. La salle de concert est utilisée pour des événements de musique traditionnelle et moderne. Les attractions et activités incluent des expositions culturelles, des concerts, et des performances théâtrales. Ces activités sont adaptées aux adultes et aux enfants, favorisant ainsi l' éducation culturelle à travers des présenta",
+    "summary_en": "Palais De La Culture Du Peuple Sawa. Le Palais de la Culture du peuple Sawa is a complexe culturel situé à Besseke, dans le quartier Bonandjo, à Douala, Cameroon. Inauguré en décembre 2023, il a pour mission de promouvoir et de valoriser la culture Sawa à travers divers espaces dédiés à l'art et à la culture. Ce palais comprend un museum, une salle de concert, une salle de théâtre, et un centre de documentation. Le museum présente des objets culturels emblématiques des Sawa, tels que des sculptures, des masques, des instruments de musique, et des textiles traditionnels. La salle de concert est utilisée pour des événements de musique traditionnelle et moderne. Les attractions et activités incluent des expositions culturelles, des concerts, et des performances théâtrales. Ces activités sont adaptées aux adultes et aux enfants, favorisant ainsi l' éducation culturelle à travers des présenta",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Besseke · Ville : Douala · Localisation : Bonandjo · Catégories : Sites Touristiques, Musée",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "Palais De La Culture Du Peuple Sawa",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "parc-de-bonamoussadi-bonamoussadi",
+    "name": "Parc De Bonamoussadi",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Parc De Bonamoussadi. Situé à Bonamoussadi, à quelques mètres de Greenfield, dans la ville de Douala, le Parc de Bonamoussadi est un charmant espace vert urbain qui combine détente, promenade et loisirs en plein air. Ce site touristique naturel est l'un des rares endroits de la ville où l'on peut profiter d'un environnement paisible et rafraîchissant, loin du tumulte urbain. Parmi les activités phares, on retrouve les promenades sur sentiers, les séances de méditation et de relaxation, ainsi que des moments de contemplation dans les jardins aménagés. Le Parc de Bonamoussadi est adapté à tous les âges, aussi bien aux adultes qu'aux enfants, ce qui en fait un lieu parfait pour des sorties familiales ou entre amis. Il est ouvert tous les jours de 7h à 18h et l'entrée est gratuite, ce qui encourage sa fréquentation régulière par les habitants du quartier. En termes de services offerts, le pa",
+    "summary_en": "Parc De Bonamoussadi. Located à Bonamoussadi, à quelques mètres de Greenfield, dans la ville de Douala, le Parc de Bonamoussadi is a charmant espace vert urbain qui combine détente, promenade et loisirs en plein air. Ce tourist site naturel est l'un des rares endroits de la ville où l'on peut profiter d'un environnement paisible et rafraîchissant, loin du tumulte urbain. Parmi les activités phares, on retrouve les promenades sur sentiers, les séances de méditation et de relaxation, ainsi que des moments de contemplation dans les jardins aménagés. Le Parc de Bonamoussadi est adapté à tous les âges, aussi bien aux adultes qu'aux enfants, ce qui en fait un lieu parfait pour des sorties familiales ou entre amis. Il est ouvert tous les jours de 7h à 18h et l'entrée est gratuite, ce qui encourage sa fréquentation régulière par les habitants du quartier. En termes de services offerts, le parc d",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bonamoussadi · Ville : Douala · Localisation : A quelques mètres de Greenfield · Catégories : Sites Touristiques, Parcs",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Parc De Bonamoussadi",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "pont-du-wouri-bonaberi",
+    "name": "Pont Du Wouri",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "Pont Du Wouri. Situé à Bonabéri, reliant les quartiers Deido et Bonassama, Douala, le Pont du Wouri, aussi appelé pont de Bonabéri, est un pont routier en béton. Il relie les deux rives du fleuve Wouri. Mis en service en 1954, il est un ouvrage d'art emblématique de la ville. Le Pont du Wouri est principalement une infrastructure de transport. Les activités phares sont la traversée du fleuve en voiture, à moto ou à pied, et l' observation du paysage. L'établissement est adapté à tous les âges, mais n'offre pas d'activités spécifiques pour les enfants. L'accès au pont est gratuit. Le nombre de places assises est limité aux bancs publics présents sur les trottoirs. Le Pont du Wouri est une infrastructure publique. L'établissement n'offre pas de services de restauration ou de boissons. La réservation n'est pas nécessaire. La livraison n'est pas applicable. Un parking est disponible à proxim",
+    "summary_en": "Pont Du Wouri. Located à Bonabéri, reliant les quartiers Deido et Bonassama, Douala, le Pont du Wouri, aussi appelé pont de Bonabéri, is a pont routier en béton. Il relie les deux rives du fleuve Wouri. Mis en service en 1954, il is a ouvrage d'art emblématique de la ville. Le Pont du Wouri est principalement une infrastructure de transport. Les activités phares sont la traversée du fleuve en voiture, à moto ou à pied, et l' observation du paysage. L'établissement est adapté à tous les âges, mais n'offers pas d'activités spécifiques pour les enfants. L'accès au pont est gratuit. Le nombre de places assises est limité aux bancs publics présents sur les trottoirs. Le Pont du Wouri is a infrastructure publique. L'établissement n'offers pas de services de restauration ou de boissons. La réservation n'est pas nécessaire. La livraison n'est pas applicable. Un parking est disponible à proximité",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bonaberi · Ville : Douala · Localisation : A proximité du rond point Deido · Catégories : Sites Touristiques, Pont",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Pont Du Wouri",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "bonanjo-douala",
+    "name": "Quartier Bonanjo (Douala)",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "heritage",
+    "summary_fr": "Quartier administratif et colonial de Douala : cathédrale, anciens bâtiments et art public. Point de départ pour lire l'histoire portuaire Sawa du Littoral.",
+    "summary_en": "Douala's administrative and colonial quarter: cathedral, historic buildings and public art. A starting point for the Littoral's Sawa port history.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Balade à pied ou taxi ; combiner avec la Pagode et le musée maritime si ouverts.",
+    "latitude": 4.0434,
+    "longitude": 9.6873,
+    "price": null,
+    "tags": [
+      "douala",
+      "littoral",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "Quartier Bonanjo (Douala)",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "siga-bonjo-resort-siga-bonjo",
+    "name": "Siga Bonjo Resort",
+    "city": "Yabassi",
+    "region": "Littoral",
+    "category": "activity",
+    "summary_fr": "Siga Bonjo Resort. Situé à Siga Bonjo, près des villages Moussadi et Bessoungkang dans l'arrondissement de Yabassi, Siga Bonjo Resort est un site touristique qui propose des gîtes écotouristiques et des cases d'hôtes. Ce site accueille les visiteurs à la demande, que ce soit en solo ou en groupe. Il offre diverses possibilités d'hébergement dans des bungalows et chalets confortables, ainsi que des services de restauration adaptés aux besoins des clients. Les activités de loisirs peuvent être organisées sur demande, apportant une touche d'aventure et de découverte à chaque séjour. Les clients peuvent profiter d 'excursions en pirogue pour explorer les environs, faire des randonnées pour admirer la flore et la faune locales, et participer à des visites culturelles qui dévoilent le patrimoine des communautés environnantes. Des ateliers de cuisine locale, notamment des cours sur la préparati",
+    "summary_en": "Siga Bonjo Resort. Located à Siga Bonjo, près des villages Moussadi et Bessoungkang dans l'arrondissement de Yabassi, Siga Bonjo Resort is a tourist site qui features des gîtes écotouristiques et des cases d'hôtes. Ce site accueille les visiteurs à la demande, que ce soit en solo ou en groupe. Il offers diverses possibilités d'hébergement dans des bungalows et chalets confortables, ainsi que des services de restauration adaptés aux besoins des clients. Les activités de loisirs peuvent être organisées sur demande, apportant une touche d'aventure et de découverte à chaque séjour. Les clients peuvent profiter d 'excursions en pirogue pour explorer les environs, faire des randonnées pour admirer la flore et la faune locales, et participer à des visites culturelles qui dévoilent le patrimoine des communautés environnantes. Des ateliers de cuisine locale, notamment des cours sur la préparation",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Siga-Bonjo · Ville : Yabassi · Localisation : Près des villages Moussadi et Bessoungkang · Catégories : Sites Touristiques, Site touristique avec hébergements",
+    "latitude": 4.45,
+    "longitude": 9.97,
+    "price": "30000 XAF",
+    "tags": [
+      "yabassi",
+      "littoral",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Siga Bonjo Resort",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "the-forest-creative-loft-bali",
+    "name": "The Forest Creative Loft",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "museum",
+    "summary_fr": "The Forest Creative Loft. Situé à Bali, Rue Richard Bell, Douala, The Forest Creative Loft est une galerie d'art et un laboratoire d'expérimentation culturelle où se rencontrent artistes, penseurs et passionnés de création. Véritable espace de liberté et de réflexion, cet endroit unique encourage l'échange d'idées et le développement de nouvelles pratiques artistiques. Ce centre artistique propose une immersion dans le monde de la créativité: • Expositions d'arts visuels, mettant en avant des artistes émergents et confirmés. • Ateliers et formations dédiés aux jeunes talents dans le domaine des arts plastiques et visuels. • Rencontres et débats entre acteurs culturels, chercheurs et amateurs d'art. • Studio photographique pour la découverte et l'expérimentation des techniques d'image. • Bibliothèque libre d'accès, favorisant la lecture et l'apprentissage. • Espace boukarou, un lieu d'éch",
+    "summary_en": "The Forest Creative Loft. Located à Bali, Rue Richard Bell, Douala, The Forest Creative Loft is a galerie d'art et un laboratoire d'expérimentation culturelle où se rencontrent artistes, penseurs et passionnés de création. Véritable espace de liberté et de réflexion, cet endroit unique encourage l'échange d'idées et le développement de nouvelles pratiques artistiques. Ce centre artistique propose une immersion dans le monde de la créativité: • Expositions d'arts visuels, mettant en avant des artistes émergents et confirmés. • Ateliers et formations dédiés aux jeunes talents dans le domaine des arts plastiques et visuels. • Rencontres et débats entre acteurs culturels, chercheurs et amateurs d'art. • Studio photographique pour la découverte et l'expérimentation des techniques d'image. • Bibliothèque libre d'accès, favorisant la lecture et l'apprentissage. • Espace boukarou, un lieu d'écha",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Bali · Ville : Douala · Localisation : Rue Richard Bell · Catégories : Sites Touristiques, GALLERIE D'ART",
+    "latitude": 4.0511,
+    "longitude": 9.7679,
+    "price": "2000 XAF",
+    "tags": [
+      "douala",
+      "littoral",
+      "museum"
+    ],
+    "sources": [
+      {
+        "title": "The Forest Creative Loft",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "douala-marche-central",
+    "name": "Marché Central de Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "market",
+    "summary_fr": "Marché animé au cœur de Douala : produits frais, artisanat, tissus et ambiance urbaine intense. Reflet de la vie quotidienne de la capitale économique.",
+    "summary_en": "Busy market in the heart of Douala: fresh produce, crafts, fabrics, and intense urban energy. A window into daily life in Cameroon's economic capital.",
+    "tips_fr": "Visitez en journée. Gardez téléphone et argent en sécurité. Un guide local aide pour s'orienter.",
+    "tips_en": "Visit during the day. Keep phone and cash secure. A local guide helps with orientation.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "marché",
+      "market",
+      "shopping",
+      "local",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Marché Central de Douala",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "douala-wouri",
+    "name": "Fleuve Wouri",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Le fleuve Wouri structure Douala. Ponts, ports et berges rappellent le rôle commercial et maritime de la ville.",
+    "summary_en": "The Wouri River shapes Douala. Bridges, ports, and riverbanks recall the city's commercial and maritime role.",
+    "tips_fr": "Observez plutôt depuis des points sécurisés recommandés localement. Évitez les zones isolées la nuit.",
+    "tips_en": "View from locally recommended safe points. Avoid isolated areas at night.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "wouri",
+      "fleuve",
+      "river",
+      "port",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Fleuve Wouri",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "douala-deido",
+    "name": "Quartier Deido",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "district",
+    "summary_fr": "Quartier populaire et commercial de Douala, connu pour son animation, ses commerces et son rôle dans la vie urbaine locale.",
+    "summary_en": "Popular commercial neighbourhood in Douala, known for its energy, shops, and everyday urban life.",
+    "tips_fr": "Intéressant pour sentir le rythme de Douala ; privilégiez la journée et un accompagnement local si vous découvrez la ville.",
+    "tips_en": "Good for feeling Douala's rhythm; prefer daytime and local accompaniment if new to the city.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "deido",
+      "quartier",
+      "local",
+      "urbain",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Quartier Deido",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "douala-akwa",
+    "name": "Quartier Akwa",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "district",
+    "summary_fr": "Quartier central commerçant et hôtelier de Douala: banques, restaurants, boutiques. Cœur pratique pour un séjour urbain.",
+    "summary_en": "Central commercial and hotel district of Douala: banks, restaurants, shops. Practical hub for a city stay.",
+    "tips_fr": "Circulation dense; prévoyez du temps entre rendez-vous.",
+    "tips_en": "Heavy traffic; allow time between appointments.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "akwa",
+      "shopping",
+      "hotel",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Quartier Akwa",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "douala-bonapriso",
+    "name": "Bonapriso",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "district",
+    "summary_fr": "Quartier résidentiel et commercial prisé, restaurants et cadre plus calme que le centre très dense.",
+    "summary_en": "Sought-after residential and commercial area with restaurants and a calmer feel than the densest centre.",
+    "tips_fr": "Bon choix pour se restaurer; tarifs souvent plus élevés.",
+    "tips_en": "Good for dining; prices often higher.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "bonapriso",
+      "restaurant",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Bonapriso",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "douala-airport-access",
+    "name": "Aéroport international de Douala (accès ville)",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "transport",
+    "summary_fr": "Principale porte d'entrée aérienne du Cameroun. Navettes, taxis et VTC relient l'aéroport aux quartiers (Akwa, Bonanjo, etc.).",
+    "summary_en": "Cameroon's main air gateway. Shuttles, taxis and ride-hail link the airport to districts (Akwa, Bonanjo, etc.).",
+    "tips_fr": "Convenez du tarif taxi avant de partir; méfiez-vous des rabatteurs agressifs.",
+    "tips_en": "Agree taxi fare before leaving; beware aggressive touts.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "aéroport",
+      "airport",
+      "transport",
+      "arrivée",
+      "littoral"
+    ],
+    "sources": [
+      {
+        "title": "Aéroport international de Douala (accès ville)",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "ile-manoka-mangroves",
+    "name": "Zone mangroves / estuaire autour de Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "nature",
+    "summary_fr": "Autour de Douala: mangroves, bras de mer et villages côtiers. Sorties nature possibles avec opérateurs locaux (selon saison et sécurité).",
+    "summary_en": "Around Douala: mangroves, tidal channels and coastal villages. Nature outings possible with local operators (by season and safety).",
+    "tips_fr": "Allez avec un organisateur connu; moustiques fréquents.",
+    "tips_en": "Go with a known organiser; mosquitoes common.",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "mangrove",
+      "nature",
+      "littoral",
+      "estuaire",
+      "manoka"
+    ],
+    "sources": [
+      {
+        "title": "Zone mangroves",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  },
+  {
+    "id": "krystal-palace-douala-akwa",
+    "name": "Krystal Palace Douala",
+    "city": "Douala",
+    "region": "Littoral",
+    "category": "hotel",
+    "summary_fr": "Hôtel à Akwa (boulevard de la Liberté), documenté sur Ayila’a ; vue sur le fleuve Wouri mentionnée.",
+    "summary_en": "Hotel in Akwa (Boulevard de la Liberté), documented on Ayila’a; Wouri river view mentioned.",
+    "culture_fr": "Quartier : Akwa · Ville : Douala",
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "douala",
+      "akwa",
+      "littoral",
+      "hotel",
+      "hôtel"
+    ],
+    "sources": [
+      {
+        "title": "Krystal Palace Douala",
+        "organization": "Ayila'a hotels",
+        "url": "https://ayilaa.com/fr/hotels-et-hebergements/5249-hotel-krystal-palace-douala",
+        "verification_status": "structured_import"
+      }
+    ]
+  }
+]

@@ -33,7 +33,7 @@ def render_deterministic(
         return geo_chunks[0].content.split(" (source:")[0].strip()
 
     culture_chunks = [
-        k for k in knowledge.knowledge if (k.source_id or "") == "culture:ouest"
+        k for k in knowledge.knowledge if (k.source_id or "").startswith("culture:")
     ]
     if intent.intent == "FOOD" and culture_chunks:
         return _render_culture_food(culture_chunks, knowledge, lang=lang, voice=voice)
@@ -301,27 +301,31 @@ def _render_culture_food(
         k
         for k in culture_chunks
         if (k.chunk_id or "").startswith("culture-dish-")
-        or (k.title and k.title.casefold() in {"achu", "koki", "café des hauts plateaux", "highland coffee"})
     ]
     if not dishes:
         dishes = [k for k in culture_chunks if "dish" in (k.chunk_id or "")]
     policy = [k for k in culture_chunks if "resto-policy" in (k.chunk_id or "")]
     parts: list[str] = []
     if lang == "en":
-        parts.append("Typical West / Grassfields dishes documented in my knowledge base:")
+        parts.append("Typical dishes documented in my knowledge base:")
     else:
-        parts.append("Plats typiques de l’Ouest / Grassfields documentés dans ma base :")
+        parts.append("Plats typiques documentés dans ma base :")
     for d in dishes[:5]:
         title = d.title or "Plat"
         body = (d.content or "").strip()
         parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
     if policy:
         parts.append(policy[0].content.strip())
-    hotels = [
-        p
-        for p in knowledge.places
-        if "hotel" in (p.category or "").casefold() or "hôtel" in (p.name or "").casefold()
-    ]
+    hotels = []
+    for p in knowledge.places:
+        cat = p.category
+        if isinstance(cat, list):
+            cat_blob = " ".join(str(c) for c in cat).casefold()
+        else:
+            cat_blob = (cat or "").casefold()
+        name_blob = (p.name or "").casefold()
+        if "hotel" in cat_blob or "hôtel" in cat_blob or "hôtel" in name_blob or "hotel" in name_blob:
+            hotels.append(p)
     if hotels and lang == "fr":
         parts.append(
             f"Hébergement documenté avec restauration mentionnée : {hotels[0].name}."
@@ -340,25 +344,23 @@ def _render_culture_traditions(
     voice: bool,
 ) -> str:
     trads = [k for k in culture_chunks if (k.chunk_id or "").startswith("culture-trad-")]
-    overview = [k for k in culture_chunks if (k.chunk_id or "") == "culture-overview-ouest"]
+    overview = [k for k in culture_chunks if (k.chunk_id or "").startswith("culture-overview-")]
     parts: list[str] = []
     if overview:
         parts.append(overview[0].content.strip())
     if lang == "en":
-        parts.append("Documented cultural notes for the West:")
+        parts.append("Documented cultural notes:")
     else:
-        parts.append("Repères culturels documentés pour l’Ouest :")
+        parts.append("Repères culturels documentés :")
     for t in (trads or culture_chunks)[:5]:
         title = t.title or "Culture"
         body = (t.content or "").strip()
-        if overview and t.chunk_id == "culture-overview-ouest":
+        if overview and (t.chunk_id or "").startswith("culture-overview-"):
             continue
         parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
-    ouest_places = [
-        p for p in knowledge.places if (p.region or "").casefold() in {"ouest", "west"}
-    ][:4]
-    if ouest_places:
-        names = ", ".join(p.name for p in ouest_places)
+    region_places = knowledge.places[:4]
+    if region_places:
+        names = ", ".join(p.name for p in region_places)
         if lang == "en":
             parts.append(f"Related verified places: {names}.")
         else:
