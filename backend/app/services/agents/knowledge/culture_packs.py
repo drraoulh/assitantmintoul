@@ -98,7 +98,57 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "poisson braise",
         "poisson braisé",
     ),
+    "sud-ouest": (
+        "sud-ouest",
+        "sud ouest",
+        "south-west",
+        "southwest",
+        "south west",
+        "limbe",
+        "limbé",
+        "buea",
+        "kumba",
+        "mundemba",
+        "mamfe",
+        "tiko",
+        "korup",
+        "barombi",
+        "mont cameroun",
+        "mount cameroon",
+        "eru",
+        "okok",
+        "sable noir",
+        "black sand",
+        "pidgin",
+        "fako",
+    ),
 }
+
+
+_COMPOUND_OUEST = (
+    "sud-ouest",
+    "sud ouest",
+    "nord-ouest",
+    "nord ouest",
+    "south-west",
+    "southwest",
+    "south west",
+    "north-west",
+    "northwest",
+    "north west",
+)
+
+
+def _trigger_hits(q: str, region_id: str, tokens: tuple[str, ...]) -> bool:
+    """Match pack tokens without letting bare ouest/west hit Sud-Ouest / Nord-Ouest."""
+    compound = any(c in q for c in _COMPOUND_OUEST)
+    for tok in tokens:
+        if tok not in q:
+            continue
+        if region_id == "ouest" and tok in {"ouest", "west"} and compound:
+            continue
+        return True
+    return False
 
 
 @lru_cache(maxsize=8)
@@ -127,6 +177,8 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "ndolé",
             "poulet",
             "poisson",
+            "eru",
+            "okok",
             "cafe",
             "café",
         )
@@ -144,6 +196,7 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "ewondo",
             "fang",
             "beti",
+            "pidgin",
             "danse",
             "masque",
             "protocole",
@@ -292,7 +345,8 @@ def _pack_evidence(region_id: str, pack: dict, *, language: str, flags: dict[str
             )
 
     if flags["hotel"]:
-        for hotel in pack.get("hotels_verified", []):
+        hotels = pack.get("hotels_verified") or []
+        for hotel in hotels:
             text = hotel.get("text_en") if lang == "en" else hotel.get("text_fr")
             out.append(
                 KnowledgeEvidence(
@@ -303,6 +357,19 @@ def _pack_evidence(region_id: str, pack: dict, *, language: str, flags: dict[str
                     score=0.85,
                 )
             )
+        if not hotels:
+            policy = pack.get("hotels_policy") or {}
+            pol = policy.get("text_en") if lang == "en" else policy.get("text_fr")
+            if pol:
+                out.append(
+                    KnowledgeEvidence(
+                        chunk_id=f"culture-hotel-policy-{region_id}",
+                        content=str(pol),
+                        source_id=source_id,
+                        title=f"Hotels {region_id} (policy)",
+                        score=0.9,
+                    )
+                )
 
     return out
 
@@ -314,7 +381,7 @@ def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[Know
     out: list[KnowledgeEvidence] = []
 
     for region_id, tokens in _PACK_TRIGGERS.items():
-        if not any(tok in q for tok in tokens):
+        if not _trigger_hits(q, region_id, tokens):
             continue
         try:
             pack = _load_pack(region_id)

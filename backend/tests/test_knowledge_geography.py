@@ -547,3 +547,110 @@ async def test_ouest_food_query_injects_culture(geo_on):
     )
     text = result.final_response.text.casefold()
     assert "achu" in text or "koki" in text or "restaurant" in text or "plat" in text
+
+def test_sud_ouest_admin_and_buea():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Buea")
+    assert chain is not None
+    assert chain["region"] == "Sud-Ouest"
+    assert chain["is_region_capital"] is True
+    limbe = city_admin_chain("Limbé")
+    assert limbe and limbe["region"] == "Sud-Ouest"
+    assert limbe["division"] == "Fako"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "sud-ouest"]) == 4
+
+
+def test_sud_ouest_not_buea():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Sud-Ouest c’est Buea nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_mont_cameroun_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le Mont Cameroun ?", language="fr")
+    assert facts
+    assert "Buea" in facts[0].text_fr
+    assert "Sud-Ouest" in facts[0].text_fr
+
+
+def test_korup_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le parc de Korup ?", language="fr")
+    assert facts
+    assert "Mundemba" in facts[0].text_fr or "Ndian" in facts[0].text_fr
+
+
+def test_sud_ouest_culture_eru(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques à Limbé ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "eru" in blob or "okok" in blob or "plantain" in blob
+    assert any((e.source_id or "") == "culture:sud-ouest" for e in ev)
+    assert not any((e.source_id or "") == "culture:ouest" for e in ev)
+
+
+def test_sud_ouest_no_invented_hotels():
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache, _load_pack
+
+    clear_culture_cache()
+    pack = _load_pack("sud-ouest")
+    assert pack.get("hotels_verified") == []
+    assert pack.get("hotels_policy")
+    assert (pack.get("restaurants_policy") or {}).get("verified_named_restaurants") == []
+
+
+def test_eru_sets_sud_ouest_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi de l’eru").region == "Sud-Ouest"
+    assert extract_slots("Que visiter à Kumba ?").city == "Kumba"
+
+
+@pytest.mark.asyncio
+async def test_visit_limbe_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Limbé que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "buea" not in cities
+    assert "kumba" not in cities
+
+
+@pytest.mark.asyncio
+async def test_sud_ouest_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques du Sud-Ouest ?",
+        mode="text",
+        locale="fr",
+    )
+    assert any((k.source_id or "") == "culture:sud-ouest" for k in result.knowledge.knowledge)
+    text = result.final_response.text.casefold()
+    assert "eru" in text or "okok" in text or "plat" in text or "restaurant" in text

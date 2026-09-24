@@ -1,0 +1,173 @@
+{
+  "region_id": "sud-ouest",
+  "region_fr": "Sud-Ouest",
+  "region_en": "South-West",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, food_deep_dive, shopping_crafts, cities_quick_guide, regions_overview, climate_seasons, transport_itineraries, interests_itineraries, national_parks_wildlife, languages_etiquette, safety_health_money, practical_travel), stay-cities, fiches lieux Sud-Ouest. Aucun restaurant nommé inventé. Aucun hôtel Ayila'a Limbé/Buea dans l'import actuel.",
+  "overview": {
+    "text_fr": "Le Sud-Ouest a pour chef-lieu Buea. Côte volcanique : Limbé (sable noir, jardin botanique, centre faunique). Mont Cameroun (trek, guide recommandé). Intérieur : Kumba (lacs Barombi), Korup (Mundemba). Accès typique Douala → Limbé → Buea. Zone anglophone : consulter des avis de voyage officiels récents.",
+    "text_en": "The South-West’s capital is Buea. Volcanic coast: Limbe (black sand, botanic garden, wildlife centre). Mount Cameroon (trek, guide recommended). Inland: Kumba (Barombi lakes), Korup (Mundemba). Typical access Douala → Limbe → Buea. Anglophone area: check recent official travel advice.",
+    "source": "data/documents/regions_overview.md ; data/documents/cities_quick_guide.md ; data/documents/safety_health_money.md"
+  },
+  "cultural_areas": [
+    {
+      "id": "fako-coast",
+      "name_fr": "Fako (Limbé / Buea)",
+      "name_en": "Fako (Limbe / Buea)",
+      "description_fr": "Côte volcanique et pied du Mont Cameroun : héritage colonial à Buea, plages de sable noir et conservation à Limbé.",
+      "description_en": "Volcanic coast and Mount Cameroon foothills: colonial heritage in Buea, black-sand beaches and conservation in Limbe.",
+      "related_cities": ["Limbé", "Buea", "Tiko"],
+      "source": "data/documents/cities_quick_guide.md ; data/tourist_sites/sud_ouest_complete.json"
+    },
+    {
+      "id": "korup-ndian",
+      "name_fr": "Korup / Ndian",
+      "name_en": "Korup / Ndian",
+      "description_fr": "Forêt primaire du parc national de Korup (accès Mundemba) — opérateurs responsables.",
+      "description_en": "Primary forest of Korup National Park (Mundemba access) — responsible operators.",
+      "related_cities": ["Mundemba"],
+      "source": "data/documents/national_parks_wildlife.md"
+    }
+  ],
+  "languages": [
+    {
+      "name": "English / Cameroon Pidgin",
+      "area": "Sud-Ouest au quotidien",
+      "note_fr": "Anglais et Pidgin plus présents qu’au Centre/Littoral francophone. How far? / I dey / Abeg utiles.",
+      "note_en": "English and Pidgin are more present than in francophone Centre/Littoral. How far? / I dey / Abeg are useful.",
+      "source": "data/documents/languages_etiquette.md ; data/documents/regions_overview.md"
+    },
+    {
+      "name": "Duala (côtier utile)",
+      "area": "Limbé / côte",
+      "note_fr": "Ville anglophone, mais Duala reste un salut côtier utile (Mbolo).",
+      "note_en": "An English-speaking town, but Duala remains a useful coastal greeting (Mbolo).",
+      "source": "imports/camerounai-stay-language-games/data/stay-cities.ts"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "mount-cameroon-trek",
+      "title_fr": "Trek Mont Cameroun",
+      "title_en": "Mount Cameroon trek",
+      "text_fr": "Trek exigeant depuis Buea : guide local recommandé. Fraîcheur et vent en altitude même si la côte est chaude — prévoir couches.",
+      "text_en": "Demanding trek from Buea: local guide recommended. Cool wind at altitude even when the coast is hot — pack layers.",
+      "source": "data/documents/national_parks_wildlife.md ; data/documents/practical_travel.md ; data/documents/climate_seasons.md"
+    },
+    {
+      "id": "limbe-conservation",
+      "title_fr": "Conservation à Limbé",
+      "title_en": "Conservation in Limbe",
+      "text_fr": "Jardin botanique et centre faunique de Limbé : préférez ces centres de conservation ; ne soutenez pas le commerce illégal d’espèces.",
+      "text_en": "Limbe botanic garden and wildlife centre: prefer these conservation centres; do not support illegal wildlife trade.",
+      "source": "data/documents/national_parks_wildlife.md ; data/documents/cities_quick_guide.md"
+    },
+    {
+      "id": "travel-advice",
+      "title_fr": "Avis de voyage",
+      "title_en": "Travel advice",
+      "text_fr": "Nord-Ouest / Sud-Ouest / Extrême-Nord : consultez des avis de voyage officiels récents avant tout projet.",
+      "text_en": "North-West / South-West / Far North: check recent official travel advice before any trip.",
+      "source": "data/documents/safety_health_money.md"
+    },
+    {
+      "id": "coastal-souvenirs",
+      "title_fr": "Souvenirs côtiers",
+      "title_en": "Coastal souvenirs",
+      "text_fr": "À Limbé comme à Kribi : souvenirs côtiers — vérifiez la légalité des coquillages / produits animaux.",
+      "text_en": "In Limbe as in Kribi: coastal souvenirs — check legality of shells / animal products.",
+      "source": "data/documents/shopping_crafts.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "eru-okok",
+      "name_fr": "Eru / okok",
+      "name_en": "Eru / okok",
+      "text_fr": "Légumes-feuilles avec viande ou poisson — très présent dans le Sud-Ouest et zones voisines.",
+      "text_en": "Leafy greens with meat or fish — very common in the South-West and nearby areas.",
+      "source": "data/documents/food_culture.md ; data/documents/food_deep_dive.md"
+    },
+    {
+      "id": "coastal-staples",
+      "name_fr": "Bases côtières",
+      "name_en": "Coastal staples",
+      "text_fr": "Plantains, poissons et plats locaux selon les marchés de Limbé — aucun restaurant nommé inventé dans cette base.",
+      "text_en": "Plantains, fish and local dishes from Limbe markets — no invented restaurant names in this base.",
+      "source": "data/documents/food_culture.md ; data/documents/languages_etiquette.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "limbe-souvenirs",
+      "name_fr": "Souvenirs de Limbé",
+      "name_en": "Limbe souvenirs",
+      "text_fr": "Souvenirs côtiers ; négociez avec courtoisie et vérifiez la légalité.",
+      "text_en": "Coastal souvenirs; negotiate courteously and check legality.",
+      "city": "Limbé",
+      "source": "data/documents/shopping_crafts.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "mount-cameroon",
+      "title_fr": "Mont Cameroun",
+      "title_en": "Mount Cameroon",
+      "text_fr": "Plus haut sommet du Cameroun (Buea) : trek, climat d’altitude, guide recommandé.",
+      "text_en": "Cameroon’s highest peak (Buea): trek, highland climate, guide recommended.",
+      "source": "data/tourist_sites/sud_ouest_complete.json ; data/documents/national_parks_wildlife.md"
+    },
+    {
+      "id": "limbe-black-sand",
+      "title_fr": "Plages de sable noir",
+      "title_en": "Black-sand beaches",
+      "text_fr": "Down Beach, Moland Beach, île Ndame à Limbé — sable volcanique ; crème solaire et retour avant la nuit.",
+      "text_en": "Down Beach, Moland Beach, Ndame island in Limbe — volcanic sand; sunscreen and return before nightfall.",
+      "source": "data/tourist_sites/sud_ouest_complete.json ; data/documents/interests_itineraries.md"
+    },
+    {
+      "id": "korup-barombi",
+      "title_fr": "Korup et lacs Barombi",
+      "title_en": "Korup and Barombi lakes",
+      "text_fr": "Parc national de Korup (Mundemba) ; lacs Barombi Mbo et Kotto (Kumba) ; lac de cratère Debunscha.",
+      "text_en": "Korup National Park (Mundemba); Barombi Mbo and Kotto lakes (Kumba); Debunscha crater lake.",
+      "source": "data/tourist_sites/sud_ouest_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "corridor-limbe-buea",
+      "title_fr": "Corridor Douala → Limbé → Buea",
+      "title_en": "Douala → Limbe → Buea corridor",
+      "text_fr": "Itinéraire type côte Sud-Ouest : Douala → Limbé (sable noir, jardin, wildlife) → Buea / Mont Cameroun.",
+      "text_en": "Typical South-West coast route: Douala → Limbe (black sand, garden, wildlife) → Buea / Mount Cameroon.",
+      "source": "data/documents/transport_itineraries.md ; data/documents/regions_overview.md"
+    },
+    {
+      "id": "climate-sw",
+      "title_fr": "Climat volcanique",
+      "title_en": "Volcanic climate",
+      "text_fr": "Côte chaude ; Mont Cameroun : fraîcheur et vent en altitude.",
+      "text_en": "Warm coast; Mount Cameroon: cool wind at altitude.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Sud-Ouest (export places sans restauration). Ne pas inventer de noms. Orienter vers eru/okok et marchés de Limbé.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the South-West (places export excluded restaurants). Do not invent names. Point to eru/okok and Limbe markets.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [],
+  "hotels_policy": {
+    "text_fr": "Aucun hôtel Limbé/Buea dans l’import Ayila’a actuel — ne pas inventer de noms d’hébergement.",
+    "text_en": "No Limbe/Buea hotels in the current Ayila’a import — do not invent lodging names.",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "fako", "name_fr": "Fako", "hub": "Buea", "note_fr": "Buea, Limbé, Mont Cameroun, plages."},
+    {"id": "meme", "name_fr": "Meme", "hub": "Kumba", "note_fr": "Lacs Barombi."},
+    {"id": "ndian", "name_fr": "Ndian", "hub": "Mundemba", "note_fr": "Parc de Korup."},
+    {"id": "manyu", "name_fr": "Manyu", "hub": "Mamfe", "note_fr": "Ouest du Sud-Ouest."}
+  ]
+}

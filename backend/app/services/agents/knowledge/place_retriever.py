@@ -67,6 +67,28 @@ _NOT_KRIBI = {
     "yaounde",
     "yaoundé",
 }
+_NOT_LIMBE = {
+    "buea",
+    "kumba",
+    "mundemba",
+    "mamfe",
+    "tiko",
+    "douala",
+    "kribi",
+    "yaounde",
+    "yaoundé",
+}
+_NOT_BUEA = {
+    "limbe",
+    "limbé",
+    "kumba",
+    "mundemba",
+    "mamfe",
+    "douala",
+    "kribi",
+    "yaounde",
+    "yaoundé",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -189,6 +211,10 @@ class PlaceRetriever:
                         continue
                 if hub == "kribi" and place_city in _NOT_KRIBI:
                     continue
+                if hub in {"limbe", "limbé"} and place_city in _NOT_LIMBE:
+                    continue
+                if hub == "buea" and place_city in _NOT_BUEA:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -220,6 +246,20 @@ class PlaceRetriever:
                                 continue
                         elif hub == "kribi":
                             if place_city not in {"lobe", "lobé", "grand-batanga", "grand batanga", "bwambe", "bwambé"} and "kribi" not in place_city:
+                                continue
+                        elif hub in {"limbe", "limbé"}:
+                            if place_city not in {
+                                "down beach",
+                                "down-beach",
+                                "bimbia",
+                                "idenau",
+                            } and "limbe" not in place_city and "limbé" not in place_city:
+                                continue
+                        elif hub == "buea":
+                            if place_city not in {
+                                "debunscha",
+                                "mont cameroun",
+                            } and "buea" not in place_city:
                                 continue
                         else:
                             continue

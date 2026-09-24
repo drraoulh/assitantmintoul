@@ -90,6 +90,12 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["west region"] = rid
             idx.alias_to_region["region de l ouest"] = rid
             idx.alias_to_region["region ouest"] = rid
+        elif rid == "sud-ouest":
+            idx.alias_to_region["south-west"] = rid
+            idx.alias_to_region["southwest"] = rid
+            idx.alias_to_region["south west"] = rid
+            idx.alias_to_region["region du sud-ouest"] = rid
+            idx.alias_to_region["region sud-ouest"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -166,8 +172,24 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
     lang = "en" if (language or "fr").lower().startswith("en") else "fr"
 
     # Region ≈ city confusion (Ouest == Bafoussam? / Littoral == Douala?)
+    compound_ouest = any(
+        c in q
+        for c in (
+            "sud-ouest",
+            "sud ouest",
+            "nord-ouest",
+            "nord ouest",
+            "south-west",
+            "southwest",
+            "south west",
+            "north-west",
+            "northwest",
+            "north west",
+        )
+    )
     if (
-        ("ouest" in q or "west" in q)
+        not compound_ouest
+        and ("ouest" in q or "west" in q)
         and "bafoussam" in q
         and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
     ):
@@ -236,8 +258,34 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
-        ("sud" in q or "south" in q)
+        ("sud-ouest" in q or "sud ouest" in q or "south-west" in q or "southwest" in q or "south west" in q)
+        and "buea" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Sud-Ouest",
+                relation="IS_NOT_EQUIVALENT",
+                object="Buea",
+                text_fr=(
+                    "Pas exactement. Le Sud-Ouest est une région du Cameroun, "
+                    "et Buea en est le chef-lieu (Limbé est la station balnéaire)."
+                ),
+                text_en=(
+                    "Not exactly. The South-West is a region of Cameroon, "
+                    "and Buea is its capital (Limbe is the beach town)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("sud-ouest", "buea", "limbe"),
+            )
+        ]
+
+    if (
+        not compound_ouest
+        and ("sud" in q or "south" in q)
         and "kribi" in q
+        and "ouest" not in q
+        and "west" not in q
         and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
     ):
         return [
@@ -279,6 +327,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Yaoundé est le chef-lieu de la région du Centre du Cameroun (capitale politique)."
                     elif rid == "sud":
                         text_fr = "Ebolowa est le chef-lieu de la région du Sud du Cameroun."
+                    elif rid == "sud-ouest":
+                        text_fr = "Buea est le chef-lieu de la région du Sud-Ouest du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -354,6 +404,46 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Mont Cameroun
+    if "mont cameroun" in q or "mount cameroon" in q:
+        return [
+            GeoFact(
+                subject="Mont Cameroun",
+                relation="LOCATED_IN",
+                object="Buea / Fako / Sud-Ouest",
+                text_fr=(
+                    "Le Mont Cameroun se trouve près de Buea "
+                    "(département du Fako, région du Sud-Ouest)."
+                ),
+                text_en=(
+                    "Mount Cameroon is near Buea "
+                    "(Fako department, South-West region)."
+                ),
+                source="Sites touristiques Sud-Ouest / Buea",
+                entity_ids=("mont-cameroun", "buea", "fako", "sud-ouest"),
+            )
+        ]
+
+    # Korup
+    if "korup" in q:
+        return [
+            GeoFact(
+                subject="Parc national de Korup",
+                relation="LOCATED_IN",
+                object="Mundemba / Ndian / Sud-Ouest",
+                text_fr=(
+                    "Le parc national de Korup s’atteint depuis Mundemba "
+                    "(département du Ndian, région du Sud-Ouest)."
+                ),
+                text_en=(
+                    "Korup National Park is accessed from Mundemba "
+                    "(Ndian department, South-West region)."
+                ),
+                source="Sites touristiques Sud-Ouest / Korup",
+                entity_ids=("korup", "mundemba", "ndian", "sud-ouest"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -404,6 +494,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région du Centre du Cameroun."
                 elif rid == "sud":
                     text_fr = f"{cname} se trouve dans la région du Sud du Cameroun."
+                elif rid == "sud-ouest":
+                    text_fr = f"{cname} se trouve dans la région du Sud-Ouest du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -489,6 +581,11 @@ def is_geo_simple_query(query: str) -> bool:
         r"(?:chutes?\s+de\s+la\s+)?lob[eé]",
         r"sud.{0,40}c[' ]?est.{0,20}kribi",
         r"r[eé]gion\s+du\s+sud.{0,30}kribi",
+        r"sud[- ]?ouest.{0,40}c[' ]?est.{0,20}buea",
+        r"r[eé]gion\s+du\s+sud[- ]?ouest.{0,30}buea",
+        r"buea.{0,40}c[' ]?est.{0,20}sud[- ]?ouest",
+        r"mont\s+cameroun|mount\s+cameroon",
+        r"korup",
     )
     if any(re.search(p, q) for p in patterns):
         return True

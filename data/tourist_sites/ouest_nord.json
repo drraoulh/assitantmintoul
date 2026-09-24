@@ -37,25 +37,5 @@
       "photo",
       "nature"
     ]
-  },
-  {
-    "id": "mount-cameroon",
-    "name": "Mont Cameroun",
-    "city": "Buea",
-    "region": "Sud-Ouest",
-    "category": "hiking",
-    "summary_fr": "Volcan actif et plus haut sommet d'Afrique de l'Ouest. Trek exigeant depuis Buea / zones environnantes, avec végétation changeante selon l'altitude.",
-    "summary_en": "Active volcano and West Africa's highest peak. Demanding trek from Buea / nearby areas, with vegetation changing by altitude.",
-    "tips_fr": "Engagez un guide agréé. Préparez équipement de randonnée, eau et météo. Ce n'est pas une balade légère.",
-    "tips_en": "Hire a certified guide. Prepare hiking gear, water, and weather plans. This is not a casual walk.",
-    "tags": [
-      "mont cameroun",
-      "mount cameroon",
-      "buea",
-      "trek",
-      "hiking",
-      "volcan",
-      "sud-ouest"
-    ]
   }
 ]

@@ -53,6 +53,11 @@ _CITIES: dict[str, str] = {
     "campo": "Campo",
     "sangmelima": "Sangmélima",
     "ambam": "Ambam",
+    "kumba": "Kumba",
+    "mundemba": "Mundemba",
+    "tiko": "Tiko",
+    "mamfe": "Mamfe",
+    "idenau": "Idenau",
 }
 
 _REGIONS: dict[str, str] = {
@@ -121,6 +126,11 @@ _SUD_CULTURE = re.compile(
     r"\b(lob[eé]|grand\s+batanga|campo[- ]?ma|nkolandom|poisson\s+brais)\b",
     re.IGNORECASE,
 )
+_SUD_OUEST_CULTURE = re.compile(
+    r"\b(eru|okok|korup|barombi|pidgin|sable\s+noir|black\s+sand|"
+    r"mont\s+cameroun|mount\s+cameroon|bimbia|down\s+beach)\b",
+    re.IGNORECASE,
+)
 
 # Named places often asked about specifically (PLACE_DETAILS).
 _KNOWN_PLACES: dict[str, str] = {
@@ -181,6 +191,19 @@ _KNOWN_PLACES: dict[str, str] = {
     "campo maan": "Parc national de Campo-Ma'an",
     "rhumsiki": "Rhumsiki",
     "korup": "Korup",
+    "parc national de korup": "Parc national de Korup",
+    "parc de korup": "Parc national de Korup",
+    "jardin botanique de limbe": "Jardin botanique de Limbé",
+    "jardin botanique de limbé": "Jardin botanique de Limbé",
+    "centre faunique de limbe": "Centre faunique de Limbé",
+    "centre faunique de limbé": "Centre faunique de Limbé",
+    "limbe wildlife": "Centre faunique de Limbé",
+    "down beach": "Down Beach (Limbé)",
+    "lac barombi mbo": "Lac Barombi Mbo",
+    "barombi mbo": "Lac Barombi Mbo",
+    "lac barombi kotto": "Lac Barombi Kotto",
+    "barombi kotto": "Lac Barombi Kotto",
+    "bimbia": "Bimbia",
 }
 
 _DURATION = re.compile(
@@ -289,6 +312,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Sud"
         if slots.location is None:
             slots.location = "Sud"
+
+    if slots.region is None and _SUD_OUEST_CULTURE.search(raw):
+        slots.region = "Sud-Ouest"
+        if slots.location is None:
+            slots.location = "Sud-Ouest"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

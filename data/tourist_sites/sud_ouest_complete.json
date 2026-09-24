@@ -1,0 +1,409 @@
+[
+  {
+    "id": "bimbia-limbe",
+    "name": "Bimbia",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "activity",
+    "summary_fr": "Situé à Limbé, dans la région du Sud-Ouest du Cameroun, Bimbia est un site historique majeur, connu pour son rôle dans la traite négrière et classé au patrimoine national camerounais. Ce lieu chargé d'histoire est également un espace écotouristique, offrant une immersion unique entre vestiges du passé et nature préservée. Les visiteurs peuvent explorer les ruines des quartiers d'esclaves, la porte du non-retour, le moulin à huile, ainsi que la première église baptiste du Cameroun fondée en 1843 par Joseph Merrick. Le site abrite aussi des canons allemands pointant vers l'île Nichols, où étaient détenus les esclaves jugés les plus rebelles. Une randonnée pédestre permet de découvrir une forêt vierge intacte, ainsi que des sentiers offrant des panoramas exceptionnels sur l'océan Atlantique. Le lieu est accessible aux adultes et enfants, avec des excursions guidées organisées toute l'année.",
+    "summary_en": "Located à Limbé, dans la région du Sud-Ouest du Cameroon, Bimbia is a site historique majeur, connu pour son rôle dans la traite négrière et classé au patrimoine national camerounais. Ce lieu chargé d'histoire est également un espace écotouristique, offrant une immersion unique entre vestiges du passé et nature préservée. Les visiteurs peuvent explorer les ruines des quartiers d'esclaves, la porte du non-retour, le moulin à huile, ainsi que la première église baptiste du Cameroon fondée en 1843 par Joseph Merrick. Le site abrite aussi des canons allemands pointant vers l'île Nichols, où étaient détenus les esclaves jugés les plus rebelles. Une randonnée pédestre permet de découvrir une forêt vierge intacte, ainsi que des sentiers offrant des panoramas exceptionnels sur l'océan Atlantique. Le lieu est accessible aux adultes et enfants, avec des excursions guidées organisées toute l'année.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Limbé · Ville : Limbé · Localisation : Limbé · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 4.0225,
+    "longitude": 9.206,
+    "price": null,
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Bimbia",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "centre-faunique-limbe",
+    "name": "Centre faunique de Limbé",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Le Limbe Wildlife Centre soigne et réhabilite primates et autres espèces (gorilles, chimpanzés, drills…) souvent victimes du braconnage. Visite éducative essentielle à Limbé, à combiner avec jardin botanique et plages de sable noir.",
+    "summary_en": "Limbe Wildlife Centre rescues and rehabilitates primates and other species (gorillas, chimpanzees, drills…) often victims of poaching. An essential educational stop in Limbe, best paired with the botanical garden and black-sand beaches.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Soutenir le centre via l'entrée et les dons. Photos selon règlement intérieur.",
+    "latitude": 4.0185,
+    "longitude": 9.208,
+    "price": "5000 XAF",
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Centre faunique de Limbé",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "down-beach-limbe",
+    "name": "Down Beach (Limbé)",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Plage de sable noir volcanique au cœur de Limbé : bars de poissons grillés, vue sur le Mont Cameroun et ambiance Sawa côtière. Parfaite en fin de journée après le jardin botanique ou le wildlife centre.",
+    "summary_en": "Volcanic black-sand beach in central Limbe: grilled-fish bars, Mount Cameroon views and coastal Sawa atmosphere. Perfect late-day stop after the botanical garden or wildlife centre.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Respecter les usagers locaux et la propreté du littoral. Marées et houle variables.",
+    "latitude": 4.0122,
+    "longitude": 9.2055,
+    "price": null,
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Down Beach (Limbé)",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "jardin-botanique-limbe",
+    "name": "Jardin botanique de Limbé",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Créé en 1892 entre mer et Mont Cameroun, le jardin botanique de Limbé est le plus ancien du pays. Sur environ 200 ha, près de 1 000 espèces et 500 arbres se découvrent le long de pistes côtières et de biodiversité ; le Jungle Village accueille aussi des événements culturels.",
+    "summary_en": "Founded in 1892 between the sea and Mount Cameroon, Limbe Botanical Garden is the country's oldest. Across roughly 200 ha, about 1,000 plant species and 500 trees unfold along coastal and biodiversity trails; Jungle Village also hosts cultural events.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Entrée indicatrice autour de 2 000 FCFA (+ appareil photo). Prévoir anti-moustiques. À côté : Limbe Wildlife Centre et Down Beach.",
+    "latitude": 4.0156,
+    "longitude": 9.2117,
+    "price": "2000 XAF",
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Jardin botanique de Limbé",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "l-ile-ndame-limbe",
+    "name": "L'ile Ndame",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "L'ile Ndame. Situé à Limbé, l'île Ndame est une destination encore peu explorée qui fait partie des îles du Cameroun, offrant un cadre naturel préservé et une biodiversité intéressante. Ce site est idéal pour les amateurs de nature et d'aventure, avec des paysages maritimes uniques et une ambiance paisible propice à l'évasion. L'île propose diverses activités, notamment des excursions en bateau, des balades à pied à travers sa végétation luxuriante et la possibilité d'observer des espèces marines. Elle est adaptée aux adultes et aux enfants qui souhaitent découvrir un environnement insulaire authentique. Les infrastructures sur l'île sont limitées, mais Limbé, qui se trouve à proximité, offre plusieurs services, dont des restaurants en bord de mer, des hôtels et des espaces de loisirs comme le Jardin Botanique de Limbé et le Limbe Wildlife Centre, un sanctuaire de primates. Les visiteurs",
+    "summary_en": "L'ile Ndame. Located à Limbé, l'île Ndame is a destination encore peu explorée qui fait partie des îles du Cameroon, offrant un cadre naturel préservé et une biodiversité intéressante. Ce site est idéal pour les amateurs de nature et d'aventure, avec des paysages maritimes uniques et une ambiance paisible propice à l'évasion. L'île propose diverses activités, notamment des excursions en bateau, des balades à pied à travers sa végétation luxuriante et la possibilité d'observer des espèces marines. Elle est adaptée aux adultes et aux enfants qui souhaitent découvrir un environnement insulaire authentique. Les infrastructures sur l'île sont limitées, mais Limbé, qui se trouve à proximité, offers plusieurs services, dont des restaurants en bord de mer, des hôtels et des espaces de loisirs comme le Jardin Botanique de Limbé et le Limbe Wildlife Centre, un sanctuaire de primates. Les visiteurs",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Limbé · Ville : Limbé · Localisation : Limbé · Catégories : Sites Touristiques, ILE",
+    "latitude": 4.0225,
+    "longitude": 9.206,
+    "price": null,
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "L'ile Ndame",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-fontaine-de-otto-von-bismarck-centre-ville",
+    "name": "La Fontaine De Otto Von Bismarck",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "heritage",
+    "summary_fr": "La Fontaine De Otto Von Bismarck. Situé au centre-ville d'Edéa, non loin de la poste centrale, La fontaine de Otto von Bismarck est un monument historique datant de 1899, érigé en hommage à Otto von Bismarck, homme politique allemand considéré comme l'architecte de l' unité allemande. Ce site rare est un témoin des empreintes coloniales allemandes au Cameroun et attire à la fois les passionnés d'histoire, les chercheurs et les visiteurs curieux. Parmi les activités phares, on retrouve la visite guidée du monument, des sessions photos, ainsi qu'une exploration culturelle de l'histoire coloniale. Le site est adapté à tous les âges, ce qui en fait une sortie pédagogique parfaite pour les étudiants, les familles ou les groupes scolaires en quête de découverte patrimoniale. à proximité, plusieurs cafés et restaurants du centre-ville d'Edéa offrent des rafraîchissements, des plats locaux et de",
+    "summary_en": "La Fontaine De Otto Von Bismarck. Located au centre-ville d'Edéa, non loin de la poste centrale, La fontaine de Otto von Bismarck is a monument historique datant de 1899, érigé en hommage à Otto von Bismarck, homme politique allemand considéré comme l'architecte de l' unité allemande. Ce site rare is a témoin des empreintes coloniales allemandes au Cameroon et attire à la fois les passionnés d'histoire, les chercheurs et les visiteurs curieux. Parmi les activités phares, on retrouve la visite guidée du monument, des sessions photos, ainsi qu'une exploration culturelle de l'histoire coloniale. Le site est adapté à tous les âges, ce qui en fait une sortie pédagogique parfaite pour les étudiants, les familles ou les groupes scolaires en quête de découverte patrimoniale. à proximité, plusieurs cafés et restaurants du centre-ville d'Edéa offrent des rafraîchissements, des plats locaux et des ",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Centre ville · Ville : Buea · Localisation : Non loin de la poste · Catégories : Sites Touristiques, Monument",
+    "latitude": 4.156,
+    "longitude": 9.232,
+    "price": null,
+    "tags": [
+      "buea",
+      "sud-ouest",
+      "southwest",
+      "heritage"
+    ],
+    "sources": [
+      {
+        "title": "La Fontaine De Otto Von Bismarck",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-barombi-kotto-barombi-kotto",
+    "name": "Lac Barombi Kotto",
+    "city": "Kumba",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Barombi Kotto. Situé à Barombi Kotto, à quelques kilomètres seulement de la ville de Kumba, dans la région du Sud-Ouest du Cameroun, le Lac Barombi Koto (également appelé lac Barombi-ba-Kotto ) est un lac volcanique au charme discret mais captivant. Avec un diamètre d'environ 1,2 km, ce petit joyau naturel niché dans la chaîne volcanique du Cameroun attire les visiteurs en quête de sérénité, de découverte écologique et de beauté naturelle préservée. Les activités phares autour du lac comprennent la balade en pirogue traditionnelle, la randonnée douce autour du cratère, l' observation ornithologique, la photographie de paysages et l' immersion culturelle avec les habitants locaux. Le site est adapté à tous les âges, mais les plus jeunes doivent être accompagnés pour les promenades nautiques. L'accès au lac est généralement gratuit, bien que certaines activités encadrées par les villag",
+    "summary_en": "Lac Barombi Kotto. Located à Barombi Kotto, à quelques kilomètres seulement de la city of Kumba, dans la region du Sud-Ouest du Cameroon, le Lac Barombi Koto (également appelé lac Barombi-ba-Kotto ) is a lac volcanique au charme discret mais captivant. Avec un diamètre d'environ 1,2 km, ce petit joyau naturel niché dans la chaîne volcanique du Cameroon attire les visiteurs en quête de sérénité, de découverte écologique et de beauté naturelle préservée. Les activités phares autour du lac comprennent la balade en pirogue traditionnelle, la randonnée douce autour du cratère, l' observation ornithologique, la photographie de paysages et l' immersion culturelle avec les habitants locaux. Le site est adapté à tous les âges, mais les plus jeunes doivent être accompagnés pour les promenades nautiques. L'accès au lac est généralement gratuit, bien que certaines activités encadrées par les village",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : BAROMBI KOTTO · Ville : Kumba · Localisation : A quelques kilomètres de la ville · Catégories : Sites Touristiques, LAC",
+    "latitude": 4.636,
+    "longitude": 9.447,
+    "price": null,
+    "tags": [
+      "kumba",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Barombi Kotto",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-barombi-mbo-barombi-mbo",
+    "name": "Lac Barombi Mbo",
+    "city": "Kumba",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Barombi Mbo. Situé à Barombi Mbo, près de Kumba, dans la région du Sud-Ouest du Cameroun, le Lac Barombi Mbo est un joyau écologique et culturel niché au c&oelig;ur de la forêt classée Barombi. Ce lac de cratère d'origine volcanique, reconnu comme site Ramsar depuis 2006, fait partie de l' écorégion afrotropicale des lacs de cratère du Cameroun. Il est particulièrement célèbre pour sa biodiversité exceptionnelle, notamment ses 12 espèces de poissons endémiques, faisant de lui un haut lieu d'intérêt pour les biologistes et écologues du monde entier. Ce site naturel offre plusieurs activités phares: balades en pirogue, exploration écologique, observation des poissons endémiques et photographie de la faune et de la flore. Il attire aussi bien les chercheurs, les passionnés de nature, que les familles en quête de dépaysement. Le lieu est adapté à tous les âges et peut constituer une sort",
+    "summary_en": "Lac Barombi Mbo. Located à Barombi Mbo, near Kumba, dans la région du Sud-Ouest du Cameroon, le Lac Barombi Mbo is a joyau écologique et culturel niché au c&oelig;ur de la forêt classée Barombi. Ce lac de cratère d'origine volcanique, reconnu comme site Ramsar depuis 2006, fait partie de l' écorégion afrotropicale des lacs de cratère du Cameroon. Il est particulièrement célèbre pour sa biodiversité exceptionnelle, notamment ses 12 espèces de poissons endémiques, faisant de lui un haut lieu d'intérêt pour les biologistes et écologues du monde entier. Ce site naturel offers plusieurs activités phares: balades en pirogue, exploration écologique, observation des poissons endémiques et photographie de la faune et de la flore. Il attire aussi bien les chercheurs, les passionnés de nature, que les familles en quête de dépaysement. Le lieu est adapté à tous les âges et peut constituer une sortie",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Barombi Mbo · Ville : Kumba · Localisation : Près de Kumba · Catégories : Sites Touristiques, LAC",
+    "latitude": 4.636,
+    "longitude": 9.447,
+    "price": null,
+    "tags": [
+      "kumba",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Barombi Mbo",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-de-crateres-debunscha-dans-la-commune-de-idenau",
+    "name": "Lac De Cratères Debunscha",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Lac De Cratères Debunscha. Situé dans la commune de Idenau, au pied du Mont Cameroun et en bordure de l' Océan Atlantique, le Lac de Cratères Debunscha est un magnifique lac volcanique. Ce lac se trouve à environ 100 mètres d'altitude, et avec un diamètre variant entre 200 m et 300 m, il fait partie des sites les plus impressionnants de la région. Il peut être observé facilement depuis la plage, à côté du phare construit en 1904 par les Allemands, un point de repère historique marquant l'histoire de la navigation locale. Les attractions et activités phares du Lac de Cratères Debunscha incluent des randonnées difficiles le long des flancs du cratère, et des visites en pirogue proposées par les habitants du village de pêcheurs. L'accès au lac se fait principalement par la plage, avec une montée escarpée qui devient impraticable pendant la saison des pluies. Les tarifs des visites en pirogu",
+    "summary_en": "Lac De Cratères Debunscha. Located dans la commune de Idenau, au pied du Mont Cameroon et en bordure de l' Océan Atlantique, le Lac de Cratères Debunscha is a magnifique lac volcanique. Ce lac se trouve à environ 100 mètres d'altitude, et avec un diamètre variant entre 200 m et 300 m, il fait partie des sites les plus impressionnants de la région. Il peut être observé facilement depuis la plage, à côté du phare construit en 1904 par les Allemands, un point de repère historique marquant l'histoire de la navigation locale. Les attractions et activités phares du Lac de Cratères Debunscha incluent des randonnées difficiles le long des flancs du cratère, et des visites en pirogue proposées par les habitants du village de pêcheurs. L'accès au lac se fait principalement par la plage, avec une montée escarpée qui devient impraticable pendant la saison des pluies. Les tarifs des visites en pirogu",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Dans la commune de Idenau · Ville : Buea · Localisation : Au pied du Mont Cameroun et sur le bord de l'Océan Atlantique · Catégories : Sites Touristiques, LAC",
+    "latitude": 4.156,
+    "longitude": 9.232,
+    "price": null,
+    "tags": [
+      "buea",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac De Cratères Debunscha",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "moland-beach-idenau",
+    "name": "Moland Beach",
+    "city": "Limbé",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Moland Beach. Situé à Idenau, dans la ville de Limbé, au sud de l' Atlantique, dans le golfe de Guinée, Moland Beach est une plage unique réputée pour son sable noir d'origine volcanique. Ce site naturel et exotique constitue une destination idéale pour les amoureux de la nature, à la recherche de tranquillité et de beauté. Les activités phares proposées sur la plage incluent la baignade, le bronzing, ainsi que la possibilité de se promener le long de la côte pour profiter des paysages spectaculaires. Le lieu est parfait pour les adultes et enfants, offrant un environnement sûr pour les familles. En termes de services offerts, plusieurs restaurants locaux servent des spécialités de fruits de mer, et les visiteurs peuvent également profiter de l' accès facile à la plage. Des options pour réserver des excursions locales sont également disponibles. Le site dispose de places de parking pour ",
+    "summary_en": "Moland Beach. Located à Idenau, dans la ville de Limbé, au sud de l' Atlantique, dans le golfe de Guinée, Moland Beach is a plage unique réputée pour son sable noir d'origine volcanique. Ce site naturel et exotique constitue une destination idéale pour les amoureux de la nature, à la recherche de tranquillité et de beauté. Les activités phares proposées sur la plage incluent la baignade, le bronzing, ainsi que la possibilité de se promener le long de la côte pour profiter des paysages spectaculaires. Le lieu est parfait pour les adultes et enfants, offrant un environnement sûr pour les familles. En termes de services offerts, plusieurs restaurants locaux servent des spécialités de fruits de mer, et les visiteurs peuvent également profiter de l' accès facile à la plage. Des options pour réserver des excursions locales sont également disponibles. Le site dispose de places de parking pour l",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Idenau · Ville : Limbé · Localisation : Au sud de la chaude Atlantique, dans le golfe de Guinée · Catégories : Sites Touristiques, Plage",
+    "latitude": 4.0225,
+    "longitude": 9.206,
+    "price": null,
+    "tags": [
+      "limbe",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Moland Beach",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "mont-cameroun",
+    "name": "Mont Cameroun",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Plus haut sommet d'Afrique de l'Ouest (~4 070 m), volcan actif dominant Buea. Treks d'un à plusieurs jours, coulées de lave et panoramas atlantiques : un défi mythique du Sud-Ouest.",
+    "summary_en": "West Africa's highest peak (~4,070 m), an active volcano above Buea. One- to multi-day treks, lava flows and Atlantic panoramas: a legendary South-West challenge.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Guides et porteur recommandés via Buea. Prévoir froid en altitude et météo changeante.",
+    "latitude": 4.203,
+    "longitude": 9.1704,
+    "price": "25000 XAF",
+    "tags": [
+      "buea",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Mont Cameroun",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "palais-von-puttkammer-buea",
+    "name": "Palais Von Puttkammer",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "activity",
+    "summary_fr": "Palais Von Puttkammer. Situé à Buea, le Palais Von Puttkamer est un édifice historique emblématique de l'ère coloniale allemande au Cameroun. Ancienne résidence du gouverneur allemand, ce bâtiment imposant se dresse majestueusement au cœur de la ville, mais son accès est aujourd'hui restreint, car il sert de résidence présidentielle. Son architecture unique, qui a inspiré le Palais du Sultan de Foumban, en fait un chef-d'œuvre du patrimoine bâti. Le Palais Von Puttkamer est entouré de mystères et de légendes. Il est souvent évoqué dans des histoires de fantômes, notamment celle de la veuve de l'ancien gouverneur allemand, qui, selon la rumeur, hanterait encore les lieux. En raison de son statut de résidence officielle, il ne propose pas d'activités ouvertes au public, mais il reste un point de repère incontournable pour les amateurs d' histoire et d'architecture. La visite du palais étan",
+    "summary_en": "Palais Von Puttkammer. Located à Buea, le Palais Von Puttkamer is a édifice historique emblématique de l'ère coloniale allemande au Cameroon. Ancienne résidence du gouverneur allemand, ce bâtiment imposant se dresse majestueusement in the heart of la ville, mais son accès est aujourd'hui restreint, car il sert de résidence présidentielle. Son architecture unique, qui a inspiré le Palais du Sultan de Foumban, en fait un chef-d'œuvre du patrimoine bâti. Le Palais Von Puttkamer est entouré de mystères et de légendes. Il est souvent évoqué dans des histoires de fantômes, notamment celle de la veuve de l'ancien gouverneur allemand, qui, selon la rumeur, hanterait encore les lieux. En raison de son statut de résidence officielle, il ne features pas d'activités ouvertes au public, mais il reste un point de repère must-see pour les amateurs d' histoire et d'architecture. La visite du palais étan",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : Buea · Ville : Buea · Localisation : Buea · Catégories : Sites Touristiques, Habitat/construction historique",
+    "latitude": 4.156,
+    "longitude": 9.232,
+    "price": null,
+    "tags": [
+      "buea",
+      "sud-ouest",
+      "southwest",
+      "activity"
+    ],
+    "sources": [
+      {
+        "title": "Palais Von Puttkammer",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "parc-national-korup",
+    "name": "Parc national de Korup",
+    "city": "Mundemba",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Entre Eyumojock et Mundemba (Sud-Ouest), Korup est l'une des plus anciennes forêts tropicales d'Afrique (~1 260 km²). Canopée, sentiers, observation d'oiseaux et de primates : une immersion écotouristique exigeante mais exceptionnelle.",
+    "summary_en": "Between Eyumojock and Mundemba (South-West), Korup is one of Africa's oldest tropical forests (~1,260 km²). Canopy walks, trails, birding and primate watching: a demanding but outstanding ecotourism immersion.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Guides locaux recommandés. Bases logistiques à Mundemba / Kumba ; hébergements aussi du côté de Limbé pour les circuits combinés.",
+    "latitude": 5.0167,
+    "longitude": 8.8,
+    "price": "5000 XAF",
+    "tags": [
+      "mundemba",
+      "sud-ouest",
+      "southwest",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Parc national de Korup",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "buea-botanic",
+    "name": "Environs naturels de Buea",
+    "city": "Buea",
+    "region": "Sud-Ouest",
+    "category": "nature",
+    "summary_fr": "Collines verdoyantes, cascades et villages autour de Buea. Ambiance montagnarde anglophone du Sud-Ouest.",
+    "summary_en": "Green hills, waterfalls and villages around Buea. Anglophone highland feel of the Southwest.",
+    "tips_fr": "Combinez souvent avec Limbé (jardin botanique, plages) en une à deux journées.",
+    "tips_en": "Often combined with Limbe (botanic garden, beaches) over one or two days.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "buea",
+      "nature",
+      "cascade",
+      "limbe",
+      "sud-ouest"
+    ],
+    "sources": [
+      {
+        "title": "Environs naturels de Buea",
+        "organization": "Curated Smartmboa KB",
+        "url": null,
+        "verification_status": "curated"
+      }
+    ]
+  }
+]

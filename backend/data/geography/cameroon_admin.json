@@ -268,6 +268,42 @@
       "capital_city_id": "ambam",
       "source": "Départements de la région du Sud",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "fako",
+      "name_fr": "Fako",
+      "name_en": "Fako",
+      "region_id": "sud-ouest",
+      "capital_city_id": "buea",
+      "source": "Départements de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "meme",
+      "name_fr": "Meme",
+      "name_en": "Meme",
+      "region_id": "sud-ouest",
+      "capital_city_id": "kumba",
+      "source": "Départements de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ndian",
+      "name_fr": "Ndian",
+      "name_en": "Ndian",
+      "region_id": "sud-ouest",
+      "capital_city_id": "mundemba",
+      "source": "Départements de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "manyu",
+      "name_fr": "Manyu",
+      "name_en": "Manyu",
+      "region_id": "sud-ouest",
+      "capital_city_id": "mamfe",
+      "source": "Départements de la région du Sud-Ouest",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -434,8 +470,9 @@
       "aliases": [
         "buea"
       ],
-      "source": "Chef-lieu de la région du Sud-Ouest",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région du Sud-Ouest / département du Fako",
+      "verified_at": "2026-09-24",
+      "division_id": "fako"
     },
     {
       "id": "mbouda",
@@ -776,6 +813,77 @@
       ],
       "source": "Chef-lieu de la Vallée-du-Ntem, région du Sud",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "limbe",
+      "name_fr": "Limbé",
+      "name_en": "Limbe",
+      "entity_type": "city",
+      "division_id": "fako",
+      "region_id": "sud-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "limbe",
+        "limbé"
+      ],
+      "source": "Ville côtière du Fako, région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kumba",
+      "name_fr": "Kumba",
+      "name_en": "Kumba",
+      "entity_type": "city",
+      "division_id": "meme",
+      "region_id": "sud-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "kumba"
+      ],
+      "source": "Chef-lieu du Meme, région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mundemba",
+      "name_fr": "Mundemba",
+      "name_en": "Mundemba",
+      "entity_type": "city",
+      "division_id": "ndian",
+      "region_id": "sud-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "mundemba"
+      ],
+      "source": "Chef-lieu du Ndian (accès Korup), région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "tiko",
+      "name_fr": "Tiko",
+      "name_en": "Tiko",
+      "entity_type": "city",
+      "division_id": "fako",
+      "region_id": "sud-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "tiko"
+      ],
+      "source": "Ville du Fako, région du Sud-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mamfe",
+      "name_fr": "Mamfe",
+      "name_en": "Mamfe",
+      "entity_type": "city",
+      "division_id": "manyu",
+      "region_id": "sud-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "mamfe"
+      ],
+      "source": "Chef-lieu du Manyu, région du Sud-Ouest",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1113,6 +1221,54 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Quartier / plage côté Kribi (hôtel Ilomba)",
       "source": "Ayila'a Hotel Ilomba",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "down-beach",
+      "name_fr": "Down Beach",
+      "name_en": "Down Beach",
+      "city_id": "limbe",
+      "division_id": "fako",
+      "region_id": "sud-ouest",
+      "relation_to_city": "IN",
+      "notes_fr": "Plage de sable noir à Limbé",
+      "source": "Fiche lieu Down Beach (Limbé)",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bimbia",
+      "name_fr": "Bimbia",
+      "name_en": "Bimbia",
+      "city_id": "limbe",
+      "division_id": "fako",
+      "region_id": "sud-ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Site historique près de Limbé",
+      "source": "Fiche lieu Bimbia",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "debunscha",
+      "name_fr": "Debunscha",
+      "name_en": "Debunscha",
+      "city_id": "buea",
+      "division_id": "fako",
+      "region_id": "sud-ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Lac de cratère Debunscha",
+      "source": "Fiche lieu Lac De Cratères Debunscha",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "barombi",
+      "name_fr": "Barombi",
+      "name_en": "Barombi",
+      "city_id": "kumba",
+      "division_id": "meme",
+      "region_id": "sud-ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Lacs Barombi Mbo / Kotto près de Kumba",
+      "source": "Fiches lieux Barombi",
       "verified_at": "2026-09-24"
     }
   ]
