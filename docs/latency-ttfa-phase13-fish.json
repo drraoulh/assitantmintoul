@@ -1,0 +1,997 @@
+{
+  "hf_status": "HF_402 — full LLM→TTS E2E not measured; Fish-only below is real",
+  "fish_stats": {
+    "connection_latency_ms": {
+      "avg": 488.6,
+      "min": 424.7,
+      "max": 636.4,
+      "n": 9
+    },
+    "ttfb_ms": {
+      "avg": 490.8,
+      "min": 424.7,
+      "max": 636.4,
+      "n": 9
+    },
+    "total_tts_ms": {
+      "avg": 1730.8,
+      "min": 1449.2,
+      "max": 2242.9,
+      "n": 9
+    },
+    "ttfb_to_complete_ms": {
+      "avg": 1240.0,
+      "min": 1014.8,
+      "max": 1676.4,
+      "n": 9
+    }
+  },
+  "fish_runs": [
+    {
+      "invalid": false,
+      "frag": "Au Cameroun, je te recommande le ndolé,",
+      "chars": 39,
+      "bytes": 45556,
+      "connection_latency_ms": 506.7,
+      "ttfb_ms": 507.6,
+      "total_tts_ms": 1844.7,
+      "ttfb_to_complete_ms": 1337.1,
+      "chronology": {
+        "turn_id": "fish-0",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 30.1,
+            "delta_ms": 30.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 536.8,
+            "delta_ms": 506.7,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 506.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 537.6,
+            "delta_ms": 0.8,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 507.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 537.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 507.6,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 537.7,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1874.8,
+            "delta_ms": 1337.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1844.7
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1874.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1337.1
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 506.7
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 30.1
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.8
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 0.1
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "Pour une activité nature, vise le Mont Cameroun,",
+      "chars": 48,
+      "bytes": 50990,
+      "connection_latency_ms": 512.4,
+      "ttfb_ms": 512.6,
+      "total_tts_ms": 1527.4,
+      "ttfb_to_complete_ms": 1014.8,
+      "chronology": {
+        "turn_id": "fish-1",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 512.4,
+            "delta_ms": 512.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 512.4
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 512.6,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 512.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 512.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 512.6,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 512.7,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1527.4,
+            "delta_ms": 1014.7,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1527.4
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1527.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1014.7
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 512.4
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.2
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_response_complete",
+            "to": "audio_done_sent",
+            "delta_ms": 0.1
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "À Yaoundé, commence par le Musée National,",
+      "chars": 42,
+      "bytes": 43466,
+      "connection_latency_ms": 448.2,
+      "ttfb_ms": 450.3,
+      "total_tts_ms": 2126.7,
+      "ttfb_to_complete_ms": 1676.4,
+      "chronology": {
+        "turn_id": "fish-2",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 448.3,
+            "delta_ms": 448.3,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 448.2
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 450.3,
+            "delta_ms": 2.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 450.3
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 450.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 450.3,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 450.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 2126.8,
+            "delta_ms": 1676.5,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 2126.7
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 2126.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1676.5
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 448.3
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 2.0
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          },
+          {
+            "from": "tts_ttfb",
+            "to": "tts_first_audio_byte",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "Au Cameroun, je te recommande le ndolé,",
+      "chars": 39,
+      "bytes": 50990,
+      "connection_latency_ms": 432.9,
+      "ttfb_ms": 433.0,
+      "total_tts_ms": 1449.2,
+      "ttfb_to_complete_ms": 1016.2,
+      "chronology": {
+        "turn_id": "fish-3",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 432.9,
+            "delta_ms": 432.9,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 432.9
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 433.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 433.0
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 433.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 433.0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 433.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1449.2,
+            "delta_ms": 1016.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1449.2
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1449.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1016.1
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 432.9
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "Pour une activité nature, vise le Mont Cameroun,",
+      "chars": 48,
+      "bytes": 52243,
+      "connection_latency_ms": 515.0,
+      "ttfb_ms": 517.0,
+      "total_tts_ms": 1694.3,
+      "ttfb_to_complete_ms": 1177.3,
+      "chronology": {
+        "turn_id": "fish-4",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 515.0,
+            "delta_ms": 515.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 515.0
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 517.1,
+            "delta_ms": 2.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 517.0
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 517.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 517.0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 517.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1694.4,
+            "delta_ms": 1177.3,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1694.3
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1694.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1177.3
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 515.0
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 2.1
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          },
+          {
+            "from": "tts_ttfb",
+            "to": "tts_first_audio_byte",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "À Yaoundé, commence par le Musée National,",
+      "chars": 42,
+      "bytes": 50990,
+      "connection_latency_ms": 433.9,
+      "ttfb_ms": 434.0,
+      "total_tts_ms": 1470.5,
+      "ttfb_to_complete_ms": 1036.5,
+      "chronology": {
+        "turn_id": "fish-5",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 434.0,
+            "delta_ms": 434.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 433.9
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 434.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 434.0
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 434.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 434.0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 434.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1470.5,
+            "delta_ms": 1036.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1470.5
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1470.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1036.4
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 434.0
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          },
+          {
+            "from": "tts_ttfb",
+            "to": "tts_first_audio_byte",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "Au Cameroun, je te recommande le ndolé,",
+      "chars": 39,
+      "bytes": 46392,
+      "connection_latency_ms": 487.4,
+      "ttfb_ms": 501.3,
+      "total_tts_ms": 1596.3,
+      "ttfb_to_complete_ms": 1095.0,
+      "chronology": {
+        "turn_id": "fish-6",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 487.4,
+            "delta_ms": 487.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 487.4
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 501.3,
+            "delta_ms": 13.9,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 501.3
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 501.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 501.3,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 501.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1596.3,
+            "delta_ms": 1094.9,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1596.3
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1596.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1094.9
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 487.4
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 13.9
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_response_complete",
+            "to": "audio_done_sent",
+            "delta_ms": 0.1
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "Pour une activité nature, vise le Mont Cameroun,",
+      "chars": 48,
+      "bytes": 49318,
+      "connection_latency_ms": 424.7,
+      "ttfb_ms": 424.7,
+      "total_tts_ms": 1625.2,
+      "ttfb_to_complete_ms": 1200.5,
+      "chronology": {
+        "turn_id": "fish-7",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 424.7,
+            "delta_ms": 424.7,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 424.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 424.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 424.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 424.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 424.7,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 424.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 1625.2,
+            "delta_ms": 1200.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 1625.2
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 1625.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1200.4
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 424.7
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_response_complete",
+            "to": "audio_done_sent",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    },
+    {
+      "invalid": false,
+      "frag": "À Yaoundé, commence par le Musée National,",
+      "chars": 42,
+      "bytes": 49318,
+      "connection_latency_ms": 636.4,
+      "ttfb_ms": 636.4,
+      "total_tts_ms": 2242.9,
+      "ttfb_to_complete_ms": 1606.5,
+      "chronology": {
+        "turn_id": "fish-8",
+        "events": [
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 636.4,
+            "delta_ms": 636.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "connection_latency_ms": 636.4
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 636.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 636.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 636.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "ttfb_ms": 636.4,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 636.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 2242.9,
+            "delta_ms": 1606.4,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null,
+            "total_tts_ms": 2242.9
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 2243.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "audio_chunk_created",
+            "to": "tts_response_complete",
+            "delta_ms": 1606.4
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_connection_established",
+            "delta_ms": 636.4
+          },
+          {
+            "from": "tts_connection_established",
+            "to": "tts_ttfb",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_response_complete",
+            "to": "audio_done_sent",
+            "delta_ms": 0.1
+          },
+          {
+            "from": "tts_worker_start",
+            "to": "tts_request_start",
+            "delta_ms": 0.0
+          }
+        ]
+      }
+    }
+  ],
+  "chunker_instant_token_flush": [
+    {
+      "text": "Au Cameroun, je te recommande le ndolé et le poulet DG pour commencer.",
+      "frag": "Au Cam ero un, je te re com man de le ndo lé et",
+      "chars": 47,
+      "tokens_until_flush": 14
+    },
+    {
+      "text": "Pour une activité nature, vise le Mont Cameroun ou le parc de Waza.",
+      "frag": "Pou r u ne act ivi té nat ure,",
+      "chars": 30,
+      "tokens_until_flush": 9
+    },
+    {
+      "text": "À Yaoundé, commence par le Musée National et la cathédrale Notre-Dame.",
+      "frag": "À Y aou ndé, c omm enc e p ar le Mus ée Nat ion",
+      "chars": 47,
+      "tokens_until_flush": 14
+    }
+  ],
+  "frontend_play_gate_note": "useContinuousVoiceSession buffers audio_chunk parts and only calls playBase64Mp3 on audio_done. So first audible ≥ first_chunk_receive + (Fish total_tts - Fish ttfb) for the first fragment, plus decode/play."
+}

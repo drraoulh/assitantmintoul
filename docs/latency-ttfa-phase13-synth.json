@@ -1,0 +1,6102 @@
+{
+  "method": "synthetic_llm_tokens + real_Fish + production_chunker_queue",
+  "note": "pre_ttft delay injected from Phase 1.2 real non-greeting llm_first_token marks; token stream is synthetic (HF_402). Fish numbers are live.",
+  "phase12_pre_ttft_ms": [
+    2710.1,
+    2825.2
+  ],
+  "stats": {
+    "pre_ttft_injected_ms": {
+      "avg": 2767.6,
+      "min": 2767.6,
+      "max": 2767.6,
+      "n": 9
+    },
+    "llm_first_token_ms": {
+      "avg": 2771.0,
+      "min": 2770.9,
+      "max": 2771.1,
+      "n": 9
+    },
+    "chunker_first_flush_ms": {
+      "avg": 2943.4,
+      "min": 2892.2,
+      "max": 2970.0,
+      "n": 9
+    },
+    "chunker_wait_after_ttft_ms": {
+      "avg": 172.4,
+      "min": 121.3,
+      "max": 198.9,
+      "n": 9
+    },
+    "queue_wait_ms": {
+      "avg": 0.1,
+      "min": 0.1,
+      "max": 0.1,
+      "n": 9
+    },
+    "tts_request_ms": {
+      "avg": 2948.9,
+      "min": 2892.4,
+      "max": 3018.2,
+      "n": 9
+    },
+    "ttft_to_tts_request_ms": {
+      "avg": 177.9,
+      "min": 121.5,
+      "max": 247.1,
+      "n": 9
+    },
+    "tts_ttfb_ms": {
+      "avg": 603.4,
+      "min": 424.6,
+      "max": 1020.7,
+      "n": 9
+    },
+    "first_audio_byte_ms": {
+      "avg": 3552.3,
+      "min": 3331.4,
+      "max": 3988.9,
+      "n": 9
+    },
+    "audio_done_ms": {
+      "avg": 4624.8,
+      "min": 3926.9,
+      "max": 5949.9,
+      "n": 9
+    },
+    "play_gate_after_first_byte_ms": {
+      "avg": 1072.5,
+      "min": 568.0,
+      "max": 1961.0,
+      "n": 9
+    },
+    "backend_ttfa_ms": {
+      "avg": 3552.3,
+      "min": 3331.4,
+      "max": 3988.9,
+      "n": 9
+    },
+    "frontend_play_earliest_ms": {
+      "avg": 4624.8,
+      "min": 3926.9,
+      "max": 5949.9,
+      "n": 9
+    }
+  },
+  "runs": [
+    {
+      "label": "food_0",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2771.1,
+        "chunker_first_flush_ms": 2970.0,
+        "chunker_wait_after_ttft_ms": 198.9,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 3018.2,
+        "ttft_to_tts_request_ms": 247.1,
+        "tts_ttfb_ms": 537.4,
+        "first_audio_byte_ms": 3555.7,
+        "audio_done_ms": 4355.1,
+        "play_gate_after_first_byte_ms": 799.4,
+        "backend_ttfa_ms": 3555.7,
+        "frontend_play_earliest_ms": 4355.1
+      },
+      "chronology": {
+        "turn_id": "synth-food_0",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 2771.1,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2786.6,
+            "delta_ms": 15.5,
+            "from_llm_first_token_ms": 15.5,
+            "sequence_id": null,
+            "chars": 6
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2970.0,
+            "delta_ms": 183.4,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2970.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2970.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 199.0,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 48.1,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 3018.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 247.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3291.6,
+            "delta_ms": 273.4,
+            "from_llm_first_token_ms": 520.4,
+            "sequence_id": 1,
+            "chars": 77
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3322.2,
+            "delta_ms": 30.6,
+            "from_llm_first_token_ms": 551.0,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3322.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 551.1,
+            "sequence_id": 2,
+            "chars": 4
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 233.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3555.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 537.0
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.5,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3555.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 784.5,
+            "sequence_id": 0,
+            "ttfb_ms": 537.4,
+            "bytes": 2339
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3819.2,
+            "delta_ms": 263.5,
+            "from_llm_first_token_ms": 1048.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3819.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1048.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3819.5,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 1048.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3819.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1048.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4031.5,
+            "delta_ms": 211.9,
+            "from_llm_first_token_ms": 1260.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4031.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1260.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4031.8,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 1260.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4031.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1260.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4352.2,
+            "delta_ms": 320.4,
+            "from_llm_first_token_ms": 1581.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4352.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1581.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4352.5,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 1581.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4352.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1581.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4352.8,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 1581.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4352.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1581.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4355.0,
+            "delta_ms": 2.2,
+            "from_llm_first_token_ms": 1583.9,
+            "sequence_id": 0,
+            "bytes": 2339
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4355.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1583.9,
+            "sequence_id": 0,
+            "bytes": 2339
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4355.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1583.9,
+            "sequence_id": 0,
+            "total_tts_ms": 1336.8
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4355.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1584.0,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4355.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1584.0,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2771.1
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 320.4
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_queue_put",
+            "delta_ms": 273.4
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 263.5
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 233.0
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2771.1
+      }
+    },
+    {
+      "label": "food_1",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2771.0,
+        "chunker_first_flush_ms": 2969.7,
+        "chunker_wait_after_ttft_ms": 198.7,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2969.9,
+        "ttft_to_tts_request_ms": 198.9,
+        "tts_ttfb_ms": 762.9,
+        "first_audio_byte_ms": 3732.8,
+        "audio_done_ms": 4494.8,
+        "play_gate_after_first_byte_ms": 762.0,
+        "backend_ttfa_ms": 3732.8,
+        "frontend_play_earliest_ms": 4494.8
+      },
+      "chronology": {
+        "turn_id": "synth-food_1",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2771.0,
+            "delta_ms": 2771.0,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2786.4,
+            "delta_ms": 15.4,
+            "from_llm_first_token_ms": 15.4,
+            "sequence_id": null,
+            "chars": 6
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2969.7,
+            "delta_ms": 183.3,
+            "from_llm_first_token_ms": 198.7,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2969.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 198.7,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2969.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.8,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2969.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 198.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3228.6,
+            "delta_ms": 258.7,
+            "from_llm_first_token_ms": 457.6,
+            "sequence_id": 1,
+            "chars": 77
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3259.0,
+            "delta_ms": 30.4,
+            "from_llm_first_token_ms": 487.9,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3259.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 488.0,
+            "sequence_id": 2,
+            "chars": 4
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 473.6,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3732.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.5,
+            "sequence_id": 0,
+            "connection_latency_ms": 762.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3732.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "ttfb_ms": 762.9,
+            "bytes": 1169
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3732.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 961.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3732.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 961.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3887.1,
+            "delta_ms": 154.2,
+            "from_llm_first_token_ms": 1116.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3887.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1116.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3887.3,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1116.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3887.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1116.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4100.5,
+            "delta_ms": 213.2,
+            "from_llm_first_token_ms": 1329.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4100.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1329.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4100.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1329.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4100.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1329.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4458.2,
+            "delta_ms": 357.6,
+            "from_llm_first_token_ms": 1687.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4458.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1687.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4458.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1687.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4458.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1687.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4458.5,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1687.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4458.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1687.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4458.8,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 1687.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4458.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1687.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4494.7,
+            "delta_ms": 35.9,
+            "from_llm_first_token_ms": 1723.7,
+            "sequence_id": 0,
+            "bytes": 1169
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4494.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1723.7,
+            "sequence_id": 0,
+            "bytes": 1169
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4494.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1723.7,
+            "sequence_id": 0,
+            "total_tts_ms": 1524.9
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4494.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1723.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4494.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1723.8,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2771.0
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 473.6
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 357.6
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_queue_put",
+            "delta_ms": 258.7
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 213.2
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2771.0
+      }
+    },
+    {
+      "label": "food_2",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2770.9,
+        "chunker_first_flush_ms": 2968.4,
+        "chunker_wait_after_ttft_ms": 197.5,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2968.6,
+        "ttft_to_tts_request_ms": 197.7,
+        "tts_ttfb_ms": 424.6,
+        "first_audio_byte_ms": 3393.2,
+        "audio_done_ms": 4130.8,
+        "play_gate_after_first_byte_ms": 737.6,
+        "backend_ttfa_ms": 3393.2,
+        "frontend_play_earliest_ms": 4130.8
+      },
+      "chronology": {
+        "turn_id": "synth-food_2",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2770.9,
+            "delta_ms": 2770.9,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2786.4,
+            "delta_ms": 15.5,
+            "from_llm_first_token_ms": 15.5,
+            "sequence_id": null,
+            "chars": 6
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2968.4,
+            "delta_ms": 182.0,
+            "from_llm_first_token_ms": 197.5,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2968.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.5,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2968.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.6,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3226.5,
+            "delta_ms": 257.9,
+            "from_llm_first_token_ms": 455.6,
+            "sequence_id": 1,
+            "chars": 77
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3256.9,
+            "delta_ms": 30.4,
+            "from_llm_first_token_ms": 485.9,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3256.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 486.0,
+            "sequence_id": 2,
+            "chars": 4
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 136.2,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3393.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 424.5
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3393.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "ttfb_ms": 424.6,
+            "bytes": 4011
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3393.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 622.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3393.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 622.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3563.5,
+            "delta_ms": 170.2,
+            "from_llm_first_token_ms": 792.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3563.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 792.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3563.7,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 792.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3563.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 792.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3788.7,
+            "delta_ms": 225.0,
+            "from_llm_first_token_ms": 1017.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3788.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1017.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3788.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1018.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3788.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1018.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4100.6,
+            "delta_ms": 311.7,
+            "from_llm_first_token_ms": 1329.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4100.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1329.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4100.8,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1329.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4100.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1329.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4101.0,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1330.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4101.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1330.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4130.7,
+            "delta_ms": 29.7,
+            "from_llm_first_token_ms": 1359.8,
+            "sequence_id": 0,
+            "bytes": 4011
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4130.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1359.8,
+            "sequence_id": 0,
+            "bytes": 4011
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4130.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1359.8,
+            "sequence_id": 0,
+            "total_tts_ms": 1162.2
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4130.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1359.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4130.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1359.9,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2770.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 311.7
+          },
+          {
+            "from": "tts_request_start",
+            "to": "tts_queue_put",
+            "delta_ms": 257.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 225.0
+          },
+          {
+            "from": "chunker_first_text",
+            "to": "chunker_first_flush",
+            "delta_ms": 182.0
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2770.9
+      }
+    },
+    {
+      "label": "nature_0",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2770.9,
+        "chunker_first_flush_ms": 2892.2,
+        "chunker_wait_after_ttft_ms": 121.3,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2892.4,
+        "ttft_to_tts_request_ms": 121.5,
+        "tts_ttfb_ms": 452.7,
+        "first_audio_byte_ms": 3345.1,
+        "audio_done_ms": 4373.9,
+        "play_gate_after_first_byte_ms": 1028.8,
+        "backend_ttfa_ms": 3345.1,
+        "frontend_play_earliest_ms": 4373.9
+      },
+      "chronology": {
+        "turn_id": "synth-nature_0",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2770.9,
+            "delta_ms": 2770.9,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 0.1,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2892.2,
+            "delta_ms": 121.1,
+            "from_llm_first_token_ms": 121.3,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2892.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 121.3,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2892.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.4,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3134.8,
+            "delta_ms": 242.4,
+            "from_llm_first_token_ms": 363.9,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3134.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 363.9,
+            "sequence_id": 1,
+            "chars": 54
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 210.2,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3345.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.0,
+            "sequence_id": 0,
+            "connection_latency_ms": 452.6
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3345.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "ttfb_ms": 452.7,
+            "bytes": 3760
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3345.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3345.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 574.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3516.0,
+            "delta_ms": 170.8,
+            "from_llm_first_token_ms": 745.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3516.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 745.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3516.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 745.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3516.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 745.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3798.9,
+            "delta_ms": 282.8,
+            "from_llm_first_token_ms": 1027.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3798.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1027.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3799.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1028.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3799.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1028.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4332.7,
+            "delta_ms": 533.7,
+            "from_llm_first_token_ms": 1561.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4332.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1561.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4332.9,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1562.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4332.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1562.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4336.4,
+            "delta_ms": 3.5,
+            "from_llm_first_token_ms": 1565.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4336.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1565.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4336.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1565.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4336.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1565.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4337.8,
+            "delta_ms": 1.3,
+            "from_llm_first_token_ms": 1566.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4337.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1566.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4373.8,
+            "delta_ms": 36.0,
+            "from_llm_first_token_ms": 1602.8,
+            "sequence_id": 0,
+            "bytes": 3760
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4373.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1602.9,
+            "sequence_id": 0,
+            "bytes": 3760
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4373.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1602.9,
+            "sequence_id": 0,
+            "total_tts_ms": 1481.4
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4373.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1602.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4373.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1603.0,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2770.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 533.7
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 282.8
+          },
+          {
+            "from": "tts_request_start",
+            "to": "llm_end",
+            "delta_ms": 242.4
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 210.2
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2770.9
+      }
+    },
+    {
+      "label": "nature_1",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2771.0,
+        "chunker_first_flush_ms": 2892.9,
+        "chunker_wait_after_ttft_ms": 121.9,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2893.1,
+        "ttft_to_tts_request_ms": 122.1,
+        "tts_ttfb_ms": 465.8,
+        "first_audio_byte_ms": 3358.9,
+        "audio_done_ms": 3926.9,
+        "play_gate_after_first_byte_ms": 568.0,
+        "backend_ttfa_ms": 3358.9,
+        "frontend_play_earliest_ms": 3926.9
+      },
+      "chronology": {
+        "turn_id": "synth-nature_1",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2771.0,
+            "delta_ms": 2771.0,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 0.2,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2892.9,
+            "delta_ms": 121.8,
+            "from_llm_first_token_ms": 122.0,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2893.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 122.0,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2893.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2893.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 122.1,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3137.4,
+            "delta_ms": 244.3,
+            "from_llm_first_token_ms": 366.4,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3137.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 366.5,
+            "sequence_id": 1,
+            "chars": 54
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 221.3,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3358.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.8,
+            "sequence_id": 0,
+            "connection_latency_ms": 465.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3358.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 587.9,
+            "sequence_id": 0,
+            "ttfb_ms": 465.8,
+            "bytes": 249
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3359.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 588.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3359.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 588.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3506.8,
+            "delta_ms": 147.8,
+            "from_llm_first_token_ms": 735.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3506.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 735.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3506.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 735.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3506.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 735.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3694.9,
+            "delta_ms": 188.1,
+            "from_llm_first_token_ms": 923.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3694.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 923.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3695.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 924.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3695.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 924.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3890.3,
+            "delta_ms": 195.3,
+            "from_llm_first_token_ms": 1119.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3890.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1119.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3890.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1119.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3890.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1119.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3890.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1119.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3890.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1119.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3926.8,
+            "delta_ms": 36.3,
+            "from_llm_first_token_ms": 1155.8,
+            "sequence_id": 0,
+            "bytes": 249
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3926.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1155.9,
+            "sequence_id": 0,
+            "bytes": 249
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 3926.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1155.9,
+            "sequence_id": 0,
+            "total_tts_ms": 1033.8
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 3926.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1155.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 3926.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1156.0,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2771.0
+          },
+          {
+            "from": "tts_request_start",
+            "to": "llm_end",
+            "delta_ms": 244.3
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 221.3
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 195.3
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 188.1
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2771.0
+      }
+    },
+    {
+      "label": "nature_2",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2770.9,
+        "chunker_first_flush_ms": 2892.5,
+        "chunker_wait_after_ttft_ms": 121.6,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2892.6,
+        "ttft_to_tts_request_ms": 121.7,
+        "tts_ttfb_ms": 438.7,
+        "first_audio_byte_ms": 3331.4,
+        "audio_done_ms": 4004.4,
+        "play_gate_after_first_byte_ms": 673.0,
+        "backend_ttfa_ms": 3331.4,
+        "frontend_play_earliest_ms": 4004.4
+      },
+      "chronology": {
+        "turn_id": "synth-nature_2",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2770.9,
+            "delta_ms": 2770.9,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 0.2,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2892.5,
+            "delta_ms": 121.4,
+            "from_llm_first_token_ms": 121.6,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2892.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.6,
+            "sequence_id": 0,
+            "chars": 30
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2892.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 121.7,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3136.1,
+            "delta_ms": 243.5,
+            "from_llm_first_token_ms": 365.2,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3136.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 365.2,
+            "sequence_id": 1,
+            "chars": 54
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 195.2,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3331.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 438.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3331.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 560.5,
+            "sequence_id": 0,
+            "ttfb_ms": 438.7,
+            "bytes": 2674
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3567.6,
+            "delta_ms": 236.2,
+            "from_llm_first_token_ms": 796.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3567.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 796.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3567.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 796.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3567.7,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 796.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3956.5,
+            "delta_ms": 388.8,
+            "from_llm_first_token_ms": 1185.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3956.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1185.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3956.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1185.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3956.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1185.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3964.0,
+            "delta_ms": 7.4,
+            "from_llm_first_token_ms": 1193.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3964.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1193.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3964.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1193.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3964.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1193.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4004.3,
+            "delta_ms": 40.2,
+            "from_llm_first_token_ms": 1233.4,
+            "sequence_id": 0,
+            "bytes": 2674
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4004.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1233.4,
+            "sequence_id": 0,
+            "bytes": 2674
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4004.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1233.4,
+            "sequence_id": 0,
+            "total_tts_ms": 1111.7
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4004.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1233.5,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4004.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1233.5,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2770.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 388.8
+          },
+          {
+            "from": "tts_request_start",
+            "to": "llm_end",
+            "delta_ms": 243.5
+          },
+          {
+            "from": "tts_first_audio_byte",
+            "to": "audio_chunk_created",
+            "delta_ms": 236.2
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 195.2
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2770.9
+      }
+    },
+    {
+      "label": "yaounde_0",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2770.9,
+        "chunker_first_flush_ms": 2968.6,
+        "chunker_wait_after_ttft_ms": 197.7,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2968.8,
+        "ttft_to_tts_request_ms": 197.9,
+        "tts_ttfb_ms": 875.7,
+        "first_audio_byte_ms": 3844.4,
+        "audio_done_ms": 5395.2,
+        "play_gate_after_first_byte_ms": 1550.8,
+        "backend_ttfa_ms": 3844.4,
+        "frontend_play_earliest_ms": 5395.2
+      },
+      "chronology": {
+        "turn_id": "synth-yaounde_0",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2770.9,
+            "delta_ms": 2770.9,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 0.1,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2968.6,
+            "delta_ms": 197.5,
+            "from_llm_first_token_ms": 197.7,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2968.7,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.7,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2968.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.8,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3165.8,
+            "delta_ms": 197.0,
+            "from_llm_first_token_ms": 394.9,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3165.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 394.9,
+            "sequence_id": 1,
+            "chars": 44
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 678.5,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3844.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.4,
+            "sequence_id": 0,
+            "connection_latency_ms": 875.6
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3844.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.5,
+            "sequence_id": 0,
+            "ttfb_ms": 875.7,
+            "bytes": 3927
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3844.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1073.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3844.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1073.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3982.3,
+            "delta_ms": 137.8,
+            "from_llm_first_token_ms": 1211.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3982.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1211.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3982.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1211.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3982.4,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1211.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4264.8,
+            "delta_ms": 282.4,
+            "from_llm_first_token_ms": 1493.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4264.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1493.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4264.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1494.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4264.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1494.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4503.1,
+            "delta_ms": 238.2,
+            "from_llm_first_token_ms": 1732.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4503.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1732.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4503.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1732.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4503.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1732.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5254.3,
+            "delta_ms": 751.1,
+            "from_llm_first_token_ms": 2483.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5254.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2483.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5254.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2483.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5254.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2483.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5254.9,
+            "delta_ms": 0.4,
+            "from_llm_first_token_ms": 2484.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5254.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2484.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5255.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2484.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5255.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2484.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5394.1,
+            "delta_ms": 139.0,
+            "from_llm_first_token_ms": 2623.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5394.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2623.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5395.1,
+            "delta_ms": 1.0,
+            "from_llm_first_token_ms": 2624.1,
+            "sequence_id": 0,
+            "bytes": 3927
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5395.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2624.2,
+            "sequence_id": 0,
+            "bytes": 3927
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 5395.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2624.2,
+            "sequence_id": 0,
+            "total_tts_ms": 2426.4
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 5395.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2624.3,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 5395.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2624.4,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2770.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 751.1
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 678.5
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 282.4
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 238.2
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2770.9
+      }
+    },
+    {
+      "label": "yaounde_1",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2771.0,
+        "chunker_first_flush_ms": 2968.1,
+        "chunker_wait_after_ttft_ms": 197.1,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2968.2,
+        "ttft_to_tts_request_ms": 197.2,
+        "tts_ttfb_ms": 1020.7,
+        "first_audio_byte_ms": 3988.9,
+        "audio_done_ms": 5949.9,
+        "play_gate_after_first_byte_ms": 1961.0,
+        "backend_ttfa_ms": 3988.9,
+        "frontend_play_earliest_ms": 5949.9
+      },
+      "chronology": {
+        "turn_id": "synth-yaounde_1",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2771.0,
+            "delta_ms": 2771.0,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 0.1,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2968.1,
+            "delta_ms": 197.0,
+            "from_llm_first_token_ms": 197.1,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2968.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.1,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2968.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3164.8,
+            "delta_ms": 196.6,
+            "from_llm_first_token_ms": 393.8,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3164.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 393.8,
+            "sequence_id": 1,
+            "chars": 44
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 824.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3988.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1217.9,
+            "sequence_id": 0,
+            "connection_latency_ms": 1020.6
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3988.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "ttfb_ms": 1020.7,
+            "bytes": 1921
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3989.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3989.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1218.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4577.0,
+            "delta_ms": 588.0,
+            "from_llm_first_token_ms": 1806.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4577.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1806.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4577.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1806.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4577.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1806.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4577.3,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1806.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4577.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1806.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4577.5,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 1806.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4577.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1806.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5116.6,
+            "delta_ms": 539.1,
+            "from_llm_first_token_ms": 2345.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5116.6,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2345.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5116.7,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2345.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5116.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2345.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5117.1,
+            "delta_ms": 0.3,
+            "from_llm_first_token_ms": 2346.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5117.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2346.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5117.3,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 2346.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5117.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2346.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5200.0,
+            "delta_ms": 82.7,
+            "from_llm_first_token_ms": 2429.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5200.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2429.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5200.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2429.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5200.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2429.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5948.9,
+            "delta_ms": 748.6,
+            "from_llm_first_token_ms": 3177.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5948.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 3177.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5949.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 3178.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5949.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 3178.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 5949.8,
+            "delta_ms": 0.7,
+            "from_llm_first_token_ms": 3178.8,
+            "sequence_id": 0,
+            "bytes": 1921
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 5949.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 3178.8,
+            "sequence_id": 0,
+            "bytes": 1921
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 5949.8,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 3178.8,
+            "sequence_id": 0,
+            "total_tts_ms": 2981.6
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 5949.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 3178.9,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 5949.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 3178.9,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2771.0
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 824.0
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 748.6
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 588.0
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 539.1
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2771.0
+      }
+    },
+    {
+      "label": "yaounde_2",
+      "kpis": {
+        "pre_ttft_injected_ms": 2767.6499999999996,
+        "llm_first_token_ms": 2770.9,
+        "chunker_first_flush_ms": 2968.1,
+        "chunker_wait_after_ttft_ms": 197.2,
+        "queue_wait_ms": 0.1,
+        "tts_request_ms": 2968.3,
+        "ttft_to_tts_request_ms": 197.4,
+        "tts_ttfb_ms": 451.9,
+        "first_audio_byte_ms": 3420.2,
+        "audio_done_ms": 4991.9,
+        "play_gate_after_first_byte_ms": 1571.7,
+        "backend_ttfa_ms": 3420.2,
+        "frontend_play_earliest_ms": 4991.9
+      },
+      "chronology": {
+        "turn_id": "synth-yaounde_2",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_first_token",
+            "elapsed_ms": 2770.9,
+            "delta_ms": 2770.9,
+            "from_llm_first_token_ms": 0.0,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_text",
+            "elapsed_ms": 2771.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 0.2,
+            "sequence_id": null,
+            "chars": 3
+          },
+          {
+            "event": "chunker_first_flush",
+            "elapsed_ms": 2968.1,
+            "delta_ms": 197.0,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.2,
+            "sequence_id": 0,
+            "chars": 47
+          },
+          {
+            "event": "tts_worker_start",
+            "elapsed_ms": 2968.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.3,
+            "sequence_id": 0,
+            "queue_wait_ms": 0.1,
+            "tts_worker_wait_ms": 0.1
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "tts_request_start",
+            "elapsed_ms": 2968.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 197.4,
+            "sequence_id": 0
+          },
+          {
+            "event": "llm_end",
+            "elapsed_ms": 3165.5,
+            "delta_ms": 197.2,
+            "from_llm_first_token_ms": 394.6,
+            "sequence_id": null
+          },
+          {
+            "event": "tts_queue_put",
+            "elapsed_ms": 3165.6,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 394.6,
+            "sequence_id": 1,
+            "chars": 44
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 242.4,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_connection_established",
+            "elapsed_ms": 3408.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 637.1,
+            "sequence_id": 0,
+            "connection_latency_ms": 439.7
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 12.2,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 4096
+          },
+          {
+            "event": "tts_ttfb",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9
+          },
+          {
+            "event": "tts_first_audio_byte",
+            "elapsed_ms": 3420.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.2,
+            "sequence_id": 0,
+            "ttfb_ms": 451.9,
+            "bytes": 667
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3420.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 649.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3420.3,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 649.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3763.0,
+            "delta_ms": 342.7,
+            "from_llm_first_token_ms": 992.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3763.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 992.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 3763.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 992.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 3763.1,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 992.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4176.7,
+            "delta_ms": 413.6,
+            "from_llm_first_token_ms": 1405.7,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4176.7,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1405.8,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4176.8,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1405.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4176.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1405.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4705.2,
+            "delta_ms": 528.3,
+            "from_llm_first_token_ms": 1934.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4705.2,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 1934.3,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4705.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1934.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4705.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 1934.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4914.1,
+            "delta_ms": 208.7,
+            "from_llm_first_token_ms": 2143.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4914.2,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2143.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4914.3,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2143.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4914.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2143.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4961.3,
+            "delta_ms": 46.9,
+            "from_llm_first_token_ms": 2190.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4961.4,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2190.4,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4961.5,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2190.5,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4961.5,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2190.6,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4990.9,
+            "delta_ms": 29.4,
+            "from_llm_first_token_ms": 2219.9,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4990.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2220.0,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4991.1,
+            "delta_ms": 0.2,
+            "from_llm_first_token_ms": 2220.1,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4991.1,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2220.2,
+            "sequence_id": 0,
+            "bytes": 4096
+          },
+          {
+            "event": "audio_chunk_created",
+            "elapsed_ms": 4991.8,
+            "delta_ms": 0.7,
+            "from_llm_first_token_ms": 2220.9,
+            "sequence_id": 0,
+            "bytes": 667
+          },
+          {
+            "event": "audio_chunk_sent_ws",
+            "elapsed_ms": 4991.9,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2220.9,
+            "sequence_id": 0,
+            "bytes": 667
+          },
+          {
+            "event": "tts_response_complete",
+            "elapsed_ms": 4991.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2221.0,
+            "sequence_id": 0,
+            "total_tts_ms": 2023.6
+          },
+          {
+            "event": "audio_done_sent",
+            "elapsed_ms": 4991.9,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": 2221.0,
+            "sequence_id": 0
+          },
+          {
+            "event": "turn_end",
+            "elapsed_ms": 4992.0,
+            "delta_ms": 0.1,
+            "from_llm_first_token_ms": 2221.1,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "llm_start",
+            "to": "llm_first_token",
+            "delta_ms": 2770.9
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 528.3
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 413.6
+          },
+          {
+            "from": "audio_chunk_sent_ws",
+            "to": "audio_chunk_created",
+            "delta_ms": 342.7
+          },
+          {
+            "from": "tts_queue_put",
+            "to": "tts_connection_established",
+            "delta_ms": 242.4
+          }
+        ]
+      },
+      "biggest_gap": {
+        "from": "llm_start",
+        "to": "llm_first_token",
+        "delta_ms": 2770.9
+      }
+    }
+  ]
+}

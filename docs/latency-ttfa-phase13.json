@@ -1,0 +1,366 @@
+{
+  "summary": {
+    "phase": "1.3",
+    "n_backend_valid": 0,
+    "n_backend_invalid": 5,
+    "n_ws_valid": 0,
+    "stats_backend": {
+      "A_llm_ttft_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "B_ttft_to_tts_request_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "chunker_wait_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "queue_wait_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "C_tts_ttfb_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "connection_latency_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "total_tts_first_request_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "F_ttfa_llm_start_to_first_audio_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "llm_first_token_to_first_audio_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "first_frag_chars": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      }
+    },
+    "stats_ws": {
+      "D_backend_to_frontend_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "E_first_chunk_to_audio_done_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "ws_first_chunk_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      },
+      "ws_audio_done_ms": {
+        "avg": null,
+        "min": null,
+        "max": null,
+        "n": 0
+      }
+    },
+    "biggest_gaps_ranked": []
+  },
+  "backend_runs": [
+    {
+      "label": "food",
+      "run": 0,
+      "invalid": true,
+      "reason": "Hugging Face Inference Providers are busy or unavailable. Try again shortly.",
+      "chronology": {
+        "turn_id": "p13-food-0",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "turn_start",
+            "to": "llm_start",
+            "delta_ms": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "label": "p13:food:0",
+        "turn_id": "p13-food-0",
+        "started_wall_ms": 1790230027363.8,
+        "total_ms": 4503.0,
+        "phases_ms": {
+          "routing": 0.4,
+          "rag": 3.2,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 3.4,
+          "llm": 2131.5
+        }
+      }
+    },
+    {
+      "label": "food",
+      "run": 1,
+      "invalid": true,
+      "reason": "Hugging Face Inference Providers are busy or unavailable. Try again shortly.",
+      "chronology": {
+        "turn_id": "p13-food-1",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "turn_start",
+            "to": "llm_start",
+            "delta_ms": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "label": "p13:food:1",
+        "turn_id": "p13-food-1",
+        "started_wall_ms": 1790230031866.9,
+        "total_ms": 4497.2,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 2122.2
+        }
+      }
+    },
+    {
+      "label": "food",
+      "run": 2,
+      "invalid": true,
+      "reason": "HF_402",
+      "chronology": {
+        "turn_id": "p13-food-2",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "turn_start",
+            "to": "llm_start",
+            "delta_ms": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "label": "p13:food:2",
+        "turn_id": "p13-food-2",
+        "started_wall_ms": 1790230036364.1,
+        "total_ms": 2404.1,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 54.0
+        }
+      }
+    },
+    {
+      "label": "food",
+      "run": 3,
+      "invalid": true,
+      "reason": "HF_402",
+      "chronology": {
+        "turn_id": "p13-food-3",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "turn_start",
+            "to": "llm_start",
+            "delta_ms": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "label": "p13:food:3",
+        "turn_id": "p13-food-3",
+        "started_wall_ms": 1790230038768.2,
+        "total_ms": 2407.7,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 47.6
+        }
+      }
+    },
+    {
+      "label": "food",
+      "run": 4,
+      "invalid": true,
+      "reason": "HF_402",
+      "chronology": {
+        "turn_id": "p13-food-4",
+        "events": [
+          {
+            "event": "turn_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          },
+          {
+            "event": "llm_start",
+            "elapsed_ms": 0.0,
+            "delta_ms": 0.0,
+            "from_llm_first_token_ms": null,
+            "sequence_id": null
+          }
+        ],
+        "meta": {},
+        "gaps": [
+          {
+            "from": "turn_start",
+            "to": "llm_start",
+            "delta_ms": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "label": "p13:food:4",
+        "turn_id": "p13-food-4",
+        "started_wall_ms": 1790230041176.0,
+        "total_ms": 2426.4,
+        "phases_ms": {
+          "routing": 0.1,
+          "rag": 0.1,
+          "web": 0.0,
+          "prompt": 0.0,
+          "grounding": 0.2,
+          "llm": 55.0
+        }
+      }
+    }
+  ],
+  "ws_runs": [
+    {
+      "label": "food",
+      "run": 0,
+      "invalid": true,
+      "reason": "HF_402",
+      "client_marks_ms": {
+        "ws_ready": 727.2,
+        "text_sent": 727.4
+      }
+    }
+  ],
+  "questions": [
+    [
+      "food",
+      "Quels plats camerounais dois-je goûter ?"
+    ],
+    [
+      "nature",
+      "Propose-moi une activité nature au Cameroun."
+    ],
+    [
+      "yaounde",
+      "Que puis-je visiter à Yaoundé ?"
+    ]
+  ],
+  "notes": [
+    "No 'Bonjour' greeting turns — RAG/LLM/TTS forced.",
+    "Backend TTFA = llm_start → first Fish audio byte (no browser).",
+    "WS E = first audio_chunk receive → audio_done (current play gate).",
+    "HF_402 runs marked invalid; never invented."
+  ]
+}
