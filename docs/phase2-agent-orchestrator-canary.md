@@ -47,9 +47,6 @@ Baseline historique warm TTFA ≈ **1100 ms** (Phase 1.9, legacy LLM path).
   new key hit 402 again on heavier grounded LLM turns after greeting burn.
 - Historical baseline ≈1100 ms; orchestrator remains below baseline on both scenarios.
 
-
-**HF token:** rotated for canary re-measure after previous key returned HTTP 402 (credits depleted). Secrets stay in local `.env` only (not committed).
-
 ### Greeting — Bonjour
 
 | Metric | Legacy | Orchestrator |
