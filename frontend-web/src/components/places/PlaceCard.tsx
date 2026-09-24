@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { MapPin } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge, Button } from '@/components/ui';
@@ -58,8 +59,9 @@ export function PlaceCard({
       <div className="space-y-3 p-4">
         <div>
           <h3 className="font-display text-lg text-[var(--green-deep)]">{site.name}</h3>
-          <p className="mt-1 text-sm text-[var(--muted)]">
-            📍 {[site.city, site.region].filter(Boolean).join(', ')}
+          <p className="mt-1 flex items-start gap-1.5 text-sm text-[var(--muted)]">
+            <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+            <span>{[site.city, site.region].filter(Boolean).join(', ')}</span>
           </p>
         </div>
         {site.category ? <Badge>{site.category}</Badge> : null}

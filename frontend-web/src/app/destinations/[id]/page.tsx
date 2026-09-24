@@ -1,5 +1,6 @@
 'use client';
 
+import { MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
@@ -102,8 +103,11 @@ export default function DestinationDetailPage() {
           {site.images[0] ? (
             <h1 className="font-display text-4xl text-[var(--green-deep)]">{site.name}</h1>
           ) : null}
-          <p className="mt-2 text-[var(--muted)]">
-            📍 {site.city}, {site.region}
+          <p className="mt-2 flex items-start gap-1.5 text-[var(--muted)]">
+            <MapPin className="mt-1 h-4 w-4 shrink-0" aria-hidden />
+            <span>
+              {site.city}, {site.region}
+            </span>
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Badge>{site.category}</Badge>

@@ -1,5 +1,6 @@
 'use client';
 
+import { Camera, Mic, Send } from 'lucide-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
@@ -211,7 +212,10 @@ export function AssistantChat({
           {t('assistant.title')}
         </h1>
         {voicePhase ? (
-          <p className="mt-1 text-sm text-[var(--green)]">🎙️ {voicePhase}</p>
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-[var(--green)]">
+            <Mic className="h-4 w-4 shrink-0" aria-hidden />
+            {voicePhase}
+          </p>
         ) : null}
       </div>
 
@@ -251,8 +255,13 @@ export function AssistantChat({
         onSubmit={onSubmit}
         className="flex flex-wrap items-center gap-2 border-t border-[var(--line)] p-4"
       >
-        <Button type="button" variant="secondary" onClick={() => fileRef.current?.click()}>
-          📷
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => fileRef.current?.click()}
+          aria-label={t('nav.vision')}
+        >
+          <Camera className="h-4 w-4" aria-hidden />
         </Button>
         <input
           ref={fileRef}
@@ -282,10 +291,10 @@ export function AssistantChat({
           onClick={() => void startVoice()}
           aria-label={t('assistant.voice')}
         >
-          🎙️
+          <Mic className="h-4 w-4" aria-hidden />
         </Button>
         <Button type="submit" disabled={sending} aria-label={t('assistant.send')}>
-          ➤
+          <Send className="h-4 w-4" aria-hidden />
         </Button>
       </form>
     </div>

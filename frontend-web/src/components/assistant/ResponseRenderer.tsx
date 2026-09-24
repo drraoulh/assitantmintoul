@@ -1,5 +1,6 @@
 'use client';
 
+import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 
 import { PlaceCard } from '@/components/places/PlaceCard';
@@ -167,7 +168,10 @@ function HotelList({ hotels }: { hotels: HotelUI[] }) {
         >
           <h3 className="font-display text-lg text-[var(--green-deep)]">{h.name}</h3>
           {h.location ? (
-            <p className="mt-1 text-sm text-[var(--muted)]">📍 {h.location}</p>
+            <p className="mt-1 flex items-start gap-1.5 text-sm text-[var(--muted)]">
+              <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+              <span>{h.location}</span>
+            </p>
           ) : null}
           {h.description ? (
             <p className="mt-2 line-clamp-3 text-sm">{h.description}</p>
@@ -207,7 +211,10 @@ function ItineraryCard({ itinerary }: { itinerary: ItineraryUI }) {
                   <span className="font-medium text-[var(--muted)]">
                     {item.time ?? '—'}
                   </span>{' '}
-                  📍 {item.title}
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin className="inline h-3.5 w-3.5 shrink-0" aria-hidden />
+                    {item.title}
+                  </span>
                   {item.duration_minutes != null
                     ? ` · ${item.duration_minutes} min`
                     : ''}

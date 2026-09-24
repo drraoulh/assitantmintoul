@@ -1,5 +1,6 @@
 'use client';
 
+import { MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -55,8 +56,11 @@ export default function HotelsPage() {
                 <div className="h-40 bg-gradient-to-br from-[var(--green-deep)] to-[var(--green-mid)]" />
                 <div className="space-y-3 p-5">
                   <h2 className="font-display text-xl text-[var(--green-deep)]">{h.name}</h2>
-                  <p className="text-sm text-[var(--muted)]">
-                    📍 {h.city}, {h.region}
+                  <p className="flex items-start gap-1.5 text-sm text-[var(--muted)]">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
+                    <span>
+                      {h.city}, {h.region}
+                    </span>
                   </p>
                   {h.price ? (
                     <Badge tone="yellow">

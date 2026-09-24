@@ -1,5 +1,6 @@
 'use client';
 
+import { Flag, Globe, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -58,9 +59,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--green-deep)] text-[var(--ivory)]">
       <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 md:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-2">
-          <span className="text-xl" aria-hidden>
-            🇨🇲
-          </span>
+          <Flag className="h-5 w-5 shrink-0 text-[var(--yellow)]" aria-hidden />
           <span className="font-display text-lg font-semibold tracking-tight md:text-xl">
             {APP_NAME}
           </span>
@@ -100,7 +99,8 @@ export function SiteHeader() {
             className="rounded-full border border-[var(--yellow)]/70 px-2.5 py-1 text-xs font-bold text-[var(--yellow)]"
             aria-label="Language"
           >
-            🌐 {locale.toUpperCase()}
+            <Globe className="mr-1 inline h-3.5 w-3.5" aria-hidden />
+            {locale.toUpperCase()}
           </button>
           <Link
             href="/mon-voyage"
@@ -114,7 +114,7 @@ export function SiteHeader() {
             aria-label="Menu"
             onClick={() => setOpen((v) => !v)}
           >
-            ☰
+            <Menu className="h-5 w-5" aria-hidden />
           </button>
         </div>
       </div>
