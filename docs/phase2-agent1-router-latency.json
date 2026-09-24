@@ -1,0 +1,70 @@
+{
+  "n": 50,
+  "mean_ms": 0.058,
+  "median_ms": 0.058,
+  "p95_ms": 0.078,
+  "max_ms": 0.115,
+  "strategy": "hybrid_rules_first_voice_rules_only",
+  "samples_preview": [
+    {
+      "intent": "SIMPLE_QA",
+      "confidence": 0.9,
+      "router_latency_ms": 0.104,
+      "reported_ms": 0.094
+    },
+    {
+      "intent": "PLACE_SEARCH",
+      "confidence": 0.9,
+      "router_latency_ms": 0.057,
+      "reported_ms": 0.045
+    },
+    {
+      "intent": "ITINERARY",
+      "confidence": 0.88,
+      "router_latency_ms": 0.065,
+      "reported_ms": 0.052
+    },
+    {
+      "intent": "BUDGET_TRIP",
+      "confidence": 0.9,
+      "router_latency_ms": 0.071,
+      "reported_ms": 0.061
+    },
+    {
+      "intent": "FOOD",
+      "confidence": 0.88,
+      "router_latency_ms": 0.078,
+      "reported_ms": 0.068
+    },
+    {
+      "intent": "CULTURE",
+      "confidence": 0.87,
+      "router_latency_ms": 0.077,
+      "reported_ms": 0.067
+    },
+    {
+      "intent": "NATURE",
+      "confidence": 0.87,
+      "router_latency_ms": 0.083,
+      "reported_ms": 0.074
+    },
+    {
+      "intent": "PLACE_DETAILS",
+      "confidence": 0.9,
+      "router_latency_ms": 0.06,
+      "reported_ms": 0.052
+    },
+    {
+      "intent": "BOOKING",
+      "confidence": 0.9,
+      "router_latency_ms": 0.052,
+      "reported_ms": 0.043
+    },
+    {
+      "intent": "CLARIFICATION",
+      "confidence": 0.35,
+      "router_latency_ms": 0.059,
+      "reported_ms": 0.051
+    }
+  ]
+}

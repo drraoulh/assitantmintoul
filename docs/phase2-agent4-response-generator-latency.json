@@ -1,0 +1,41 @@
+{
+  "n": 12,
+  "mean_ms": 0.221,
+  "median_ms": 0.212,
+  "p95_ms": 0.367,
+  "path": "deterministic_renderer_no_llm",
+  "samples_preview": [
+    {
+      "response_type": "SIMPLE_ANSWER",
+      "language": "fr",
+      "fallback_used": true,
+      "total_ms": 0.134,
+      "prompt_build_ms": 0.093,
+      "chars": 1166
+    },
+    {
+      "response_type": "PLACE_LIST",
+      "language": "fr",
+      "fallback_used": true,
+      "total_ms": 0.203,
+      "prompt_build_ms": 0.169,
+      "chars": 290
+    },
+    {
+      "response_type": "BUDGET_TRIP",
+      "language": "fr",
+      "fallback_used": true,
+      "total_ms": 0.367,
+      "prompt_build_ms": 0.322,
+      "chars": 639
+    },
+    {
+      "response_type": "NATURE",
+      "language": "fr",
+      "fallback_used": true,
+      "total_ms": 0.228,
+      "prompt_build_ms": 0.191,
+      "chars": 372
+    }
+  ]
+}

@@ -186,6 +186,85 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("GEMINI_TIMEOUT_SECONDS"),
     )
 
+    # Phase 2.1 Agent 1 — Intent & Router (progressive). Default OFF so the
+    # Phase-1 voice path is unchanged. When observe=true, classify_intent runs
+    # alongside route_query for metrics only (no routing behavior change).
+    intent_router_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("INTENT_ROUTER_OBSERVE"),
+    )
+    # Phase 2.2 Agent 2 — Knowledge & Retrieval (progressive). Default OFF.
+    knowledge_agent_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("KNOWLEDGE_AGENT_OBSERVE"),
+    )
+    knowledge_agent_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("KNOWLEDGE_AGENT_ENABLED"),
+    )
+    # Phase 2.3 Agent 3 — Tourism Planner (progressive). Default OFF.
+    tourism_planner_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("TOURISM_PLANNER_OBSERVE"),
+    )
+    tourism_planner_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("TOURISM_PLANNER_ENABLED"),
+    )
+    # Phase 2.4 Agent 4 — Response Generator (progressive). Default OFF.
+    response_agent_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("RESPONSE_AGENT_OBSERVE"),
+    )
+    response_agent_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("RESPONSE_AGENT_ENABLED"),
+    )
+    # Phase 2.5 — Agent Orchestrator (progressive). Default OFF so chat/voice
+    # keep the Phase-1 path. Observe runs the coordinator for metrics only
+    # (deterministic Agent 4 — no extra production LLM).
+    agent_orchestrator_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_ENABLED"),
+    )
+    agent_orchestrator_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_OBSERVE"),
+    )
+    # Canary-only: force orchestrator failure to exercise legacy fallback.
+    # Never enable in production.
+    agent_orchestrator_force_fail: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_FORCE_FAIL"),
+    )
+    # Canary / progressive: when true with AGENT_ORCHESTRATOR_ENABLED, Agent 4
+    # may call Qwen once via llm_complete. Default false keeps deterministic Agent 4.
+    agent_orchestrator_use_llm: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_USE_LLM"),
+    )
+    # Phase 2.6 — true Qwen → TTS streaming (voice only). Default OFF.
+    # When true with ORCHESTRATOR_ENABLED + USE_LLM, Agent 4 streams Qwen tokens
+    # into the existing voice chunker/TTS worker without waiting for full reply.
+    voice_llm_streaming_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("VOICE_LLM_STREAMING_ENABLED"),
+    )
+    # Bounded TTS text queue for backpressure (0 = unbounded / legacy).
+    voice_tts_queue_maxsize: int = Field(
+        default=4,
+        validation_alias=AliasChoices("VOICE_TTS_QUEUE_MAXSIZE", "TEXT_QUEUE_MAXSIZE"),
+    )
+    # Optional overrides for voice chunker (0 = keep module defaults).
+    voice_stream_min_chars: int = Field(
+        default=0,
+        validation_alias=AliasChoices("VOICE_STREAM_MIN_CHARS"),
+    )
+    voice_stream_max_chars: int = Field(
+        default=0,
+        validation_alias=AliasChoices("VOICE_STREAM_MAX_CHARS"),
+    )
+
     @property
     def cors_origin_list(self) -> list[str]:
         if self.cors_origins.strip() == "*":

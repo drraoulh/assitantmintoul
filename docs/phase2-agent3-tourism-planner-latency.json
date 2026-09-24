@@ -1,0 +1,46 @@
+{
+  "n": 12,
+  "mean_ms": 0.22,
+  "median_ms": 0.256,
+  "p95_ms": 0.32,
+  "max_ms": 0.392,
+  "strategy": "rules_data_first_no_llm",
+  "samples_preview": [
+    {
+      "intent": "BUDGET_TRIP",
+      "feasibility": "PARTIAL",
+      "budget_status": "PARTIAL",
+      "days": 3,
+      "selected": 11,
+      "total_ms": 0.392,
+      "reported_ms": 0.357
+    },
+    {
+      "intent": "ITINERARY",
+      "feasibility": "INSUFFICIENT_DATA",
+      "budget_status": "UNKNOWN",
+      "days": 0,
+      "selected": 0,
+      "total_ms": 0.026,
+      "reported_ms": 0.003
+    },
+    {
+      "intent": "CULTURE",
+      "feasibility": "PARTIAL",
+      "budget_status": "PARTIAL",
+      "days": 1,
+      "selected": 4,
+      "total_ms": 0.236,
+      "reported_ms": 0.212
+    },
+    {
+      "intent": "BUDGET_TRIP",
+      "feasibility": "PARTIAL",
+      "budget_status": "PARTIAL",
+      "days": 3,
+      "selected": 11,
+      "total_ms": 0.287,
+      "reported_ms": 0.262
+    }
+  ]
+}
