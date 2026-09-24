@@ -26,6 +26,32 @@ class ConversationStore(ABC):
     async def add_message(self, conversation_id: str, role: str, content: str) -> None:
         """Append one turn to the thread."""
 
+    async def add_messages(
+        self,
+        conversation_id: str,
+        turns: list[tuple[str, str]],
+    ) -> None:
+        """Append several turns; default loops ``add_message``."""
+        for role, content in turns:
+            await self.add_message(conversation_id, role, content)
+
+    async def prepare_for_generation(
+        self,
+        conversation_id: str | None,
+        *,
+        limit: int | None = None,
+    ) -> tuple[str, list[dict[str, str]]]:
+        """Return ``(thread_id, history)`` ready for the LLM.
+
+        Default: ``start`` then ``get_messages``. SQL store overrides this to
+        use a single session / skip DB for brand-new threads.
+        """
+        thread_id = await self.start(conversation_id)
+        history = await self.get_messages(thread_id)
+        if limit is not None and limit >= 0:
+            history = history[-limit:]
+        return thread_id, history
+
     @abstractmethod
     async def get_turns(self, conversation_id: str) -> list[ConversationTurn]:
         """Return the readable thread, oldest first, for the history screen."""

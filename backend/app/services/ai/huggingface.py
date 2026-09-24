@@ -191,14 +191,27 @@ class HuggingFaceAIService(AIService):
             return
 
         try:
-            thread_id = await self._store.start(conversation_id)
-            trace.mark("conversation_store_start_done")
-            history = await self._store.get_messages(thread_id)
+            history_window = self._voice_history_n if brief else self._history_n
+            # Fetch only what the LLM payload will use (SQL LIMIT in Sql store).
+            thread_id, history = await self._store.prepare_for_generation(
+                conversation_id,
+                limit=history_window,
+            )
+            store_trace = getattr(self._store, "last_trace", None)
+            if store_trace is not None:
+                trace.set_meta(store=store_trace.as_dict())
+                for op in store_trace.ops:
+                    timer.mark(f"store_{op.name}", op.duration_ms)
+                timer.mark("store_prepare_total", store_trace.total_ms())
+            trace.mark(
+                "conversation_store_start_done",
+                mode=(store_trace.meta.get("mode") if store_trace else None),
+            )
             trace.mark(
                 "conversation_history_loaded",
                 history_len=len(history),
+                limit=history_window,
             )
-            history_window = self._voice_history_n if brief else self._history_n
 
             with timer.phase("routing"):
                 route = route_query(message)
@@ -223,8 +236,10 @@ class HuggingFaceAIService(AIService):
                 timer.mark("cache_hit", 1.0)
                 trace.set_meta(cache_hit=True)
                 trace.mark("cache_hit")
-                await self._store.add_message(thread_id, "user", message)
-                await self._store.add_message(thread_id, "assistant", cached)
+                await self._store.add_messages(
+                    thread_id,
+                    [("user", message), ("assistant", cached)],
+                )
                 trace.note_first_token(chars=len(cached))
                 trace.note_first_useful_text(text=cached)
                 trace.note_first_phrase_ready(text=cached)
@@ -339,8 +354,13 @@ class HuggingFaceAIService(AIService):
             if route.skip_kb:
                 _simple_reply_cache_set(message, locale, brief, reply)
 
-            await self._store.add_message(thread_id, "user", message)
-            await self._store.add_message(thread_id, "assistant", reply)
+            # Persist after stream (single session/commit) — does not block TTFT.
+            await self._store.add_messages(
+                thread_id,
+                [("user", message), ("assistant", reply)],
+            )
+            if getattr(self._store, "last_trace", None) is not None:
+                trace.set_meta(store_persist=self._store.last_trace.as_dict())
             trace.note_llm_end()
             if trace.llm_prepare_ms is not None:
                 timer.mark("llm_prepare", trace.llm_prepare_ms)

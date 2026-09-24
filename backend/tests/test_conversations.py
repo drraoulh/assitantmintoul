@@ -90,6 +90,9 @@ def test_client_ids_that_are_not_uuid_get_a_fresh_uuid() -> None:
 @pytest.mark.asyncio
 async def test_sql_store_falls_back_to_memory_when_database_is_down() -> None:
     class BrokenSession:
+        async def connection(self):
+            raise OperationalError("SELECT 1", {}, Exception("no route to host"))
+
         async def __aenter__(self):
             raise OperationalError("SELECT 1", {}, Exception("no route to host"))
 
@@ -108,6 +111,61 @@ async def test_sql_store_falls_back_to_memory_when_database_is_down() -> None:
     ]
     summaries = await store.list_conversations()
     assert summaries and summaries[0].title == "Bonjour"
+
+
+@pytest.mark.asyncio
+async def test_prepare_for_generation_skips_db_for_new_thread() -> None:
+    """New conversation_id=None must not open a SQL session before the LLM."""
+    opened = {"n": 0}
+
+    class CountingSession:
+        async def connection(self):
+            opened["n"] += 1
+            raise AssertionError("should not connect")
+
+        async def __aenter__(self):
+            opened["n"] += 1
+            return self
+
+        async def __aexit__(self, *_: object) -> None:
+            return None
+
+    store = SqlConversationStore(session_factory=lambda: CountingSession())
+    thread_id, history = await store.prepare_for_generation(None, limit=3)
+    assert thread_id
+    assert history == []
+    assert opened["n"] == 0
+    assert store.last_trace is not None
+    assert store.last_trace.meta.get("mode") == "prepare_no_db"
+
+
+@pytest.mark.asyncio
+async def test_prepare_for_generation_sql_limit_on_existing_thread() -> None:
+    engine = create_async_engine(
+        "sqlite+aiosqlite:///:memory:",
+        poolclass=StaticPool,
+    )
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    store = SqlConversationStore(
+        session_factory=async_sessionmaker(engine, expire_on_commit=False),
+        context_messages=16,
+    )
+    thread = await store.start(None)
+    for i in range(5):
+        await store.add_message(thread, "user", f"u{i}")
+        await store.add_message(thread, "assistant", f"a{i}")
+
+    _tid, history = await store.prepare_for_generation(thread, limit=3)
+    assert len(history) == 3
+    assert history[0]["content"] == "a3" or history[0]["content"] == "u4"
+    # Last 3 turns oldest-first: u3,a3,u4 or a3,u4,a4 depending on count
+    # We added 10 messages; last 3 = u4, a4? Wait: pairs u0,a0 ... u4,a4 → last 3 = a3,u4,a4
+    assert [m["content"] for m in history] == ["a3", "u4", "a4"]
+
+    await engine.dispose()
+
 
 
 @pytest.mark.asyncio
