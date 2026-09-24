@@ -62,5 +62,9 @@ services:
         value: "4"
       - key: GROUNDING_ENFORCEMENT_ENABLED
         value: "true"
+      - key: KNOWLEDGE_GEOGRAPHY_ENABLED
+        value: "true"
+      - key: WEB_KNOWLEDGE_FALLBACK_ENABLED
+        value: "false"
       - key: CORS_ORIGINS
         value: "*"
