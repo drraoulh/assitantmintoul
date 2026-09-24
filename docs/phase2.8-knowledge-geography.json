@@ -60,7 +60,14 @@
     "ngaoundere_region_adamaoua": true,
     "adamaoua_food": true,
     "tison_located": true,
-    "ngaoundere_hotel_oasis": true
+    "ngaoundere_hotel_oasis": true,
+    "garoua_has_places": true,
+    "garoua_not_figuil_as_city": true,
+    "nord_not_equals_garoua": true,
+    "garoua_region_nord": true,
+    "nord_food": true,
+    "benoue_located": true,
+    "garoua_hotels": true
   },
   "turns": [
     {
@@ -93,7 +100,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 78.0
+      "ms": 76.7
     },
     {
       "query": "C’est tout ?",
@@ -108,7 +115,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Pouvez-vous préciser un peu ce que vous recherchez ?",
-      "ms": 6.9
+      "ms": 6.6
     },
     {
       "query": "La région de l’Ouest c’est Bafoussam nor ?",
@@ -124,7 +131,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Ouest est une région du Cameroun, et Bafoussam en est le chef-lieu.",
-      "ms": 8.0
+      "ms": 7.5
     },
     {
       "query": "Bafoussam est dans quelle région ?",
@@ -140,7 +147,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bafoussam se trouve dans la région de l’Ouest du Cameroun.",
-      "ms": 7.0
+      "ms": 6.7
     },
     {
       "query": "Que visiter autour de Bafoussam ?",
@@ -172,7 +179,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 3 lieu(x) vérifié(s) autour de Bafoussam dans ma base :\n- Hauts Plateaux de l'Ouest (autour de Bafoussam)\n- Chefferie de Bafoussam\n- Route des artisans (Bafoussam)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 9.1
+      "ms": 9.2
     },
     {
       "query": "Je veux visiter l’Ouest du Cameroun.",
@@ -229,7 +236,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Chutes De Nsem-Tsa\n- La Falaise De Foreke\n- La Grotte De Demvoh\n- Palais royal de Foumban\n- Chefferie de Bafoussam\n- Base Nautique De Dschang\n- Cascades De Dschang\n- Centre Climatique De Dschang",
-      "ms": 12.8
+      "ms": 12.3
     },
     {
       "query": "Quels plats typiques de l’Ouest ?",
@@ -245,7 +252,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Achu : Plat emblématique des Grassfields : taro écrasé avec sauce jaune (souvent associée à l’Ouest / hauts plateaux).\n- Koki : Spécialité à base de haricots / pâte cuite en feuille ; répandue dans plusieurs régions, y compris l’Ouest.\n- Café des hauts plateaux : Le café des h",
-      "ms": 13.1
+      "ms": 13.2
     },
     {
       "query": "Parle-moi des traditions bamiléké et Bamoun",
@@ -272,7 +279,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "L’Ouest (Grassfields) regroupe hauts plateaux, chefferies bamiléké, royaume Bamoun à Foumban, artisanat, lacs de cratère et cascades. Bafoussam est le chef-lieu ; Foumban, Dschang, Bandjoun, Mbouda, Baham, Bafang et Bangangté sont des pôles majeurs.\nRepères culturels documentés :\n- Protocole des chefferies : Dans les c",
-      "ms": 13.7
+      "ms": 13.4
     },
     {
       "query": "Où est le lac Mbapit ?",
@@ -288,7 +295,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le lac et le mont Mbapit se trouvent à Mbapit, entre Foumbot et Foumban (département du Noun, région de l’Ouest).",
-      "ms": 7.3
+      "ms": 7.1
     },
     {
       "query": "Hôtel à Dschang ?",
@@ -310,7 +317,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 1 lieu(x) vérifié(s) autour de Dschang dans ma base :\n- Adys Hotel Dschang Officiel\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 8.0
+      "ms": 7.5
     },
     {
       "query": "Je veux visiter Douala que me proposes-tu ?",
@@ -367,7 +374,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Douala dans ma base :\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Ile De Manoka\n- Jardin Botanique Agrotech\n- La Maison Omaj\n- La Nouvelle Liberte\n- La Pagode",
-      "ms": 11.8
+      "ms": 11.7
     },
     {
       "query": "La région du Littoral c’est Douala nor ?",
@@ -383,7 +390,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Littoral est une région du Cameroun, et Douala en est le chef-lieu.",
-      "ms": 18.7
+      "ms": 15.8
     },
     {
       "query": "Douala est dans quelle région ?",
@@ -431,8 +438,8 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Chute De Bini",
-          "city": "Ngaoundéré",
+          "name": "Figuil",
+          "city": "Figuil",
           "scope": "UNKNOWN"
         }
       ],
@@ -441,7 +448,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Ndolé : Plat emblématique surtout associé à Douala / Littoral : feuilles amères, arachide, poisson ou viande.\n- Poissons et cuisine urbaine : Douala offre une scène resto urbaine (quartiers Akwa, Bonapriso…) avec poissons et spécialités locales — goûtez le ndolé ; signalez les",
-      "ms": 23.5
+      "ms": 24.6
     },
     {
       "query": "Parle-moi de la culture Sawa",
@@ -473,7 +480,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Le Littoral a pour chef-lieu Douala, capitale économique et hub aérien du Cameroun. Cultures Sawa, estuaire du Wouri, quartiers Bonanjo / Akwa / Bonapriso, et portes vers Edéa (Sanaga), Nkongsamba / Ekom-Nkam (Moungo) et Yabassi (Nkam).\nRepères culturels documentés :\n- Patrimoine Sawa : Douala illustre le littoral urba",
-      "ms": 11.2
+      "ms": 11.4
     },
     {
       "query": "Je veux visiter le Littoral.",
@@ -530,7 +537,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Quartier Bonanjo (Douala)\n- Chutes d’Ekom-Nkam\n- Chutes De Mbang-Ebongo\n- Doual'art\n- Fleuve Dibamba\n- Gorges De La Sanaga\n- Ile De Manoka\n- Jardin Botanique Agrotech",
-      "ms": 12.4
+      "ms": 12.5
     },
     {
       "query": "Je veux visiter Yaoundé que me proposes-tu ?",
@@ -587,7 +594,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Yaoundé dans ma base :\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé\n- Cipca (Centre International Pour Le Patrimoine Culturel Et Artistique)\n- Galerie Arts Negro\n- Galerie Ateli",
-      "ms": 12.8
+      "ms": 12.4
     },
     {
       "query": "La région du Centre c’est Yaoundé nor ?",
@@ -619,7 +626,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Yaoundé se trouve dans la région du Centre du Cameroun.",
-      "ms": 6.9
+      "ms": 6.8
     },
     {
       "query": "Quels plats typiques à Yaoundé ?",
@@ -661,7 +668,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Poulet DG : Poulet sauté avec plantains et légumes, très présent en restauration urbaine à Yaoundé.\n- Cuisine de quartier / marchés : Yaoundé offre restos de quartier et marchés (Mokolo) pour produits locaux — goûtez aussi ndolé, plantains ; signalez les allergies. Aucun resta",
-      "ms": 24.5
+      "ms": 24.6
     },
     {
       "query": "Parle-moi du marché Mokolo",
@@ -693,7 +700,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Centre International De L'artisanat De Yaoundé se trouve à Yaoundé. Centre International De L'artisanat De Yaoundé. Situé à Carrefour Intendance, près du marché central, à Yaoundé, le Centre International de l'Artisanat de Yaoundé est un espace dédié à la promotion des produits artisanaux camerounais. Ce site touristiq",
-      "ms": 23.8
+      "ms": 23.6
     },
     {
       "query": "Je veux visiter la région du Centre.",
@@ -750,7 +757,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- L’île  Des Cocotiers Soa\n- Le Lac Guéré\n- Les Cascades De Poupouma\n- Musée national du Cameroun\n- Abali Gallery\n- Basilique Marie Reine Des Apotres\n- Cathédrale Notre-Dame-des-Victoires\n- Centre International De L'artisanat De Yaoundé",
-      "ms": 12.7
+      "ms": 12.5
     },
     {
       "query": "Je veux visiter Kribi que me proposes-tu ?",
@@ -807,7 +814,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Kribi dans ma base :\n- Chutes de la Lobé\n- Kribi Lodge\n- Les Chutes De La Bongola\n- Plage de Grand Batanga\n- Plages de Kribi\n- Hôtel Du Phare\n- Hotel Ilomba\n- Résidence Lynn",
-      "ms": 10.8
+      "ms": 10.6
     },
     {
       "query": "La région du Sud c’est Kribi nor ?",
@@ -823,7 +830,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Sud est une région du Cameroun (chef-lieu Ebolowa) ; Kribi est sa principale station balnéaire.",
-      "ms": 7.7
+      "ms": 7.4
     },
     {
       "query": "Kribi est dans quelle région ?",
@@ -839,7 +846,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Kribi se trouve dans la région du Sud du Cameroun.",
-      "ms": 7.4
+      "ms": 7.7
     },
     {
       "query": "Quels plats typiques à Kribi ?",
@@ -861,18 +868,18 @@
           "scope": "UNKNOWN"
         },
         {
+          "name": "Figuil",
+          "city": "Figuil",
+          "scope": "UNKNOWN"
+        },
+        {
           "name": "Chute De Bini",
           "city": "Ngaoundéré",
           "scope": "UNKNOWN"
         },
         {
-          "name": "La Chefferie D'oku",
-          "city": "Oku",
-          "scope": "UNKNOWN"
-        },
-        {
-          "name": "Centre Touristique De Nkolandom",
-          "city": "Ebolowa",
+          "name": "Iles Aux Damans",
+          "city": "Garoua",
           "scope": "UNKNOWN"
         }
       ],
@@ -881,7 +888,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Poisson braisé / grillades : Poissons grillés / braisés fréquents à Kribi et sur la côte — souvent avec plantains ou bâton de manioc.\n- Fruits de mer : Kribi est associé aux fruits de mer et grillades en bord de mer — aucun restaurant nommé inventé dans cette base.\nLa base ne ",
-      "ms": 23.9
+      "ms": 24.9
     },
     {
       "query": "Où sont les chutes de la Lobé ?",
@@ -897,7 +904,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Les chutes de la Lobé se trouvent près de Kribi (département de l’Océan, région du Sud).",
-      "ms": 8.4
+      "ms": 7.8
     },
     {
       "query": "Hôtels à Yaoundé ?",
@@ -944,7 +951,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 6 lieu(x) vérifié(s) autour de Yaoundé dans ma base :\n- Galerie Atelier D'art Afrobantu Mekouti\n- La Place De L'indépendance\n- Mont Fébé\n- Rond Point J'aime Mon Pays Le Cameroun\n- Hilton Yaoundé\n- Star Land Hotel Yaounde",
-      "ms": 9.7
+      "ms": 9.4
     },
     {
       "query": "Je veux visiter Limbé que me proposes-tu ?",
@@ -991,7 +998,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 6 lieu(x) vérifié(s) autour de Limbé dans ma base :\n- Bimbia\n- Centre faunique de Limbé\n- Down Beach (Limbé)\n- Jardin botanique de Limbé\n- L'ile Ndame\n- Moland Beach",
-      "ms": 10.1
+      "ms": 10.0
     },
     {
       "query": "La région du Sud-Ouest c’est Buea nor ?",
@@ -1007,7 +1014,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Sud-Ouest est une région du Cameroun, et Buea en est le chef-lieu (Limbé est la station balnéaire).",
-      "ms": 7.4
+      "ms": 7.3
     },
     {
       "query": "Buea est dans quelle région ?",
@@ -1023,7 +1030,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Buea se trouve dans la région du Sud-Ouest du Cameroun.",
-      "ms": 6.8
+      "ms": 7.1
     },
     {
       "query": "Quels plats typiques à Limbé / Sud-Ouest ?",
@@ -1055,8 +1062,8 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Chute De Bini",
-          "city": "Ngaoundéré",
+          "name": "Figuil",
+          "city": "Figuil",
           "scope": "UNKNOWN"
         }
       ],
@@ -1065,7 +1072,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Eru / okok : Légumes-feuilles avec viande ou poisson — très présent dans le Sud-Ouest et zones voisines.\n- Bases côtières : Plantains, poissons et plats locaux selon les marchés de Limbé — aucun restaurant nommé inventé dans cette base.\nLa base ne contient pas encore de restau",
-      "ms": 24.4
+      "ms": 24.8
     },
     {
       "query": "Où est le Mont Cameroun ?",
@@ -1081,7 +1088,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le Mont Cameroun se trouve près de Buea (département du Fako, région du Sud-Ouest).",
-      "ms": 6.6
+      "ms": 6.8
     },
     {
       "query": "Je veux visiter le Sud-Ouest.",
@@ -1138,7 +1145,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) dans ma base :\n- Mont Cameroun\n- Environs naturels de Buea\n- Parc national de Korup\n- Bimbia\n- Centre faunique de Limbé\n- Down Beach (Limbé)\n- Jardin botanique de Limbé\n- L'ile Ndame",
-      "ms": 11.1
+      "ms": 10.6
     },
     {
       "query": "Je veux visiter Bamenda que me proposes-tu ?",
@@ -1175,7 +1182,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 4 lieu(x) vérifié(s) autour de Bamenda dans ma base :\n- Savanna Botanic Garden De Bamenda\n- Bamenda Station Hill\n- Lac Kuk\n- Marchés de Bamenda",
-      "ms": 9.6
+      "ms": 9.7
     },
     {
       "query": "La région du Nord-Ouest c’est Bamenda nor ?",
@@ -1191,7 +1198,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. Le Nord-Ouest est une région du Cameroun, et Bamenda en est le chef-lieu.",
-      "ms": 8.3
+      "ms": 11.3
     },
     {
       "query": "Bamenda est dans quelle région ?",
@@ -1207,7 +1214,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Bamenda se trouve dans la région du Nord-Ouest du Cameroun.",
-      "ms": 7.1
+      "ms": 11.0
     },
     {
       "query": "Quels plats typiques à Bamenda / Nord-Ouest ?",
@@ -1234,13 +1241,13 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Chute De Bini",
-          "city": "Ngaoundéré",
+          "name": "Figuil",
+          "city": "Figuil",
           "scope": "UNKNOWN"
         },
         {
-          "name": "Centre Touristique De Nkolandom",
-          "city": "Ebolowa",
+          "name": "Chute De Bini",
+          "city": "Ngaoundéré",
           "scope": "UNKNOWN"
         }
       ],
@@ -1249,7 +1256,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Achu (Grassfields) : Plat des Grassfields (taro / sauce jaune selon variantes) — commun à l’Ouest et au Nord-Ouest. Aucun restaurant nommé inventé.\n- Bases des hauts plateaux : Plantains, manioc, produits des marchés de Bamenda — orientez vers les marchés, pas vers des enseign",
-      "ms": 24.0
+      "ms": 25.6
     },
     {
       "query": "Où est le Palais de Bafut ?",
@@ -1265,7 +1272,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le Palais de Bafut se trouve à Bafut (département du Mezam, région du Nord-Ouest).",
-      "ms": 7.3
+      "ms": 7.0
     },
     {
       "query": "Je veux visiter le Nord-Ouest.",
@@ -1317,7 +1324,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 7 lieu(x) vérifié(s) dans ma base :\n- Bamenda Station Hill\n- Lac Kuk\n- Savanna Botanic Garden De Bamenda\n- Palais de Bafut\n- Marchés de Bamenda\n- La Chefferie D'oku\n- Lac Oku",
-      "ms": 10.7
+      "ms": 10.9
     },
     {
       "query": "Je veux visiter Maroua que me proposes-tu ?",
@@ -1344,7 +1351,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 2 lieu(x) vérifié(s) autour de Maroua dans ma base :\n- Habitats Mofou\n- Monts Mandara (depuis Maroua)\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 9.8
+      "ms": 9.6
     },
     {
       "query": "La région de l’Extrême-Nord c’est Maroua nor ?",
@@ -1360,7 +1367,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Extrême-Nord est une région du Cameroun, et Maroua en est le chef-lieu (Waza / Rhumsiki sont des sites majeurs).",
-      "ms": 9.3
+      "ms": 8.2
     },
     {
       "query": "Maroua est dans quelle région ?",
@@ -1376,7 +1383,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Maroua se trouve dans la région de l’Extrême-Nord du Cameroun.",
-      "ms": 7.3
+      "ms": 7.2
     },
     {
       "query": "Quels plats typiques à Maroua / Extrême-Nord ?",
@@ -1403,13 +1410,13 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "Chute De Bini",
-          "city": "Ngaoundéré",
+          "name": "Figuil",
+          "city": "Figuil",
           "scope": "UNKNOWN"
         },
         {
-          "name": "La Chefferie D'oku",
-          "city": "Oku",
+          "name": "Chute De Bini",
+          "city": "Ngaoundéré",
           "scope": "UNKNOWN"
         }
       ],
@@ -1418,7 +1425,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Brochettes / soya : Street food populaire partout au Cameroun, très présente aussi dans le Grand Nord. Aucun restaurant nommé inventé.\n- Bases sahéliennes : Céréales (mil / couscous selon variantes), plats locaux des marchés de Maroua — orientez vers les marchés, pas des ensei",
-      "ms": 25.7
+      "ms": 25.8
     },
     {
       "query": "Où est le parc de Waza ?",
@@ -1434,7 +1441,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le parc national de Waza se trouve dans la région de l’Extrême-Nord (accès typique depuis Maroua — vérifier saison et sécurité).",
-      "ms": 8.1
+      "ms": 7.8
     },
     {
       "query": "Je veux visiter l’Extrême-Nord.",
@@ -1486,7 +1493,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 7 lieu(x) vérifié(s) dans ma base :\n- Lac Aux Crocodiles De Boboyo\n- Les Gorges De Kola\n- Lac De Maga\n- Habitats Mofou\n- Monts Mandara (depuis Maroua)\n- Rhumsiki et pic Kapsiki\n- Parc national de Waza",
-      "ms": 18.0
+      "ms": 11.4
     },
     {
       "query": "Je veux visiter Ngaoundéré que me proposes-tu ?",
@@ -1543,7 +1550,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Ngaoundéré dans ma base :\n- Lac Tison\n- Chute De Bini\n- Hôtel Oasis\n- Lac Mballang\n- Lac Mbella-Assom\n- Lamidat De Ngaoundéré\n- Le Mont Ngan-Ha\n- Palais du Lamido de Ngaoundéré",
-      "ms": 11.8
+      "ms": 10.5
     },
     {
       "query": "La région de l’Adamaoua c’est Ngaoundéré nor ?",
@@ -1559,7 +1566,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Pas exactement. L’Adamaoua est une région du Cameroun, et Ngaoundéré en est le chef-lieu.",
-      "ms": 8.5
+      "ms": 7.0
     },
     {
       "query": "Ngaoundéré est dans quelle région ?",
@@ -1575,7 +1582,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Ngaoundéré se trouve dans la région de l’Adamaoua du Cameroun.",
-      "ms": 7.6
+      "ms": 7.1
     },
     {
       "query": "Quels plats typiques à Ngaoundéré ?",
@@ -1607,8 +1614,8 @@
           "scope": "UNKNOWN"
         },
         {
-          "name": "La Chefferie D'oku",
-          "city": "Oku",
+          "name": "Figuil",
+          "city": "Figuil",
           "scope": "UNKNOWN"
         }
       ],
@@ -1617,7 +1624,7 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "Plats typiques documentés dans ma base :\n- Brochettes / soya : Street food populaire aussi sur le plateau — aucun restaurant nommé inventé.\n- Bases du plateau : Céréales et plats locaux des marchés de Ngaoundéré — orientez vers les marchés, pas des enseignes inventées.\nLa base ne contient pas encore de restaurants nomm",
-      "ms": 24.9
+      "ms": 23.8
     },
     {
       "query": "Où est le lac Tison ?",
@@ -1633,7 +1640,7 @@
       "geo_facts": 1,
       "planner": false,
       "assistant": "Le lac Tison se trouve près de Ngaoundéré (département de la Vina, région de l’Adamaoua).",
-      "ms": 7.3
+      "ms": 6.9
     },
     {
       "query": "Hôtel à Ngaoundéré ?",
@@ -1660,11 +1667,205 @@
       "geo_facts": 0,
       "planner": false,
       "assistant": "J’ai actuellement 2 lieu(x) vérifié(s) autour de Ngaoundéré dans ma base :\n- Hôtel Oasis\n- Lac Mballang\n\nJe peux te présenter ces lieux, ou rechercher davantage d’activités et de sites touristiques récents si tu veux.",
-      "ms": 8.7
+      "ms": 8.1
+    },
+    {
+      "query": "Je veux visiter Garoua que me proposes-tu ?",
+      "intent": "PLACE_SEARCH",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Fleuve Bénoué (Garoua)",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Grand Marché de Garoua",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Hôtel Ribadou",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Iles Aux Damans",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Lamidat De Demsa",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Motel Plaza",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "New Town Palace Hôtel Garoua",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Parc National Du Faro",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 8,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 8 lieu(x) vérifié(s) autour de Garoua dans ma base :\n- Fleuve Bénoué (Garoua)\n- Grand Marché de Garoua\n- Hôtel Ribadou\n- Iles Aux Damans\n- Lamidat De Demsa\n- Motel Plaza\n- New Town Palace Hôtel Garoua\n- Parc National Du Faro",
+      "ms": 10.8
+    },
+    {
+      "query": "La région du Nord c’est Garoua nor ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Pas exactement. Le Nord est une région du Cameroun, et Garoua en est le chef-lieu.",
+      "ms": 7.4
+    },
+    {
+      "query": "Garoua est dans quelle région ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Garoua se trouve dans la région du Nord du Cameroun.",
+      "ms": 7.3
+    },
+    {
+      "query": "Quels plats typiques à Garoua ?",
+      "intent": "FOOD",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Iles Aux Damans",
+          "city": "Garoua",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "L’île  Des Cocotiers Soa",
+          "city": "Yaoundé",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Figuil",
+          "city": "Figuil",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Chute De Bini",
+          "city": "Ngaoundéré",
+          "scope": "UNKNOWN"
+        },
+        {
+          "name": "Les Gorges De Kola",
+          "city": "Kola",
+          "scope": "UNKNOWN"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 5,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "Plats typiques documentés dans ma base :\n- Brochettes / soya : Street food populaire à Garoua — aucun restaurant nommé inventé.\n- Marché de Garoua : Grand Marché de Garoua pour produits locaux — orientez vers le marché, pas des enseignes inventées.\nLa base ne contient pas encore de restaurants nommément vérifiés pour l",
+      "ms": 24.5
+    },
+    {
+      "query": "Où est le parc de la Bénoué ?",
+      "intent": "SIMPLE_QA",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [],
+      "completeness": "MEDIUM",
+      "verified_places_count": 0,
+      "geo_facts": 1,
+      "planner": false,
+      "assistant": "Le parc national de la Bénoué s’atteint depuis Tcholliré (département du Mayo-Rey, région du Nord).",
+      "ms": 8.9
+    },
+    {
+      "query": "Hôtels à Garoua ?",
+      "intent": "HOTEL",
+      "agents": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "places": [
+        {
+          "name": "Hôtel Ribadou",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Iles Aux Damans",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Motel Plaza",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "New Town Palace Hôtel Garoua",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Parc National Du Faro",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        },
+        {
+          "name": "Shalom City Hôtel",
+          "city": "Garoua",
+          "scope": "IN_CITY"
+        }
+      ],
+      "completeness": "HIGH",
+      "verified_places_count": 6,
+      "geo_facts": 0,
+      "planner": false,
+      "assistant": "J’ai actuellement 6 lieu(x) vérifié(s) autour de Garoua dans ma base :\n- Hôtel Ribadou\n- Iles Aux Damans\n- Motel Plaza\n- New Town Palace Hôtel Garoua\n- Parc National Du Faro\n- Shalom City Hôtel",
+      "ms": 8.9
     }
   ],
-  "total_conversation_ms": 685.1,
-  "pytest": "3 failed, 280 passed, 1 warning in 3.28s",
+  "total_conversation_ms": 741.8,
+  "pytest": "3 failed, 287 passed, 1 warning in 3.40s",
   "flags_default": {
     "KNOWLEDGE_GEOGRAPHY_ENABLED": false,
     "WEB_KNOWLEDGE_FALLBACK_ENABLED": false
