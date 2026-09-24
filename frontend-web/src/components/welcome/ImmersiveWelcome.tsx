@@ -189,7 +189,7 @@ export function ImmersiveWelcome({
     }
 
     setPhase('welcome');
-    haptic([18, 30, 18]);
+    haptic([40, 55, 40]);
 
     return () => {
       clearHold();
