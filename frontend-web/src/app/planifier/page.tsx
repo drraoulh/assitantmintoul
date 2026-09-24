@@ -4,14 +4,14 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Calendar, MapPin, Users, Wallet } from 'lucide-react';
 
-import { BudgetCard, ItineraryCard } from '@/components/assistant/ResponseRenderer';
+import { ResponseRenderer, BudgetCard } from '@/components/assistant/ResponseRenderer';
 import { PageTransition } from '@/components/motion';
 import { Button, Input, Select, ThinkingDots } from '@/components/ui';
 import { friendlyError, sendChatMessage } from '@/lib/api/client';
 import { useLocale } from '@/lib/i18n';
 import { setTripMeta } from '@/lib/trip-store';
-import { resolveResponseKind } from '@/lib/utils/response';
-import type { ChatItinerary, ChatResponse } from '@/lib/types';
+import { structuredFromChatResponse } from '@/lib/utils/response';
+import type { ChatResponse } from '@/lib/types';
 
 const STEPS = [
   'Destination',
@@ -217,21 +217,17 @@ export default function PlanifierPage() {
                 </li>
               </ul>
               <div className="my-5 h-px bg-[var(--line)]" />
-              {result.itinerary ? (
-                <ItineraryCard itinerary={result.itinerary as ChatItinerary} />
-              ) : (
-                <div className="whitespace-pre-wrap leading-relaxed">{result.message}</div>
-              )}
-              <p className="mt-3 text-xs text-[var(--muted)]">
-                Type : {resolveResponseKind(result)}
-              </p>
+              <ResponseRenderer
+                text={result.message}
+                ui={structuredFromChatResponse(result)}
+              />
               <div className="mt-4">
                 <Button type="button" variant="secondary" onClick={() => router.push('/mon-voyage')}>
                   Voir sur Mon voyage
                 </Button>
               </div>
             </div>
-            {result.budget ? null : (
+            {!result.budget ? (
               <BudgetCard
                 lines={[
                   { label: 'Budget déclaré', amount: `${budget} FCFA` },
@@ -240,7 +236,7 @@ export default function PlanifierPage() {
                   { label: 'Transport', amount: null },
                 ]}
               />
-            )}
+            ) : null}
           </div>
         ) : null}
       </div>

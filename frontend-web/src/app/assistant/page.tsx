@@ -1,9 +1,9 @@
-import { AssistantChat } from '@/components/assistant/AssistantChat';
 import { PageTransition } from '@/components/motion';
+import { AssistantChat } from '@/components/assistant/AssistantChat';
 
 /**
  * Server page — pass searchParams as props (no useSearchParams bailout).
- * Keeps immersive PageTransition while SSR-ing the chat shell.
+ * Chat UI consumes structured ChatResponse from Agents 1–4 (no Agent 5).
  */
 type AssistantSearchParams = {
   q?: string;
