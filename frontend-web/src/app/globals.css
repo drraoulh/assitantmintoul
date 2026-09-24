@@ -18,6 +18,9 @@
   /* Intro cinematic accents (scoped usage — do not restyle whole site) */
   --intro-black: #050505;
   --intro-anthracite: #151515;
+  --cm-green: #007a5e;
+  --cm-red: #ce1126;
+  --cm-yellow: #fcd116;
   --intro-gold: #d4af37;
   --intro-gold-soft: #e5c76b;
   --intro-ivory: #f8f5ed;

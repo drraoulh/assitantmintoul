@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 
 import mapData from '../../../public/maps/cameroon-points.json';
 import {
+  CM_FLAG,
   CULTURAL_ZONES,
   ZONE_COLORS,
   type IntroPhase,
@@ -54,10 +55,12 @@ function trailTarget(phase: IntroPhase): Point | null {
 }
 
 function fillForPhase(phase: IntroPhase): string {
-  if (phase === 'REGION_NORTH') return '#C4A574';
-  if (phase === 'REGION_WEST') return '#D4AF37';
-  if (phase === 'REGION_CENTER') return '#0B3D2E';
-  if (phase === 'REGION_COAST') return '#145A42';
+  // Cameroon flag: yellow (north/sahel) → red (west heights) → green (forest) → water (coast)
+  if (phase === 'REGION_NORTH') return CM_FLAG.yellow;
+  if (phase === 'REGION_WEST') return CM_FLAG.red;
+  if (phase === 'REGION_CENTER') return CM_FLAG.green;
+  if (phase === 'REGION_COAST') return CM_FLAG.water;
+  if (phase === 'CULTURES') return CM_FLAG.green;
   if (
     phase === 'UNIFICATION' ||
     phase === 'AFRICA_MINIATURE' ||
@@ -65,9 +68,19 @@ function fillForPhase(phase: IntroPhase): string {
     phase === 'BRAND' ||
     phase === 'READY'
   ) {
-    return '#0B3D2E';
+    return CM_FLAG.deepGreen;
   }
-  return '#0B3D2E';
+  return CM_FLAG.deepGreen;
+}
+
+function strokeForPhase(phase: IntroPhase): string {
+  if (phase === 'REGION_NORTH') return CM_FLAG.yellow;
+  if (phase === 'REGION_WEST') return '#FF6B6B';
+  if (phase === 'REGION_CENTER') return CM_FLAG.yellow;
+  if (phase === 'REGION_COAST') return '#7EC8E3';
+  if (phase === 'UNIFICATION' || phase === 'AFRICA_MINIATURE') return CM_FLAG.yellow;
+  if (phase === 'CAMEROON') return CM_FLAG.red;
+  return CM_FLAG.yellow;
 }
 
 function mapOpacity(phase: IntroPhase): number {
@@ -151,23 +164,24 @@ export function CameroonMapIntro({
         aria-label="Carte stylisée du Cameroun"
       >
         <defs>
-          <linearGradient id="introFill" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={fillForPhase(phase)} />
-            <stop offset="100%" stopColor={unify ? '#145A42' : fillForPhase(phase)} />
+          <linearGradient id="introFill" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={unify ? CM_FLAG.green : fillForPhase(phase)} />
+            <stop offset="50%" stopColor={unify ? CM_FLAG.red : fillForPhase(phase)} />
+            <stop offset="100%" stopColor={unify ? CM_FLAG.yellow : fillForPhase(phase)} />
           </linearGradient>
           <filter id="introGlow" x="-30%" y="-30%" width="160%" height="160%">
             <feDropShadow
               dx="0"
               dy="0"
               stdDeviation="8"
-              floodColor={unify ? '#D4AF37' : '#E5C76B'}
-              floodOpacity="0.45"
+              floodColor={strokeForPhase(phase)}
+              floodOpacity="0.5"
             />
           </filter>
           <linearGradient id="trailGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(229,199,107,0)" />
-            <stop offset="50%" stopColor="rgba(229,199,107,0.95)" />
-            <stop offset="100%" stopColor="rgba(229,199,107,0)" />
+            <stop offset="0%" stopColor="rgba(252,209,22,0)" />
+            <stop offset="50%" stopColor={strokeForPhase(phase)} />
+            <stop offset="100%" stopColor="rgba(252,209,22,0)" />
           </linearGradient>
         </defs>
 
@@ -175,9 +189,9 @@ export function CameroonMapIntro({
         {showOutline ? (
           <motion.path
             d={mapData.path}
-            fill="url(#introFill)"
-            stroke={unify ? '#D4AF37' : '#E5C76B'}
-            strokeWidth={unify ? 2.4 : 1.6}
+            fill={unify ? 'url(#introFill)' : fillForPhase(phase)}
+            stroke={strokeForPhase(phase)}
+            strokeWidth={unify ? 2.4 : 1.8}
             filter={reduce ? undefined : 'url(#introGlow)'}
             initial={reduce ? false : { opacity: 0, pathLength: 0.15 }}
             animate={{ opacity: 1, pathLength: 1 }}
@@ -235,7 +249,17 @@ export function CameroonMapIntro({
                 cx={p.x}
                 cy={p.y}
                 r={coast ? 6 : 4.5}
-                fill={coast ? '#2C8FB3' : '#D4AF37'}
+                fill={
+                  coast
+                    ? CM_FLAG.water
+                    : phase === 'REGION_NORTH'
+                      ? CM_FLAG.yellow
+                      : phase === 'REGION_WEST'
+                        ? CM_FLAG.red
+                        : phase === 'REGION_CENTER'
+                          ? CM_FLAG.green
+                          : CM_FLAG.yellow
+                }
                 initial={reduce ? false : { opacity: 0, scale: 0 }}
                 animate={{ opacity: active ? 1 : 0.35, scale: 1 }}
                 transition={{ duration: 0.45 }}

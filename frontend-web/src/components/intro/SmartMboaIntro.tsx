@@ -6,15 +6,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CameroonMapIntro } from '@/components/intro/CameroonMapIntro';
 import { IntroControls } from '@/components/intro/IntroControls';
-import { IntroSound } from '@/components/intro/IntroSound';
 import { IntroText, ReducedIntroCopy } from '@/components/intro/IntroText';
-import { introHaptic, triggerHaptic } from '@/lib/haptics';
+import { introHaptic, triggerHaptic, unlockHaptics } from '@/lib/haptics';
 import {
+  AUTO_PHASES,
   hasSeenIntro,
-  INTRO_DURATION_MS,
-  INTRO_TIMELINE,
+  holdAfter,
   markIntroSeen,
-  phaseAt,
   type IntroPhase,
 } from '@/lib/intro';
 
@@ -22,34 +20,17 @@ export { INTRO_STORAGE_KEY, hasSeenIntro } from '@/lib/intro';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-type IntroHapticKind =
-  | 'breath'
-  | 'tap'
-  | 'soft'
-  | 'flow'
-  | 'micro'
-  | 'unify'
-  | 'fade'
-  | 'final'
-  | 'cta';
-
-function soundCueFor(phase: IntroPhase): Parameters<IntroSound['play']>[0] | null {
-  switch (phase) {
-    case 'INTRO':
-      return 'heartbeat';
-    case 'REGION_NORTH':
-    case 'REGION_WEST':
-      return 'wind';
-    case 'REGION_CENTER':
-      return 'forest';
-    case 'REGION_COAST':
-      return 'water';
-    case 'CAMEROON':
-      return 'silence';
-    default:
-      return null;
-  }
-}
+const PHASE_HAPTIC: Partial<Record<IntroPhase, Parameters<typeof introHaptic>[0]>> = {
+  INTRO: 'breath',
+  REGION_NORTH: 'tap',
+  REGION_WEST: 'tap',
+  REGION_CENTER: 'soft',
+  REGION_COAST: 'flow',
+  CULTURES: 'micro',
+  UNIFICATION: 'unify',
+  AFRICA_MINIATURE: 'fade',
+  CAMEROON: 'final',
+};
 
 export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
   const reduceMotion = useReducedMotion();
@@ -57,63 +38,95 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
 
   const [phase, setPhase] = useState<IntroPhase>('INTRO');
   const [visible, setVisible] = useState(true);
-  const [soundOn, setSoundOn] = useState(false);
 
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  const soundRef = useRef(new IntroSound());
   const startedRef = useRef(false);
   const finishingRef = useRef(false);
-  const rafRef = useRef<number | undefined>(undefined);
   const phaseRef = useRef<IntroPhase>('INTRO');
-  const firedHaptics = useRef(new Set<string>());
-  const lastSoundPhase = useRef<IntroPhase | null>(null);
+  const holdTimerRef = useRef<number | undefined>(undefined);
 
-  const exitToHome = useCallback((immediate = false) => {
-    if (finishingRef.current) return;
-    finishingRef.current = true;
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    soundRef.current.stop();
-    markIntroSeen();
-    setPhase('EXITING');
+  const clearHold = useCallback(() => {
+    if (holdTimerRef.current !== undefined) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = undefined;
+    }
+  }, []);
 
-    const ms = immediate || reduce ? 320 : 900;
-    window.setTimeout(() => {
-      setPhase('DONE');
-      setVisible(false);
-      onCompleteRef.current();
-    }, ms);
-  }, [reduce]);
+  const exitToHome = useCallback(
+    (immediate = false) => {
+      if (finishingRef.current) return;
+      finishingRef.current = true;
+      clearHold();
+      markIntroSeen();
+      setPhase('EXITING');
+
+      const ms = immediate || reduce ? 320 : 900;
+      window.setTimeout(() => {
+        setPhase('DONE');
+        setVisible(false);
+        onCompleteRef.current();
+      }, ms);
+    },
+    [clearHold, reduce],
+  );
 
   const skip = useCallback(() => {
+    unlockHaptics();
     triggerHaptic('medium');
-    soundRef.current.unlock();
     exitToHome(true);
   }, [exitToHome]);
 
   const startCta = useCallback(() => {
+    unlockHaptics();
     introHaptic('cta');
-    soundRef.current.unlock();
     exitToHome(false);
   }, [exitToHome]);
 
-  const toggleSound = useCallback(() => {
-    soundRef.current.unlock();
-    setSoundOn((prev) => {
-      const next = !prev;
-      soundRef.current.setEnabled(next);
-      if (next) {
-        const cue = soundCueFor(phaseRef.current);
-        if (cue) void soundRef.current.play(cue);
-      } else {
-        soundRef.current.stop();
-      }
-      return next;
-    });
-  }, []);
+  const goNext = useCallback(
+    (from: IntroPhase) => {
+      if (finishingRef.current) return;
+      if (phaseRef.current !== from) return;
 
-  // Boot once
+      clearHold();
+      const idx = AUTO_PHASES.indexOf(from);
+      const next = AUTO_PHASES[idx + 1];
+      if (!next || next === 'READY') {
+        setPhase('READY');
+        phaseRef.current = 'READY';
+        return;
+      }
+
+      const delay = reduce ? 280 : holdAfter(from);
+      holdTimerRef.current = window.setTimeout(() => {
+        if (finishingRef.current || phaseRef.current !== from) return;
+        phaseRef.current = next;
+        setPhase(next);
+        const haptic = PHASE_HAPTIC[next];
+        if (haptic) introHaptic(haptic);
+        if (next === 'CULTURES') {
+          window.setTimeout(() => introHaptic('micro'), 500);
+          window.setTimeout(() => introHaptic('micro'), 950);
+        }
+      }, delay);
+    },
+    [clearHold, reduce],
+  );
+
+  const onTyped = useCallback(
+    (forPhase: IntroPhase) => {
+      if (forPhase === 'BRAND') {
+        goNext('BRAND');
+        return;
+      }
+      if (forPhase === 'INTRO') return;
+      goNext(forPhase);
+    },
+    [goNext],
+  );
+
+  // Boot once — typewriter drives pace after INTRO breath
   useEffect(() => {
     if (startedRef.current) return;
     startedRef.current = true;
@@ -128,55 +141,28 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
     }
 
     if (reduce) {
-      // Static reduced-motion path — wait for CTA
       setPhase('READY');
-      introHaptic('breath');
+      phaseRef.current = 'READY';
       return;
     }
 
-    const t0 = performance.now();
-    firedHaptics.current.add('INTRO');
+    phaseRef.current = 'INTRO';
+    setPhase('INTRO');
     introHaptic('breath');
 
-    const tick = (now: number) => {
+    // After the breathing point, start the typed sequence
+    const t = window.setTimeout(() => {
       if (finishingRef.current) return;
-      const elapsed = now - t0;
-      const next = phaseAt(Math.min(elapsed, INTRO_DURATION_MS + 50));
-
-      if (next !== phaseRef.current) {
-        phaseRef.current = next;
-        setPhase(next);
-
-        const step = INTRO_TIMELINE.find((s) => s.phase === next);
-        if (step?.haptic && !firedHaptics.current.has(next)) {
-          firedHaptics.current.add(next);
-          introHaptic((step.haptic as IntroHapticKind) || 'tap');
-          if (next === 'CULTURES') {
-            window.setTimeout(() => introHaptic('micro'), 420);
-            window.setTimeout(() => introHaptic('micro'), 820);
-          }
-        }
-
-        const cue = soundCueFor(next);
-        if (cue && lastSoundPhase.current !== next) {
-          lastSoundPhase.current = next;
-          void soundRef.current.play(cue);
-        }
-      }
-
-      if (elapsed < INTRO_DURATION_MS + 80 && !finishingRef.current) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    const sound = soundRef.current;
+      phaseRef.current = 'REGION_NORTH';
+      setPhase('REGION_NORTH');
+      introHaptic('tap');
+    }, 1800);
 
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      sound.stop();
+      clearTimeout(t);
+      clearHold();
     };
-  }, [reduce]);
+  }, [clearHold, reduce]);
 
   if (!visible) return null;
 
@@ -197,23 +183,25 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
           transition={{ duration: reduce ? 0.25 : 0.9, ease: EASE }}
           role="dialog"
           aria-label="Introduction SmartMboa — Cameroun"
-          onPointerDown={() => soundRef.current.unlock()}
+          onPointerDown={() => unlockHaptics()}
         >
-          {/* Cinematic vignette */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(ellipse 70% 60% at 50% 42%, rgba(11,61,46,0.45) 0%, rgba(5,5,5,0.92) 70%, #050505 100%)',
+                'radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0,122,94,0.35) 0%, rgba(5,5,5,0.92) 70%, #050505 100%)',
             }}
           />
-
-          <IntroControls
-            soundEnabled={soundOn}
-            onToggleSound={toggleSound}
-            onSkip={skip}
-            showSound={!reduce}
+          {/* Soft flag wash */}
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-1.5 opacity-80"
+            style={{
+              background: 'linear-gradient(90deg, #007A5E 0%, #CE1126 50%, #FCD116 100%)',
+            }}
+            aria-hidden
           />
+
+          <IntroControls onSkip={skip} />
 
           <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-16 pt-16">
             {reduce ? (
@@ -221,7 +209,7 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
             ) : (
               <>
                 <CameroonMapIntro phase={phase} reduce={false} />
-                <IntroText phase={phase} reduce={false} />
+                <IntroText phase={phase} reduce={false} onTyped={onTyped} />
               </>
             )}
 
@@ -229,7 +217,7 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
               <motion.button
                 type="button"
                 onClick={startCta}
-                className="mt-10 inline-flex items-center gap-2 rounded-2xl bg-[#0B3D2E] px-7 py-3.5 text-base font-semibold text-[#F8F5ED] shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-[#D4AF37]/55"
+                className="mt-10 inline-flex items-center gap-2 rounded-2xl bg-[#007A5E] px-7 py-3.5 text-base font-semibold text-[#F8F5ED] shadow-[0_12px_40px_rgba(0,0,0,0.35)] ring-1 ring-[#FCD116]/60"
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={reduce ? undefined : { scale: 1.02 }}
@@ -238,7 +226,7 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
                 aria-label="Commencer l'exploration"
               >
                 COMMENCER L&apos;EXPLORATION
-                <ArrowRight className="h-5 w-5 text-[#D4AF37]" aria-hidden />
+                <ArrowRight className="h-5 w-5 text-[#FCD116]" aria-hidden />
               </motion.button>
             ) : null}
           </div>
@@ -248,7 +236,6 @@ export function SmartMboaIntro({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-/** Back-compat alias used by Home. */
 export function ImmersiveWelcome({ onComplete }: { onComplete: () => void }) {
   return <SmartMboaIntro onComplete={onComplete} />;
 }
