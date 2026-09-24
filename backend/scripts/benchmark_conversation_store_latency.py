@@ -200,6 +200,7 @@ def _write_md(payload: dict[str, Any]) -> None:
     before = payload.get("before_stats") or {}
     after = payload.get("after_stats") or {}
     after_existing = payload.get("after_existing_stats") or {}
+    after_cached = payload.get("after_cached_stats") or {}
 
     def g(stats: dict, key: str) -> str:
         v = (stats.get(key) or {}).get("avg")
@@ -223,64 +224,73 @@ def _write_md(payload: dict[str, Any]) -> None:
         "1. `start()` → session #1 (get/create conversation + commit) ≈ 1.2–1.3 s",
         "2. `get_messages()` → session #2 (SELECT messages) ≈ 1.0–1.1 s",
         "",
-        "Même historique vide coûtait ~2.3 s. Ce n’était pas la requête SQL elle-même,",
-        "mais surtout **`db_connection_acquire`** (2×).",
+        "Même historique vide coûtait ~2.3 s. Dominant : **`db_connection_acquire`** (2×),",
+        "pas le SQL métier.",
+        "",
+        "Cas mesuré (legacy bench) :",
+        f"- total avg **{g(before, 'total_store_before_llm_ms')} ms**",
+        f"- acquire sum avg **{g(before, 'db_connection_acquire_ms')} ms**",
+        f"- history_load avg **{g(before, 'history_load_ms')} ms**",
+        f"- commit avg **{g(before, 'commit_ms')} ms**",
+        "",
+        "→ **Cas D** (pool/TLS acquire) + **Cas C** (2 round-trips), pas une seule query de 2.5 s.",
         "",
         "## Optimisations appliquées",
         "",
         "1. **Lazy start** : nouveau thread (`conversation_id is None`) → **0 DB** avant LLM",
-        "2. **`prepare_for_generation`** : un seul round-trip pour un id existant",
-        "3. **SQL `LIMIT`** : `ORDER BY created_at DESC LIMIT n` (plus de full fetch + slice Python)",
-        "4. **`add_messages`** : user+assistant en **un** commit après le stream",
+        "2. **`prepare_for_generation`** : un seul round-trip pour un id existant (cold)",
+        "3. **SQL `LIMIT`** : `ORDER BY created_at DESC LIMIT n`",
+        "4. **Cache process-local** : multi-turn voice sur le même worker → **0 DB**",
+        "5. **`add_messages`** : user+assistant en **un** commit après le stream",
         "",
         "## A. Timeline BEFORE (legacy, 2 sessions)",
         "",
         "```",
-        "llm_start / prepare_start     +0 ms",
-        "session#1 connection_acquire  ~1200–1300 ms",
-        "conversation_get/create+commit  (inclus)",
-        "session#2 connection_acquire  ~1000–1100 ms",
-        "messages_get_full             (inclus)",
-        "TOTAL store before LLM        ~2300–2500 ms",
+        "prepare_start                 +0 ms",
+        "session#1 connection_acquire  ~700–900 ms",
+        "conversation_get/create+commit  (reste du RTT #1)",
+        "session#2 connection_acquire  ~700–900 ms",
+        "messages_get_full             (reste du RTT #2)",
+        f"TOTAL store before LLM        ~{g(before, 'total_store_before_llm_ms')} ms",
         "```",
-        "",
-        f"Mesures locales legacy avg total = **{g(before, 'total_store_before_llm_ms')} ms** "
-        f"(acquire sum avg = {g(before, 'db_connection_acquire_ms')} ms).",
         "",
         "## B. Timeline AFTER (optimized)",
         "",
-        "### Nouveau thread (voice turn 1, conversation_id=None)",
+        "### Nouveau thread (voice turn 1)",
         "",
         "```",
-        "prepare_skip_db_new_thread    ~0–1 ms",
-        "TOTAL store before LLM        ~0–2 ms",
+        "prepare_skip_db_new_thread    ~0 ms",
+        f"TOTAL                        ~{g(after, 'total_store_before_llm_ms')} ms",
         "```",
         "",
-        f"Mesures avg = **{g(after, 'total_store_before_llm_ms')} ms**.",
-        "",
-        "### Thread existant (conversation_id fourni)",
+        "### Thread existant cold (cache miss / autre worker)",
         "",
         "```",
         "session connection_acquire    ~1 RTT",
-        "messages_get LIMIT n          (même connexion)",
-        "TOTAL store before LLM        ~1 RTT",
+        "messages_get LIMIT n",
+        f"TOTAL                        ~{g(after_existing, 'total_store_before_llm_ms')} ms",
         "```",
         "",
-        f"Mesures avg = **{g(after_existing, 'total_store_before_llm_ms')} ms** "
-        f"(acquire avg = {g(after_existing, 'db_connection_acquire_ms')} ms).",
+        "### Thread existant cached (multi-turn même worker)",
+        "",
+        "```",
+        "history_cache_hit             ~0 ms",
+        f"TOTAL                        ~{g(after_cached, 'total_store_before_llm_ms')} ms",
+        "```",
         "",
         "## C. Tableau par opération",
         "",
-        "| Operation | Before (avg ms) | After new (avg) | After existing (avg) |",
-        "|-----------|----------------:|----------------:|---------------------:|",
-        f"| connection acquire | {g(before, 'db_connection_acquire_ms')} | {g(after, 'db_connection_acquire_ms')} | {g(after_existing, 'db_connection_acquire_ms')} |",
-        f"| conversation load | {g(before, 'conversation_load_ms')} | {g(after, 'conversation_load_ms')} | {g(after_existing, 'conversation_load_ms')} |",
-        f"| history load | {g(before, 'history_load_ms')} | {g(after, 'history_load_ms')} | {g(after_existing, 'history_load_ms')} |",
-        f"| commit (prepare) | {g(before, 'commit_ms')} | {g(after, 'commit_ms')} | {g(after_existing, 'commit_ms')} |",
-        f"| **TOTAL before LLM** | **{g(before, 'total_store_before_llm_ms')}** | **{g(after, 'total_store_before_llm_ms')}** | **{g(after_existing, 'total_store_before_llm_ms')}** |",
+        "| Operation | Before | After new | After existing cold | After cached |",
+        "|-----------|-------:|----------:|--------------------:|-------------:|",
+        f"| connection acquire | {g(before, 'db_connection_acquire_ms')} | {g(after, 'db_connection_acquire_ms')} | {g(after_existing, 'db_connection_acquire_ms')} | {g(after_cached, 'db_connection_acquire_ms')} |",
+        f"| conversation load | {g(before, 'conversation_load_ms')} | {g(after, 'conversation_load_ms')} | {g(after_existing, 'conversation_load_ms')} | {g(after_cached, 'conversation_load_ms')} |",
+        f"| history load | {g(before, 'history_load_ms')} | {g(after, 'history_load_ms')} | {g(after_existing, 'history_load_ms')} | {g(after_cached, 'history_load_ms')} |",
+        f"| commit (prepare) | {g(before, 'commit_ms')} | {g(after, 'commit_ms')} | {g(after_existing, 'commit_ms')} | {g(after_cached, 'commit_ms')} |",
+        f"| **TOTAL before LLM** | **{g(before, 'total_store_before_llm_ms')}** | **{g(after, 'total_store_before_llm_ms')}** | **{g(after_existing, 'total_store_before_llm_ms')}** | **{g(after_cached, 'total_store_before_llm_ms')}** |",
         "",
         f"Persist batch (user+assistant, after stream) avg = "
-        f"{(payload.get('persist_stats') or {}).get('persist_batch_ms', {}).get('avg')} ms.",
+        f"{(payload.get('persist_stats') or {}).get('persist_batch_ms', {}).get('avg')} ms "
+        "(hors chemin critique TTFT).",
         "",
         "## D. Voice end-to-end",
         "",
@@ -288,12 +298,14 @@ def _write_md(payload: dict[str, Any]) -> None:
 
     voice = payload.get("voice_runs") or []
     if voice:
+        valid = [r for r in voice if r.get("valid")]
         lines += [
             "| Metric | Before (Phase 1.6) | After (Phase 1.7) |",
             "|--------|-------------------:|------------------:|",
-            f"| store before LLM | ~2369.8 | see voice rows |",
-            f"| app TTFT (valid) | ~2826.7 | "
-            f"{_stats([r.get('app_ttft_ms') for r in voice if r.get('valid')])['avg']} |",
+            f"| store before LLM (new) | ~2369.8 | "
+            f"{next((r.get('store_prepare_ms') for r in valid if r.get('store_mode')=='prepare_no_db'), '—')} |",
+            f"| app TTFT (valid avg) | ~2826.7 | "
+            f"{_stats([r.get('app_ttft_ms') for r in valid])['avg']} |",
             "",
             "### Voice runs",
             "",
@@ -313,13 +325,13 @@ def _write_md(payload: dict[str, Any]) -> None:
         lines.append("")
     else:
         lines += [
-            "Pas de runs voice valides dans cette session (souvent HF 402). "
-            "Le gain store est prouvé par le benchmark SQL ci-dessus.",
+            "Pas de runs voice dans cette session.",
             "",
             "| Metric | Before (Phase 1.6) | After (store bench) |",
             "|--------|-------------------:|--------------------:|",
-            f"| store before LLM (new thread) | ~2369.8 | {g(after, 'total_store_before_llm_ms')} |",
-            f"| store before LLM (existing) | ~2369.8 | {g(after_existing, 'total_store_before_llm_ms')} |",
+            f"| store before LLM (new) | ~2369.8 | {g(after, 'total_store_before_llm_ms')} |",
+            f"| store before LLM (cached) | ~2369.8 | {g(after_cached, 'total_store_before_llm_ms')} |",
+            f"| store before LLM (cold existing) | ~2369.8 | {g(after_existing, 'total_store_before_llm_ms')} |",
             "",
         ]
 
@@ -335,9 +347,9 @@ def _write_md(payload: dict[str, Any]) -> None:
         "## Index / pool notes",
         "",
         "- Pool : `NullPool` sur `pooler.supabase.com` (pgbouncer) — inchangé volontairement.",
-        "- Index messages : `conversation_id` déjà indexé ; LIMIT+ORDER BY created_at DESC "
-        "bénéficierait d’un index composite `(conversation_id, created_at DESC)` en P6 "
-        "si les threads deviennent longs (non créé ici faute de preuve Sequential Scan).",
+        "- Index messages : `conversation_id` déjà indexé ; index composite "
+        "`(conversation_id, created_at DESC)` possible en P6 pour cold path long "
+        "(non créé ici sans preuve Sequential Scan).",
         "",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")
@@ -368,6 +380,7 @@ async def main_async(args: argparse.Namespace) -> int:
     before_rows: list[dict[str, Any]] = []
     after_new_rows: list[dict[str, Any]] = []
     after_existing_rows: list[dict[str, Any]] = []
+    after_cached_rows: list[dict[str, Any]] = []
     persist_rows: list[dict[str, Any]] = []
 
     # Seed one existing thread for "existing id" AFTER path
@@ -400,13 +413,23 @@ async def main_async(args: argparse.Namespace) -> int:
             f"acquire={row['db_connection_acquire_ms']}"
         )
 
-        print(f"--- run {i} optimized EXISTING thread (AFTER) ---")
+        print(f"--- run {i} optimized EXISTING cold (AFTER) ---")
+        store._cache_invalidate(seed_id)
         row = await _measure_optimized(store, seed_id, limit)
         after_existing_rows.append(row)
         print(
             f"  total={row['total_store_before_llm_ms']} "
+            f"mode={row.get('meta', {}).get('mode')} "
             f"acquire={row['db_connection_acquire_ms']} "
             f"hist={row['history_load_ms']}"
+        )
+
+        print(f"--- run {i} optimized EXISTING cached (AFTER) ---")
+        row = await _measure_optimized(store, seed_id, limit)
+        after_cached_rows.append(row)
+        print(
+            f"  total={row['total_store_before_llm_ms']} "
+            f"mode={row.get('meta', {}).get('mode')}"
         )
 
         print(f"--- run {i} persist batch ---")
@@ -455,6 +478,19 @@ async def main_async(args: argparse.Namespace) -> int:
         ),
         "commit_ms": _stats([r["commit_ms"] for r in after_existing_rows]),
     }
+    after_cached_stats = {
+        "total_store_before_llm_ms": _stats(
+            [r["total_store_before_llm_ms"] for r in after_cached_rows]
+        ),
+        "db_connection_acquire_ms": _stats(
+            [r["db_connection_acquire_ms"] for r in after_cached_rows]
+        ),
+        "conversation_load_ms": _stats(
+            [r["conversation_load_ms"] for r in after_cached_rows]
+        ),
+        "history_load_ms": _stats([r["history_load_ms"] for r in after_cached_rows]),
+        "commit_ms": _stats([r["commit_ms"] for r in after_cached_rows]),
+    }
     persist_stats = {
         "persist_batch_ms": _stats([r["persist_batch_ms"] for r in persist_rows]),
         "commit_ms": _stats([r["commit_ms"] for r in persist_rows]),
@@ -492,20 +528,25 @@ async def main_async(args: argparse.Namespace) -> int:
     b_avg = before_stats["total_store_before_llm_ms"]["avg"]
     a_new = after_stats["total_store_before_llm_ms"]["avg"]
     a_ex = after_existing_stats["total_store_before_llm_ms"]["avg"]
+    a_cached = after_cached_stats["total_store_before_llm_ms"]["avg"]
     verdict = (
         f"BEFORE legacy avg={b_avg} ms. "
-        f"AFTER new-thread avg={a_new} ms ; existing-thread avg={a_ex} ms. "
+        f"AFTER new-thread avg={a_new} ms ; "
+        f"existing-cold avg={a_ex} ms ; "
+        f"existing-cached avg={a_cached} ms. "
     )
-    if a_new is not None and a_new < 300:
-        verdict += (
-            "Objectif <300 ms ATTEINT pour le cas voice turn-1 (conversation_id=None). "
-        )
+    if a_new is not None and a_new < 150:
+        verdict += "Objectif <150 ms ATTEINT pour voice turn-1 (new thread). "
+    elif a_new is not None and a_new < 300:
+        verdict += "Objectif <300 ms ATTEINT pour voice turn-1 (new thread). "
+    if a_cached is not None and a_cached < 150:
+        verdict += "Objectif <150 ms ATTEINT pour multi-turn cached (même worker). "
     if a_ex is not None and a_ex < 500:
-        verdict += "Objectif <500 ms ATTEINT pour threads existants (1 RTT). "
+        verdict += "Objectif <500 ms ATTEINT pour cold existing (1 RTT). "
     if a_ex is not None and a_ex >= 500:
         verdict += (
-            "Thread existant encore dominé par 1× NullPool TLS acquire — "
-            "pool/infra P6 si besoin d’aller sous 150 ms à chaud. "
+            "Cold existing encore ~1× NullPool TLS — "
+            "pool/infra P6 si besoin sans cache. "
         )
     verdict += (
         "Cause des ~2.7 s : 2× connection acquire NullPool, pas le SQL métier. "
@@ -519,10 +560,12 @@ async def main_async(args: argparse.Namespace) -> int:
         "before_rows": before_rows,
         "after_new_rows": after_new_rows,
         "after_existing_rows": after_existing_rows,
+        "after_cached_rows": after_cached_rows,
         "persist_rows": persist_rows,
         "before_stats": before_stats,
         "after_stats": after_stats,
         "after_existing_stats": after_existing_stats,
+        "after_cached_stats": after_cached_stats,
         "persist_stats": persist_stats,
         "voice_runs": voice_runs,
         "verdict": verdict,

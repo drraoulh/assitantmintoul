@@ -21,6 +21,10 @@ from app.services.conversation.timing import StoreTrace, timed_op, timed_session
 
 logger = logging.getLogger(__name__)
 
+# Process-local history cache for multi-turn voice (same worker).
+# Avoids a second NullPool TLS round-trip when the thread was just loaded/written.
+_HISTORY_CACHE_MAX = 64
+
 
 def _as_uuid(value: str | None) -> UUID:
     """Accept any client id; mint a fresh one when it is not a UUID."""
@@ -40,6 +44,8 @@ class SqlConversationStore(ConversationStore):
 
     Phase 1.7: voice/chat prepare path uses a single session + SQL LIMIT and
     defers conversation INSERT until the first ``add_message`` (lazy create).
+    An in-process history cache removes repeat TLS round-trips on multi-turn
+    voice within the same worker.
     """
 
     persistent = True
@@ -54,23 +60,44 @@ class SqlConversationStore(ConversationStore):
         self._context_messages = context_messages
         self._fallback = InMemoryConversationStore(context_messages)
         self.last_trace: StoreTrace | None = None
+        # thread_id -> recent messages (oldest-first, up to context window)
+        self._history_cache: dict[str, list[dict[str, str]]] = {}
 
     def _degrade(self, action: str, error: Exception) -> None:
         logger.warning("Database %s failed (%s); using in-memory history", action, error)
 
-    async def start(self, conversation_id: str | None) -> str:
-        """Return a thread id.
+    def _cache_get(self, thread_id: str, limit: int) -> list[dict[str, str]] | None:
+        cached = self._history_cache.get(thread_id)
+        if cached is None:
+            return None
+        return cached[-limit:] if limit else list(cached)
 
-        Phase 1.7: minting a new id no longer opens a DB connection. Existing
-        client-supplied ids are accepted as-is; the conversation row is created
-        lazily on the first ``add_message``. This removes one NullPool TLS
-        round-trip from the voice critical path.
-        """
+    def _cache_put(self, thread_id: str, messages: list[dict[str, str]]) -> None:
+        window = self._context_messages or len(messages)
+        self._history_cache[thread_id] = list(messages[-window:])
+        while len(self._history_cache) > _HISTORY_CACHE_MAX:
+            self._history_cache.pop(next(iter(self._history_cache)))
+
+    def _cache_append(self, thread_id: str, turns: list[tuple[str, str]]) -> None:
+        current = list(self._history_cache.get(thread_id) or [])
+        for role, content in turns:
+            current.append(
+                {
+                    "role": "user" if role == "user" else "assistant",
+                    "content": content,
+                }
+            )
+        self._cache_put(thread_id, current)
+
+    def _cache_invalidate(self, thread_id: str) -> None:
+        self._history_cache.pop(thread_id, None)
+
+    async def start(self, conversation_id: str | None) -> str:
+        """Return a thread id without opening a DB connection (lazy create)."""
         trace = StoreTrace()
         self.last_trace = trace
         thread_id = _as_uuid(conversation_id)
         with timed_op(trace, "start_mint_id", created=conversation_id is None):
-            # No DB I/O — row created on first persist.
             pass
         trace.meta["mode"] = "lazy_start"
         return str(thread_id)
@@ -81,76 +108,27 @@ class SqlConversationStore(ConversationStore):
         *,
         limit: int | None = None,
     ) -> list[dict[str, str]]:
-        """Return the last ``limit`` turns (default: context window) oldest-first.
-
-        LIMIT is applied in SQL (ORDER BY created_at DESC LIMIT n), not only
-        after a full-table fetch in Python.
-        """
+        """Return the last ``limit`` turns oldest-first (SQL LIMIT when uncached)."""
         trace = StoreTrace()
         self.last_trace = trace
-        thread_id = _as_uuid(conversation_id)
+        thread_id = str(_as_uuid(conversation_id))
         window = self._context_messages if limit is None else max(0, int(limit))
         if window <= 0:
             return []
-        try:
-            async with timed_session(self._session_factory, trace) as session:
-                with timed_op(trace, "messages_get", limit=window):
-                    rows = await session.execute(
-                        select(Message.role, Message.content)
-                        .where(Message.conversation_id == thread_id)
-                        .order_by(Message.created_at.desc(), Message.id.desc())
-                        .limit(window)
-                    )
-                    fetched = list(rows.all())
-                with timed_op(trace, "history_format", rows=len(fetched)):
-                    # Reverse to oldest-first for the LLM payload.
-                    recent = list(reversed(fetched))
-                    return [
-                        {
-                            "role": "user" if row.role == "user" else "assistant",
-                            "content": row.content,
-                        }
-                        for row in recent
-                    ]
-        except SQLAlchemyError as error:
-            self._degrade("get_messages", error)
-            return await self._fallback.get_messages(str(thread_id))
 
-    async def prepare_for_generation(
-        self,
-        conversation_id: str | None,
-        *,
-        limit: int | None = None,
-    ) -> tuple[str, list[dict[str, str]]]:
-        """Single-round-trip prepare used before LLM streaming.
-
-        - New conversation (``conversation_id is None``): no DB call; empty history.
-        - Existing id: one connection + SELECT last N messages (SQL LIMIT).
-        - Conversation row INSERT is deferred to ``add_message`` / ``add_messages``.
-        """
-        trace = StoreTrace()
-        self.last_trace = trace
-        thread_id = _as_uuid(conversation_id)
-        window = self._context_messages if limit is None else max(0, int(limit))
-        trace.meta["conversation_id_given"] = conversation_id is not None
-        trace.meta["limit"] = window
-
-        # Brand-new thread: nothing to load — skip Supabase entirely.
-        if conversation_id is None:
-            with timed_op(trace, "prepare_skip_db_new_thread"):
+        cached = self._cache_get(thread_id, window)
+        if cached is not None:
+            with timed_op(trace, "history_cache_hit", rows=len(cached)):
                 pass
-            trace.meta["mode"] = "prepare_no_db"
-            return str(thread_id), []
-
-        if window <= 0:
-            return str(thread_id), []
+            trace.meta["mode"] = "get_messages_cache"
+            return cached
 
         try:
             async with timed_session(self._session_factory, trace) as session:
                 with timed_op(trace, "messages_get", limit=window):
                     rows = await session.execute(
                         select(Message.role, Message.content)
-                        .where(Message.conversation_id == thread_id)
+                        .where(Message.conversation_id == _as_uuid(thread_id))
                         .order_by(Message.created_at.desc(), Message.id.desc())
                         .limit(window)
                     )
@@ -164,11 +142,68 @@ class SqlConversationStore(ConversationStore):
                         }
                         for row in recent
                     ]
+            self._cache_put(thread_id, history)
+            return history
+        except SQLAlchemyError as error:
+            self._degrade("get_messages", error)
+            return await self._fallback.get_messages(thread_id)
+
+    async def prepare_for_generation(
+        self,
+        conversation_id: str | None,
+        *,
+        limit: int | None = None,
+    ) -> tuple[str, list[dict[str, str]]]:
+        """Prepare ``(thread_id, history)`` with minimal Supabase round-trips."""
+        trace = StoreTrace()
+        self.last_trace = trace
+        thread_id = str(_as_uuid(conversation_id))
+        window = self._context_messages if limit is None else max(0, int(limit))
+        trace.meta["conversation_id_given"] = conversation_id is not None
+        trace.meta["limit"] = window
+
+        if conversation_id is None:
+            with timed_op(trace, "prepare_skip_db_new_thread"):
+                pass
+            self._cache_put(thread_id, [])
+            trace.meta["mode"] = "prepare_no_db"
+            return thread_id, []
+
+        if window <= 0:
+            return thread_id, []
+
+        cached = self._cache_get(thread_id, window)
+        if cached is not None:
+            with timed_op(trace, "history_cache_hit", rows=len(cached)):
+                pass
+            trace.meta["mode"] = "prepare_cache_hit"
+            return thread_id, cached
+
+        try:
+            async with timed_session(self._session_factory, trace) as session:
+                with timed_op(trace, "messages_get", limit=window):
+                    rows = await session.execute(
+                        select(Message.role, Message.content)
+                        .where(Message.conversation_id == _as_uuid(thread_id))
+                        .order_by(Message.created_at.desc(), Message.id.desc())
+                        .limit(window)
+                    )
+                    fetched = list(rows.all())
+                with timed_op(trace, "history_format", rows=len(fetched)):
+                    recent = list(reversed(fetched))
+                    history = [
+                        {
+                            "role": "user" if row.role == "user" else "assistant",
+                            "content": row.content,
+                        }
+                        for row in recent
+                    ]
+            self._cache_put(thread_id, history)
             trace.meta["mode"] = "prepare_single_session"
-            return str(thread_id), history
+            return thread_id, history
         except SQLAlchemyError as error:
             self._degrade("prepare_for_generation", error)
-            fb_id = await self._fallback.start(str(thread_id))
+            fb_id = await self._fallback.start(thread_id)
             return fb_id, await self._fallback.get_messages(fb_id)
 
     async def prepare_for_generation_legacy(
@@ -177,15 +212,11 @@ class SqlConversationStore(ConversationStore):
         *,
         limit: int | None = None,
     ) -> tuple[str, list[dict[str, str]], StoreTrace]:
-        """Phase 1.6-style prepare: two sequential NullPool sessions (BEFORE baseline).
-
-        Kept for A/B benchmarks only — not used in production.
-        """
+        """Phase 1.6-style prepare: two sequential NullPool sessions (BEFORE baseline)."""
         trace = StoreTrace()
         thread_id = _as_uuid(conversation_id)
         window = self._context_messages if limit is None else max(0, int(limit))
 
-        # --- legacy start: get-or-create + optional commit ---
         try:
             async with timed_session(self._session_factory, trace) as session:
                 with timed_op(trace, "conversation_get"):
@@ -200,7 +231,6 @@ class SqlConversationStore(ConversationStore):
             fb = await self._fallback.start(str(thread_id))
             return fb, await self._fallback.get_messages(fb), trace
 
-        # --- legacy get_messages: full fetch then Python slice ---
         try:
             async with timed_session(self._session_factory, trace) as session:
                 with timed_op(trace, "messages_get_full"):
@@ -238,20 +268,20 @@ class SqlConversationStore(ConversationStore):
             return
         trace = StoreTrace()
         self.last_trace = trace
-        thread_id = _as_uuid(conversation_id)
+        thread_id = str(_as_uuid(conversation_id))
         try:
             async with timed_session(self._session_factory, trace) as session:
                 with timed_op(trace, "conversation_get"):
-                    conversation = await session.get(Conversation, thread_id)
+                    conversation = await session.get(Conversation, _as_uuid(thread_id))
                 if conversation is None:
                     with timed_op(trace, "conversation_create"):
-                        conversation = Conversation(id=thread_id)
+                        conversation = Conversation(id=_as_uuid(thread_id))
                         session.add(conversation)
                 with timed_op(trace, "message_insert", count=len(turns)):
                     for role, content in turns:
                         session.add(
                             Message(
-                                conversation_id=thread_id,
+                                conversation_id=_as_uuid(thread_id),
                                 role=role,
                                 content=content,
                             )
@@ -261,10 +291,12 @@ class SqlConversationStore(ConversationStore):
                 conversation.updated_at = datetime.now(timezone.utc)
                 with timed_op(trace, "commit"):
                     await session.commit()
+            self._cache_append(thread_id, turns)
         except SQLAlchemyError as error:
             self._degrade("add_messages", error)
+            self._cache_invalidate(thread_id)
             for role, content in turns:
-                await self._fallback.add_message(str(thread_id), role, content)
+                await self._fallback.add_message(thread_id, role, content)
 
     async def get_turns(self, conversation_id: str) -> list[ConversationTurn]:
         """Full thread for the history UI (no LIMIT — intentional)."""
@@ -321,9 +353,9 @@ class SqlConversationStore(ConversationStore):
 
     async def delete(self, conversation_id: str) -> bool:
         thread_id = _as_uuid(conversation_id)
+        self._cache_invalidate(str(thread_id))
         try:
             async with self._session_factory() as session:
-                # Explicit message delete: do not rely on FK cascade enforcement.
                 await session.execute(
                     sql_delete(Message).where(Message.conversation_id == thread_id)
                 )

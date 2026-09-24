@@ -167,6 +167,32 @@ async def test_prepare_for_generation_sql_limit_on_existing_thread() -> None:
     await engine.dispose()
 
 
+@pytest.mark.asyncio
+async def test_prepare_cache_hit_skips_second_db_roundtrip() -> None:
+    engine = create_async_engine(
+        "sqlite+aiosqlite:///:memory:",
+        poolclass=StaticPool,
+    )
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
+
+    store = SqlConversationStore(
+        session_factory=async_sessionmaker(engine, expire_on_commit=False),
+    )
+    thread, _ = await store.prepare_for_generation(None, limit=3)
+    await store.add_messages(
+        thread,
+        [("user", "Que puis-je visiter à Yaoundé ?"), ("assistant", "Le Musée national.")],
+    )
+    _tid, history = await store.prepare_for_generation(thread, limit=3)
+    assert len(history) == 2
+    assert store.last_trace is not None
+    assert store.last_trace.meta.get("mode") == "prepare_cache_hit"
+    assert any(op.name == "history_cache_hit" for op in store.last_trace.ops)
+
+    await engine.dispose()
+
+
 
 @pytest.mark.asyncio
 async def test_sql_store_persists_threads() -> None:

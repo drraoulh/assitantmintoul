@@ -1,0 +1,1300 @@
+{
+  "phase": "1.7",
+  "model": "Qwen/Qwen3.5-9B:fastest",
+  "runs": 5,
+  "before_rows": [
+    {
+      "mode": "legacy",
+      "conversation_id": null,
+      "thread_id": "e2c80184-0616-4b4e-a05b-afb3beac2707",
+      "history_len": 0,
+      "total_store_before_llm_ms": 2343.5,
+      "db_connection_acquire_ms": 1430.2,
+      "conversation_load_ms": 211.5,
+      "conversation_create_ms": 0.1,
+      "history_load_ms": 210.0,
+      "commit_ms": 352.0,
+      "session_open_ms": 0.0,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 722.1,
+          "duration_ms": 722.1
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 722.2,
+          "end_ms": 933.6,
+          "duration_ms": 211.5
+        },
+        {
+          "name": "conversation_create",
+          "start_ms": 933.7,
+          "end_ms": 933.8,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "commit",
+          "start_ms": 933.8,
+          "end_ms": 1285.8,
+          "duration_ms": 352.0
+        },
+        {
+          "name": "session_open",
+          "start_ms": 1285.9,
+          "end_ms": 1286.0,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 1286.0,
+          "end_ms": 1994.0,
+          "duration_ms": 708.1
+        },
+        {
+          "name": "messages_get_full",
+          "start_ms": 1994.1,
+          "end_ms": 2204.0,
+          "duration_ms": 210.0
+        },
+        {
+          "name": "history_format",
+          "start_ms": 2204.1,
+          "end_ms": 2204.1,
+          "duration_ms": 0.0,
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "mode": "legacy",
+      "conversation_id": null,
+      "thread_id": "c715235b-e903-4401-b7af-f133b6d7b5b0",
+      "history_len": 0,
+      "total_store_before_llm_ms": 2344.5,
+      "db_connection_acquire_ms": 1433.7,
+      "conversation_load_ms": 208.5,
+      "conversation_create_ms": 0.1,
+      "history_load_ms": 213.4,
+      "commit_ms": 347.7,
+      "session_open_ms": 0.0,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 710.8,
+          "duration_ms": 710.8
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 710.9,
+          "end_ms": 919.4,
+          "duration_ms": 208.5
+        },
+        {
+          "name": "conversation_create",
+          "start_ms": 919.4,
+          "end_ms": 919.5,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "commit",
+          "start_ms": 919.5,
+          "end_ms": 1267.2,
+          "duration_ms": 347.7
+        },
+        {
+          "name": "session_open",
+          "start_ms": 1267.3,
+          "end_ms": 1267.4,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 1267.4,
+          "end_ms": 1990.3,
+          "duration_ms": 722.9
+        },
+        {
+          "name": "messages_get_full",
+          "start_ms": 1990.3,
+          "end_ms": 2203.7,
+          "duration_ms": 213.4
+        },
+        {
+          "name": "history_format",
+          "start_ms": 2203.7,
+          "end_ms": 2203.7,
+          "duration_ms": 0.0,
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "mode": "legacy",
+      "conversation_id": null,
+      "thread_id": "13eae0b4-2136-4b58-98b1-4d2556ce933c",
+      "history_len": 0,
+      "total_store_before_llm_ms": 2355.5,
+      "db_connection_acquire_ms": 1438.4,
+      "conversation_load_ms": 211.7,
+      "conversation_create_ms": 0.1,
+      "history_load_ms": 212.1,
+      "commit_ms": 352.4,
+      "session_open_ms": 0.1,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 719.2,
+          "duration_ms": 719.1
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 719.2,
+          "end_ms": 930.9,
+          "duration_ms": 211.7
+        },
+        {
+          "name": "conversation_create",
+          "start_ms": 931.0,
+          "end_ms": 931.1,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "commit",
+          "start_ms": 931.1,
+          "end_ms": 1283.5,
+          "duration_ms": 352.4
+        },
+        {
+          "name": "session_open",
+          "start_ms": 1283.6,
+          "end_ms": 1283.7,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 1283.7,
+          "end_ms": 2003.0,
+          "duration_ms": 719.3
+        },
+        {
+          "name": "messages_get_full",
+          "start_ms": 2003.0,
+          "end_ms": 2215.1,
+          "duration_ms": 212.1
+        },
+        {
+          "name": "history_format",
+          "start_ms": 2215.1,
+          "end_ms": 2215.1,
+          "duration_ms": 0.0,
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "mode": "legacy",
+      "conversation_id": null,
+      "thread_id": "c0c79c06-bea0-485b-bbb6-47513803169b",
+      "history_len": 0,
+      "total_store_before_llm_ms": 2354.1,
+      "db_connection_acquire_ms": 1439.8,
+      "conversation_load_ms": 212.2,
+      "conversation_create_ms": 0.1,
+      "history_load_ms": 209.2,
+      "commit_ms": 353.3,
+      "session_open_ms": 0.0,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 730.3,
+          "duration_ms": 730.2
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 730.3,
+          "end_ms": 942.5,
+          "duration_ms": 212.2
+        },
+        {
+          "name": "conversation_create",
+          "start_ms": 942.5,
+          "end_ms": 942.6,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "commit",
+          "start_ms": 942.6,
+          "end_ms": 1295.9,
+          "duration_ms": 353.3
+        },
+        {
+          "name": "session_open",
+          "start_ms": 1296.0,
+          "end_ms": 1296.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 1296.1,
+          "end_ms": 2005.7,
+          "duration_ms": 709.6
+        },
+        {
+          "name": "messages_get_full",
+          "start_ms": 2005.7,
+          "end_ms": 2214.9,
+          "duration_ms": 209.2
+        },
+        {
+          "name": "history_format",
+          "start_ms": 2215.0,
+          "end_ms": 2215.0,
+          "duration_ms": 0.0,
+          "rows": 0
+        }
+      ]
+    },
+    {
+      "mode": "legacy",
+      "conversation_id": null,
+      "thread_id": "967ce396-214d-4526-b1c3-837d1e7f9471",
+      "history_len": 0,
+      "total_store_before_llm_ms": 2343.1,
+      "db_connection_acquire_ms": 1431.2,
+      "conversation_load_ms": 209.4,
+      "conversation_create_ms": 0.1,
+      "history_load_ms": 212.2,
+      "commit_ms": 349.3,
+      "session_open_ms": 0.0,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 711.3,
+          "duration_ms": 711.2
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 711.3,
+          "end_ms": 920.7,
+          "duration_ms": 209.4
+        },
+        {
+          "name": "conversation_create",
+          "start_ms": 920.7,
+          "end_ms": 920.8,
+          "duration_ms": 0.1
+        },
+        {
+          "name": "commit",
+          "start_ms": 920.8,
+          "end_ms": 1270.1,
+          "duration_ms": 349.3
+        },
+        {
+          "name": "session_open",
+          "start_ms": 1270.3,
+          "end_ms": 1270.3,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 1270.3,
+          "end_ms": 1990.4,
+          "duration_ms": 720.0
+        },
+        {
+          "name": "messages_get_full",
+          "start_ms": 1990.4,
+          "end_ms": 2202.6,
+          "duration_ms": 212.2
+        },
+        {
+          "name": "history_format",
+          "start_ms": 2202.6,
+          "end_ms": 2202.6,
+          "duration_ms": 0.0,
+          "rows": 0
+        }
+      ]
+    }
+  ],
+  "after_new_rows": [
+    {
+      "mode": "optimized",
+      "conversation_id": null,
+      "thread_id": "5ff89a68-d4c5-4350-9f67-5462269b62bd",
+      "history_len": 0,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": 0.0,
+      "ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "meta": {
+        "conversation_id_given": false,
+        "limit": 3,
+        "mode": "prepare_no_db"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": null,
+      "thread_id": "2868437e-8352-42f3-86e6-f63b9120caa6",
+      "history_len": 0,
+      "total_store_before_llm_ms": 0.0,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": 0.0,
+      "ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "meta": {
+        "conversation_id_given": false,
+        "limit": 3,
+        "mode": "prepare_no_db"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": null,
+      "thread_id": "80018699-ddff-4b9f-8be1-d95a2dbb2837",
+      "history_len": 0,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": 0.0,
+      "ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "meta": {
+        "conversation_id_given": false,
+        "limit": 3,
+        "mode": "prepare_no_db"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": null,
+      "thread_id": "a43f3fa2-d2df-40e6-b5d5-38c4f995d4e3",
+      "history_len": 0,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": 0.0,
+      "ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "meta": {
+        "conversation_id_given": false,
+        "limit": 3,
+        "mode": "prepare_no_db"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": null,
+      "thread_id": "4dfcb8aa-0213-4789-8bc0-e1755ad51947",
+      "history_len": 0,
+      "total_store_before_llm_ms": 0.0,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": 0.0,
+      "ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "meta": {
+        "conversation_id_given": false,
+        "limit": 3,
+        "mode": "prepare_no_db"
+      }
+    }
+  ],
+  "after_existing_rows": [
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 2,
+      "total_store_before_llm_ms": 1074.3,
+      "db_connection_acquire_ms": 721.4,
+      "conversation_load_ms": null,
+      "history_load_ms": 213.0,
+      "commit_ms": null,
+      "session_open_ms": 0.0,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 721.5,
+          "duration_ms": 721.4
+        },
+        {
+          "name": "messages_get",
+          "start_ms": 721.5,
+          "end_ms": 934.5,
+          "duration_ms": 213.0,
+          "limit": 3
+        },
+        {
+          "name": "history_format",
+          "start_ms": 934.5,
+          "end_ms": 934.6,
+          "duration_ms": 0.0,
+          "rows": 2
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_single_session"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 1071.9,
+      "db_connection_acquire_ms": 720.9,
+      "conversation_load_ms": null,
+      "history_load_ms": 210.7,
+      "commit_ms": null,
+      "session_open_ms": 0.0,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 721.0,
+          "duration_ms": 720.9
+        },
+        {
+          "name": "messages_get",
+          "start_ms": 721.0,
+          "end_ms": 931.8,
+          "duration_ms": 210.7,
+          "limit": 3
+        },
+        {
+          "name": "history_format",
+          "start_ms": 931.8,
+          "end_ms": 931.8,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_single_session"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 1069.4,
+      "db_connection_acquire_ms": 717.8,
+      "conversation_load_ms": null,
+      "history_load_ms": 211.0,
+      "commit_ms": null,
+      "session_open_ms": 0.0,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 717.9,
+          "duration_ms": 717.8
+        },
+        {
+          "name": "messages_get",
+          "start_ms": 717.9,
+          "end_ms": 928.9,
+          "duration_ms": 211.0,
+          "limit": 3
+        },
+        {
+          "name": "history_format",
+          "start_ms": 928.9,
+          "end_ms": 928.9,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_single_session"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 1069.4,
+      "db_connection_acquire_ms": 718.0,
+      "conversation_load_ms": null,
+      "history_load_ms": 211.4,
+      "commit_ms": null,
+      "session_open_ms": 0.0,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 718.1,
+          "duration_ms": 718.0
+        },
+        {
+          "name": "messages_get",
+          "start_ms": 718.1,
+          "end_ms": 929.5,
+          "duration_ms": 211.4,
+          "limit": 3
+        },
+        {
+          "name": "history_format",
+          "start_ms": 929.6,
+          "end_ms": 929.6,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_single_session"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 1074.8,
+      "db_connection_acquire_ms": 721.3,
+      "conversation_load_ms": null,
+      "history_load_ms": 212.7,
+      "commit_ms": null,
+      "session_open_ms": 0.0,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 721.4,
+          "duration_ms": 721.3
+        },
+        {
+          "name": "messages_get",
+          "start_ms": 721.4,
+          "end_ms": 934.1,
+          "duration_ms": 212.7,
+          "limit": 3
+        },
+        {
+          "name": "history_format",
+          "start_ms": 934.1,
+          "end_ms": 934.1,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_single_session"
+      }
+    }
+  ],
+  "after_cached_rows": [
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 2,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 2
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_cache_hit"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_cache_hit"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 0.1,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_cache_hit"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 0.0,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_cache_hit"
+      }
+    },
+    {
+      "mode": "optimized",
+      "conversation_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "thread_id": "ce880ef8-509c-4487-944f-2846b7a5040c",
+      "history_len": 3,
+      "total_store_before_llm_ms": 0.0,
+      "db_connection_acquire_ms": null,
+      "conversation_load_ms": null,
+      "history_load_ms": null,
+      "commit_ms": null,
+      "session_open_ms": null,
+      "prepare_skip_db_ms": null,
+      "ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "meta": {
+        "conversation_id_given": true,
+        "limit": 3,
+        "mode": "prepare_cache_hit"
+      }
+    }
+  ],
+  "persist_rows": [
+    {
+      "user_persist_ms": null,
+      "assistant_persist_ms": null,
+      "persist_batch_ms": 1501.2,
+      "db_connection_acquire_ms": 719.9,
+      "commit_ms": 569.0,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 720.0,
+          "duration_ms": 719.9
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 720.0,
+          "end_ms": 931.9,
+          "duration_ms": 211.9
+        },
+        {
+          "name": "message_insert",
+          "start_ms": 931.9,
+          "end_ms": 932.0,
+          "duration_ms": 0.1,
+          "count": 2
+        },
+        {
+          "name": "commit",
+          "start_ms": 932.1,
+          "end_ms": 1501.1,
+          "duration_ms": 569.0
+        }
+      ]
+    },
+    {
+      "user_persist_ms": null,
+      "assistant_persist_ms": null,
+      "persist_batch_ms": 1476.2,
+      "db_connection_acquire_ms": 708.4,
+      "commit_ms": 558.6,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 708.4,
+          "duration_ms": 708.4
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 708.4,
+          "end_ms": 917.3,
+          "duration_ms": 208.9
+        },
+        {
+          "name": "message_insert",
+          "start_ms": 917.3,
+          "end_ms": 917.4,
+          "duration_ms": 0.1,
+          "count": 2
+        },
+        {
+          "name": "commit",
+          "start_ms": 917.5,
+          "end_ms": 1476.0,
+          "duration_ms": 558.6
+        }
+      ]
+    },
+    {
+      "user_persist_ms": null,
+      "assistant_persist_ms": null,
+      "persist_batch_ms": 1491.9,
+      "db_connection_acquire_ms": 717.0,
+      "commit_ms": 562.9,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 717.1,
+          "duration_ms": 717.0
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 717.1,
+          "end_ms": 928.6,
+          "duration_ms": 211.5
+        },
+        {
+          "name": "message_insert",
+          "start_ms": 928.7,
+          "end_ms": 928.8,
+          "duration_ms": 0.1,
+          "count": 2
+        },
+        {
+          "name": "commit",
+          "start_ms": 928.8,
+          "end_ms": 1491.7,
+          "duration_ms": 562.9
+        }
+      ]
+    },
+    {
+      "user_persist_ms": null,
+      "assistant_persist_ms": null,
+      "persist_batch_ms": 1486.7,
+      "db_connection_acquire_ms": 714.9,
+      "commit_ms": 561.2,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 715.0,
+          "duration_ms": 714.9
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 715.0,
+          "end_ms": 925.2,
+          "duration_ms": 210.2
+        },
+        {
+          "name": "message_insert",
+          "start_ms": 925.2,
+          "end_ms": 925.4,
+          "duration_ms": 0.1,
+          "count": 2
+        },
+        {
+          "name": "commit",
+          "start_ms": 925.4,
+          "end_ms": 1486.6,
+          "duration_ms": 561.2
+        }
+      ]
+    },
+    {
+      "user_persist_ms": null,
+      "assistant_persist_ms": null,
+      "persist_batch_ms": 1493.6,
+      "db_connection_acquire_ms": 718.8,
+      "commit_ms": 562.8,
+      "ops": [
+        {
+          "name": "session_open",
+          "start_ms": 0.0,
+          "end_ms": 0.1,
+          "duration_ms": 0.0
+        },
+        {
+          "name": "db_connection_acquire",
+          "start_ms": 0.1,
+          "end_ms": 718.9,
+          "duration_ms": 718.8
+        },
+        {
+          "name": "conversation_get",
+          "start_ms": 718.9,
+          "end_ms": 930.4,
+          "duration_ms": 211.5
+        },
+        {
+          "name": "message_insert",
+          "start_ms": 930.5,
+          "end_ms": 930.6,
+          "duration_ms": 0.2,
+          "count": 2
+        },
+        {
+          "name": "commit",
+          "start_ms": 930.7,
+          "end_ms": 1493.5,
+          "duration_ms": 562.8
+        }
+      ]
+    }
+  ],
+  "before_stats": {
+    "total_store_before_llm_ms": {
+      "avg": 2348.1,
+      "median": 2344.5,
+      "min": 2343.1,
+      "max": 2355.5,
+      "n": 5
+    },
+    "db_connection_acquire_ms": {
+      "avg": 1434.7,
+      "median": 1433.7,
+      "min": 1430.2,
+      "max": 1439.8,
+      "n": 5
+    },
+    "conversation_load_ms": {
+      "avg": 210.7,
+      "median": 211.5,
+      "min": 208.5,
+      "max": 212.2,
+      "n": 5
+    },
+    "history_load_ms": {
+      "avg": 211.4,
+      "median": 212.1,
+      "min": 209.2,
+      "max": 213.4,
+      "n": 5
+    },
+    "commit_ms": {
+      "avg": 350.9,
+      "median": 352.0,
+      "min": 347.7,
+      "max": 353.3,
+      "n": 5
+    }
+  },
+  "after_stats": {
+    "total_store_before_llm_ms": {
+      "avg": 0.1,
+      "median": 0.1,
+      "min": 0.0,
+      "max": 0.1,
+      "n": 5
+    },
+    "db_connection_acquire_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "conversation_load_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "history_load_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "commit_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    }
+  },
+  "after_existing_stats": {
+    "total_store_before_llm_ms": {
+      "avg": 1072.0,
+      "median": 1071.9,
+      "min": 1069.4,
+      "max": 1074.8,
+      "n": 5
+    },
+    "db_connection_acquire_ms": {
+      "avg": 719.9,
+      "median": 720.9,
+      "min": 717.8,
+      "max": 721.4,
+      "n": 5
+    },
+    "conversation_load_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "history_load_ms": {
+      "avg": 211.8,
+      "median": 211.4,
+      "min": 210.7,
+      "max": 213.0,
+      "n": 5
+    },
+    "commit_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    }
+  },
+  "after_cached_stats": {
+    "total_store_before_llm_ms": {
+      "avg": 0.1,
+      "median": 0.1,
+      "min": 0.0,
+      "max": 0.1,
+      "n": 5
+    },
+    "db_connection_acquire_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "conversation_load_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "history_load_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    },
+    "commit_ms": {
+      "avg": null,
+      "median": null,
+      "min": null,
+      "max": null,
+      "n": 0
+    }
+  },
+  "persist_stats": {
+    "persist_batch_ms": {
+      "avg": 1489.9,
+      "median": 1491.9,
+      "min": 1476.2,
+      "max": 1501.2,
+      "n": 5
+    },
+    "commit_ms": {
+      "avg": 562.9,
+      "median": 562.8,
+      "min": 558.6,
+      "max": 569.0,
+      "n": 5
+    },
+    "db_connection_acquire_ms": {
+      "avg": 715.8,
+      "median": 717.0,
+      "min": 708.4,
+      "max": 719.9,
+      "n": 5
+    }
+  },
+  "voice_runs": [
+    {
+      "turn_id": "p17-1790247643",
+      "question": "Quels plats camerounais dois-je goûter ?",
+      "valid": true,
+      "conversation_id": "e61f9e38-ee5f-43e1-a555-13448e5a45d3",
+      "app_ttft_ms": 338.3,
+      "llm_prepare_ms": 30.0,
+      "provider_ttfh_ms": 308.0,
+      "store_prepare_ms": 0.0,
+      "store_ops": [
+        {
+          "name": "prepare_skip_db_new_thread",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0
+        }
+      ],
+      "store_mode": "prepare_no_db",
+      "generation_ms": 3099.1,
+      "error": null
+    },
+    {
+      "turn_id": "p17-1790247646",
+      "question": "Que puis-je visiter à Yaoundé ?",
+      "valid": true,
+      "conversation_id": "e61f9e38-ee5f-43e1-a555-13448e5a45d3",
+      "app_ttft_ms": 1790.3,
+      "llm_prepare_ms": 1510.4,
+      "provider_ttfh_ms": 279.6,
+      "store_prepare_ms": 0.0,
+      "store_ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 2
+        }
+      ],
+      "store_mode": "prepare_cache_hit",
+      "generation_ms": 4222.9,
+      "error": null
+    },
+    {
+      "turn_id": "p17-1790247650",
+      "question": "Propose-moi une activité nature au Cameroun.",
+      "valid": true,
+      "conversation_id": "e61f9e38-ee5f-43e1-a555-13448e5a45d3",
+      "app_ttft_ms": 261.0,
+      "llm_prepare_ms": 7.6,
+      "provider_ttfh_ms": 253.2,
+      "store_prepare_ms": 0.0,
+      "store_ops": [
+        {
+          "name": "history_cache_hit",
+          "start_ms": 0.0,
+          "end_ms": 0.0,
+          "duration_ms": 0.0,
+          "rows": 3
+        }
+      ],
+      "store_mode": "prepare_cache_hit",
+      "generation_ms": 2541.7,
+      "error": null
+    }
+  ],
+  "verdict": "BEFORE legacy avg=2348.1 ms. AFTER new-thread avg=0.1 ms ; existing-cold avg=1072.0 ms ; existing-cached avg=0.1 ms. Objectif <150 ms ATTEINT pour voice turn-1 (new thread). Objectif <150 ms ATTEINT pour multi-turn cached (même worker). Cold existing encore ~1× NullPool TLS — pool/infra P6 si besoin sans cache. Cause des ~2.7 s : 2× connection acquire NullPool, pas le SQL métier. Pas de changement Qwen/RAG/TTS.",
+  "pytest": "88 passed"
+}
