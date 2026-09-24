@@ -1,0 +1,56 @@
+{
+  "phase": "2.5",
+  "component": "agent_orchestrator",
+  "prefer_deterministic": true,
+  "cases": [
+    {
+      "label": "greeting",
+      "query": "Bonjour",
+      "n": 20,
+      "agents_called": [
+        "intent",
+        "response"
+      ],
+      "total_ms_median": 0.074,
+      "total_ms_p95": 0.122,
+      "intent_ms_median": 0.041,
+      "knowledge_ms_median": null,
+      "planner_ms_median": null,
+      "response_ms_median": 0.026
+    },
+    {
+      "label": "tourism_info",
+      "query": "Quels sont les lieux touristiques \u00e0 Yaound\u00e9 ?",
+      "n": 20,
+      "agents_called": [
+        "intent",
+        "knowledge",
+        "response"
+      ],
+      "total_ms_median": 0.746,
+      "total_ms_p95": 0.869,
+      "intent_ms_median": 0.068,
+      "knowledge_ms_median": 0.577,
+      "planner_ms_median": null,
+      "response_ms_median": 0.099
+    },
+    {
+      "label": "itinerary",
+      "query": "Fais-moi un programme de 3 jours \u00e0 Yaound\u00e9.",
+      "n": 20,
+      "agents_called": [
+        "intent",
+        "knowledge",
+        "planner",
+        "response"
+      ],
+      "total_ms_median": 0.954,
+      "total_ms_p95": 1.207,
+      "intent_ms_median": 0.067,
+      "knowledge_ms_median": 0.596,
+      "planner_ms_median": 0.115,
+      "response_ms_median": 0.17
+    }
+  ],
+  "wall_ms": 113193
+}

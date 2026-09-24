@@ -213,12 +213,63 @@ class HuggingFaceAIService(AIService):
                 limit=history_window,
             )
 
+            settings = get_settings()
+
+            # Phase 2.5 — Agent Orchestrator (feature-flagged). Default OFF.
+            # On failure: fall through to the existing Phase-1 pipeline.
+            if settings.agent_orchestrator_enabled:
+                try:
+                    async for event in self._stream_via_orchestrator(
+                        message,
+                        thread_id=thread_id,
+                        brief=brief,
+                        locale=locale,
+                        timer=timer,
+                        turn_id=turn_id,
+                        trace=trace,
+                    ):
+                        yield event
+                    return
+                except Exception:  # noqa: BLE001
+                    logger.exception(
+                        "orchestrator_failed_fallback request_id=%s",
+                        turn_id,
+                    )
+                    timer.mark("orchestrator_fallback", 1.0)
+                    trace.set_meta(orchestrator_fallback=True)
+
             with timer.phase("routing"):
                 route = route_query(message)
             trace.mark("routing_done", kind=route.kind, skip_kb=route.skip_kb)
 
+            # Phase 2.5 observe — metrics only, deterministic Agent 4, no extra LLM.
+            if (
+                settings.agent_orchestrator_observe
+                and not settings.agent_orchestrator_enabled
+            ):
+                try:
+                    from app.services.agents.orchestrator import AgentOrchestrator
+
+                    orch = AgentOrchestrator(
+                        prefer_deterministic=True,
+                        web_search=None,  # do not double external web on observe path
+                    )
+                    orch_result = await orch.run(
+                        message,
+                        mode="voice" if brief else "text",
+                        locale=locale,
+                        request_id=turn_id,
+                    )
+                    timer.mark(
+                        "agent_orchestrator",
+                        orch_result.timings.total_ms or 0.0,
+                    )
+                    trace.set_meta(agent_orchestrator=orch_result.observability())
+                except Exception:  # noqa: BLE001
+                    logger.exception("agent_orchestrator_observe_failed")
+
             # Phase 2.1 progressive observe — never changes which route is used.
-            if get_settings().intent_router_observe:
+            if settings.intent_router_observe:
                 try:
                     from app.services.agents.intent import classify_intent
 
@@ -549,6 +600,137 @@ class HuggingFaceAIService(AIService):
                 "message": str(exc) or "Generation failed",
                 "llm_trace": trace.as_dict(),
             }
+
+    async def _stream_via_orchestrator(
+        self,
+        message: str,
+        *,
+        thread_id: str,
+        brief: bool,
+        locale: str,
+        timer: PhaseTimer,
+        turn_id: str | None,
+        trace: LlmStreamTrace,
+    ) -> AsyncIterator[dict[str, Any]]:
+        """Serve a turn through AgentOrchestrator (Agents 1–4).
+
+        Deterministic Agent 4 by default (protects voice TTFA). Emits the same
+        token/done event shape as the LLM path so the voice chunker/TTS keep working.
+        """
+        from app.services.agents.orchestrator import AgentOrchestrator
+        from app.services.speech.voice_chunker import (
+            append_token,
+            flush_remainder,
+            split_ready_phrases,
+        )
+
+        with timer.phase("orchestrator"):
+            orch = AgentOrchestrator(
+                prefer_deterministic=True,
+                web_search=self._web,
+                rag=self._rag,
+            )
+            result = await orch.run(
+                message,
+                mode="voice" if brief else "text",
+                locale=locale,
+                request_id=turn_id,
+            )
+
+        timer.mark("agent_orchestrator", result.timings.total_ms or 0.0)
+        if result.timings.intent_ms is not None:
+            timer.mark("intent_router", result.timings.intent_ms)
+        if result.timings.knowledge_ms is not None:
+            timer.mark("knowledge_agent", result.timings.knowledge_ms)
+        if result.timings.planner_ms is not None:
+            timer.mark("tourism_planner", result.timings.planner_ms)
+        if result.timings.response_ms is not None:
+            timer.mark("response_agent", result.timings.response_ms)
+        trace.set_meta(agent_orchestrator=result.observability())
+
+        intent = result.intent
+        # Map intent → legacy route fields for WS clients expecting route events.
+        skip_kb = intent.intent in {"CLARIFICATION", "SIMPLE_QA"} and not intent.needs_places
+        skip_web = not intent.needs_web
+        yield {
+            "type": "route",
+            "kind": "orchestrated",
+            "skip_kb": skip_kb,
+            "skip_web": skip_web,
+            "reason": f"orchestrator:{intent.intent}",
+            "intent": intent.observability(),
+            "orchestrator": result.observability(),
+        }
+
+        reply = (result.final_response.text or "").strip()
+        if not reply:
+            raise GenerationFailedError("Orchestrator returned an empty answer.")
+
+        sources: list[ChatSource] = []
+        for src in result.final_response.sources:
+            sources.append(
+                ChatSource(
+                    title=src.name or src.source_id,
+                    organization=None,
+                    url=src.url,
+                )
+            )
+
+        # Fake-stream tokens so voice early-play / chunker keep the same contract.
+        timer.mark("rag", 0.0)
+        timer.mark("web", float(result.timings.web_ms or 0.0))
+        timer.mark("prompt", 0.0)
+        timer.mark("grounding", 0.0)
+        timer.mark("llm_ttft", float(result.final_response.llm_ttft_ms or 0.0))
+        timer.mark("llm", float(result.final_response.llm_generation_ms or 0.0))
+        timer.mark("cache_hit", 0.0)
+        trace.set_meta(orchestrator_enabled=True)
+        trace.mark("orchestrator_response_ready", chars=len(reply))
+
+        phrase_buf = ""
+        first_phrase = True
+        # Emit word-sized chunks for TTS early play (same as progressive tokens).
+        parts = reply.split(" ")
+        first_token = True
+        for i, word in enumerate(parts):
+            token = word if i == 0 else f" {word}"
+            if first_token:
+                timer.mark("app_ttft", (time.perf_counter() - trace.wall0) * 1000)
+                first_token = False
+                trace.note_first_token(chars=len(token))
+            if brief:
+                phrase_buf = append_token(phrase_buf, token)
+                if trace.first_useful_text_ms is None and phrase_buf.strip():
+                    trace.note_first_useful_text(text=phrase_buf.strip()[:64])
+                ready, phrase_buf = split_ready_phrases(
+                    phrase_buf, first_chunk=first_phrase
+                )
+                if ready and first_phrase:
+                    trace.note_first_phrase_ready(text=ready[0])
+                    first_phrase = False
+            yield {"type": "token", "text": token}
+
+        if brief and trace.first_phrase_ready_ms is None:
+            for part in flush_remainder(phrase_buf):
+                trace.note_first_phrase_ready(text=part)
+                break
+
+        await self._store.add_messages(
+            thread_id,
+            [("user", message), ("assistant", reply)],
+        )
+        if getattr(self._store, "last_trace", None) is not None:
+            trace.set_meta(store_persist=self._store.last_trace.as_dict())
+        trace.note_llm_end()
+        yield {
+            "type": "done",
+            "conversation_id": thread_id,
+            "text": reply,
+            "sources": [source.model_dump() for source in sources],
+            "metrics": timer.as_dict(),
+            "llm_trace": trace.as_dict(),
+            "orchestrator": result.observability(),
+        }
 
     async def _stream_tokens(
         self,

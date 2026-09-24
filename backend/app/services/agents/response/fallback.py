@@ -22,9 +22,19 @@ def render_deterministic(
     if intent.intent == "CLARIFICATION" or intent.confidence < 0.6:
         return _clarification(intent, lang)
 
+    if intent.intent == "BOOKING":
+        return _booking_unavailable(lang, has_places=bool(knowledge.places))
+
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
             return _insufficient(lang)
+
+    if (
+        tourism_plan is not None
+        and tourism_plan.feasibility == "NOT_FEASIBLE"
+        and not tourism_plan.selected_places
+    ):
+        return _not_feasible(tourism_plan, lang)
 
     if tourism_plan is not None and tourism_plan.days and tourism_plan.selected_places:
         return _render_plan(tourism_plan, knowledge, lang=lang, voice=voice)
@@ -65,6 +75,55 @@ def _insufficient(lang: str) -> str:
         "Je dispose actuellement de trop peu d'informations vérifiées "
         "pour construire une réponse fiable à cette demande."
     )
+
+
+def _booking_unavailable(lang: str, *, has_places: bool) -> str:
+    if lang == "en":
+        if has_places:
+            return (
+                "I can share general hotel information from verified sources, "
+                "but live availability and real-time booking are not confirmed yet "
+                "on this platform."
+            )
+        return (
+            "I can provide tourism information, but live hotel availability "
+            "and real-time booking are not confirmed yet on this platform."
+        )
+    if has_places:
+        return (
+            "Je peux partager des informations générales sur les hébergements "
+            "à partir de sources vérifiées, mais la disponibilité en temps réel "
+            "et la réservation ne sont pas encore confirmées sur cette plateforme."
+        )
+    return (
+        "Je peux fournir des informations touristiques, mais la disponibilité "
+        "en temps réel et la réservation d'hôtel ne sont pas encore confirmées "
+        "sur cette plateforme."
+    )
+
+
+def _not_feasible(plan: TourismPlan, lang: str) -> str:
+    warnings = "; ".join(plan.warnings[:2]) if plan.warnings else ""
+    missing = ", ".join(plan.missing_information[:3]) if plan.missing_information else ""
+    if lang == "en":
+        parts = ["This trip plan is not feasible with the verified data available."]
+        if warnings:
+            parts.append(warnings)
+        if missing:
+            parts.append(f"Missing: {missing}.")
+        if plan.budget_status and plan.budget_status != "UNKNOWN":
+            parts.append(f"Budget status: {plan.budget_status}.")
+        return " ".join(parts)
+    parts = [
+        "Ce programme n'est pas réalisable avec les données vérifiées disponibles."
+    ]
+    if warnings:
+        parts.append(warnings)
+    if missing:
+        parts.append(f"Informations manquantes : {missing}.")
+    if plan.budget_status and plan.budget_status != "UNKNOWN":
+        parts.append(f"Statut budget : {plan.budget_status}.")
+    return " ".join(parts)
 
 
 def _render_plan(

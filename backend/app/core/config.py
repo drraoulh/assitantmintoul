@@ -220,6 +220,17 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("RESPONSE_AGENT_ENABLED"),
     )
+    # Phase 2.5 — Agent Orchestrator (progressive). Default OFF so chat/voice
+    # keep the Phase-1 path. Observe runs the coordinator for metrics only
+    # (deterministic Agent 4 — no extra production LLM).
+    agent_orchestrator_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_ENABLED"),
+    )
+    agent_orchestrator_observe: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_OBSERVE"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:
