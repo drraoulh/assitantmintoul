@@ -1,0 +1,206 @@
+[
+  {
+    "id": "palais-bafut",
+    "name": "Palais de Bafut",
+    "city": "Bafut",
+    "region": "Nord-Ouest",
+    "category": "culture",
+    "summary_fr": "Chefferie historique près de Bamenda : musée et cases royales du peuple Bafut. Architecture grassfields, objets rituels et récit dynastique pour une immersion Nord-Ouest authentique.",
+    "summary_en": "Historic chiefdom near Bamenda: museum and royal compounds of the Bafut people. Grassfields architecture, ritual objects and dynastic story for an authentic North-West immersion.",
+    "tips_fr": "Consultez des avis de voyage officiels récents avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check recent official travel advice before any trip in the Northwest.",
+    "culture_fr": "Visite guidée recommandée ; respecter les espaces sacrés.",
+    "latitude": 6.08,
+    "longitude": 10.108,
+    "price": "2000 XAF",
+    "tags": [
+      "nord-ouest",
+      "northwest",
+      "bafut",
+      "culture"
+    ],
+    "sources": [
+      {
+        "title": "Palais de Bafut",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "bamenda-station",
+    "name": "Bamenda Station Hill",
+    "city": "Bamenda",
+    "region": "Nord-Ouest",
+    "category": "viewpoint",
+    "summary_fr": "Colline historique de Bamenda (Station) avec vue sur la ville des Grassfields anglophones. Point d'orientation pour découvrir la capitale régionale du Nord-Ouest.",
+    "summary_en": "Historic Station Hill in Bamenda with views over the Anglophone Grassfields city. A good orientation point for the Northwest regional capital.",
+    "tips_fr": "Renseignez-vous sur la situation sécuritaire avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check the security situation before any travel in the Northwest.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "bamenda",
+      "nord-ouest",
+      "northwest",
+      "grassfields",
+      "viewpoint"
+    ],
+    "sources": [
+      {
+        "title": "Bamenda Station Hill",
+        "organization": "Curated Bamenda northwest file",
+        "url": null,
+        "verification_status": "internal_doc"
+      }
+    ]
+  },
+  {
+    "id": "lac-kuk-fungom",
+    "name": "Lac Kuk",
+    "city": "Bamenda",
+    "region": "Nord-Ouest",
+    "category": "nature",
+    "summary_fr": "Lac Kuk. Situé à Bamenda, dans la subdivision de Fungom, près de Nyos, dans la région du Nord-Ouest du Cameroun, le lac Kuk s'impose comme une curiosité naturelle impressionnante et mystérieuse. Perchée à 1.261 mètres d'altitude au cœur des paysages montagneux de la zone, cette étendue d'eau de 220 mètres de diamètre offre un spectacle visuel saisissant, témoignant de l'activité volcanique intense qui a façonné la géographie de cette partie du pays. Ce lac de cratère volcanique suscite une attention particulière en raison de ses caractéristiques géophysiques uniques. Il présente en effet des similarités géologiques flagrantes et des risques de dégazage comparables à ceux du célèbre lac Nyos, situé à proximité. Cette ressemblance structurelle en fait un sujet d'étude et de surveillance de premier ordre pour les scientifiques, fascinés par la dynamique des gaz piégés dans ses profondeurs et par l'évolution de son écosystème environnant. Après avoir fini la découverte de ce site fascinant, les visiteurs peuvent prolonger l'aventure en explorant les attractions et les richesses de la région. Les sentiers environnants offrent des panoramas exceptionnels pour les amateurs de randonnée et de nature sauvage, tandis que la proximité avec les communautés locales permet de s'imprégner de la culture et de l'hospitalité uniques du Nord-Ouest. C'est une halte incontournable pour ceux qui souhaitent percer les secrets géologiques du Cameroun tout en admirant la beauté brute de ses paysages volcaniques. Découvrez d'autres coins dans la même région Sites Touristiques, LAC",
+    "summary_en": "Lac Kuk. Located à Bamenda, dans la subdivision de Fungom, near Nyos, dans la region du Nord-Ouest du Cameroon, le lac Kuk s'impose comme une curiosité naturelle impressionnante et mystérieuse. Perchée à 1.261 mètres d'altitude au cœur des paysages montagneux de la zone, cette étendue d'eau de 220 mètres de diamètre offers un spectacle visuel saisissant, témoignant de l'activité volcanique intense qui a façonné la géographie de cette partie du pays. Ce lac de cratère volcanique suscite une attention particulière en raison de ses caractéristiques géophysiques uniques. Il présente en effet des similarités géologiques flagrantes et des risques de dégazage comparables à ceux du célèbre lac Nyos, situé à proximité. Cette ressemblance structurelle en fait un sujet d'étude et de surveillance de premier ordre pour les scientifiques, fascinés par la dynamique des gaz piégés dans ses profondeurs et par l'évolution de son écosystème environnant. Après avoir fini la découverte de ce site fascinant, les visiteurs peuvent prolonger l'aventure en explorant les attractions et les richesses de la region. Les sentiers environnants offrent des panoramas exceptionnels pour les amateurs de randonnée et de nature sauvage, tandis que la proximité avec les communautés locales allows de s'imprégner de la culture et de l'hospitalité uniques du Nord-Ouest. C'is a halte must-see pour ceux qui souhaitent percer les secrets géologiques du Cameroon tout en admirant la beauté brute de ses paysages volcaniques. Découvrez d'autres coins dans la même region Sites Touristiques, LAC",
+    "tips_fr": "Consultez des avis de voyage officiels récents avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check recent official travel advice before any trip in the Northwest.",
+    "culture_fr": "Quartier / lieu : Fungom · Ville : Bamenda · Localisation : Près de Nyos · Catégories : Sites Touristiques, LAC",
+    "latitude": 5.963,
+    "longitude": 10.159,
+    "price": null,
+    "tags": [
+      "nord-ouest",
+      "northwest",
+      "bamenda",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Kuk",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "bamenda-markets",
+    "name": "Marchés de Bamenda",
+    "city": "Bamenda",
+    "region": "Nord-Ouest",
+    "category": "market",
+    "summary_fr": "Marchés animés proposant produits agricoles des hauts plateaux, tissus et artisanat. Immersion dans la vie économique locale.",
+    "summary_en": "Busy markets with highland farm produce, fabrics and crafts. Immersion in local economic life.",
+    "tips_fr": "Visitez de jour; gardez vos affaires près de vous.",
+    "tips_en": "Visit by day; keep belongings close.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "bamenda",
+      "marché",
+      "market",
+      "shopping"
+    ],
+    "sources": [
+      {
+        "title": "Marchés de Bamenda",
+        "organization": "Curated Bamenda northwest file",
+        "url": null,
+        "verification_status": "internal_doc"
+      }
+    ]
+  },
+  {
+    "id": "savanna-botanic-garden-de-bamenda-bafut",
+    "name": "Savanna Botanic Garden De Bamenda",
+    "city": "Bamenda",
+    "region": "Nord-Ouest",
+    "category": "nature",
+    "summary_fr": "Savanna Botanic Garden De Bamenda. Situé à Bafut, à environ 10 km de Bamenda, le Savanna Botanic Garden est un site touristique prisé pour sa promenade agréable dans un cadre naturel. Ce jardin aéré est le lieu parfait pour découvrir diverses variétés de fleurs, de plantes et des palmiers à huile, tout en profitant de l'atmosphère paisible. Les activités phares proposées incluent des balades à travers le jardin, où vous pourrez vous détendre dans des boukarous typiques de la région, conçus pour rappeler les cases traditionnelles. Il y a également un petit bar et des marchands de fleurs, offrant un cadre idéal pour une pause avant de visiter la fameuse chefferie de Bafut, située à proximité. Le jardin est adapté à tous les âges, offrant une expérience paisible et éducative pour les adultes et les enfants. L'entrée coûte 500 FCFA par personne, et le site est ouvert tous les jours de 8h à 18h. Les visiteurs apprécient particulièrement la tranquillité du site et la qualité de l'accueil. à proximité, la chefferie de Bafut est une attraction incontournable à seulement quelques kilomètres. En conclusion, le Savanna Botanic Garden est un endroit parfait pour se détendre et découvrir la richesse florale de la région.",
+    "summary_en": "Savanna Botanic Garden De Bamenda. Located à Bafut, à environ 10 km de Bamenda, le Savanna Botanic Garden is a tourist site prisé pour sa promenade agréable dans un cadre naturel. Ce jardin aéré est le lieu parfait pour découvrir diverses variétés de fleurs, de plantes et des palmiers à huile, tout en profitant de l'atmosphère paisible. Les activités phares proposées incluent des balades à travers le jardin, où vous pourrez vous détendre dans des boukarous typiques de la région, conçus pour rappeler les cases traditionnelles. Il y a également un petit bar et des marchands de fleurs, offrant un cadre idéal pour une pause avant de visiter la fameuse chefferie de Bafut, située à proximité. Le jardin est adapté à tous les âges, offrant une expérience paisible et éducative pour les adultes et les enfants. L'entrée coûte 500 FCFA par personne, et le site est ouvert tous les jours de 8h à 18h. Les visiteurs apprécient particulièrement la tranquillité du site et la qualité de l'accueil. à proximité, la chefferie de Bafut is a attraction incontournable à seulement quelques kilomètres. En conclusion, le Savanna Botanic Garden is a endroit parfait pour se détendre et découvrir la richesse florale de la région.",
+    "tips_fr": "Consultez des avis de voyage officiels récents avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check recent official travel advice before any trip in the Northwest.",
+    "culture_fr": "Quartier / lieu : Bafut · Ville : Bamenda · Localisation : A environ 10 km de Bamenda · Catégories : Sites Touristiques, Parcs",
+    "latitude": 5.963,
+    "longitude": 10.159,
+    "price": "500 XAF",
+    "tags": [
+      "nord-ouest",
+      "northwest",
+      "bamenda",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Savanna Botanic Garden De Bamenda",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "la-chefferie-d-oku-oku",
+    "name": "La Chefferie D'oku",
+    "city": "Oku",
+    "region": "Nord-Ouest",
+    "category": "culture",
+    "summary_fr": "La Chefferie D'oku. Situé à Oku, dans le département du Bui, région du Nord-Ouest du Cameroun, la chefferie traditionnelle d'Oku est un site culturel et historique emblématique qui incarne la richesse patrimoniale du peuple Oku. Nichée au c&oelig;ur des montagnes, cette chefferie est réputée pour son importance spirituelle, son architecture traditionnelle et son enracinement culturel profond. Les attractions et activités offertes aux visiteurs incluent la visite guidée du palais royal, des cérémonies traditionnelles, ainsi que la découverte du célèbre miel d'Oku, inscrit au patrimoine immatériel. Vous pourrez aussi explorer la réserve naturelle d'Oku, observer une flore dense et colorée, admirer le lac volcanique d'Oku ou pratiquer la pêche artisanale. Le site est adapté aux enfants comme aux adultes, offrant à chacun une immersion authentique dans la culture et la nature. La chefferie et ses alentours disposent de points de restauration locaux proposant des plats traditionnels, ainsi que de boutiques artisanales. Bien que le lieu ne dispose pas encore de service de réservation en ligne, l'accueil se fait sur place avec possibilité de guides locaux. Le stationnement est possible près de l'entrée du palais. Les avis des visiteurs sont élogieux, soulignant la chaleur de l'accueil, l' authenticité des rituels et la beauté du cadre naturel. à proximité, on retrouve le célèbre Lake Oku, la Réserve forestière de Kilum-Ijim, et des établissements comme le Oku Community Eco-Lodge, très apprécié pour les nuitées écotouristiques. En conclusion, la chefferie d'Oku est un joyau culturel à découvrir absolument, tant pour ses traditions vivantes que pour ses trésors naturels. Pour organiser votre visite, vous pouvez contacter les guides locaux disponibles au centre du village ou passer par les structures communautaires d'accueil.",
+    "summary_en": "La Chefferie D'oku. Located à Oku, dans le département du Bui, région du Nord-Ouest du Cameroon, la chefferie traditionnelle d'Oku is a site culturel et historique emblématique qui incarne la richesse patrimoniale du peuple Oku. Nichée au c&oelig;ur des montagnes, cette chefferie est réputée pour son importance spirituelle, son architecture traditionnelle et son enracinement culturel profond. Les attractions et activités offertes aux visiteurs incluent la visite guidée du palais royal, des cérémonies traditionnelles, ainsi que la découverte du célèbre miel d'Oku, inscrit au patrimoine immatériel. Vous pourrez aussi explorer la réserve naturelle d'Oku, observer une flore dense et colorée, admirer le lac volcanique d'Oku ou pratiquer la pêche artisanale. Le site est adapté aux enfants comme aux adultes, offrant à chacun une immersion authentique dans la culture et la nature. La chefferie et ses alentours disposent de points de restauration locaux proposant des plats traditionnels, ainsi que de boutiques artisanales. Bien que le lieu ne dispose pas encore de service de réservation en ligne, l'accueil se fait sur place avec possibilité de guides locaux. Le stationnement est possible near l'entrée du palais. Les avis des visiteurs sont élogieux, soulignant la chaleur de l'accueil, l' authenticité des rituels et la beauté du cadre naturel. à proximité, on retrouve le célèbre Lake Oku, la Réserve forestière de Kilum-Ijim, et des établissements comme le Oku Community Eco-Lodge, très apprécié pour les nuitées écotouristiques. En conclusion, la chefferie d'Oku is a joyau culturel à découvrir absolument, tant pour ses traditions vivantes que pour ses trésors naturels. Pour organiser votre visite, vous pouvez contacter les guides locaux disponibles au centre du village ou passer par les structures communautaires d'accueil.",
+    "tips_fr": "Consultez des avis de voyage officiels récents avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check recent official travel advice before any trip in the Northwest.",
+    "culture_fr": "Quartier / lieu : Oku · Ville : Bamenda · Localisation : Dans le département du Bui · Catégories : Sites Touristiques, Chefferie/Royaume",
+    "latitude": 5.963,
+    "longitude": 10.159,
+    "price": null,
+    "tags": [
+      "nord-ouest",
+      "northwest",
+      "oku",
+      "culture"
+    ],
+    "sources": [
+      {
+        "title": "La Chefferie D'oku",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "lac-oku",
+    "name": "Lac Oku",
+    "city": "Oku",
+    "region": "Nord-Ouest",
+    "category": "nature",
+    "summary_fr": "Lac de cratère dans les montagnes du Nord-Ouest, Oku allie paysage volcanique, forêt de Kilum-Ijim et culture locale (chefferie, artisanat, miel). Une halte nature-culture idéale autour de Bamenda.",
+    "summary_en": "A crater lake in the North-West highlands, Oku pairs volcanic scenery, Kilum-Ijim forest and local culture (chiefdom, crafts, honey). A fine nature-culture stop near Bamenda.",
+    "tips_fr": "Consultez des avis de voyage officiels récents avant tout déplacement dans le Nord-Ouest.",
+    "tips_en": "Check recent official travel advice before any trip in the Northwest.",
+    "culture_fr": "Guides villageois utiles pour sentiers et protocoles. Climat frais : prévoir couche supplémentaire.",
+    "latitude": 6.193,
+    "longitude": 10.454,
+    "price": "3000 XAF",
+    "tags": [
+      "nord-ouest",
+      "northwest",
+      "oku",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Lac Oku",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  }
+]

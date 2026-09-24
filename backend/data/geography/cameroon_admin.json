@@ -304,6 +304,69 @@
       "capital_city_id": "mamfe",
       "source": "Départements de la région du Sud-Ouest",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mezam",
+      "name_fr": "Mezam",
+      "name_en": "Mezam",
+      "region_id": "nord-ouest",
+      "capital_city_id": "bamenda",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "boyo",
+      "name_fr": "Boyo",
+      "name_en": "Boyo",
+      "region_id": "nord-ouest",
+      "capital_city_id": "fundong",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bui",
+      "name_fr": "Bui",
+      "name_en": "Bui",
+      "region_id": "nord-ouest",
+      "capital_city_id": "kumbo",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "donga-mantung",
+      "name_fr": "Donga-Mantung",
+      "name_en": "Donga-Mantung",
+      "region_id": "nord-ouest",
+      "capital_city_id": "nkambe",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "menchum",
+      "name_fr": "Menchum",
+      "name_en": "Menchum",
+      "region_id": "nord-ouest",
+      "capital_city_id": "wum",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "momo",
+      "name_fr": "Momo",
+      "name_en": "Momo",
+      "region_id": "nord-ouest",
+      "capital_city_id": "mbengwi",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ngo-ketunjia",
+      "name_fr": "Ngo-Ketunjia",
+      "name_en": "Ngo-Ketunjia",
+      "region_id": "nord-ouest",
+      "capital_city_id": "ndop",
+      "source": "Départements de la région du Nord-Ouest",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -443,8 +506,9 @@
       "aliases": [
         "bamenda"
       ],
-      "source": "Chef-lieu de la région du Nord-Ouest",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région du Nord-Ouest / département du Mezam",
+      "verified_at": "2026-09-24",
+      "division_id": "mezam"
     },
     {
       "id": "ebolowa",
@@ -884,6 +948,118 @@
       ],
       "source": "Chef-lieu du Manyu, région du Sud-Ouest",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "bafut",
+      "name_fr": "Bafut",
+      "name_en": "Bafut",
+      "entity_type": "city",
+      "division_id": "mezam",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "bafut"
+      ],
+      "source": "Chefferie de Bafut, département du Mezam, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "oku",
+      "name_fr": "Oku",
+      "name_en": "Oku",
+      "entity_type": "city",
+      "division_id": "boyo",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "oku"
+      ],
+      "source": "Localité d'Oku (lac / chefferie), département du Boyo, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kumbo",
+      "name_fr": "Kumbo",
+      "name_en": "Kumbo",
+      "entity_type": "city",
+      "division_id": "bui",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "kumbo"
+      ],
+      "source": "Chef-lieu du Bui, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "wum",
+      "name_fr": "Wum",
+      "name_en": "Wum",
+      "entity_type": "city",
+      "division_id": "menchum",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "wum"
+      ],
+      "source": "Chef-lieu du Menchum, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "fundong",
+      "name_fr": "Fundong",
+      "name_en": "Fundong",
+      "entity_type": "city",
+      "division_id": "boyo",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "fundong"
+      ],
+      "source": "Chef-lieu du Boyo, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "nkambe",
+      "name_fr": "Nkambe",
+      "name_en": "Nkambe",
+      "entity_type": "city",
+      "division_id": "donga-mantung",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "nkambe"
+      ],
+      "source": "Chef-lieu du Donga-Mantung, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "mbengwi",
+      "name_fr": "Mbengwi",
+      "name_en": "Mbengwi",
+      "entity_type": "city",
+      "division_id": "momo",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "mbengwi"
+      ],
+      "source": "Chef-lieu du Momo, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "ndop",
+      "name_fr": "Ndop",
+      "name_en": "Ndop",
+      "entity_type": "city",
+      "division_id": "ngo-ketunjia",
+      "region_id": "nord-ouest",
+      "is_region_capital": false,
+      "aliases": [
+        "ndop"
+      ],
+      "source": "Chef-lieu du Ngo-Ketunjia, région du Nord-Ouest",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1269,6 +1445,30 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Lacs Barombi Mbo / Kotto près de Kumba",
       "source": "Fiches lieux Barombi",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "station-hill",
+      "name_fr": "Station Hill",
+      "name_en": "Station Hill",
+      "city_id": "bamenda",
+      "division_id": "mezam",
+      "region_id": "nord-ouest",
+      "relation_to_city": "IN",
+      "notes_fr": "Colline Station à Bamenda",
+      "source": "Fiche Bamenda Station Hill",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "fungom",
+      "name_fr": "Fungom",
+      "name_en": "Fungom",
+      "city_id": "bamenda",
+      "division_id": "menchum",
+      "region_id": "nord-ouest",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Zone Fungom (Lac Kuk)",
+      "source": "Fiche Lac Kuk",
       "verified_at": "2026-09-24"
     }
   ]

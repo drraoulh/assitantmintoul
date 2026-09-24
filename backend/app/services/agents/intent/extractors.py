@@ -58,6 +58,14 @@ _CITIES: dict[str, str] = {
     "tiko": "Tiko",
     "mamfe": "Mamfe",
     "idenau": "Idenau",
+    "bafut": "Bafut",
+    "oku": "Oku",
+    "kumbo": "Kumbo",
+    "wum": "Wum",
+    "fundong": "Fundong",
+    "nkambe": "Nkambe",
+    "mbengwi": "Mbengwi",
+    "ndop": "Ndop",
 }
 
 _REGIONS: dict[str, str] = {
@@ -129,6 +137,11 @@ _SUD_CULTURE = re.compile(
 _SUD_OUEST_CULTURE = re.compile(
     r"\b(eru|okok|korup|barombi|pidgin|sable\s+noir|black\s+sand|"
     r"mont\s+cameroun|mount\s+cameroon|bimbia|down\s+beach)\b",
+    re.IGNORECASE,
+)
+_NORD_OUEST_CULTURE = re.compile(
+    r"\b(bafut|oku|kumbo|lamns[oó]'?|nso|lac\s+oku|lac\s+kuk|"
+    r"station\s+hill|savanna\s+botanic)\b",
     re.IGNORECASE,
 )
 
@@ -204,6 +217,15 @@ _KNOWN_PLACES: dict[str, str] = {
     "lac barombi kotto": "Lac Barombi Kotto",
     "barombi kotto": "Lac Barombi Kotto",
     "bimbia": "Bimbia",
+    "palais de bafut": "Palais de Bafut",
+    "chefferie de bafut": "Palais de Bafut",
+    "lac oku": "Lac Oku",
+    "lake oku": "Lac Oku",
+    "lac kuk": "Lac Kuk",
+    "lake kuk": "Lac Kuk",
+    "chefferie d'oku": "La Chefferie D'oku",
+    "chefferie d oku": "La Chefferie D'oku",
+    "savanna botanic": "Savanna Botanic Garden De Bamenda",
 }
 
 _DURATION = re.compile(
@@ -317,6 +339,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Sud-Ouest"
         if slots.location is None:
             slots.location = "Sud-Ouest"
+
+    if slots.region is None and _NORD_OUEST_CULTURE.search(raw):
+        slots.region = "Nord-Ouest"
+        if slots.location is None:
+            slots.location = "Nord-Ouest"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

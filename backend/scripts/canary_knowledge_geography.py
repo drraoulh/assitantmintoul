@@ -50,6 +50,12 @@ QUERIES = [
     "Quels plats typiques à Limbé / Sud-Ouest ?",
     "Où est le Mont Cameroun ?",
     "Je veux visiter le Sud-Ouest.",
+    "Je veux visiter Bamenda que me proposes-tu ?",
+    "La région du Nord-Ouest c’est Bamenda nor ?",
+    "Bamenda est dans quelle région ?",
+    "Quels plats typiques à Bamenda / Nord-Ouest ?",
+    "Où est le Palais de Bafut ?",
+    "Je veux visiter le Nord-Ouest.",
 ]
 
 
@@ -187,6 +193,23 @@ async def main() -> int:
         or "cameroun" in turns[32]["assistant"].casefold(),
         "sud_ouest_regional": turns[33]["intent"]
         in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
+        "bamenda_has_places": turns[34]["verified_places_count"] >= 1,
+        "bamenda_not_bafut_as_city": all(
+            (p.get("city") or "").casefold() not in {"bafut", "oku"} for p in turns[34]["places"]
+        ),
+        "nord_ouest_not_equals_bamenda": "Pas exactement" in turns[35]["assistant"]
+        or "chef-lieu" in turns[35]["assistant"].casefold(),
+        "bamenda_region_nord_ouest": "Nord-Ouest" in turns[36]["assistant"]
+        or "nord-ouest" in turns[36]["assistant"].casefold(),
+        "nord_ouest_food_achu": "achu" in turns[37]["assistant"].casefold()
+        or "marché" in turns[37]["assistant"].casefold()
+        or "marche" in turns[37]["assistant"].casefold()
+        or turns[37]["completeness"] != "NONE",
+        "bafut_located": "bafut" in turns[38]["assistant"].casefold()
+        or "nord-ouest" in turns[38]["assistant"].casefold()
+        or "mezam" in turns[38]["assistant"].casefold(),
+        "nord_ouest_regional": turns[39]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -234,16 +257,16 @@ async def main() -> int:
         "- No destructive Supabase migration applied.",
         "- Added local structured graph: `backend/data/geography/cameroon_admin.json`",
         "- Proposed future Supabase columns documented below (divisions / is_capital).",
-        "- Enriched catalogs: ouest / littoral / centre / sud / sud-ouest (+ culture packs + hotels Ayila’a)",
+        "- Enriched catalogs: ouest / littoral / centre / sud / sud-ouest / nord-ouest (+ culture packs + hotels Ayila’a)",
         "",
         "## Geography",
         "",
-        "- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 · Sud-Ouest 4 (Fako, Meme, Ndian, Manyu)",
+        "- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 · Sud-Ouest 4 · Nord-Ouest 7 (Mezam, Boyo, Bui, …)",
         "",
         "## Region packs",
         "",
-        "- Ouest · Littoral · Centre · Sud (Kribi/Lobé/Campo) · Sud-Ouest (Limbé/Buea/Korup) · 0 restos inventés",
-        "- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang) — aucun hôtel Limbé/Buea dans l’import",
+        "- Ouest · Littoral · Centre · Sud · Sud-Ouest · Nord-Ouest (Bamenda/Bafut/Oku) · 0 restos inventés",
+        "- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang) — aucun hôtel Limbé/Buea/Bamenda dans l’import",
         "",
         "## Samples",
         "",
@@ -253,12 +276,14 @@ async def main() -> int:
         f"- Hotels Yaoundé: `{turns[27]['assistant'][:160]}`",
         f"- Limbé: {turns[28]['verified_places_count']} — `{turns[28]['assistant'][:100]}`",
         f"- Mont Cameroun: `{turns[32]['assistant']}`",
+        f"- Bamenda: {turns[34]['verified_places_count']} — `{turns[34]['assistant'][:100]}`",
+        f"- Bafut: `{turns[38]['assistant']}`",
         "",
         "## Agent 2",
         "",
         "- Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes",
         "- `knowledge_completeness` + `verified_places_count`",
-        "- Geo facts + multi-region culture evidence (Ouest, Littoral, Centre, Sud, Sud-Ouest)",
+        "- Geo facts + multi-region culture evidence (Ouest → Nord-Ouest)",
         "- Geo facts injected as KnowledgeEvidence (not Qwen knowledge)",
         "",
         "## Web fallback",
@@ -290,8 +315,8 @@ async def main() -> int:
         "",
         "## Conclusion",
         "",
-        "Structured geography answers Bafoussam/Ouest and Limbé/Sud-Ouest relations without inventing tourism facts. "
-        "City queries no longer dump the whole region; nearby/regional scopes are explicit.",
+        "Structured geography covers Ouest through Nord-Ouest without inventing tourism facts. "
+        "City queries stay scoped; nearby/regional scopes are explicit.",
         "",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")

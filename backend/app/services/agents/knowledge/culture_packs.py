@@ -122,6 +122,26 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "pidgin",
         "fako",
     ),
+    "nord-ouest": (
+        "nord-ouest",
+        "nord ouest",
+        "north-west",
+        "northwest",
+        "north west",
+        "bamenda",
+        "bafut",
+        "oku",
+        "kumbo",
+        "wum",
+        "fundong",
+        "ndop",
+        "nkambe",
+        "mbengwi",
+        "lac oku",
+        "lac kuk",
+        "lamnso",
+        "nso",
+    ),
 }
 
 

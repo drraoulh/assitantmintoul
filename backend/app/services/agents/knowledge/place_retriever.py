@@ -89,6 +89,19 @@ _NOT_BUEA = {
     "yaounde",
     "yaoundé",
 }
+_NOT_BAMENDA = {
+    "bafut",
+    "oku",
+    "kumbo",
+    "wum",
+    "fundong",
+    "ndop",
+    "nkambe",
+    "mbengwi",
+    "bafoussam",
+    "douala",
+    "buea",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -215,6 +228,8 @@ class PlaceRetriever:
                     continue
                 if hub == "buea" and place_city in _NOT_BUEA:
                     continue
+                if hub == "bamenda" and place_city in _NOT_BAMENDA:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -260,6 +275,13 @@ class PlaceRetriever:
                                 "debunscha",
                                 "mont cameroun",
                             } and "buea" not in place_city:
+                                continue
+                        elif hub == "bamenda":
+                            if place_city not in {
+                                "station hill",
+                                "station-hill",
+                                "fungom",
+                            } and "bamenda" not in place_city:
                                 continue
                         else:
                             continue

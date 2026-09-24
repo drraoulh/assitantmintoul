@@ -654,3 +654,111 @@ async def test_sud_ouest_food_query_injects_culture(geo_on):
     assert any((k.source_id or "") == "culture:sud-ouest" for k in result.knowledge.knowledge)
     text = result.final_response.text.casefold()
     assert "eru" in text or "okok" in text or "plat" in text or "restaurant" in text
+
+
+def test_nord_ouest_admin_and_bamenda():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Bamenda")
+    assert chain is not None
+    assert chain["region"] == "Nord-Ouest"
+    assert chain["is_region_capital"] is True
+    assert chain["division"] == "Mezam"
+    bafut = city_admin_chain("Bafut")
+    assert bafut and bafut["region"] == "Nord-Ouest"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "nord-ouest"]) == 7
+
+
+def test_nord_ouest_not_bamenda():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région du Nord-Ouest c’est Bamenda nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_bafut_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le Palais de Bafut ?", language="fr")
+    assert facts
+    assert "Bafut" in facts[0].text_fr
+    assert "Nord-Ouest" in facts[0].text_fr
+
+
+def test_lac_oku_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est le lac Oku ?", language="fr")
+    assert facts
+    assert "Oku" in facts[0].text_fr
+
+
+def test_nord_ouest_culture_achu(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+    )
+
+    clear_culture_cache()
+    ev = culture_evidence_for_query("Quels plats typiques à Bamenda ?", language="fr")
+    assert ev
+    blob = " ".join(e.content.casefold() for e in ev)
+    assert "achu" in blob or "plantain" in blob or "marché" in blob or "marche" in blob
+    assert any((e.source_id or "") == "culture:nord-ouest" for e in ev)
+    assert not any((e.source_id or "") == "culture:ouest" for e in ev)
+
+
+def test_nord_ouest_no_invented_hotels():
+    from app.services.agents.knowledge.culture_packs import clear_culture_cache, _load_pack
+
+    clear_culture_cache()
+    pack = _load_pack("nord-ouest")
+    assert pack.get("hotels_verified") == []
+    assert pack.get("hotels_policy")
+    assert (pack.get("restaurants_policy") or {}).get("verified_named_restaurants") == []
+
+
+def test_bafut_sets_nord_ouest_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi du Palais de Bafut").region == "Nord-Ouest"
+    assert extract_slots("Que visiter à Kumbo ?").city == "Kumbo"
+
+
+@pytest.mark.asyncio
+async def test_visit_bamenda_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Bamenda que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "bafut" not in cities
+    assert "oku" not in cities
+
+
+@pytest.mark.asyncio
+async def test_nord_ouest_food_query_injects_culture(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Quels plats typiques du Nord-Ouest ?",
+        mode="text",
+        locale="fr",
+    )
+    assert any((k.source_id or "") == "culture:nord-ouest" for k in result.knowledge.knowledge)
+    text = result.final_response.text.casefold()
+    assert "achu" in text or "plat" in text or "restaurant" in text or "marché" in text or "marche" in text

@@ -96,6 +96,12 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["south west"] = rid
             idx.alias_to_region["region du sud-ouest"] = rid
             idx.alias_to_region["region sud-ouest"] = rid
+        elif rid == "nord-ouest":
+            idx.alias_to_region["north-west"] = rid
+            idx.alias_to_region["northwest"] = rid
+            idx.alias_to_region["north west"] = rid
+            idx.alias_to_region["region du nord-ouest"] = rid
+            idx.alias_to_region["region nord-ouest"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -281,6 +287,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
+        ("nord-ouest" in q or "nord ouest" in q or "north-west" in q or "northwest" in q or "north west" in q)
+        and "bamenda" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Nord-Ouest",
+                relation="IS_NOT_EQUIVALENT",
+                object="Bamenda",
+                text_fr=(
+                    "Pas exactement. Le Nord-Ouest est une région du Cameroun, "
+                    "et Bamenda en est le chef-lieu."
+                ),
+                text_en=(
+                    "Not exactly. The North-West is a region of Cameroon, "
+                    "and Bamenda is its capital (chef-lieu)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("nord-ouest", "bamenda"),
+            )
+        ]
+
+    if (
         not compound_ouest
         and ("sud" in q or "south" in q)
         and "kribi" in q
@@ -329,6 +358,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Ebolowa est le chef-lieu de la région du Sud du Cameroun."
                     elif rid == "sud-ouest":
                         text_fr = "Buea est le chef-lieu de la région du Sud-Ouest du Cameroun."
+                    elif rid == "nord-ouest":
+                        text_fr = "Bamenda est le chef-lieu de la région du Nord-Ouest du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -444,6 +475,52 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Palais de Bafut
+    if re.search(r"(?:palais|chefferie)\s+(?:de\s+)?bafut|\bbafut\b", q) and re.search(
+        r"o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion|d[eé]partement",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Palais de Bafut",
+                relation="LOCATED_IN",
+                object="Bafut / Mezam / Nord-Ouest",
+                text_fr=(
+                    "Le Palais de Bafut se trouve à Bafut "
+                    "(département du Mezam, région du Nord-Ouest)."
+                ),
+                text_en=(
+                    "Bafut Palace is in Bafut "
+                    "(Mezam department, North-West region)."
+                ),
+                source="Sites touristiques Nord-Ouest / Bafut",
+                entity_ids=("bafut", "mezam", "nord-ouest"),
+            )
+        ]
+
+    # Lac Oku
+    if ("lac oku" in q or re.search(r"\boku\b", q)) and re.search(
+        r"o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion|lac",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Lac Oku",
+                relation="LOCATED_IN",
+                object="Oku / Boyo / Nord-Ouest",
+                text_fr=(
+                    "Le lac Oku se trouve à Oku "
+                    "(département du Boyo, région du Nord-Ouest)."
+                ),
+                text_en=(
+                    "Lake Oku is at Oku "
+                    "(Boyo department, North-West region)."
+                ),
+                source="Sites touristiques Nord-Ouest / Oku",
+                entity_ids=("oku", "boyo", "nord-ouest"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -496,6 +573,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région du Sud du Cameroun."
                 elif rid == "sud-ouest":
                     text_fr = f"{cname} se trouve dans la région du Sud-Ouest du Cameroun."
+                elif rid == "nord-ouest":
+                    text_fr = f"{cname} se trouve dans la région du Nord-Ouest du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -584,8 +663,13 @@ def is_geo_simple_query(query: str) -> bool:
         r"sud[- ]?ouest.{0,40}c[' ]?est.{0,20}buea",
         r"r[eé]gion\s+du\s+sud[- ]?ouest.{0,30}buea",
         r"buea.{0,40}c[' ]?est.{0,20}sud[- ]?ouest",
+        r"nord[- ]?ouest.{0,40}c[' ]?est.{0,20}bamenda",
+        r"r[eé]gion\s+du\s+nord[- ]?ouest.{0,30}bamenda",
+        r"bamenda.{0,40}c[' ]?est.{0,20}nord[- ]?ouest",
         r"mont\s+cameroun|mount\s+cameroon",
         r"korup",
+        r"(?:palais|chefferie)\s+(?:de\s+)?bafut",
+        r"lac\s+oku",
     )
     if any(re.search(p, q) for p in patterns):
         return True

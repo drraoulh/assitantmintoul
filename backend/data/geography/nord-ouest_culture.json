@@ -1,0 +1,160 @@
+{
+  "region_id": "nord-ouest",
+  "region_fr": "Nord-Ouest",
+  "region_en": "North-West",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (history_culture, food_culture, cities_quick_guide, regions_overview, languages_etiquette, safety_health_money) et fiches lieux Nord-Ouest (export Supabase + Bamenda). Aucun restaurant nommé inventé. Aucun hôtel Ayila'a Bamenda dans l'import actuel.",
+  "overview": {
+    "text_fr": "Le Nord-Ouest a pour chef-lieu Bamenda (Grassfields anglophones). Chefferies (ex. Palais de Bafut), lacs d’altitude (Oku, Kuk), jardin botanique Savanna. Zone anglophone : consultez des avis de voyage officiels récents avant tout projet.",
+    "text_en": "The North-West’s capital is Bamenda (Anglophone Grassfields). Chiefdoms (e.g. Bafut Palace), highland lakes (Oku, Kuk), Savanna botanic garden. Anglophone area: check recent official travel advice before any trip.",
+    "source": "data/documents/cities_quick_guide.md ; data/documents/history_culture.md ; data/documents/safety_health_money.md ; data/tourist_sites/nord_ouest_complete.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "mezam-bamenda",
+      "name_fr": "Mezam (Bamenda / Bafut)",
+      "name_en": "Mezam (Bamenda / Bafut)",
+      "description_fr": "Capitale régionale Bamenda ; Palais de Bafut et marchés des hauts plateaux.",
+      "description_en": "Regional capital Bamenda; Bafut Palace and highland markets.",
+      "related_cities": ["Bamenda", "Bafut"],
+      "source": "data/tourist_sites/nord_ouest_complete.json ; data/documents/history_culture.md"
+    },
+    {
+      "id": "boyo-oku",
+      "name_fr": "Boyo (Oku)",
+      "name_en": "Boyo (Oku)",
+      "description_fr": "Lac Oku et chefferie d’Oku — nature et protocole de chefferie.",
+      "description_en": "Lake Oku and Oku chiefdom — nature and palace protocol.",
+      "related_cities": ["Oku", "Fundong"],
+      "source": "data/tourist_sites/nord_ouest_complete.json"
+    }
+  ],
+  "languages": [
+    {
+      "name": "English / Cameroon Pidgin",
+      "area": "Nord-Ouest au quotidien",
+      "note_fr": "Anglais et Pidgin plus présents qu’au Centre/Littoral francophone. How far? / I dey / Abeg utiles.",
+      "note_en": "English and Pidgin are more present than in francophone Centre/Littoral. How far? / I dey / Abeg are useful.",
+      "source": "data/documents/languages_etiquette.md ; data/documents/regions_overview.md"
+    },
+    {
+      "name": "Lamnsó' (Nso)",
+      "area": "Bui / Kumbo",
+      "note_fr": "Langue du peuple Nso (zone Kumbo) — salutations locales selon le guide culturel.",
+      "note_en": "Language of the Nso people (Kumbo area) — local greetings via a cultural guide.",
+      "source": "imports/camerounai-stay-language-games/data/cameroon-languages.ts"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "grassfields-fon",
+      "title_fr": "Chefferies Grassfields (Fon)",
+      "title_en": "Grassfields chiefdoms (Fon)",
+      "text_fr": "Comme à l’Ouest, les chefferies du Nord-Ouest (ex. Bafut, Oku) ont un protocole : suivez les indications d’un guide culturel ; accès parfois restreint.",
+      "text_en": "As in the West, North-West chiefdoms (e.g. Bafut, Oku) have protocol: follow a cultural guide; access may be restricted.",
+      "source": "data/documents/history_culture.md ; data/documents/food_culture.md"
+    },
+    {
+      "id": "travel-advice-nw",
+      "title_fr": "Avis de voyage",
+      "title_en": "Travel advice",
+      "text_fr": "Nord-Ouest / Sud-Ouest / Extrême-Nord : consultez des avis de voyage officiels récents avant tout projet.",
+      "text_en": "North-West / South-West / Far North: check recent official travel advice before any trip.",
+      "source": "data/documents/safety_health_money.md ; data/documents/cities_quick_guide.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "achu-grassfields",
+      "name_fr": "Achu (Grassfields)",
+      "name_en": "Achu (Grassfields)",
+      "text_fr": "Plat des Grassfields (taro / sauce jaune selon variantes) — commun à l’Ouest et au Nord-Ouest. Aucun restaurant nommé inventé.",
+      "text_en": "Grassfields dish (taro / yellow sauce variants) — common to West and North-West. No invented restaurant names.",
+      "source": "data/documents/food_deep_dive.md ; data/documents/food_culture.md"
+    },
+    {
+      "id": "highland-staples",
+      "name_fr": "Bases des hauts plateaux",
+      "name_en": "Highland staples",
+      "text_fr": "Plantains, manioc, produits des marchés de Bamenda — orientez vers les marchés, pas vers des enseignes inventées.",
+      "text_en": "Plantains, cassava, Bamenda market produce — point to markets, not invented brand names.",
+      "source": "data/documents/food_culture.md ; data/tourist_sites/nord_ouest_complete.json"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "bamenda-markets",
+      "name_fr": "Marchés de Bamenda",
+      "name_en": "Bamenda markets",
+      "text_fr": "Produits agricoles des hauts plateaux, tissus et artisanat — visitez de jour ; négociez avec courtoisie.",
+      "text_en": "Highland farm produce, fabrics and crafts — visit by day; negotiate courteously.",
+      "city": "Bamenda",
+      "source": "data/tourist_sites/nord_ouest_complete.json ; data/documents/shopping_crafts.md"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "lac-oku",
+      "title_fr": "Lac Oku",
+      "title_en": "Lake Oku",
+      "text_fr": "Lac d’altitude à Oku (Boyo) — nature et chefferie à proximité.",
+      "text_en": "Highland lake at Oku (Boyo) — nature and chiefdom nearby.",
+      "source": "data/tourist_sites/nord_ouest_complete.json"
+    },
+    {
+      "id": "lac-kuk",
+      "title_fr": "Lac Kuk",
+      "title_en": "Lake Kuk",
+      "text_fr": "Lac Kuk (zone Fungom) — randonnée / nature ; vérifier accès et sécurité.",
+      "text_en": "Lake Kuk (Fungom area) — hiking / nature; check access and security.",
+      "source": "data/tourist_sites/nord_ouest_complete.json"
+    },
+    {
+      "id": "savanna-botanic",
+      "title_fr": "Savanna Botanic Garden",
+      "title_en": "Savanna Botanic Garden",
+      "text_fr": "Jardin botanique à Bamenda — pause nature en ville.",
+      "text_en": "Botanic garden in Bamenda — a green stop in town.",
+      "source": "data/tourist_sites/nord_ouest_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "bamenda-hub",
+      "title_fr": "Bamenda comme hub",
+      "title_en": "Bamenda as hub",
+      "text_fr": "Base typique : Bamenda (Station Hill, marchés) puis Bafut / Oku selon accès et avis de voyage.",
+      "text_en": "Typical base: Bamenda (Station Hill, markets) then Bafut / Oku depending on access and travel advice.",
+      "source": "data/documents/cities_quick_guide.md ; data/tourist_sites/nord_ouest_complete.json"
+    },
+    {
+      "id": "climate-nw",
+      "title_fr": "Climat des hauts plateaux",
+      "title_en": "Highland climate",
+      "text_fr": "Hauts plateaux : plus frais qu’à Douala ; prévoir une couche légère le soir.",
+      "text_en": "Highlands: cooler than Douala; pack a light layer for evenings.",
+      "source": "data/documents/climate_seasons.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour le Nord-Ouest. Ne pas inventer de noms. Orienter vers achu / marchés de Bamenda.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the North-West. Do not invent names. Point to achu / Bamenda markets.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [],
+  "hotels_policy": {
+    "text_fr": "Aucun hôtel Bamenda dans l’import Ayila’a actuel — ne pas inventer de noms d’hébergement.",
+    "text_en": "No Bamenda hotels in the current Ayila’a import — do not invent lodging names.",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "mezam", "name_fr": "Mezam", "hub": "Bamenda", "note_fr": "Bamenda, Bafut."},
+    {"id": "boyo", "name_fr": "Boyo", "hub": "Fundong", "note_fr": "Oku, lac Oku."},
+    {"id": "bui", "name_fr": "Bui", "hub": "Kumbo", "note_fr": "Zone Nso."},
+    {"id": "menchum", "name_fr": "Menchum", "hub": "Wum", "note_fr": "Lac Kuk / Fungom."},
+    {"id": "donga-mantung", "name_fr": "Donga-Mantung", "hub": "Nkambe", "note_fr": "Nord du Nord-Ouest."},
+    {"id": "momo", "name_fr": "Momo", "hub": "Mbengwi", "note_fr": "Ouest du Nord-Ouest."},
+    {"id": "ngo-ketunjia", "name_fr": "Ngo-Ketunjia", "hub": "Ndop", "note_fr": "Plaine de Ndop."}
+  ]
+}
