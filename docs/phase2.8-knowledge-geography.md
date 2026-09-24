@@ -9,16 +9,16 @@ Status: **PASS**
 - No destructive Supabase migration applied.
 - Added local structured graph: `backend/data/geography/cameroon_admin.json`
 - Proposed future Supabase columns documented below (divisions / is_capital).
-- Enriched catalogs: ouest / littoral / centre / sud / sud-ouest (+ culture packs + hotels Ayila’a)
+- Enriched catalogs: ouest / littoral / centre / sud / sud-ouest / nord-ouest (+ culture packs + hotels Ayila’a)
 
 ## Geography
 
-- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 · Sud-Ouest 4 (Fako, Meme, Ndian, Manyu)
+- 10 regions · Ouest 8 · Littoral 4 · Centre 4 · Sud 4 · Sud-Ouest 4 · Nord-Ouest 7 (Mezam, Boyo, Bui, …)
 
 ## Region packs
 
-- Ouest · Littoral · Centre · Sud (Kribi/Lobé/Campo) · Sud-Ouest (Limbé/Buea/Korup) · 0 restos inventés
-- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang) — aucun hôtel Limbé/Buea dans l’import
+- Ouest · Littoral · Centre · Sud · Sud-Ouest · Nord-Ouest (Bamenda/Bafut/Oku) · 0 restos inventés
+- Hotels sourcés Ayila’a (Yaoundé, Douala, Kribi, Dschang) — aucun hôtel Limbé/Buea/Bamenda dans l’import
 
 ## Samples
 
@@ -38,12 +38,15 @@ Status: **PASS**
 - Bimbia
 - Centre faunique de `
 - Mont Cameroun: `Le Mont Cameroun se trouve près de Buea (département du Fako, région du Sud-Ouest).`
+- Bamenda: 4 — `J’ai actuellement 4 lieu(x) vérifié(s) autour de Bamenda dans ma base :
+- Savanna Botanic Garden De `
+- Bafut: `Le Palais de Bafut se trouve à Bafut (département du Mezam, région du Nord-Ouest).`
 
 ## Agent 2
 
 - Hierarchical retrieval: IN_CITY / NEARBY / IN_REGION scopes
 - `knowledge_completeness` + `verified_places_count`
-- Geo facts + multi-region culture evidence (Ouest, Littoral, Centre, Sud, Sud-Ouest)
+- Geo facts + multi-region culture evidence (Ouest → Nord-Ouest)
 - Geo facts injected as KnowledgeEvidence (not Qwen knowledge)
 
 ## Web fallback
@@ -59,13 +62,13 @@ Status: **PASS**
 
 ## Tests
 
-- 3 failed, 255 passed, 1 warning in 2.39s
-- Checks: {"bafoussam_has_places": true, "bafoussam_not_foumban_as_city": true, "ouest_not_equals_bafoussam": true, "bafoussam_region_ouest": true, "geo_no_planner": true, "around_has_places": true, "ouest_regional": true, "ouest_food_mentions_achu": true, "ouest_culture_evidence": true, "mbapit_located": true, "dschang_hotel_or_soft": true, "douala_has_places": true, "douala_not_edea_as_city": true, "littoral_not_equals_douala": true, "douala_region_littoral": true, "littoral_food_ndole": true, "sawa_culture": true, "littoral_regional": true, "yaounde_has_places": true, "yaounde_not_mbalmayo_as_only": true, "centre_not_equals_yaounde": true, "yaounde_region_centre": true, "centre_food": true, "mokolo_or_culture": true, "centre_regional": true, "kribi_has_places": true, "sud_not_equals_kribi": true, "kribi_region_sud": true, "kribi_food_poisson": true, "lobe_located": true, "yaounde_hotels": true, "limbe_has_places": true, "limbe_not_buea_as_city": true, "sud_ouest_not_equals_buea": true, "buea_region_sud_ouest": true, "sud_ouest_food_eru": true, "mont_cameroun_located": true, "sud_ouest_regional": true}
+- 3 failed, 264 passed, 1 warning in 2.61s
+- Checks: {"bafoussam_has_places": true, "bafoussam_not_foumban_as_city": true, "ouest_not_equals_bafoussam": true, "bafoussam_region_ouest": true, "geo_no_planner": true, "around_has_places": true, "ouest_regional": true, "ouest_food_mentions_achu": true, "ouest_culture_evidence": true, "mbapit_located": true, "dschang_hotel_or_soft": true, "douala_has_places": true, "douala_not_edea_as_city": true, "littoral_not_equals_douala": true, "douala_region_littoral": true, "littoral_food_ndole": true, "sawa_culture": true, "littoral_regional": true, "yaounde_has_places": true, "yaounde_not_mbalmayo_as_only": true, "centre_not_equals_yaounde": true, "yaounde_region_centre": true, "centre_food": true, "mokolo_or_culture": true, "centre_regional": true, "kribi_has_places": true, "sud_not_equals_kribi": true, "kribi_region_sud": true, "kribi_food_poisson": true, "lobe_located": true, "yaounde_hotels": true, "limbe_has_places": true, "limbe_not_buea_as_city": true, "sud_ouest_not_equals_buea": true, "buea_region_sud_ouest": true, "sud_ouest_food_eru": true, "mont_cameroun_located": true, "sud_ouest_regional": true, "bamenda_has_places": true, "bamenda_not_bafut_as_city": true, "nord_ouest_not_equals_bamenda": true, "bamenda_region_nord_ouest": true, "nord_ouest_food_achu": true, "bafut_located": true, "nord_ouest_regional": true}
 
 ## Performance
 
-- Full conversation: **377.6 ms** (deterministic Agent 4, no LLM)
-- Geo simple turn: **6.2 ms**, planner=False
+- Full conversation: **450.2 ms** (deterministic Agent 4, no LLM)
+- Geo simple turn: **6.1 ms**, planner=False
 
 ## Flags
 
@@ -75,4 +78,4 @@ Status: **PASS**
 
 ## Conclusion
 
-Structured geography answers Bafoussam/Ouest and Limbé/Sud-Ouest relations without inventing tourism facts. City queries no longer dump the whole region; nearby/regional scopes are explicit.
+Structured geography covers Ouest through Nord-Ouest without inventing tourism facts. City queries stay scoped; nearby/regional scopes are explicit.
