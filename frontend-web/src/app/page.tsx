@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
@@ -69,6 +69,7 @@ export default function HomePage() {
   const [places, setPlaces] = useState<TouristSite[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loadingPlaces, setLoadingPlaces] = useState(true);
+  const onIntroComplete = useCallback(() => setReady(true), []);
 
   useEffect(() => {
     if (!ready) return;
@@ -109,7 +110,7 @@ export default function HomePage() {
 
   return (
     <>
-      {!ready ? <ImmersiveWelcome onComplete={() => setReady(true)} /> : null}
+      {!ready ? <ImmersiveWelcome onComplete={onIntroComplete} /> : null}
 
       <div
         className={`transition-opacity duration-700 ${ready ? 'opacity-100' : 'opacity-0'}`}

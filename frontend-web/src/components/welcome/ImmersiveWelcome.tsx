@@ -22,8 +22,7 @@ type Phase =
   | 'miniature'
   | 'brand'
   | 'cta'
-  | 'exit'
-  | 'done';
+  | 'exit';
 
 /** Pause after typing finishes so the line can be read. */
 const HOLD_AFTER_TYPE_MS = 1400;
@@ -35,7 +34,8 @@ const HOLD_AFTER_BRAND_MS = 1600;
 const MS_PER_CHAR = 72;
 const MS_PER_CHAR_TITLE = 88;
 
-const SCENE_ORDER: Phase[] = [
+/** Scenes that auto-advance after typewriter + hold (cta waits for tap). */
+const AUTO_SCENES: Phase[] = [
   'welcome',
   'mountains',
   'forests',
@@ -44,7 +44,6 @@ const SCENE_ORDER: Phase[] = [
   'stories',
   'miniature',
   'brand',
-  'cta',
 ];
 
 function markSeen() {
@@ -91,78 +90,105 @@ export function ImmersiveWelcome({
 }: {
   onComplete: () => void;
 }) {
-  const reduce = useReducedMotion();
+  const reduceMotion = useReducedMotion();
+  const reduce = !!reduceMotion;
   const [phase, setPhase] = useState<Phase>('boot');
   const [visible, setVisible] = useState(true);
-  const sceneIndexRef = useRef(0);
+
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  const reduceRef = useRef(reduce);
+  reduceRef.current = reduce;
+
+  const phaseRef = useRef<Phase>('boot');
+  phaseRef.current = phase;
+
   const holdTimerRef = useRef<number | undefined>(undefined);
+  const startedRef = useRef(false);
+  const finishingRef = useRef(false);
+
+  const clearHold = useCallback(() => {
+    if (holdTimerRef.current !== undefined) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = undefined;
+    }
+  }, []);
 
   const finish = useCallback(() => {
+    if (finishingRef.current) return;
+    finishingRef.current = true;
+    clearHold();
     markSeen();
     haptic([30, 40, 30]);
     setPhase('exit');
     window.setTimeout(
       () => {
         setVisible(false);
-        onComplete();
+        onCompleteRef.current();
       },
-      reduce ? 200 : 850,
+      reduceRef.current ? 200 : 850,
     );
-  }, [onComplete, reduce]);
+  }, [clearHold]);
 
-  const goNextScene = useCallback(() => {
-    const next = sceneIndexRef.current + 1;
-    if (next >= SCENE_ORDER.length) {
-      setPhase('cta');
-      haptic(28);
-      return;
-    }
-    sceneIndexRef.current = next;
-    const nextPhase = SCENE_ORDER[next];
-    setPhase(nextPhase);
-    haptic(nextPhase === 'brand' || nextPhase === 'miniature' ? [22, 35, 22] : 22);
-  }, []);
+  const advanceAfter = useCallback(
+    (fromPhase: Phase) => {
+      // Ignore stale completions from a scene we already left
+      if (phaseRef.current !== fromPhase) return;
+      if (finishingRef.current) return;
 
-  const onSceneTyped = useCallback(
-    (forPhase: Phase) => {
-      if (forPhase === 'cta' || forPhase === 'exit' || forPhase === 'done') return;
-      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
-      // Soft “line complete” tick
+      clearHold();
       haptic(12);
-      const delay = reduce ? 280 : holdFor(forPhase);
+
+      const delay = reduceRef.current ? 280 : holdFor(fromPhase);
       holdTimerRef.current = window.setTimeout(() => {
-        if (forPhase === 'brand') {
+        if (phaseRef.current !== fromPhase || finishingRef.current) return;
+
+        if (fromPhase === 'brand') {
           setPhase('cta');
           haptic(28);
           return;
         }
-        goNextScene();
+
+        const idx = AUTO_SCENES.indexOf(fromPhase);
+        const next = AUTO_SCENES[idx + 1];
+        if (!next) {
+          setPhase('cta');
+          haptic(28);
+          return;
+        }
+        setPhase(next);
+        haptic(next === 'brand' || next === 'miniature' ? [22, 35, 22] : 22);
       }, delay);
     },
-    [goNextScene, reduce],
+    [clearHold],
   );
 
+  // Boot once — do NOT depend on onComplete (parent often passes an inline fn)
   useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+
     if (hasSeenIntro()) {
       setPhase('exit');
       const t = window.setTimeout(
         () => {
           setVisible(false);
-          onComplete();
+          onCompleteRef.current();
         },
-        reduce ? 120 : 600,
+        reduceRef.current ? 120 : 600,
       );
       return () => clearTimeout(t);
     }
 
-    sceneIndexRef.current = 0;
     setPhase('welcome');
     haptic([18, 30, 18]);
 
     return () => {
-      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      clearHold();
     };
-  }, [onComplete, reduce]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional one-shot boot
+  }, []);
 
   if (!visible) return null;
 
@@ -243,11 +269,21 @@ export function ImmersiveWelcome({
                   <SceneKey key="welcome">
                     <TypewriterBlock
                       lines={[
-                        { text: 'BIENVENUE', className: 'text-xs font-semibold tracking-[0.35em] text-[var(--gold-soft)]', msPerChar: MS_PER_CHAR_TITLE },
-                        { text: 'AU CAMEROUN', className: 'mt-2 font-display text-3xl font-semibold md:text-4xl', msPerChar: MS_PER_CHAR_TITLE },
+                        {
+                          text: 'BIENVENUE',
+                          className:
+                            'text-xs font-semibold tracking-[0.35em] text-[var(--gold-soft)]',
+                          msPerChar: MS_PER_CHAR_TITLE,
+                        },
+                        {
+                          text: 'AU CAMEROUN',
+                          className:
+                            'mt-2 font-display text-3xl font-semibold md:text-4xl',
+                          msPerChar: MS_PER_CHAR_TITLE,
+                        },
                       ]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('welcome')}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('welcome')}
                     />
                   </SceneKey>
                 ) : null}
@@ -255,45 +291,70 @@ export function ImmersiveWelcome({
                 {phase === 'mountains' ? (
                   <SceneKey key="mountains">
                     <TypewriterBlock
-                      lines={[{ text: 'Des montagnes…', className: 'font-display text-2xl md:text-3xl' }]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('mountains')}
+                      lines={[
+                        {
+                          text: 'Des montagnes…',
+                          className: 'font-display text-2xl md:text-3xl',
+                        },
+                      ]}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('mountains')}
                     />
                   </SceneKey>
                 ) : null}
                 {phase === 'forests' ? (
                   <SceneKey key="forests">
                     <TypewriterBlock
-                      lines={[{ text: 'Des forêts…', className: 'font-display text-2xl md:text-3xl' }]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('forests')}
+                      lines={[
+                        {
+                          text: 'Des forêts…',
+                          className: 'font-display text-2xl md:text-3xl',
+                        },
+                      ]}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('forests')}
                     />
                   </SceneKey>
                 ) : null}
                 {phase === 'beaches' ? (
                   <SceneKey key="beaches">
                     <TypewriterBlock
-                      lines={[{ text: 'Des plages…', className: 'font-display text-2xl md:text-3xl' }]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('beaches')}
+                      lines={[
+                        {
+                          text: 'Des plages…',
+                          className: 'font-display text-2xl md:text-3xl',
+                        },
+                      ]}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('beaches')}
                     />
                   </SceneKey>
                 ) : null}
                 {phase === 'cultures' ? (
                   <SceneKey key="cultures">
                     <TypewriterBlock
-                      lines={[{ text: 'Des cultures…', className: 'font-display text-2xl md:text-3xl' }]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('cultures')}
+                      lines={[
+                        {
+                          text: 'Des cultures…',
+                          className: 'font-display text-2xl md:text-3xl',
+                        },
+                      ]}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('cultures')}
                     />
                   </SceneKey>
                 ) : null}
                 {phase === 'stories' ? (
                   <SceneKey key="stories">
                     <TypewriterBlock
-                      lines={[{ text: 'Des histoires…', className: 'font-display text-2xl md:text-3xl' }]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('stories')}
+                      lines={[
+                        {
+                          text: 'Des histoires…',
+                          className: 'font-display text-2xl md:text-3xl',
+                        },
+                      ]}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('stories')}
                     />
                   </SceneKey>
                 ) : null}
@@ -301,12 +362,25 @@ export function ImmersiveWelcome({
                   <SceneKey key="miniature">
                     <TypewriterBlock
                       lines={[
-                        { text: "L'Afrique en miniature.", className: 'font-display text-2xl font-semibold md:text-3xl', msPerChar: MS_PER_CHAR },
-                        { text: 'Un pays à découvrir.', className: 'mt-3 text-base text-white/85 md:text-lg', delayBefore: 420 },
-                        { text: 'Une histoire à vivre.', className: 'text-base text-white/85 md:text-lg', delayBefore: 280 },
+                        {
+                          text: "L'Afrique en miniature.",
+                          className:
+                            'font-display text-2xl font-semibold md:text-3xl',
+                          msPerChar: MS_PER_CHAR,
+                        },
+                        {
+                          text: 'Un pays à découvrir.',
+                          className: 'mt-3 text-base text-white/85 md:text-lg',
+                          delayBefore: 420,
+                        },
+                        {
+                          text: 'Une histoire à vivre.',
+                          className: 'text-base text-white/85 md:text-lg',
+                          delayBefore: 280,
+                        },
                       ]}
-                      reduce={!!reduce}
-                      onComplete={() => onSceneTyped('miniature')}
+                      reduce={reduce}
+                      onComplete={() => advanceAfter('miniature')}
                     />
                   </SceneKey>
                 ) : null}
@@ -317,7 +391,8 @@ export function ImmersiveWelcome({
                       lines={[
                         {
                           text: APP_NAME.toUpperCase(),
-                          className: 'font-display text-4xl font-bold tracking-tight md:text-5xl',
+                          className:
+                            'font-display text-4xl font-bold tracking-tight md:text-5xl',
                           msPerChar: MS_PER_CHAR_TITLE,
                         },
                         {
@@ -327,15 +402,20 @@ export function ImmersiveWelcome({
                         },
                         {
                           text: 'Explorez. Découvrez. Planifiez. Voyagez.',
-                          className: 'mt-2 text-sm tracking-wide text-[var(--gold-soft)]',
+                          className:
+                            'mt-2 text-sm tracking-wide text-[var(--gold-soft)]',
                           delayBefore: 400,
                           msPerChar: 58,
                         },
                       ]}
-                      reduce={!!reduce}
-                      // Only drive advance once when entering brand; CTA stays until click
-                      onComplete={phase === 'brand' ? () => onSceneTyped('brand') : undefined}
+                      reduce={reduce}
+                      onComplete={
+                        phase === 'brand'
+                          ? () => advanceAfter('brand')
+                          : undefined
+                      }
                       showCursor={phase === 'brand'}
+                      freezeAtEnd={phase === 'cta'}
                     />
                   </SceneKey>
                 ) : null}
@@ -351,7 +431,11 @@ export function ImmersiveWelcome({
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={reduce ? undefined : { x: 4 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.55, ease: EASE_OUT, delay: phase === 'cta' ? 0 : 0.35 }}
+                transition={{
+                  duration: 0.55,
+                  ease: EASE_OUT,
+                  delay: phase === 'cta' ? 0 : 0.35,
+                }}
                 aria-label="Commencer l'exploration"
               >
                 Commencer l&apos;exploration
@@ -392,46 +476,68 @@ function TypewriterBlock({
   reduce,
   onComplete,
   showCursor = true,
+  freezeAtEnd = false,
 }: {
   lines: TypeLine[];
   reduce: boolean;
   onComplete?: () => void;
   showCursor?: boolean;
+  /** When true (e.g. CTA), show full text without retyping. */
+  freezeAtEnd?: boolean;
 }) {
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [started, setStarted] = useState(false);
   const [done, setDone] = useState(false);
+  const completedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  // Snapshot lines once — parent remounts this block per scene via AnimatePresence key
   const linesRef = useRef(lines);
+  // Keep snapshot from first mount; parent remounts per scene via key
   const current = linesRef.current[lineIndex];
   const ms = current?.msPerChar ?? MS_PER_CHAR;
 
-  useEffect(() => {
-    if (!reduce) return;
+  const finishTyping = useCallback(() => {
+    if (completedRef.current) return;
+    completedRef.current = true;
     setDone(true);
-    const t = window.setTimeout(() => onCompleteRef.current?.(), 80);
-    return () => clearTimeout(t);
-  }, [reduce]);
+    setLineIndex(linesRef.current.length - 1);
+    setCharIndex(linesRef.current[linesRef.current.length - 1]?.text.length ?? 0);
+    window.setTimeout(() => onCompleteRef.current?.(), 120);
+  }, []);
 
   useEffect(() => {
-    if (reduce) return;
+    if (freezeAtEnd) {
+      completedRef.current = true;
+      setDone(true);
+      setStarted(true);
+      setLineIndex(linesRef.current.length - 1);
+      setCharIndex(
+        linesRef.current[linesRef.current.length - 1]?.text.length ?? 0,
+      );
+    }
+  }, [freezeAtEnd]);
+
+  useEffect(() => {
+    if (!reduce || freezeAtEnd) return;
+    finishTyping();
+  }, [finishTyping, freezeAtEnd, reduce]);
+
+  useEffect(() => {
+    if (reduce || freezeAtEnd) return;
     const delay = linesRef.current[0]?.delayBefore ?? 220;
     const t = window.setTimeout(() => setStarted(true), delay);
     return () => clearTimeout(t);
-  }, [reduce]);
+  }, [freezeAtEnd, reduce]);
 
   useEffect(() => {
-    if (reduce || !started || !current || done) return;
+    if (reduce || freezeAtEnd || !started || !current || done) return;
 
     if (charIndex >= current.text.length) {
       if (lineIndex >= linesRef.current.length - 1) {
-        setDone(true);
-        const t = window.setTimeout(() => onCompleteRef.current?.(), 160);
-        return () => clearTimeout(t);
+        finishTyping();
+        return;
       }
       const nextDelay = linesRef.current[lineIndex + 1]?.delayBefore ?? 380;
       const t = window.setTimeout(() => {
@@ -443,7 +549,6 @@ function TypewriterBlock({
 
     const t = window.setTimeout(() => {
       const nextChar = current.text[charIndex];
-      // Soft key-like ticks (skip spaces / punctuation) — writing feel on phone
       if (nextChar && !/\s|[.…,;:!?]/.test(nextChar)) {
         haptic(5);
       }
@@ -451,26 +556,36 @@ function TypewriterBlock({
     }, ms);
 
     return () => clearTimeout(t);
-  }, [charIndex, current, done, lineIndex, ms, reduce, started]);
-
-  if (reduce) {
-    return (
-      <div aria-live="polite">
-        {linesRef.current.map((line) => (
-          <p key={line.text} className={line.className}>
-            {line.text}
-          </p>
-        ))}
-      </div>
-    );
-  }
+  }, [
+    charIndex,
+    current,
+    done,
+    finishTyping,
+    freezeAtEnd,
+    lineIndex,
+    ms,
+    reduce,
+    started,
+  ]);
 
   return (
     <div aria-live="polite">
       {linesRef.current.map((line, i) => {
-        if (i > lineIndex) return null;
+        if (i > lineIndex && !done) return null;
         const shown =
-          i < lineIndex ? line.text : line.text.slice(0, charIndex);
+          done || i < lineIndex
+            ? line.text
+            : line.text.slice(0, charIndex);
+        // When done, show all lines
+        if (done && i > linesRef.current.length - 1) return null;
+        if (done) {
+          return (
+            <p key={`${line.text}-${i}`} className={line.className}>
+              {line.text}
+            </p>
+          );
+        }
+        if (i > lineIndex) return null;
         const isActive = i === lineIndex && !done;
         return (
           <p key={`${line.text}-${i}`} className={line.className}>
