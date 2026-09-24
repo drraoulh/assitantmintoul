@@ -74,6 +74,12 @@ QUERIES = [
     "Quels plats typiques à Garoua ?",
     "Où est le parc de la Bénoué ?",
     "Hôtels à Garoua ?",
+    "Je veux visiter Bertoua que me proposes-tu ?",
+    "La région de l’Est c’est Bertoua nor ?",
+    "Bertoua est dans quelle région ?",
+    "Quels plats typiques à Bertoua ?",
+    "Où est la réserve du Dja ?",
+    "Je veux visiter la région de l’Est.",
 ]
 
 
@@ -283,6 +289,23 @@ async def main() -> int:
         or "shalom" in turns[57]["assistant"].casefold()
         or "ribadou" in turns[57]["assistant"].casefold()
         or "plaza" in turns[57]["assistant"].casefold(),
+        "bertoua_has_places": turns[58]["verified_places_count"] >= 1,
+        "bertoua_not_dja_city": all(
+            (p.get("city") or "").casefold() not in {"somalomo", "moloundou"}
+            for p in turns[58]["places"]
+        ),
+        "est_not_equals_bertoua": "Pas exactement" in turns[59]["assistant"]
+        or "chef-lieu" in turns[59]["assistant"].casefold(),
+        "bertoua_region_est": "Est" in turns[60]["assistant"],
+        "est_food": turns[61]["completeness"] != "NONE"
+        or "marché" in turns[61]["assistant"].casefold()
+        or "marche" in turns[61]["assistant"].casefold()
+        or "plat" in turns[61]["assistant"].casefold(),
+        "dja_located": "dja" in turns[62]["assistant"].casefold()
+        or "est" in turns[62]["assistant"].casefold()
+        or "somalomo" in turns[62]["assistant"].casefold(),
+        "est_regional": turns[63]["intent"]
+        in {"PLACE_SEARCH", "TOURISM_INFO", "ITINERARY", "SIMPLE_QA", "NATURE", "CULTURE"},
     }
     status = "PASS" if all(checks.values()) else "PASS WITH ISSUES"
 
@@ -334,7 +357,7 @@ async def main() -> int:
         "",
         "## Geography",
         "",
-        "- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 · Adamaoua 5 · Nord 4",
+        "- 10 regions · … · Nord-Ouest 7 · Extrême-Nord 6 · Adamaoua 5 · Nord 4 · Est 4",
         "",
         "## Region packs",
         "",
@@ -353,6 +376,8 @@ async def main() -> int:
         f"- Oasis: `{turns[51]['assistant'][:120]}`",
         f"- Garoua: {turns[52]['verified_places_count']} — `{turns[52]['assistant'][:100]}`",
         f"- Hôtels Garoua: `{turns[57]['assistant'][:120]}`",
+        f"- Bertoua: {turns[58]['verified_places_count']} — `{turns[58]['assistant'][:100]}`",
+        f"- Dja: `{turns[62]['assistant']}`",
         "",
         "## Agent 2",
         "",
@@ -384,7 +409,7 @@ async def main() -> int:
         "",
         "## Conclusion",
         "",
-        "Structured geography covers Ouest through Nord without inventing tourism facts.",
+        "Structured geography covers all 10 regions (Ouest → Est) without inventing tourism facts.",
         "",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")

@@ -502,6 +502,42 @@
       "capital_city_id": "tchollire",
       "source": "Départements de la région du Nord",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "lom-djerem",
+      "name_fr": "Lom-et-Djérem",
+      "name_en": "Lom-et-Djérem",
+      "region_id": "est",
+      "capital_city_id": "bertoua",
+      "source": "Départements de la région de l’Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "kadey",
+      "name_fr": "Kadey",
+      "name_en": "Kadey",
+      "region_id": "est",
+      "capital_city_id": "batouri",
+      "source": "Départements de la région de l’Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "haut-nyong",
+      "name_fr": "Haut-Nyong",
+      "name_en": "Haut-Nyong",
+      "region_id": "est",
+      "capital_city_id": "abong-mbang",
+      "source": "Départements de la région de l’Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "boumba-ngoko",
+      "name_fr": "Boumba-et-Ngoko",
+      "name_en": "Boumba-et-Ngoko",
+      "region_id": "est",
+      "capital_city_id": "yokadouma",
+      "source": "Départements de la région de l’Est",
+      "verified_at": "2026-09-24"
     }
   ],
   "cities": [
@@ -603,8 +639,9 @@
       "aliases": [
         "bertoua"
       ],
-      "source": "Chef-lieu de la région de l'Est",
-      "verified_at": "2026-09-24"
+      "source": "Chef-lieu de la région de l’Est / Lom-et-Djérem",
+      "verified_at": "2026-09-24",
+      "division_id": "lom-djerem"
     },
     {
       "id": "maroua",
@@ -1441,6 +1478,77 @@
       ],
       "source": "Accès Bouba Ndjida, Mayo-Rey, Nord",
       "verified_at": "2026-09-24"
+    },
+    {
+      "id": "batouri",
+      "name_fr": "Batouri",
+      "name_en": "Batouri",
+      "entity_type": "city",
+      "division_id": "kadey",
+      "region_id": "est",
+      "is_region_capital": false,
+      "aliases": [
+        "batouri"
+      ],
+      "source": "Chef-lieu de la Kadey, Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "abong-mbang",
+      "name_fr": "Abong-Mbang",
+      "name_en": "Abong-Mbang",
+      "entity_type": "city",
+      "division_id": "haut-nyong",
+      "region_id": "est",
+      "is_region_capital": false,
+      "aliases": [
+        "abong-mbang",
+        "abong mbang"
+      ],
+      "source": "Chef-lieu du Haut-Nyong, Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "yokadouma",
+      "name_fr": "Yokadouma",
+      "name_en": "Yokadouma",
+      "entity_type": "city",
+      "division_id": "boumba-ngoko",
+      "region_id": "est",
+      "is_region_capital": false,
+      "aliases": [
+        "yokadouma"
+      ],
+      "source": "Chef-lieu du Boumba-et-Ngoko, Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "moloundou",
+      "name_fr": "Moloundou",
+      "name_en": "Moloundou",
+      "entity_type": "city",
+      "division_id": "boumba-ngoko",
+      "region_id": "est",
+      "is_region_capital": false,
+      "aliases": [
+        "moloundou"
+      ],
+      "source": "Accès Lobéké, Boumba-et-Ngoko, Est",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "somalomo",
+      "name_fr": "Somalomo",
+      "name_en": "Somalomo",
+      "entity_type": "city",
+      "division_id": "haut-nyong",
+      "region_id": "est",
+      "is_region_capital": false,
+      "aliases": [
+        "somalomo"
+      ],
+      "source": "Accès réserve du Dja, Haut-Nyong / Est",
+      "verified_at": "2026-09-24"
     }
   ],
   "localities": [
@@ -1922,6 +2030,18 @@
       "relation_to_city": "NEAR",
       "notes_fr": "Barrage / îles aux damans",
       "source": "Fiche Iles Aux Damans",
+      "verified_at": "2026-09-24"
+    },
+    {
+      "id": "koume",
+      "name_fr": "Koumé",
+      "name_en": "Koume",
+      "city_id": "bertoua",
+      "division_id": "lom-djerem",
+      "region_id": "est",
+      "relation_to_city": "NEAR",
+      "notes_fr": "Village artisanal de Bertoua (Koumé)",
+      "source": "Fiche Village Artisanale De Bertoua",
       "verified_at": "2026-09-24"
     }
   ]

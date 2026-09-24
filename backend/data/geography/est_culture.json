@@ -1,0 +1,135 @@
+{
+  "region_id": "est",
+  "region_fr": "Est",
+  "region_en": "East",
+  "verified_at": "2026-09-24",
+  "source_note": "Synthèse structurée à partir des documents internes Smartmboa (cities_quick_guide, national_parks_wildlife) et fiches lieux Est (export Supabase + curated Bertoua). Aucun restaurant nommé inventé. Aucun hôtel Ayila'a Bertoua dans l'import actuel.",
+  "overview": {
+    "text_fr": "L’Est a pour chef-lieu Bertoua (porte de la forêt). Réserve du Dja (patrimoine mondial), parc de Lobéké (Moloundou), village artisanal / marchés de Bertoua. Accès et saisons forestières à vérifier.",
+    "text_en": "The East’s capital is Bertoua (gateway to the forest). Dja Reserve (World Heritage), Lobéké park (Moloundou), Bertoua craft village / markets. Check forest access and seasons.",
+    "source": "data/documents/cities_quick_guide.md ; data/documents/national_parks_wildlife.md ; data/tourist_sites/est_complete.json"
+  },
+  "cultural_areas": [
+    {
+      "id": "lom-djerem-bertoua",
+      "name_fr": "Lom-et-Djérem (Bertoua)",
+      "name_en": "Lom-et-Djérem (Bertoua)",
+      "description_fr": "Chef-lieu régional, marchés et village artisanal (Koumé).",
+      "description_en": "Regional capital, markets and craft village (Koumé).",
+      "related_cities": ["Bertoua"],
+      "source": "data/tourist_sites/est_complete.json"
+    },
+    {
+      "id": "dja-lobeke",
+      "name_fr": "Dja / Lobéké",
+      "name_en": "Dja / Lobéké",
+      "description_fr": "Forêt dense : réserve du Dja (Somalomo) et parc de Lobéké (Moloundou) — opérateurs responsables.",
+      "description_en": "Dense forest: Dja Reserve (Somalomo) and Lobéké park (Moloundou) — responsible operators.",
+      "related_cities": ["Somalomo", "Moloundou", "Yokadouma"],
+      "source": "data/documents/national_parks_wildlife.md ; data/tourist_sites/est_complete.json"
+    }
+  ],
+  "languages": [
+    {
+      "name": "Français / langues locales",
+      "area": "Est au quotidien",
+      "note_fr": "Français utile ; nombreuses langues forestières selon les zones.",
+      "note_en": "French is useful; many forest languages vary by area.",
+      "source": "data/documents/languages_etiquette.md"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "foret-est",
+      "title_fr": "Cultures forestières",
+      "title_en": "Forest cultures",
+      "text_fr": "L’Est est une porte vers la forêt dense — respectez les communautés et les consignes des réserves.",
+      "text_en": "The East is a gateway to dense forest — respect communities and reserve rules.",
+      "source": "data/documents/cities_quick_guide.md ; data/documents/national_parks_wildlife.md"
+    }
+  ],
+  "dishes": [
+    {
+      "id": "forest-staples",
+      "name_fr": "Bases forestières",
+      "name_en": "Forest staples",
+      "text_fr": "Plats locaux et produits des marchés de Bertoua — aucun restaurant nommé inventé.",
+      "text_en": "Local dishes and Bertoua market produce — no invented restaurant names.",
+      "source": "data/documents/food_culture.md ; data/tourist_sites/est_complete.json"
+    },
+    {
+      "id": "brochettes-est",
+      "name_fr": "Brochettes / soya",
+      "name_en": "Brochettes / soya",
+      "text_fr": "Street food aussi présent à Bertoua — orientez vers les marchés.",
+      "text_en": "Street food is also present in Bertoua — point to markets.",
+      "source": "data/documents/food_deep_dive.md"
+    }
+  ],
+  "markets_and_crafts": [
+    {
+      "id": "bertoua-marche",
+      "name_fr": "Marché de Bertoua",
+      "name_en": "Bertoua market",
+      "text_fr": "Marché de Bertoua — visitez de jour ; négociez avec courtoisie.",
+      "text_en": "Bertoua market — visit by day; negotiate courteously.",
+      "city": "Bertoua",
+      "source": "data/tourist_sites/est_complete.json"
+    },
+    {
+      "id": "village-artisanal",
+      "name_fr": "Village artisanal (Koumé)",
+      "name_en": "Craft village (Koumé)",
+      "text_fr": "Village artisanal de Bertoua (Koumé) — artisanat local.",
+      "text_en": "Bertoua craft village (Koumé) — local crafts.",
+      "city": "Bertoua",
+      "source": "data/tourist_sites/est_complete.json"
+    }
+  ],
+  "nature_highlights": [
+    {
+      "id": "dja",
+      "title_fr": "Réserve de faune du Dja",
+      "title_en": "Dja Faunal Reserve",
+      "text_fr": "Patrimoine mondial, biodiversité forestière exceptionnelle (accès Somalomo) — vérifier conditions.",
+      "text_en": "World Heritage, exceptional forest biodiversity (Somalomo access) — check conditions.",
+      "source": "data/documents/national_parks_wildlife.md ; data/tourist_sites/est_complete.json"
+    },
+    {
+      "id": "lobeke",
+      "title_fr": "Parc national de Lobéké",
+      "title_en": "Lobéké National Park",
+      "text_fr": "Parc forestier vers Moloundou — logistique et opérateurs responsables.",
+      "text_en": "Forest park toward Moloundou — logistics and responsible operators.",
+      "source": "data/tourist_sites/est_complete.json"
+    }
+  ],
+  "practical": [
+    {
+      "id": "bertoua-hub",
+      "title_fr": "Bertoua comme hub",
+      "title_en": "Bertoua as hub",
+      "text_fr": "Base typique pour l’Est forestier ; routes vers Dja / Lobéké selon saison et accès.",
+      "text_en": "Typical base for the forest East; roads to Dja / Lobéké depending on season and access.",
+      "source": "data/documents/cities_quick_guide.md"
+    }
+  ],
+  "restaurants_policy": {
+    "text_fr": "La base ne contient pas encore de restaurants nommément vérifiés pour l’Est. Ne pas inventer de noms. Orienter vers marchés de Bertoua.",
+    "text_en": "The knowledge base does not yet contain named verified restaurants for the East. Do not invent names. Point to Bertoua markets.",
+    "verified_named_restaurants": [],
+    "source": "exports/supabase-tourist-places (include_restaurants=false)"
+  },
+  "hotels_verified": [],
+  "hotels_policy": {
+    "text_fr": "Aucun hôtel Bertoua dans l’import Ayila’a actuel — ne pas inventer de noms d’hébergement.",
+    "text_en": "No Bertoua hotels in the current Ayila’a import — do not invent lodging names.",
+    "source": "imports/camerounai-stay-language-games/data/hotels.ts"
+  },
+  "divisions_snapshot": [
+    {"id": "lom-djerem", "name_fr": "Lom-et-Djérem", "hub": "Bertoua", "note_fr": "Chef-lieu régional."},
+    {"id": "haut-nyong", "name_fr": "Haut-Nyong", "hub": "Abong-Mbang", "note_fr": "Accès Dja / Somalomo."},
+    {"id": "boumba-ngoko", "name_fr": "Boumba-et-Ngoko", "hub": "Yokadouma", "note_fr": "Lobéké / Moloundou."},
+    {"id": "kadey", "name_fr": "Kadey", "hub": "Batouri", "note_fr": "Nord de l’Est."}
+  ]
+}

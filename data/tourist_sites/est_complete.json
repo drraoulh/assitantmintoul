@@ -1,0 +1,146 @@
+[
+  {
+    "id": "bertoua-marche",
+    "name": "Marché de Bertoua",
+    "city": "Bertoua",
+    "region": "Est",
+    "category": "activity",
+    "summary_fr": "Marché régional où circulent produits forestiers, vivres et biens du quotidien de l'Est.",
+    "summary_en": "Regional market for forest products, staples and everyday goods of the East.",
+    "tips_fr": "Utile pour s'approvisionner avant une excursion forestière.",
+    "tips_en": "Useful for supplies before a forest excursion.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "bertoua",
+      "marché",
+      "market",
+      "est"
+    ],
+    "sources": [
+      {
+        "title": "Marché de Bertoua",
+        "organization": "data/tourist_sites/bertoua_east.json",
+        "url": null,
+        "verification_status": "internal"
+      }
+    ]
+  },
+  {
+    "id": "bertoua-foret",
+    "name": "Porte de l'Est forestier (Bertoua)",
+    "city": "Bertoua",
+    "region": "Est",
+    "category": "nature",
+    "summary_fr": "Bertoua est la capitale de la région de l'Est, porte d'entrée vers les forêts denses, les communautés forestières et des aires protégées de l'Est camerounais.",
+    "summary_en": "Bertoua is the East Region capital and gateway to dense forests, forest communities and protected areas of eastern Cameroon.",
+    "tips_fr": "Les distances sont longues; prévoyez transport fiable et infos locales sur les pistes.",
+    "tips_en": "Distances are long; plan reliable transport and local info on tracks.",
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "bertoua",
+      "est",
+      "east",
+      "forêt",
+      "forest"
+    ],
+    "sources": [
+      {
+        "title": "Porte de l'Est forestier (Bertoua)",
+        "organization": "data/tourist_sites/bertoua_east.json",
+        "url": null,
+        "verification_status": "internal"
+      }
+    ]
+  },
+  {
+    "id": "village-artisanale-de-bertoua-koume",
+    "name": "Village Artisanale De Bertoua",
+    "city": "Bertoua",
+    "region": "Est",
+    "category": "culture",
+    "summary_fr": "Village Artisanale De Bertoua. Situé à Koumè, sur la Rue Hôtel de Ville à Bertoua, le Village artisanal de Bertoua est un espace culturel dynamique dédié à la valorisation du patrimoine artisanal local. Ce centre artistique vivant regroupe de nombreux artisans qui perpétuent les savoir-faire traditionnels à travers une diversité de créations, offrant aux visiteurs une expérience authentique au c&oelig;ur de la région de l'Est Cameroun. Classé parmi les villages artisanaux, il constitue une destination incontournable pour les amoureux de culture et de créativité locale. Parmi les activités phares, les visiteurs peuvent admirer et acheter des objets d'art faits main tels que des bijoux, poteries, textiles tissés, masques sculptés ou encore des souvenirs traditionnels. Le site propose également des événements culturels ponctuels qui mettent en lumière la richesse des danses patrimoniales, de la musique traditionnelle et des expositions d'art local. Le lieu est adapté à tous les âges, aussi bien pour les enfants curieux, que pour les adultes passionnés de culture. L'entrée au village est généralement gratuite, bien que certains ateliers ou événements puissent proposer des tarifs symboliques. Le site est équipé de stands aménagés pour chaque artisan, avec des espaces d'exposition organisés pour une circulation fluide. Quelques points de restauration rapide y sont parfois présents lors des événements, proposant des encas locaux. Le stationnement est disponible à proximité pour les visiteurs, mais il est conseillé de venir tôt pendant les jours d'affluence. Il n'y a pas encore de service de réservation ou de livraison, les achats s'effectuent sur place. Les avis des visiteurs sont globalement très positifs, soulignant la qualité et l'originalité des &oelig;uvres proposées, ainsi que la gentillesse des artisans. De nombreux visiteurs saluent aussi l'aspect éducatif du lieu, notamment lors des ateliers d'initiation pour les enfants. à proximité du Village artisanal, on retrouve des lieux d'intérêt comme l' Hôtel Le Zingana, situé à quelques minutes, ainsi que le Monument de la Paix de Bertoua, souvent visité pour des photos souvenirs. Le Centre Culturel de Bertoua, non loin, propose également des spectacles et expositions régulières, formant un parcours culturel complet pour les visiteurs. Le Village artisanal de Bertoua est sans conteste une étape enrichissante et authentique pour quiconque souhaite plonger dans la richesse de l'art camerounais. Il incarne la rencontre entre tradition et modernité, et reste un symbole fort de l'artisanat local à soutenir et faire découvrir.",
+    "summary_en": "Village Artisanale De Bertoua. Located à Koumè, sur la Rue Hôtel de Ville à Bertoua, le Village artisanal de Bertoua is a espace culturel dynamique dédié à la valorisation du patrimoine artisanal local. Ce centre artistique vivant regroupe de nombreux artisans qui perpétuent les savoir-faire traditionnels à travers une diversité de créations, offrant aux visiteurs une expérience authentique au c&oelig;ur de la région de l'Est Cameroon. Classé parmi les villages artisanaux, il constitue une destination incontournable pour les amoureux de culture et de créativité locale. Parmi les activités phares, les visiteurs peuvent admirer et acheter des objets d'art faits main tels que des bijoux, poteries, textiles tissés, masques sculptés ou encore des souvenirs traditionnels. Le site propose également des événements culturels ponctuels qui mettent en lumière la richesse des danses patrimoniales, de la musique traditionnelle et des expositions d'art local. Le lieu est adapté à tous les âges, aussi bien pour les enfants curieux, que pour les adultes passionnés de culture. L'entrée au village est généralement gratuite, bien que certains ateliers ou événements puissent proposer des tarifs symboliques. Le site est équipé de stands aménagés pour chaque artisan, avec des espaces d'exposition organisés pour une circulation fluide. Quelques points de restauration rapide y sont parfois présents lors des événements, proposant des encas locaux. Le stationnement est disponible à proximité pour les visiteurs, mais il est conseillé de venir tôt pendant les jours d'affluence. Il n'y a pas encore de service de réservation ou de livraison, les achats s'effectuent sur place. Les avis des visiteurs sont globalement très positifs, soulignant la qualité et l'originalité des &oelig;uvres proposées, ainsi que la gentillesse des artisans. De nombreux visiteurs saluent aussi l'aspect éducatif du lieu, notamment lors des ateliers d'initiation pour les enfants. à proximité du Village artisanal, on retrouve des lieux d'intérêt comme l' Hôtel Le Zingana, situé à quelques minutes, ainsi que le Monument de la Paix de Bertoua, souvent visité pour des photos souvenirs. Le Centre Culturel de Bertoua, non loin, propose également des spectacles et expositions régulières, formant un parcours culturel complet pour les visiteurs. Le Village artisanal de Bertoua est sans conteste une étape enrichissante et authentique pour quiconque souhaite plonger dans la richesse de l'art camerounais. Il incarne la rencontre entre tradition et modernité, et reste un symbole fort de l'artisanat local à soutenir et faire découvrir.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Quartier / lieu : KOUME · Ville : Bertoua · Localisation : Rue Hotel de Ville · Catégories : Sites Touristiques, Centre culturel",
+    "latitude": 4.577,
+    "longitude": 13.685,
+    "price": "2000 XAF",
+    "tags": [
+      "est",
+      "east",
+      "bertoua",
+      "culture"
+    ],
+    "sources": [
+      {
+        "title": "Village Artisanale De Bertoua",
+        "organization": "Export Supabase places (verified_at=2026-09-16)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  },
+  {
+    "id": "parc-lobeke",
+    "name": "Parc national de Lobéké",
+    "city": "Moloundou",
+    "region": "Est",
+    "category": "nature",
+    "summary_fr": "Lobéké National Park in Cameroon is the Cameroonian component of Sangha Trinational, a UNESCO World Heritage natural property inscribed in 2012. UNESCO describes Sangha Trinational as three contiguous parks (about 746,309 ha) where Cameroon, the Central African Republic and the Republic of Congo meet: Lobéké (Cameroon), Dzanga-Ndoki (CAR) and Nouabalé-Ndoki (Congo). The forests include forest elephants, western lowland gorilla and chimpanzee. Access permits and fees are not stored here.",
+    "summary_en": "Lobéké National Park in Cameroon is the Cameroonian component of Sangha Trinational, a UNESCO World Heritage natural property inscribed in 2012. UNESCO describes Sangha Trinational as three contiguous parks (about 746,309 ha) where Cameroon, the Central African Republic and the Republic of Congo meet: Lobéké (Cameroon), Dzanga-Ndoki (CAR) and Nouabalé-Ndoki (Congo). The forests include forest elephants, western lowland gorilla and chimpanzee. Access permits and fees are not stored here.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": null,
+    "latitude": null,
+    "longitude": null,
+    "price": null,
+    "tags": [
+      "est"
+    ],
+    "sources": [
+      {
+        "title": "Sangha Trinational",
+        "organization": "UNESCO World Heritage Centre",
+        "url": "https://whc.unesco.org/en/list/1380/",
+        "publication_date": "2012",
+        "verification_status": "official"
+      }
+    ]
+  },
+  {
+    "id": "parc-dja",
+    "name": "Réserve de faune du Dja",
+    "city": "Somalomo",
+    "region": "Est",
+    "category": "nature",
+    "summary_fr": "Réserve UNESCO de forêt dense, ceinturée par la boucle de la Dja. Biodiversité exceptionnelle et écotourisme communautaire autour de Somalomo : une destination nature exigeante du Sud / Est.",
+    "summary_en": "UNESCO dense-forest reserve ringed by the Dja River loop. Outstanding biodiversity and community ecotourism around Somalomo: a demanding South / East nature destination.",
+    "tips_fr": null,
+    "tips_en": null,
+    "culture_fr": "Permis et guides obligatoires. Circuits multi-jours recommandés.",
+    "latitude": 3.37,
+    "longitude": 12.73,
+    "price": "15000 XAF",
+    "tags": [
+      "est",
+      "east",
+      "somalomo",
+      "nature"
+    ],
+    "sources": [
+      {
+        "title": "Réserve de faune du Dja",
+        "organization": "Export Supabase places (verified_at=2026-09-15)",
+        "url": null,
+        "verification_status": "structured_export"
+      }
+    ]
+  }
+]

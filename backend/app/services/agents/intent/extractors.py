@@ -83,6 +83,12 @@ _CITIES: dict[str, str] = {
     "guider": "Guider",
     "poli": "Poli",
     "touboro": "Touboro",
+    "batouri": "Batouri",
+    "abong-mbang": "Abong-Mbang",
+    "abong mbang": "Abong-Mbang",
+    "yokadouma": "Yokadouma",
+    "moloundou": "Moloundou",
+    "somalomo": "Somalomo",
 }
 
 _REGIONS: dict[str, str] = {
@@ -196,6 +202,11 @@ _NORD_CULTURE = re.compile(
     r"shalom\s+city|ribadou|motel\s+plaza)\b",
     re.IGNORECASE,
 )
+_EST_CULTURE = re.compile(
+    r"\b(lobeke|reserve\s+du\s+dja|parc\s+(?:national\s+)?(?:de\s+)?lobeke|"
+    r"village\s+artisanale?\s+de\s+bertoua)\b",
+    re.IGNORECASE,
+)
 
 # Named places often asked about specifically (PLACE_DETAILS).
 _KNOWN_PLACES: dict[str, str] = {
@@ -299,6 +310,12 @@ _KNOWN_PLACES: dict[str, str] = {
     "parc faro": "Parc National Du Faro",
     "fleuve benoue": "Fleuve Bénoué (Garoua)",
     "fleuve bénoué": "Fleuve Bénoué (Garoua)",
+    "reserve du dja": "Réserve de faune du Dja",
+    "réserve du dja": "Réserve de faune du Dja",
+    "parc lobeke": "Parc national de Lobéké",
+    "parc de lobeke": "Parc national de Lobéké",
+    "parc national de lobeke": "Parc national de Lobéké",
+    "parc national de lobéké": "Parc national de Lobéké",
 }
 
 _DURATION = re.compile(
@@ -432,6 +449,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.region = "Nord"
         if slots.location is None:
             slots.location = "Nord"
+
+    if slots.region is None and _EST_CULTURE.search(folded):
+        slots.region = "Est"
+        if slots.location is None:
+            slots.location = "Est"
 
     for key, label in sorted(_KNOWN_PLACES.items(), key=lambda kv: len(kv[0]), reverse=True):
         if key in folded:

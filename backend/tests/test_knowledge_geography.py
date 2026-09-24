@@ -1036,3 +1036,86 @@ async def test_garoua_hotels_query(geo_on):
     blob += " " + result.final_response.text.casefold()
     assert result.knowledge.verified_places_count >= 2
     assert "shalom" in blob or "ribadou" in blob or "plaza" in blob or "palace" in blob or "hôtel" in blob
+
+
+def test_est_admin_and_bertoua():
+    from app.services.agents.knowledge.geography import clear_geography_cache, city_admin_chain
+
+    clear_geography_cache()
+    chain = city_admin_chain("Bertoua")
+    assert chain is not None
+    assert chain["region"] == "Est"
+    assert chain["is_region_capital"] is True
+    assert chain["division"] == "Lom-et-Djérem"
+    idx = load_geography()
+    assert len([d for d in idx.divisions.values() if d.get("region_id") == "est"]) == 4
+
+
+def test_est_not_bertoua():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("La région de l’Est c’est Bertoua nor ?", language="fr")
+    assert facts
+    assert facts[0].relation == "IS_NOT_EQUIVALENT"
+
+
+def test_dja_geo_location():
+    from app.services.agents.knowledge.geography import clear_geography_cache
+
+    clear_geography_cache()
+    facts = answer_geo_query("Où est la réserve du Dja ?", language="fr")
+    assert facts
+    assert "Est" in facts[0].text_fr or "Somalomo" in facts[0].text_fr or "Dja" in facts[0].text_fr
+
+
+def test_est_culture(geo_on):
+    from app.services.agents.knowledge.culture_packs import (
+        clear_culture_cache,
+        culture_evidence_for_query,
+        _load_pack,
+    )
+
+    clear_culture_cache()
+    pack = _load_pack("est")
+    assert pack.get("hotels_verified") == []
+    ev = culture_evidence_for_query("Quels plats typiques à Bertoua ?", language="fr")
+    assert any((e.source_id or "") == "culture:est" for e in ev)
+
+
+def test_dja_sets_est_region():
+    from app.services.agents.intent.extractors import extract_slots
+
+    assert extract_slots("Parle-moi de la réserve du Dja").region == "Est"
+    assert extract_slots("Que visiter à Batouri ?").city == "Batouri"
+
+
+@pytest.mark.asyncio
+async def test_visit_bertoua_returns_local_places(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter Bertoua que me proposes-tu ?",
+        mode="text",
+        locale="fr",
+    )
+    cities = {(p.city or "").casefold() for p in result.knowledge.places}
+    assert result.knowledge.verified_places_count >= 1
+    assert "somalomo" not in cities
+    assert "moloundou" not in cities
+
+
+@pytest.mark.asyncio
+async def test_est_region_query(geo_on):
+    orch = AgentOrchestrator(
+        knowledge_agent=KnowledgeAgent(PlaceIndex.from_catalog()),
+        prefer_deterministic=True,
+    )
+    result = await orch.run(
+        "Je veux visiter la région de l’Est.",
+        mode="text",
+        locale="fr",
+    )
+    assert result.intent.region == "Est" or result.knowledge.verified_places_count >= 1

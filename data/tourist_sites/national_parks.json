@@ -1,25 +1,5 @@
 [
   {
-    "id": "parc-dja",
-    "name": "Réserve de faune du Dja",
-    "city": "Djoum / Dja",
-    "region": "Sud / Est",
-    "category": "park",
-    "summary_fr": "Réserve de biosphère / patrimoine mondial: forêt tropicale dense, biodiversité exceptionnelle (primates, oiseaux). Joyau de conservation du Sud-Est.",
-    "summary_en": "Biosphere reserve / World Heritage site: dense rainforest and outstanding biodiversity (primates, birds). A conservation jewel of the southeast.",
-    "tips_fr": "Accès exigeant; organisez via opérateurs/guides spécialisés. Respectez strictement les règles de conservation.",
-    "tips_en": "Demanding access; organise via specialised operators/guides. Strictly respect conservation rules.",
-    "tags": [
-      "dja",
-      "parc",
-      "unesco",
-      "forêt",
-      "primates",
-      "biodiversité",
-      "wildlife"
-    ]
-  },
-  {
     "id": "parc-korup",
     "name": "Parc national de Korup",
     "city": "Mundemba",

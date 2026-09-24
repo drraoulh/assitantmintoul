@@ -209,6 +209,26 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "motel plaza",
         "new town palace",
     ),
+    "est": (
+        "region de l est",
+        "région de l'est",
+        "région de l est",
+        "est du cameroun",
+        "east region",
+        "east cameroon",
+        "bertoua",
+        "batouri",
+        "abong-mbang",
+        "abong mbang",
+        "yokadouma",
+        "moloundou",
+        "somalomo",
+        "lobeke",
+        "lobéké",
+        "reserve du dja",
+        "réserve du dja",
+        "parc dja",
+    ),
 }
 
 

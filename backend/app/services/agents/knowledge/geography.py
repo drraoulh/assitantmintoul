@@ -116,6 +116,11 @@ def load_geography() -> GeographyIndex:
             idx.alias_to_region["north region"] = rid
             idx.alias_to_region["region du nord"] = rid
             idx.alias_to_region["region nord"] = rid
+        elif rid == "est":
+            idx.alias_to_region["east"] = rid
+            idx.alias_to_region["east region"] = rid
+            idx.alias_to_region["region de l est"] = rid
+            idx.alias_to_region["region est"] = rid
         idx.alias_to_region[fold(rid)] = rid
     for did, div in divisions.items():
         for alias in [div.get("name_fr"), div.get("name_en")]:
@@ -410,6 +415,29 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
         ]
 
     if (
+        re.search(r"\b(?:r[eé]gion\s+de\s+l['’]?est|est\s+du\s+cameroun|east\s+region)\b", q)
+        and "bertoua" in q
+        and re.search(r"c[' ]?est|est[- ]ce|nor\b|non\b|equals|same|region|région", q)
+    ):
+        return [
+            GeoFact(
+                subject="Est",
+                relation="IS_NOT_EQUIVALENT",
+                object="Bertoua",
+                text_fr=(
+                    "Pas exactement. L’Est est une région du Cameroun, "
+                    "et Bertoua en est le chef-lieu."
+                ),
+                text_en=(
+                    "Not exactly. The East is a region of Cameroon, "
+                    "and Bertoua is its capital (chef-lieu)."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("est", "bertoua"),
+            )
+        ]
+
+    if (
         not compound_ouest
         and ("sud" in q or "south" in q)
         and "kribi" in q
@@ -466,6 +494,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                         text_fr = "Ngaoundéré est le chef-lieu de la région de l’Adamaoua du Cameroun."
                     elif rid == "nord":
                         text_fr = "Garoua est le chef-lieu de la région du Nord du Cameroun."
+                    elif rid == "est":
+                        text_fr = "Bertoua est le chef-lieu de la région de l’Est du Cameroun."
                     else:
                         text_fr = f"{cname} est le chef-lieu de la région {rname} du Cameroun."
                     text_en = f"{cname} is the capital of the {rname} region."
@@ -718,6 +748,52 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
             )
         ]
 
+    # Réserve du Dja
+    if re.search(r"\bdja\b", q) and re.search(
+        r"reserve|réserve|parc|o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Réserve de faune du Dja",
+                relation="LOCATED_IN",
+                object="Somalomo / Est",
+                text_fr=(
+                    "La réserve de faune du Dja (patrimoine mondial) s’atteint notamment "
+                    "depuis Somalomo, dans la région de l’Est."
+                ),
+                text_en=(
+                    "Dja Faunal Reserve (World Heritage) is accessed notably "
+                    "from Somalomo, in the East region."
+                ),
+                source="Sites touristiques Est / Dja",
+                entity_ids=("parc-dja", "somalomo", "est"),
+            )
+        ]
+
+    # Lobéké
+    if "lobeke" in q and re.search(
+        r"parc|o[uù]\s+est|where|se\s+trouve|localisation|r[eé]gion",
+        q,
+    ):
+        return [
+            GeoFact(
+                subject="Parc national de Lobéké",
+                relation="LOCATED_IN",
+                object="Moloundou / Boumba-et-Ngoko / Est",
+                text_fr=(
+                    "Le parc national de Lobéké s’atteint depuis Moloundou "
+                    "(département du Boumba-et-Ngoko, région de l’Est)."
+                ),
+                text_en=(
+                    "Lobéké National Park is accessed from Moloundou "
+                    "(Boumba-et-Ngoko department, East region)."
+                ),
+                source="Sites touristiques Est / Lobéké",
+                entity_ids=("parc-lobeke", "moloundou", "boumba-ngoko", "est"),
+            )
+        ]
+
     city_id = _find_city_in_query(q, idx)
     if city_id:
         city = idx.cities[city_id]
@@ -778,6 +854,8 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                     text_fr = f"{cname} se trouve dans la région de l’Adamaoua du Cameroun."
                 elif rid == "nord":
                     text_fr = f"{cname} se trouve dans la région du Nord du Cameroun."
+                elif rid == "est":
+                    text_fr = f"{cname} se trouve dans la région de l’Est du Cameroun."
                 else:
                     text_fr = f"{cname} se trouve dans la région {rname} du Cameroun."
                 text_en = f"{cname} is in the {rname} region of Cameroon."
@@ -886,6 +964,10 @@ def is_geo_simple_query(query: str) -> bool:
         r"nord(?![- ]?ouest).{0,40}c[' ]?est.{0,20}garoua",
         r"garoua.{0,40}c[' ]?est.{0,20}nord",
         r"parc.{0,20}benou[eé]|benou[eé].{0,20}parc",
+        r"r[eé]gion\s+de\s+l['’]?est.{0,40}bertoua",
+        r"bertoua.{0,40}c[' ]?est.{0,20}(?:l['’])?est",
+        r"(?:reserve|réserve).{0,10}dja|\bdja\b.{0,20}(?:reserve|réserve)",
+        r"lobeke",
     )
     if any(re.search(p, q) for p in patterns):
         return True

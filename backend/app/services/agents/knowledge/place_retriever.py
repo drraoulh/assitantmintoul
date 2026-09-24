@@ -140,6 +140,18 @@ _NOT_GAROUA = {
     "yaounde",
     "yaoundé",
 }
+_NOT_BERTOUA = {
+    "batouri",
+    "abong-mbang",
+    "abong mbang",
+    "yokadouma",
+    "moloundou",
+    "somalomo",
+    "douala",
+    "yaounde",
+    "yaoundé",
+    "garoua",
+}
 
 _REGION_ALIASES = {
     "west": "ouest",
@@ -278,6 +290,8 @@ class PlaceRetriever:
                     continue
                 if hub == "garoua" and place_city in _NOT_GAROUA:
                     continue
+                if hub == "bertoua" and place_city in _NOT_BERTOUA:
+                    continue
                 if in_hub:
                     scope = "IN_CITY"
                 elif in_nearby and (want_nearby or geo_on):
@@ -350,6 +364,12 @@ class PlaceRetriever:
                                 "plateau-garoua",
                                 "lagdo",
                             } and "garoua" not in place_city:
+                                continue
+                        elif hub == "bertoua":
+                            if place_city not in {
+                                "koume",
+                                "koumé",
+                            } and "bertoua" not in place_city:
                                 continue
                         else:
                             continue
