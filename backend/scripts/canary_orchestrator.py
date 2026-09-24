@@ -305,9 +305,9 @@ async def ws_probe(base: str, message: str, *, timeout: float = 90.0) -> dict[st
     except Exception as exc:  # noqa: BLE001
         return {"valid": False, "error": str(exc)[:200]}
 
-        phases = (metrics or {}).get("phases_ms") or (metrics or {}).get("phases") or metrics or {}
-        marks_ms = (metrics or {}).get("marks_ms") or {}
-        return {
+    phases = (metrics or {}).get("phases_ms") or (metrics or {}).get("phases") or metrics or {}
+    marks_ms = (metrics or {}).get("marks_ms") or {}
+    return {
         "valid": True,
         "assistant_text": assistant_text,
         "orchestrator": orch_meta,

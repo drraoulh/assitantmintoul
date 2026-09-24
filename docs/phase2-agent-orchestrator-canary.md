@@ -37,16 +37,18 @@
 
 Baseline historique warm TTFA ≈ **1100 ms** (Phase 1.9, legacy LLM path).
 
-**Legacy arm note:** 9/10 legacy voice turns failed with Hugging Face Inference
-credit depletion (402) / busy / timeout. Only 1 legacy places sample succeeded
-(TTFA 3349 ms). Comparison vs live legacy is therefore incomplete; orchestrator
-arm is complete (n=5 warm per scenario). vs historical baseline ≈1100 ms,
-orchestrator warm TTFA medians are **~499 ms (greeting)** and **~507 ms (places)**
-— no regression observed on the canary path.
+**HF token:** rotated locally after previous key returned HTTP 402. Secrets stay in
+`.env` only (not committed).
 
-Orchestrator path uses deterministic Agent 4 (0 LLM). First text chunk is ~2–7 ms;
-TTFA is dominated by Fish TTS TTFB (~480–500 ms).
+**Re-measure (post-rotation):**
+- Greeting warm n=5 both arms: legacy TTFA med **2090.7 ms**, orchestrator med **550.9 ms**
+  (no regression; orch faster — deterministic Agent 4, 0 LLM).
+- Places: orchestrator n=5 med **493.3 ms**; legacy only 1 valid sample (**1415 ms**) —
+  new key hit 402 again on heavier grounded LLM turns after greeting burn.
+- Historical baseline ≈1100 ms; orchestrator remains below baseline on both scenarios.
 
+
+**HF token:** rotated for canary re-measure after previous key returned HTTP 402 (credits depleted). Secrets stay in local `.env` only (not committed).
 
 ### Greeting — Bonjour
 
@@ -54,21 +56,21 @@ TTFA is dominated by Fish TTS TTFB (~480–500 ms).
 |--------|--------|--------------|
 | STT | 0 (text turn) | 0 (text turn) |
 | Orchestrator | — | med 0.3 / avg 0.3 (min 0.3, max 0.3, n=5) |
-| First text chunk | — | med 2.4 / avg 2.4 (min 2.2, max 2.5, n=5) |
-| TTS gap (text→audio) | — | med 496.3 / avg 518.4 (min 480.3, max 617.6, n=5) |
-| TTFA | — | med 498.8 / avg 520.8 (min 482.8, max 620.0, n=5) |
-| Total | — | med 2344.7 / avg 2323.2 (min 2239.5, max 2398.0, n=5) |
+| First text chunk | med 1504.6 / avg 1500.6 (min 1481.6, max 1512.1, n=5) | med 2.5 / avg 2.5 (min 2.4, max 2.6, n=5) |
+| TTS gap (text→audio) | med 584.3 / avg 599.4 (min 448.9, max 767.9, n=5) | med 548.4 / avg 593.0 (min 494.5, max 740.4, n=5) |
+| TTFA | med 2090.7 / avg 2100.0 (min 1953.5, max 2266.0, n=5) | med 550.9 / avg 595.4 (min 496.9, max 742.9, n=5) |
+| Total | med 10715.4 / avg 10901.2 (min 10369.2, max 11548.5, n=5) | med 2329.6 / avg 2354.7 (min 2215.3, max 2549.0, n=5) |
 
 ### Places — Yaoundé
 
 | Metric | Legacy | Orchestrator |
 |--------|--------|--------------|
 | STT | 0 (text turn) | 0 (text turn) |
-| Orchestrator | — | med 3.7 / avg 3.7 (min 3.6, max 3.9, n=5) |
-| First text chunk | med 2789.4 / avg 2789.4 (min 2789.4, max 2789.4, n=1) | med 7.1 / avg 7.0 (min 6.8, max 7.3, n=5) |
-| TTS gap (text→audio) | med 559.9 / avg 559.9 (min 559.9, max 559.9, n=1) | med 499.9 / avg 495.6 (min 457.6, max 526.3, n=5) |
-| TTFA | med 3349.3 / avg 3349.3 (min 3349.3, max 3349.3, n=1) | med 507.0 / avg 502.6 (min 464.4, max 533.4, n=5) |
-| Total | med 15571.2 / avg 15571.2 (min 15571.2, max 15571.2, n=1) | med 11735.9 / avg 12111.4 (min 10949.4, max 13529.5, n=5) |
+| Orchestrator | — | med 4.2 / avg 4.4 (min 3.5, max 5.6, n=5) |
+| First text chunk | med 796.3 / avg 796.3 (min 796.3, max 796.3, n=1) | med 7.4 / avg 8.0 (min 7.1, max 9.9, n=5) |
+| TTS gap (text→audio) | med 618.7 / avg 618.7 (min 618.7, max 618.7, n=1) | med 485.9 / avg 549.9 (min 480.6, max 664.5, n=5) |
+| TTFA | med 1415.0 / avg 1415.0 (min 1415.0, max 1415.0, n=1) | med 493.3 / avg 558.0 (min 487.7, max 674.4, n=5) |
+| Total | med 15717.3 / avg 15717.3 (min 15717.3, max 15717.3, n=1) | med 12336.9 / avg 12812.2 (min 11893.8, max 14450.1, n=5) |
 
 - Streaming before `audio_done` (orch places): 5/5
 
