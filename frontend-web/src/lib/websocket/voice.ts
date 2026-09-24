@@ -1,4 +1,4 @@
-import { getApiBaseUrl } from '../config';
+import { getApiBaseUrl, getVoiceWebSocketUrl } from '../config';
 
 export type VoiceServerEvent =
   | { type: 'ready' }
@@ -10,19 +10,12 @@ export type VoiceServerEvent =
   | { type: 'assistant_text'; text: string }
   | { type: 'audio_chunk'; data: string; mime?: string }
   | { type: 'audio_done' }
-  | { type: 'turn_done' }
+  | { type: 'turn_done'; ui?: Record<string, unknown> }
   | { type: 'interrupted' }
   | { type: 'error'; message?: string };
 
-function wsBase(): string {
-  const http = getApiBaseUrl().replace(/\/$/, '');
-  if (http.startsWith('https://')) return `wss://${http.slice(8)}`;
-  if (http.startsWith('http://')) return `ws://${http.slice(7)}`;
-  return http;
-}
-
 export function voiceSessionUrl(): string {
-  return `${wsBase()}/api/voice/session`;
+  return getVoiceWebSocketUrl();
 }
 
 export class VoiceSocket {
@@ -88,3 +81,5 @@ export async function blobToBase64(blob: Blob): Promise<string> {
   }
   return btoa(binary);
 }
+
+export { getApiBaseUrl, getVoiceWebSocketUrl };

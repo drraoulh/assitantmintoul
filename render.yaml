@@ -1,5 +1,6 @@
 services:
-  # Web app (jury) — https://smartmboa-tour.onrender.com
+  # Legacy Expo web (jury) — https://smartmboa-tour.onrender.com
+  # Kept during Next.js validation. Do not remove until Web is validated.
   - type: web
     name: smartmboa-tour
     runtime: static
@@ -11,6 +12,25 @@ services:
       - type: rewrite
         source: /*
         destination: /index.html
+
+  # Next.js tourism web — https://smartmboa-web.onrender.com
+  # (URL confirmed by Render after first Blueprint sync; name → hostname).
+  - type: web
+    name: smartmboa-web
+    runtime: node
+    plan: free
+    branch: master
+    rootDir: frontend-web
+    buildCommand: npm ci && npm run build
+    startCommand: npx next start --hostname 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22.14.0"
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://cameroon-ai-tour-guide-api.onrender.com
 
   # API — https://cameroon-ai-tour-guide-api.onrender.com
   - type: web
@@ -66,5 +86,7 @@ services:
         value: "true"
       - key: WEB_KNOWLEDGE_FALLBACK_ENABLED
         value: "false"
+      # Explicit browser origins (Expo static + Next.js + local). No secrets.
+      # After first deploy, confirm smartmboa-web hostname in Render dashboard.
       - key: CORS_ORIGINS
-        value: "*"
+        value: "http://localhost:3000,http://127.0.0.1:3000,https://smartmboa-tour.onrender.com,https://smartmboa-web.onrender.com"

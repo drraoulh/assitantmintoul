@@ -1,34 +1,43 @@
 # Déploiement en ligne (jury)
 
-Objectif : une API permanente + une app web, sans tunnel Cloudflare temporaire.
+Objectif : une API permanente + frontends web, sans tunnel Cloudflare temporaire.
 
 ## Services Render (`render.yaml`)
 
-| Service | URL |
-|---------|-----|
-| **smartmboa-tour** (static, `mobile/dist`) | https://smartmboa-tour.onrender.com |
-| **cameroon-ai-tour-guide-api** (Docker) | https://cameroon-ai-tour-guide-api.onrender.com |
+| Service | URL | Runtime |
+|---------|-----|---------|
+| **smartmboa-tour** | https://smartmboa-tour.onrender.com | static Expo `mobile/dist` (legacy) |
+| **smartmboa-web** | https://smartmboa-web.onrender.com | Next.js `frontend-web/` (new) |
+| **cameroon-ai-tour-guide-api** | https://cameroon-ai-tour-guide-api.onrender.com | Docker FastAPI |
+
+Détails : `docs/phase3.2-deployment.md`.
 
 ### Première fois
 
 1. Compte sur https://render.com
-2. New → Blueprint → repo `assitantmintoul` → `render.yaml`
-3. Secret API : `HUGGINGFACE_HUB_TOKEN`
+2. New → Blueprint → repo → `render.yaml`
+3. Secrets API dashboard : `HUGGINGFACE_HUB_TOKEN`, `GEMINI_API_KEY`, `FISH_AUDIO_API_KEY`, `DATABASE_URL`
 4. Deploy
 
-### Mettre à jour l’app web (Parler local, UI…)
+### Mettre à jour Expo (legacy)
 
 ```powershell
 cd mobile
 $env:EXPO_PUBLIC_API_URL="https://cameroon-ai-tour-guide-api.onrender.com"
 npm run export:web
 cd ..
-git add mobile/dist render.yaml
-git commit -m "Rebuild smartmboa web for Render"
+git add mobile/dist
+git commit -m "Rebuild Expo web for Render"
 git push origin master
 ```
 
-Puis sur https://dashboard.render.com → service **smartmboa-tour** → **Manual Deploy** → **Deploy latest commit** (si Auto-Deploy n’a pas encore tourné).
+### Mettre à jour Next.js
+
+Push `frontend-web/` sur `master`. Variable :
+
+```
+NEXT_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com
+```
 
 Health API : https://cameroon-ai-tour-guide-api.onrender.com/api/health
 
@@ -38,12 +47,14 @@ Health API : https://cameroon-ai-tour-guide-api.onrender.com/api/health
 EXPO_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com
 ```
 
-Puis redémarre Expo / rebuild.
+## Next.js local
 
-## Notes latence
+```env
+# frontend-web/.env.local
+NEXT_PUBLIC_API_URL=https://cameroon-ai-tour-guide-api.onrender.com
+# or http://127.0.0.1:8000 for local API
+```
 
-Le backend est réglé pour la vitesse :
-- modèle `Qwen/Qwen3.5-9B:fastest`
-- réponses plus courtes (`LLM_MAX_TOKENS=380`)
-- recherche web sautée si la knowledge base locale suffit
-- timeout web 4s max
+```bash
+cd frontend-web && npm install && npm run build && npm run start
+```

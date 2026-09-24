@@ -92,7 +92,20 @@ Render : prévoir un service Node/static séparé pointant sur `frontend-web` (E
 - Pages : Home, Explorer, Destinations, Assistant, Vision, Planifier, Hotels, Booking, Mon voyage
 - Backend unavailable → messages utilisateur génériques
 
-## Phase 3.1 — Structured ChatResponse
+## Phase 3.2 — Production deployment
+
+See `docs/phase3.2-deployment.md`.
+
+Dual frontend during validation:
+
+| Service | URL | Role |
+|---------|-----|------|
+| `smartmboa-tour` | https://smartmboa-tour.onrender.com | Expo static (legacy) |
+| `smartmboa-web` | https://smartmboa-web.onrender.com | Next.js (new) |
+| `cameroon-ai-tour-guide-api` | https://cameroon-ai-tour-guide-api.onrender.com | FastAPI |
+
+Frontend env: `NEXT_PUBLIC_API_URL` only (no secrets).
+Voice: `getVoiceWebSocketUrl()` → `wss://…/api/voice/session`.
 
 HTTP `/api/chat` may now include:
 

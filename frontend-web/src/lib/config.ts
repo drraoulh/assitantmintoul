@@ -1,4 +1,11 @@
-/** Public API base — never hardcode localhost in production builds. */
+/** Public API + WebSocket URL helpers for SmartMboa Tour (Next.js). */
+
+/**
+ * REST API base URL.
+ * - Prefer `NEXT_PUBLIC_API_URL` (set in production / .env.local).
+ * - Dev fallback: local FastAPI.
+ * - Production fallback without env: existing Render API (never invent domains).
+ */
 export function getApiBaseUrl(): string {
   const fromEnv = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
   if (fromEnv) {
@@ -7,7 +14,28 @@ export function getApiBaseUrl(): string {
   if (process.env.NODE_ENV === 'development') {
     return 'http://127.0.0.1:8000';
   }
+  // Known production API from render.yaml — do not invent custom domains.
   return 'https://cameroon-ai-tour-guide-api.onrender.com';
+}
+
+/** @deprecated Prefer getApiBaseUrl(); kept for clarity at call sites. */
+export const API_BASE_URL = getApiBaseUrl();
+
+/**
+ * Voice WebSocket URL derived from the HTTP API base.
+ * https → wss, http → ws. Never use ws:// on an HTTPS page.
+ */
+export function getVoiceWebSocketUrl(): string {
+  const http = getApiBaseUrl().replace(/\/$/, '');
+  let wsRoot: string;
+  if (http.startsWith('https://')) {
+    wsRoot = `wss://${http.slice('https://'.length)}`;
+  } else if (http.startsWith('http://')) {
+    wsRoot = `ws://${http.slice('http://'.length)}`;
+  } else {
+    wsRoot = http;
+  }
+  return `${wsRoot}/api/voice/session`;
 }
 
 export const APP_NAME = 'SmartMboa Tour';
