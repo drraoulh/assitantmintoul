@@ -137,6 +137,8 @@ def evidence_is_insufficient_for_llm(
     intent: IntentResult,
     knowledge: KnowledgeResult,
     plan: TourismPlan | None,
+    *,
+    user_query: str | None = None,
 ) -> bool:
     """Pre-generation gate: skip Qwen when there is nothing verified to formulate."""
     intent_name = intent.intent or ""
@@ -155,10 +157,28 @@ def evidence_is_insufficient_for_llm(
         "TOURISM_INFO",
         "WEB_SEARCH",
     }
-    if not fact_heavy:
-        return False
+    interests = {fold(i) for i in (intent.interests or [])}
+    qfold = fold(user_query or "")
+    foodish = bool(
+        interests
+        & {"food", "restaurant", "cuisine", "gastronomie", "fish", "poisson"}
+    ) or any(
+        tok in qfold
+        for tok in (
+            "eat fish",
+            "manger du poisson",
+            "restaurant",
+            "where to eat",
+            "ou manger",
+            "où manger",
+        )
+    )
     if intent_name == "BOOKING":
         return True  # always deterministic booking message
+    if foodish and not knowledge.places and not knowledge.knowledge:
+        return True
+    if not fact_heavy:
+        return False
     if plan is not None and plan.feasibility == "INSUFFICIENT_DATA" and not plan.selected_places:
         if not knowledge.places and not knowledge.knowledge:
             return True

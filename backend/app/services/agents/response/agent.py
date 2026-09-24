@@ -100,7 +100,7 @@ class ResponseGenerator:
         grounding_report = None
 
         skip_llm = enforce and evidence_is_insufficient_for_llm(
-            intent_result, knowledge_result, tourism_plan
+            intent_result, knowledge_result, tourism_plan, user_query=user_query
         )
         use_llm = (
             self._llm is not None

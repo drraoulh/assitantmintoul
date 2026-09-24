@@ -834,7 +834,9 @@ class HuggingFaceAIService(AIService):
 
         settings = _gs()
         enforce = bool(settings.grounding_enforcement_enabled)
-        skip_llm = enforce and evidence_is_insufficient_for_llm(intent, knowledge, plan)
+        skip_llm = enforce and evidence_is_insufficient_for_llm(
+            intent, knowledge, plan, user_query=message
+        )
 
         orch_obs: dict[str, Any] = {
             "request_id": ctx.request_id,
