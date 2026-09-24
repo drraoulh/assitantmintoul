@@ -212,6 +212,12 @@ export function SiteFooter() {
           <p className="mt-3 max-w-sm text-sm text-white/75">
             Découvrez le Cameroun autrement.
           </p>
+          <Link
+            href="/?reset_intro=1"
+            className="mt-4 inline-block text-sm text-[var(--gold-soft)] underline-offset-4 hover:underline"
+          >
+            Revoir l&apos;introduction
+          </Link>
         </div>
         <div className="grid grid-cols-2 gap-3 text-sm text-white/80">
           {[
