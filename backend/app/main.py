@@ -50,11 +50,11 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
             )
             try:
                 await client.get("/", timeout=httpx.Timeout(8.0, connect=5.0))
-                print(f"Inference HTTP warm: {label} TLS ready ({base})")
+                print(f"Inference HTTP warm: {label} TLS ready ({base})", flush=True)
             except Exception as warm_exc:  # noqa: BLE001 - warm is best-effort
-                print(f"Inference HTTP warm skipped for {label}: {warm_exc}")
+                print(f"Inference HTTP warm skipped for {label}: {warm_exc}", flush=True)
     except Exception as exc:  # noqa: BLE001
-        print(f"Inference HTTP warm-up skipped: {exc}")
+        print(f"Inference HTTP warm-up skipped: {exc}", flush=True)
     # Phase 1: hydrate HybridRAG (Supabase merge + TF-IDF) before first request.
     try:
         from app.services.rag.factory import get_rag_service

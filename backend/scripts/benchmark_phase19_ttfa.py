@@ -186,6 +186,17 @@ async def run_inprocess_turn(
         first_frag: str | None = None
         reply = ""
         error = None
+        tts_task: asyncio.Task | None = None
+        fish: dict = {}
+
+        async def _tts_first(frag: str) -> None:
+            mark("tts_request_start")
+            async for chunk in speech.synthesize_stream(frag, trace=fish):
+                if chunk:
+                    mark("tts_first_audio_byte")
+                    mark("frontend_playback_start")
+                    break
+
         async for event in ai.stream_response(
             question,
             conversation_id,
@@ -198,8 +209,6 @@ async def run_inprocess_turn(
             etype = event.get("type")
             if etype == "token":
                 if "llm_prepare_end" not in marks:
-                    # First token event means prepare+provider done from app view;
-                    # finer splits come from llm_trace.
                     mark("llm_prepare_end")
                 piece = str(event.get("text") or "")
                 if not first_token:
@@ -212,6 +221,7 @@ async def run_inprocess_turn(
                     first_frag = ready[0]
                     mark("llm_first_phrase")
                     first_flush = False
+                    tts_task = asyncio.create_task(_tts_first(first_frag))
             elif etype == "done":
                 mark("llm_end")
                 reply = str(event.get("text") or reply)
@@ -220,6 +230,7 @@ async def run_inprocess_turn(
                     for part in vc.flush_remainder(buf):
                         first_frag = part
                         mark("llm_first_phrase")
+                        tts_task = asyncio.create_task(_tts_first(first_frag))
                         break
                 break
             elif etype == "error":
@@ -230,29 +241,34 @@ async def run_inprocess_turn(
             row["error"] = error
             return row
 
-        frag = (first_frag or reply[:80] or "").strip()
-        if not frag:
+        if tts_task is not None:
+            try:
+                await tts_task
+            except Exception as exc:  # noqa: BLE001
+                row["error"] = _err(str(exc))
+                return row
+        elif first_frag:
+            await _tts_first(first_frag)
+        else:
             row["error"] = "empty_fragment"
             return row
 
-        mark("tts_request_start")
-        fish: dict = {}
-        async for chunk in speech.synthesize_stream(frag, trace=fish):
-            if chunk:
-                mark("tts_first_audio_byte")
-                mark("frontend_playback_start")  # early-play ≈ first byte ready
-                break
+        if "frontend_playback_start" not in marks:
+            row["error"] = "no_first_audio"
+            return row
+
         if fish.get("tts_complete") is not None:
             marks["tts_complete"] = round(
                 (float(fish["tts_complete"]) - wall0) * 1000, 1
             )
 
+        frag = first_frag or ""
         lt = trace.as_dict()
         store = (lt.get("meta") or {}).get("store") or {}
         row.update(
             {
                 "valid": True,
-                "conversation_id": conversation_id,
+                "conversation_id": row.get("conversation_id") or conversation_id,
                 "marks_ms": marks,
                 "TTFA_ms": marks.get("frontend_playback_start"),
                 "prompt_prep_ms": lt.get("llm_prepare_ms"),
@@ -505,18 +521,23 @@ async def main_async(args: argparse.Namespace) -> int:
     print("=== Phase 1.9 TTFA ===")
     print(f"model={settings.hf_model_id} runs={args.runs}")
 
-    # Prompt audit
+    rag = get_rag_service()
+    if callable(getattr(rag, "warm", None)):
+        await rag.warm()
+        print("RAG warmed")
+
+    # Prompt audit (after RAG warm so first retrieve is not a cold embedding hit)
     print("\n--- prompt profiles ---")
     profiles = []
     for qid, q in QUESTIONS[:3]:
-        p = await measure_prompt_profile(q)
-        profiles.append(p)
+        prof = await measure_prompt_profile(q)
+        profiles.append(prof)
         print(
-            f"  {qid}: total_tok≈{p['total_tokens_est']} sys≈{p['system_tokens_est']} "
-            f"rag={p['rag_ms']} ground={p['grounding_ms']} prepare={p['prepare_ms']}"
+            f"  {qid}: total_tok≈{prof['total_tokens_est']} sys≈{prof['system_tokens_est']} "
+            f"rag={prof['rag_ms']} ground={prof['grounding_ms']} prepare={prof['prepare_ms']}"
         )
 
-    avg_tok = statistics.mean([p["total_tokens_est"] for p in profiles])
+    avg_tok = statistics.mean([prof["total_tokens_est"] for prof in profiles])
     audit_summary = (
         f"Prompt voice brief ≈ {avg_tok:.0f} tokens totaux (sys+KB+user). "
         f"max_tokens={settings.llm_voice_max_tokens}, history={settings.llm_voice_history_messages}. "
@@ -524,10 +545,6 @@ async def main_async(args: argparse.Namespace) -> int:
         "Phase 1.8 app_ttft warm ≈300–420 ms (écart = prepare/grounding + variance provider). "
         "Les pics ~2–3 s sont surtout **provider/HF cold or queue**, pas le store (déjà ~0)."
     )
-
-    rag = get_rag_service()
-    if callable(getattr(rag, "warm", None)):
-        await rag.warm()
 
     # Warm HF TLS if optimization flag path already deployed; always warm here for fair bench
     print("\n--- warm HF HTTP client ---")
@@ -566,7 +583,11 @@ async def main_async(args: argparse.Namespace) -> int:
     # Chunker A/B (in-process), then restore default via run_inprocess_turn
     print("\n=== Chunker A/B ===")
     chunker_ab: dict[str, Any] = {}
-    for soft, hard in [(32, 48), (32, 40), (28, 32)]:
+    chunker_pairs = [(32, 48), (32, 40), (28, 32)]
+    if args.skip_chunker_ab:
+        chunker_pairs = []
+        print("  skipped (--skip-chunker-ab)")
+    for soft, hard in chunker_pairs:
         if consecutive_402 >= 3:
             break
         label = f"soft{soft}_hard{hard}"
@@ -603,6 +624,7 @@ async def main_async(args: argparse.Namespace) -> int:
             best_med = med
             best_label = label
     print(f"chunker best={best_label} median_TTFA={best_med}")
+    consecutive_402 = 0  # allow scenario runs even if AB hit 402
 
     # Scenario A warm (5)
     print("\n=== Scenario A warm ===")
@@ -848,6 +870,7 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--runs", type=int, default=5)
     p.add_argument("--base-url", default="http://127.0.0.1:8000")
+    p.add_argument("--skip-chunker-ab", action="store_true")
     args = p.parse_args()
     raise SystemExit(asyncio.run(main_async(args)))
 
