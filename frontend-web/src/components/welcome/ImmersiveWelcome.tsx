@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { CameroonSilhouette } from '@/components/maps/CameroonSilhouette';
 import { APP_NAME } from '@/lib/config';
@@ -25,16 +25,26 @@ type Phase =
   | 'exit'
   | 'done';
 
-const SCENES: { phase: Phase; duration: number }[] = [
-  { phase: 'welcome', duration: 1100 },
-  { phase: 'mountains', duration: 750 },
-  { phase: 'forests', duration: 750 },
-  { phase: 'beaches', duration: 750 },
-  { phase: 'cultures', duration: 750 },
-  { phase: 'stories', duration: 750 },
-  { phase: 'miniature', duration: 1200 },
-  { phase: 'brand', duration: 1400 },
-  { phase: 'cta', duration: 999999 },
+/** Pause after typing finishes so the line can be read. */
+const HOLD_AFTER_TYPE_MS = 1400;
+const HOLD_AFTER_WELCOME_MS = 1800;
+const HOLD_AFTER_MINIATURE_MS = 2200;
+const HOLD_AFTER_BRAND_MS = 1600;
+
+/** ~ms per character — slow enough to feel handwritten / typed. */
+const MS_PER_CHAR = 72;
+const MS_PER_CHAR_TITLE = 88;
+
+const SCENE_ORDER: Phase[] = [
+  'welcome',
+  'mountains',
+  'forests',
+  'beaches',
+  'cultures',
+  'stories',
+  'miniature',
+  'brand',
+  'cta',
 ];
 
 function markSeen() {
@@ -58,6 +68,24 @@ export function hasSeenIntro(): boolean {
   }
 }
 
+/** Light haptic — safe no-op when Vibration API is unavailable. */
+function haptic(pattern: number | number[] = 18) {
+  try {
+    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      navigator.vibrate(pattern);
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+function holdFor(phase: Phase): number {
+  if (phase === 'welcome') return HOLD_AFTER_WELCOME_MS;
+  if (phase === 'miniature') return HOLD_AFTER_MINIATURE_MS;
+  if (phase === 'brand') return HOLD_AFTER_BRAND_MS;
+  return HOLD_AFTER_TYPE_MS;
+}
+
 export function ImmersiveWelcome({
   onComplete,
 }: {
@@ -66,9 +94,12 @@ export function ImmersiveWelcome({
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<Phase>('boot');
   const [visible, setVisible] = useState(true);
+  const sceneIndexRef = useRef(0);
+  const holdTimerRef = useRef<number | undefined>(undefined);
 
   const finish = useCallback(() => {
     markSeen();
+    haptic([30, 40, 30]);
     setPhase('exit');
     window.setTimeout(
       () => {
@@ -79,9 +110,40 @@ export function ImmersiveWelcome({
     );
   }, [onComplete, reduce]);
 
+  const goNextScene = useCallback(() => {
+    const next = sceneIndexRef.current + 1;
+    if (next >= SCENE_ORDER.length) {
+      setPhase('cta');
+      haptic(28);
+      return;
+    }
+    sceneIndexRef.current = next;
+    const nextPhase = SCENE_ORDER[next];
+    setPhase(nextPhase);
+    haptic(nextPhase === 'brand' || nextPhase === 'miniature' ? [22, 35, 22] : 22);
+  }, []);
+
+  const onSceneTyped = useCallback(
+    (forPhase: Phase) => {
+      if (forPhase === 'cta' || forPhase === 'exit' || forPhase === 'done') return;
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+      // Soft “line complete” tick
+      haptic(12);
+      const delay = reduce ? 280 : holdFor(forPhase);
+      holdTimerRef.current = window.setTimeout(() => {
+        if (forPhase === 'brand') {
+          setPhase('cta');
+          haptic(28);
+          return;
+        }
+        goNextScene();
+      }, delay);
+    },
+    [goNextScene, reduce],
+  );
+
   useEffect(() => {
     if (hasSeenIntro()) {
-      // Short returning-visitor transition
       setPhase('exit');
       const t = window.setTimeout(
         () => {
@@ -93,32 +155,12 @@ export function ImmersiveWelcome({
       return () => clearTimeout(t);
     }
 
+    sceneIndexRef.current = 0;
     setPhase('welcome');
-    let i = 0;
-    let timer: number | undefined;
+    haptic([18, 30, 18]);
 
-    const advance = () => {
-      const scene = SCENES[i];
-      if (!scene || scene.phase === 'cta') {
-        setPhase('cta');
-        return;
-      }
-      setPhase(scene.phase);
-      if (reduce) {
-        // Jump quickly through scenes for a11y
-        i += 1;
-        timer = window.setTimeout(advance, scene.phase === 'welcome' ? 400 : 180);
-        return;
-      }
-      timer = window.setTimeout(() => {
-        i += 1;
-        advance();
-      }, scene.duration);
-    };
-
-    advance();
     return () => {
-      if (timer) clearTimeout(timer);
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
     };
   }, [onComplete, reduce]);
 
@@ -142,12 +184,11 @@ export function ImmersiveWelcome({
           role="dialog"
           aria-label="Bienvenue sur SmartMboa"
         >
-          {/* Background */}
           <motion.div
             className="absolute inset-0"
             initial={reduce ? { scale: 1 } : { scale: 1.02 }}
             animate={reduce ? { scale: 1 } : { scale: 1.06 }}
-            transition={{ duration: 10, ease: 'linear' }}
+            transition={{ duration: 14, ease: 'linear' }}
           >
             <Image
               src="/images/hero-landscape.jpg"
@@ -164,7 +205,6 @@ export function ImmersiveWelcome({
                   'linear-gradient(180deg, rgba(11,61,46,0.45) 0%, rgba(11,61,46,0.55) 45%, rgba(11,61,46,0.72) 100%)',
               }}
             />
-            {/* Subtle light sweep */}
             {!reduce ? (
               <motion.div
                 className="absolute inset-0 opacity-30"
@@ -173,12 +213,11 @@ export function ImmersiveWelcome({
                     'radial-gradient(ellipse 50% 40% at 70% 20%, rgba(214,168,79,0.35), transparent 60%)',
                 }}
                 animate={{ opacity: [0.2, 0.4, 0.25] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
               />
             ) : null}
           </motion.div>
 
-          {/* Skip */}
           {phase !== 'exit' ? (
             <button
               type="button"
@@ -190,81 +229,114 @@ export function ImmersiveWelcome({
             </button>
           ) : null}
 
-          {/* Content */}
           <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 pb-16 pt-20 text-center text-white">
             <motion.div
-              animate={
-                mapSmall
-                  ? { scale: 0.78, y: -12 }
-                  : { scale: 1, y: 0 }
-              }
-              transition={{ duration: 0.7, ease: EASE_OUT }}
+              animate={mapSmall ? { scale: 0.78, y: -12 } : { scale: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: EASE_OUT }}
             >
               <CameroonSilhouette size="lg" showPoints={phase !== 'boot'} />
             </motion.div>
 
-            <div className="mt-6 min-h-[9rem] w-full max-w-lg">
+            <div className="mt-6 min-h-[10rem] w-full max-w-lg">
               <AnimatePresence mode="wait">
                 {phase === 'welcome' ? (
                   <SceneKey key="welcome">
-                    <p className="text-xs font-semibold tracking-[0.35em] text-[var(--gold-soft)]">
-                      BIENVENUE
-                    </p>
-                    <p className="mt-2 font-display text-3xl font-semibold md:text-4xl">
-                      AU CAMEROUN
-                    </p>
+                    <TypewriterBlock
+                      lines={[
+                        { text: 'BIENVENUE', className: 'text-xs font-semibold tracking-[0.35em] text-[var(--gold-soft)]', msPerChar: MS_PER_CHAR_TITLE },
+                        { text: 'AU CAMEROUN', className: 'mt-2 font-display text-3xl font-semibold md:text-4xl', msPerChar: MS_PER_CHAR_TITLE },
+                      ]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('welcome')}
+                    />
                   </SceneKey>
                 ) : null}
 
                 {phase === 'mountains' ? (
                   <SceneKey key="mountains">
-                    <p className="font-display text-2xl md:text-3xl">Des montagnes…</p>
+                    <TypewriterBlock
+                      lines={[{ text: 'Des montagnes…', className: 'font-display text-2xl md:text-3xl' }]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('mountains')}
+                    />
                   </SceneKey>
                 ) : null}
                 {phase === 'forests' ? (
                   <SceneKey key="forests">
-                    <p className="font-display text-2xl md:text-3xl">Des forêts…</p>
+                    <TypewriterBlock
+                      lines={[{ text: 'Des forêts…', className: 'font-display text-2xl md:text-3xl' }]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('forests')}
+                    />
                   </SceneKey>
                 ) : null}
                 {phase === 'beaches' ? (
                   <SceneKey key="beaches">
-                    <p className="font-display text-2xl md:text-3xl">Des plages…</p>
+                    <TypewriterBlock
+                      lines={[{ text: 'Des plages…', className: 'font-display text-2xl md:text-3xl' }]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('beaches')}
+                    />
                   </SceneKey>
                 ) : null}
                 {phase === 'cultures' ? (
                   <SceneKey key="cultures">
-                    <p className="font-display text-2xl md:text-3xl">Des cultures…</p>
+                    <TypewriterBlock
+                      lines={[{ text: 'Des cultures…', className: 'font-display text-2xl md:text-3xl' }]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('cultures')}
+                    />
                   </SceneKey>
                 ) : null}
                 {phase === 'stories' ? (
                   <SceneKey key="stories">
-                    <p className="font-display text-2xl md:text-3xl">Des histoires…</p>
+                    <TypewriterBlock
+                      lines={[{ text: 'Des histoires…', className: 'font-display text-2xl md:text-3xl' }]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('stories')}
+                    />
                   </SceneKey>
                 ) : null}
                 {phase === 'miniature' ? (
                   <SceneKey key="miniature">
-                    <p className="font-display text-2xl font-semibold md:text-3xl">
-                      L&apos;Afrique en miniature.
-                    </p>
-                    <p className="mt-3 text-base text-white/85 md:text-lg">
-                      Un pays à découvrir.
-                      <br />
-                      Une histoire à vivre.
-                    </p>
+                    <TypewriterBlock
+                      lines={[
+                        { text: "L'Afrique en miniature.", className: 'font-display text-2xl font-semibold md:text-3xl', msPerChar: MS_PER_CHAR },
+                        { text: 'Un pays à découvrir.', className: 'mt-3 text-base text-white/85 md:text-lg', delayBefore: 420 },
+                        { text: 'Une histoire à vivre.', className: 'text-base text-white/85 md:text-lg', delayBefore: 280 },
+                      ]}
+                      reduce={!!reduce}
+                      onComplete={() => onSceneTyped('miniature')}
+                    />
                   </SceneKey>
                 ) : null}
 
                 {phase === 'brand' || phase === 'cta' ? (
                   <SceneKey key="brand">
-                    <p className="font-display text-4xl font-bold tracking-tight md:text-5xl">
-                      {APP_NAME.toUpperCase()}
-                    </p>
-                    <p className="mt-3 text-base text-white/90 md:text-lg">
-                      Votre guide intelligent pour découvrir le Cameroun.
-                    </p>
-                    <p className="mt-2 text-sm tracking-wide text-[var(--gold-soft)]">
-                      Explorez. Découvrez. Planifiez. Voyagez.
-                    </p>
+                    <TypewriterBlock
+                      lines={[
+                        {
+                          text: APP_NAME.toUpperCase(),
+                          className: 'font-display text-4xl font-bold tracking-tight md:text-5xl',
+                          msPerChar: MS_PER_CHAR_TITLE,
+                        },
+                        {
+                          text: 'Votre guide intelligent pour découvrir le Cameroun.',
+                          className: 'mt-3 text-base text-white/90 md:text-lg',
+                          delayBefore: 500,
+                        },
+                        {
+                          text: 'Explorez. Découvrez. Planifiez. Voyagez.',
+                          className: 'mt-2 text-sm tracking-wide text-[var(--gold-soft)]',
+                          delayBefore: 400,
+                          msPerChar: 58,
+                        },
+                      ]}
+                      reduce={!!reduce}
+                      // Only drive advance once when entering brand; CTA stays until click
+                      onComplete={phase === 'brand' ? () => onSceneTyped('brand') : undefined}
+                      showCursor={phase === 'brand'}
+                    />
                   </SceneKey>
                 ) : null}
               </AnimatePresence>
@@ -279,7 +351,7 @@ export function ImmersiveWelcome({
                 animate={{ opacity: 1, y: 0 }}
                 whileHover={reduce ? undefined : { x: 4 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ duration: 0.45, ease: EASE_OUT }}
+                transition={{ duration: 0.55, ease: EASE_OUT, delay: phase === 'cta' ? 0 : 0.35 }}
                 aria-label="Commencer l'exploration"
               >
                 Commencer l&apos;exploration
@@ -297,12 +369,121 @@ function SceneKey({ children }: { children: React.ReactNode }) {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 14 }}
+      initial={reduce ? { opacity: 0 } : { opacity: 0, y: 10 }}
       animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -10 }}
-      transition={{ duration: reduce ? 0.15 : 0.45, ease: EASE_OUT }}
+      exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+      transition={{ duration: reduce ? 0.15 : 0.55, ease: EASE_OUT }}
     >
       {children}
     </motion.div>
+  );
+}
+
+type TypeLine = {
+  text: string;
+  className?: string;
+  msPerChar?: number;
+  /** Extra pause before this line starts. */
+  delayBefore?: number;
+};
+
+function TypewriterBlock({
+  lines,
+  reduce,
+  onComplete,
+  showCursor = true,
+}: {
+  lines: TypeLine[];
+  reduce: boolean;
+  onComplete?: () => void;
+  showCursor?: boolean;
+}) {
+  const [lineIndex, setLineIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [started, setStarted] = useState(false);
+  const [done, setDone] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
+  // Snapshot lines once — parent remounts this block per scene via AnimatePresence key
+  const linesRef = useRef(lines);
+  const current = linesRef.current[lineIndex];
+  const ms = current?.msPerChar ?? MS_PER_CHAR;
+
+  useEffect(() => {
+    if (!reduce) return;
+    setDone(true);
+    const t = window.setTimeout(() => onCompleteRef.current?.(), 80);
+    return () => clearTimeout(t);
+  }, [reduce]);
+
+  useEffect(() => {
+    if (reduce) return;
+    const delay = linesRef.current[0]?.delayBefore ?? 220;
+    const t = window.setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(t);
+  }, [reduce]);
+
+  useEffect(() => {
+    if (reduce || !started || !current || done) return;
+
+    if (charIndex >= current.text.length) {
+      if (lineIndex >= linesRef.current.length - 1) {
+        setDone(true);
+        const t = window.setTimeout(() => onCompleteRef.current?.(), 160);
+        return () => clearTimeout(t);
+      }
+      const nextDelay = linesRef.current[lineIndex + 1]?.delayBefore ?? 380;
+      const t = window.setTimeout(() => {
+        setLineIndex((i) => i + 1);
+        setCharIndex(0);
+      }, nextDelay);
+      return () => clearTimeout(t);
+    }
+
+    const t = window.setTimeout(() => {
+      const nextChar = current.text[charIndex];
+      // Soft key-like ticks (skip spaces / punctuation) — writing feel on phone
+      if (nextChar && !/\s|[.…,;:!?]/.test(nextChar)) {
+        haptic(5);
+      }
+      setCharIndex((c) => c + 1);
+    }, ms);
+
+    return () => clearTimeout(t);
+  }, [charIndex, current, done, lineIndex, ms, reduce, started]);
+
+  if (reduce) {
+    return (
+      <div aria-live="polite">
+        {linesRef.current.map((line) => (
+          <p key={line.text} className={line.className}>
+            {line.text}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div aria-live="polite">
+      {linesRef.current.map((line, i) => {
+        if (i > lineIndex) return null;
+        const shown =
+          i < lineIndex ? line.text : line.text.slice(0, charIndex);
+        const isActive = i === lineIndex && !done;
+        return (
+          <p key={`${line.text}-${i}`} className={line.className}>
+            {shown}
+            {showCursor && isActive ? (
+              <span
+                className="ml-0.5 inline-block h-[0.95em] w-[0.09em] translate-y-[0.06em] animate-pulse bg-[var(--gold-soft)] align-baseline"
+                aria-hidden
+              />
+            ) : null}
+          </p>
+        );
+      })}
+    </div>
   );
 }
