@@ -29,6 +29,21 @@ _LIVE_NEED = re.compile(
     re.IGNORECASE,
 )
 
+# Phase 1.9: static voice/text prompts without KB/web (skip_kb routes).
+_VOICE_PROMPT_CACHE: dict[str, str] = {}
+_TEXT_PROMPT_CACHE: dict[str, str] = {}
+
+
+def _static_system_prompt(*, brief: bool, locale: str) -> str:
+    cache = _VOICE_PROMPT_CACHE if brief else _TEXT_PROMPT_CACHE
+    if locale not in cache:
+        prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
+        style = VOICE_STYLE_PROMPT if brief else TEXT_STYLE_PROMPT
+        prompt = f"{prompt.rstrip()}\n\n{style}\n"
+        locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
+        cache[locale] = f"{prompt.rstrip()}\n\n{locale_block}"
+    return cache[locale]
+
 
 @dataclass
 class GroundingResult:
@@ -108,14 +123,7 @@ async def build_grounded_system_prompt(
         phases["rag"] = 0.0
         phases["web"] = 0.0
         prompt_t0 = time.perf_counter()
-        prompt = build_system_prompt(SYSTEM_PROMPT, "", "")
-        if brief:
-            prompt = f"{prompt.rstrip()}\n\n{VOICE_STYLE_PROMPT}\n"
-        else:
-            prompt = f"{prompt.rstrip()}\n\n{TEXT_STYLE_PROMPT}\n"
-        locale_block = LOCALE_PROMPTS.get(locale) or LOCALE_PROMPTS["fr"]
-        # Locale hard rule last — models weight the final instruction most.
-        prompt = f"{prompt.rstrip()}\n\n{locale_block}"
+        prompt = _static_system_prompt(brief=brief, locale=locale)
         phases["prompt"] = round((time.perf_counter() - prompt_t0) * 1000, 1)
         phases["grounding"] = round((time.perf_counter() - started) * 1000, 1)
         logger.info(

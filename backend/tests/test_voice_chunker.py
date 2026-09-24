@@ -41,6 +41,13 @@ def test_first_hard_flush_word_boundary() -> None:
     assert leftover.startswith("mot") or leftover == ""
 
 
+def test_first_hard_threshold_is_40() -> None:
+    from app.services.speech import voice_chunker as vc
+
+    assert vc.FIRST_HARD == 40
+    assert vc.FIRST_SOFT == 32
+
+
 def test_later_chunk_waits_longer_than_first() -> None:
     short = "Une petite phrase sans point encore"
     r1, _ = split_ready_phrases(short, first_chunk=True)

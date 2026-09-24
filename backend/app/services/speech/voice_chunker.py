@@ -9,7 +9,7 @@ Strategy (documented):
 
 Thresholds (Unicode code points):
 - Sentence end minimum: 12
-- FIRST soft/hard: 32 / 48 (min soft body 20)
+- FIRST soft/hard: 32 / 40 (min soft body 20)
 - LATER soft/hard: 55 / 80 (min soft body 28)
 """
 
@@ -24,7 +24,7 @@ SENTENCE_MIN = 12
 
 FIRST_SOFT_MIN = 20
 FIRST_SOFT = 32
-FIRST_HARD = 48
+FIRST_HARD = 40  # Phase 1.9: was 48 — earlier first TTS flush without tiny fragments
 
 LATER_SOFT_MIN = 28
 LATER_SOFT = 55
