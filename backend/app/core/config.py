@@ -231,6 +231,12 @@ class Settings(BaseSettings):
         default=False,
         validation_alias=AliasChoices("AGENT_ORCHESTRATOR_OBSERVE"),
     )
+    # Canary-only: force orchestrator failure to exercise legacy fallback.
+    # Never enable in production.
+    agent_orchestrator_force_fail: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("AGENT_ORCHESTRATOR_FORCE_FAIL"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

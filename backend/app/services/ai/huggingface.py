@@ -625,6 +625,10 @@ class HuggingFaceAIService(AIService):
         )
 
         with timer.phase("orchestrator"):
+            if get_settings().agent_orchestrator_force_fail:
+                raise RuntimeError(
+                    "AGENT_ORCHESTRATOR_FORCE_FAIL canary injection"
+                )
             orch = AgentOrchestrator(
                 prefer_deterministic=True,
                 web_search=self._web,
