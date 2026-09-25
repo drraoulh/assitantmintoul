@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     template: `%s · ${APP_NAME}`,
   },
   description: APP_TAGLINE_FR,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   openGraph: {
     title: `${APP_NAME} — Découvrez le Cameroun avec l'IA`,
     description: 'Explorez les régions, planifiez un voyage et parlez à l’assistant SmartMboa.',
