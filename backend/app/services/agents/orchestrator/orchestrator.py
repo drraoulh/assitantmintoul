@@ -83,6 +83,7 @@ class AgentOrchestrator:
         image_context: bytes | None = None,
         image_mime: str = "image/jpeg",
         request_id: str | None = None,
+        conversation_context: str | None = None,
     ) -> OrchestrationContext:
         """Run Agents 1–3 only (no Agent 4). Used by true Qwen→TTS streaming."""
         started = time.perf_counter()
@@ -105,6 +106,7 @@ class AgentOrchestrator:
             mode="voice" if response_mode == "voice" else "text",
             request_id=rid,
             has_image=bool(image_context),
+            conversation_context=conversation_context,
         )
         timings.intent_ms = round((time.perf_counter() - t_intent) * 1000.0, 3)
         agents_called.append("intent")
@@ -204,7 +206,7 @@ class AgentOrchestrator:
         self,
         user_query: str,
         *,
-        conversation_context: Any = None,  # noqa: ARG002 — reserved for future turns
+        conversation_context: Any = None,
         mode: Mode | str = "text",
         language: str | None = None,
         locale: str | None = None,
@@ -213,6 +215,18 @@ class AgentOrchestrator:
         request_id: str | None = None,
     ) -> OrchestrationResult:
         started = time.perf_counter()
+        ctx_hint: str | None = None
+        if isinstance(conversation_context, str) and conversation_context.strip():
+            ctx_hint = conversation_context.strip()[:400]
+        elif isinstance(conversation_context, list):
+            # Compact last user turns for location anaphora only
+            bits: list[str] = []
+            for item in conversation_context[-4:]:
+                if isinstance(item, dict) and item.get("role") == "user":
+                    bits.append(str(item.get("content") or "")[:120])
+                elif isinstance(item, str):
+                    bits.append(item[:120])
+            ctx_hint = "\n".join(bits)[:400] if bits else None
         ctx = await self.prepare(
             user_query,
             mode=mode,
@@ -221,6 +235,7 @@ class AgentOrchestrator:
             image_context=image_context,
             image_mime=image_mime,
             request_id=request_id,
+            conversation_context=ctx_hint,
         )
         locale_eff = locale or language
         agents_called = list(ctx.agents_called)
@@ -389,6 +404,10 @@ class AgentOrchestrator:
                 user_query,
                 intent,
                 knowledge=knowledge,
+                conversation_context=(
+                    f"location={intent.location or intent.region or ''}; "
+                    f"missing={','.join((knowledge.missing_information if knowledge else [])[:4])}"
+                ),
                 request_id=request_id,
             )
         except Exception:  # noqa: BLE001

@@ -51,9 +51,41 @@ def test_validate_rejects_empty_snippets():
                 relevance_score=0.8,
                 tier=1,
             ),
-        ]
+        ],
+        query="nourriture traditionnelle Sud-Ouest Cameroun",
     )
     assert len(items) == 1
+    assert is_answerable(items) is True
+
+
+def test_validate_rejects_offtopic_france_hits():
+    items = validate_evidence(
+        [
+            WebEvidence(
+                title="Cannes",
+                url="https://fr.wikipedia.org/wiki/Cannes",
+                domain="fr.wikipedia.org",
+                snippet="Cannes est une commune française de la Côte d'Azur dans le Sud-Ouest.",
+                relevance_score=0.6,
+                tier=3,
+            ),
+            WebEvidence(
+                title="Ngondo",
+                url="https://fr.wikipedia.org/wiki/Ngondo",
+                domain="fr.wikipedia.org",
+                snippet=(
+                    "Le ngondo est une fête traditionnelle et rituelle camerounaise "
+                    "articulée autour d'un festival culturel du peuple Sawa."
+                ),
+                relevance_score=0.7,
+                tier=3,
+            ),
+        ],
+        query="Recherche sur Internet les festivals du Sud-Ouest Cameroun",
+        intent="WEB_SEARCH",
+    )
+    assert len(items) == 1
+    assert "cameroun" in items[0].snippet.casefold() or "camerounaise" in items[0].snippet.casefold()
     assert is_answerable(items) is True
 
 
@@ -71,7 +103,45 @@ def test_build_queries_food_southwest():
         missing=["knowledge_chunks"],
     )
     assert qs
+    joined = " ".join(qs).casefold()
+    assert "cameroun" in joined or "cameroon" in joined
     assert any("food" in q.casefold() or "cuisine" in q.casefold() or "plat" in q.casefold() for q in qs)
+
+
+def test_intent_events_and_explicit_web():
+    from app.services.agents.intent.router import classify_intent
+
+    fest = classify_intent(
+        "Recherche sur Internet les festivals du Sud-Ouest.",
+        locale="fr",
+        mode="text",
+    )
+    assert fest.intent == "WEB_SEARCH"
+    assert fest.needs_web is True
+
+    month = classify_intent(
+        "Quels événements touristiques ont lieu ce mois-ci ?",
+        locale="fr",
+        mode="text",
+    )
+    assert month.intent == "WEB_SEARCH"
+    assert month.needs_web is True
+
+    capital = classify_intent(
+        "Quelle est la capitale du Cameroun ?",
+        locale="fr",
+        mode="text",
+    )
+    assert capital.intent == "SIMPLE_QA"
+    assert capital.needs_web is False
+
+    food = classify_intent(
+        "C'est quoi la nourriture traditionnelle au Sud-Ouest ?",
+        locale="fr",
+        mode="text",
+    )
+    assert food.intent == "FOOD"
+    assert food.location == "Sud-Ouest" or food.region == "Sud-Ouest"
 
 
 def test_should_request_web_food_missing_kb():

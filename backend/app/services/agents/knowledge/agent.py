@@ -138,13 +138,25 @@ class KnowledgeAgent:
         # Soft web fallback signal when tourism KB is thin (orchestrator gated by flag)
         if (
             settings.web_knowledge_fallback_enabled
-            and intent.intent in {"PLACE_SEARCH", "TOURISM_INFO", "PLACE_DETAILS", "NATURE", "CULTURE"}
+            and intent.intent
+            in {
+                "PLACE_SEARCH",
+                "TOURISM_INFO",
+                "PLACE_DETAILS",
+                "NATURE",
+                "CULTURE",
+                "FOOD",
+                "HOTEL",
+                "WEB_SEARCH",
+            }
             and completeness in {"NONE", "LOW"}
             and not geo_facts_count
         ):
             web_needed = True
-            if "matching_places" not in missing:
+            if "matching_places" not in missing and intent.intent != "FOOD":
                 missing = [*missing, "matching_places"]
+            if intent.intent == "FOOD" and "knowledge_chunks" not in missing:
+                missing = [*missing, "knowledge_chunks"]
 
         if places and knowledge:
             source = "hybrid"

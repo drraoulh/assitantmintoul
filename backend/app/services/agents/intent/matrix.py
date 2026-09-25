@@ -78,7 +78,11 @@ ROUTING_MATRIX: Mapping[IntentName, CapabilityFlags] = {
         needs_booking=True,
     ),
     Intent.VISION.value: CapabilityFlags(needs_vision=True),
-    Intent.WEB_SEARCH.value: CapabilityFlags(needs_web=True),
+    Intent.WEB_SEARCH.value: CapabilityFlags(
+        needs_knowledge=True,
+        needs_web=True,
+        optional_web=True,
+    ),
     Intent.CLARIFICATION.value: CapabilityFlags(needs_knowledge=True),
 }
 

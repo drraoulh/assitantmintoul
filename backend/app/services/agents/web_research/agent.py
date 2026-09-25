@@ -101,7 +101,7 @@ class WebResearchAgent:
         except Exception:  # noqa: BLE001
             logger.exception("web_research_failed request_id=%s", request_id)
 
-        evidence = validate_evidence(evidence)
+        evidence = validate_evidence(evidence, query=user_query, intent=intent.intent)
         facts = extract_key_facts(evidence)
         answerable = is_answerable(evidence) and bool(facts)
         confidence = 0.0

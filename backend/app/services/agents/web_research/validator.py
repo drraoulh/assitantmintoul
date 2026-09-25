@@ -23,6 +23,8 @@ _TIER2 = (
     "tourism237.com",
     "visitcameroon",
     "cameroon-tourisme",
+    "tourismeouestcameroun.com",
+    "ortoc",
 )
 
 # Tier 3 — specialized guides / encyclopedic
@@ -32,6 +34,43 @@ _TIER3 = (
     "britannica.com",
     "lonelyplanet.com",
     "roughguides.com",
+)
+
+_CAMEROON_MARKERS = (
+    "cameroun",
+    "cameroon",
+    "cameroonese",
+    "cameroonian",
+    "yaoundé",
+    "yaounde",
+    "douala",
+    "buea",
+    "limbe",
+    "limbé",
+    "kribi",
+    "bamenda",
+    "bafoussam",
+    "mintoul",
+    "mount cameroon",
+    "mont cameroun",
+)
+
+# Strong signals the hit is about France / Europe "Sud-Ouest", not Cameroon.
+_OFFTOPIC_MARKERS = (
+    "cannes",
+    "alpes-maritimes",
+    "côte d'azur",
+    "cote d'azur",
+    "périgueux",
+    "perigord",
+    "nouvelle-aquitaine",
+    "bordeaux",
+    "occitanie",
+    "île-de-france",
+    "ile-de-france",
+    "quai branly",
+    "république centrafricaine",
+    "central african",
 )
 
 
@@ -49,6 +88,13 @@ def source_tier(domain: str) -> int:
     d = (domain or "").lower()
     if not d:
         return 4
+    if d.endswith(".gov.cm") or d.endswith(".cm"):
+        # Prefer cm institutional hosts
+        for end in _TIER1:
+            if d == end or d.endswith("." + end) or end in d:
+                return 1
+        if d.endswith(".gov.cm"):
+            return 1
     for end in _TIER1:
         if d == end or d.endswith("." + end) or end in d:
             return 1
@@ -69,10 +115,149 @@ def score_hit(*, title: str, snippet: str, url: str, query: str) -> tuple[float,
     overlap = sum(1 for t in q_tokens if t in blob)
     base = {1: 0.85, 2: 0.7, 3: 0.55, 4: 0.35}.get(tier, 0.3)
     bonus = min(0.15, 0.03 * overlap)
-    return min(0.95, base + bonus), tier
+    # Cameroon relevance boost / penalty
+    if any(m in blob for m in _CAMEROON_MARKERS) or domain.endswith(".cm"):
+        bonus += 0.08
+    if any(m in blob for m in _OFFTOPIC_MARKERS):
+        bonus -= 0.25
+    return max(0.05, min(0.95, base + bonus)), tier
 
 
-def validate_evidence(items: list[WebEvidence]) -> list[WebEvidence]:
+_NEIGHBOR_ONLY = (
+    "république fédérale du nigeria",
+    "republique federale du nigeria",
+    "république du tchad",
+    "republique du tchad",
+    "central african republic",
+    "république centrafricaine",
+)
+
+_TOPIC_HINTS = {
+    "FOOD": (
+        "cuisine",
+        "gastronomie",
+        "plat",
+        "food",
+        "dish",
+        "manger",
+        "ndolé",
+        "ndole",
+        "eru",
+        "plantain",
+        "manioc",
+        "poisson",
+    ),
+    "WEB_SEARCH": (
+        "festival",
+        "événement",
+        "evenement",
+        "event",
+        "foire",
+        "concert",
+        "tourisme",
+        "tourism",
+        "culture",
+    ),
+    "CULTURE": ("culture", "festival", "patrimoine", "heritage", "tradition"),
+}
+
+
+def _topic_overlap(blob: str, intent: str, query: str) -> bool:
+    hints = _TOPIC_HINTS.get(intent) or ()
+    if hints and any(h in blob for h in hints):
+        return True
+    # Fall back to meaningful query tokens (>3 chars), excluding stopwords
+    stop = {
+        "quoi",
+        "cest",
+        "c'est",
+        "les",
+        "des",
+        "une",
+        "pour",
+        "dans",
+        "avec",
+        "sur",
+        "internet",
+        "recherche",
+        "quels",
+        "quelle",
+        "ont",
+        "lieu",
+        "this",
+        "what",
+        "the",
+        "and",
+        "for",
+    }
+    tokens = [
+        t
+        for t in query.casefold().replace("?", " ").replace("'", " ").split()
+        if len(t) > 3 and t not in stop
+    ]
+    if not tokens:
+        return True
+    hits = sum(1 for t in tokens if t in blob)
+    return hits >= max(1, min(2, len(tokens) // 3))
+
+
+def _is_cameroon_relevant(
+    ev: WebEvidence,
+    *,
+    query: str,
+    intent: str = "",
+) -> bool:
+    """Reject European / unrelated hits when the user asked about Cameroon tourism."""
+    q = (query or "").casefold()
+    needs_cm = (
+        "cameroun" in q
+        or "cameroon" in q
+        or "sud-ouest" in q
+        or "south-west" in q
+        or "southwest" in q
+        or "mintoul" in q
+        or bool(intent)
+    )
+    if not needs_cm:
+        return True
+    blob = f"{ev.title} {ev.snippet} {ev.domain}".casefold()
+    if any(m in blob for m in _OFFTOPIC_MARKERS):
+        if not any(m in blob for m in _CAMEROON_MARKERS) and not (ev.domain or "").endswith(
+            ".cm"
+        ):
+            return False
+    # Neighbor-country pages that barely mention Cameroon
+    if any(m in blob for m in _NEIGHBOR_ONLY) and "cameroun" not in blob and "cameroon" not in blob:
+        return False
+    cm_ok = any(m in blob for m in _CAMEROON_MARKERS) or (ev.domain or "").endswith(".cm")
+    if not cm_ok and ev.tier <= 2 and (
+        "tourismo" in (ev.domain or "")
+        or "tourism237" in (ev.domain or "")
+        or "cameroun" in (ev.domain or "")
+    ):
+        cm_ok = True
+    if not cm_ok:
+        return False
+    # Topic must roughly match (avoid crisis / biography pages for food/festival)
+    if intent in _TOPIC_HINTS or any(
+        t in q for t in ("nourriture", "food", "festival", "événement", "evenement", "cuisine")
+    ):
+        topic_intent = intent or (
+            "FOOD"
+            if any(t in q for t in ("nourriture", "food", "cuisine", "gastronomie"))
+            else "WEB_SEARCH"
+        )
+        if not _topic_overlap(blob, topic_intent, q):
+            return False
+    return True
+
+
+def validate_evidence(
+    items: list[WebEvidence],
+    *,
+    query: str = "",
+    intent: str = "",
+) -> list[WebEvidence]:
     """Keep only usable evidence; tier-4 alone cannot make answerable."""
     kept: list[WebEvidence] = []
     seen_urls: set[str] = set()
@@ -80,6 +265,8 @@ def validate_evidence(items: list[WebEvidence]) -> list[WebEvidence]:
         url = (ev.url or "").strip()
         snippet = (ev.snippet or "").strip()
         if not snippet or len(snippet) < 24:
+            continue
+        if not _is_cameroon_relevant(ev, query=query, intent=intent):
             continue
         key = url or f"{ev.domain}:{snippet[:40]}"
         if key in seen_urls:
@@ -96,10 +283,15 @@ def validate_evidence(items: list[WebEvidence]) -> list[WebEvidence]:
 def is_answerable(evidence: list[WebEvidence]) -> bool:
     if not evidence:
         return False
-    # Need at least one tier 1–3 source, or two independent sources
-    if any(e.tier <= 3 for e in evidence):
+    # Tier-4 community alone is never enough for important claims
+    strong = [e for e in evidence if e.tier <= 3]
+    if not strong:
+        return False
+    # Need at least one tier 1–3 source that survived relevance filter
+    if any(e.tier <= 2 for e in strong):
         return True
-    return len(evidence) >= 2
+    # Tier-3 encyclopedic OK if relevance already filtered
+    return len(strong) >= 1
 
 
 def extract_key_facts(evidence: list[WebEvidence], *, max_facts: int = 6) -> list[str]:
