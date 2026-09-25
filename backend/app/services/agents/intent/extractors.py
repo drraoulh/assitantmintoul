@@ -162,6 +162,28 @@ _REGION_SAFE_SUBSTRING = {
     ),
 }
 
+# Topic word followed by a bare region name: « plat traditionnel centre », « cuisine du sud ».
+_TOPIC_REGION_LABELS = {
+    "centre": "Centre",
+    "sud": "Sud",
+    "nord": "Nord",
+    "est": "Est",
+    "ouest": "Ouest",
+    "littoral": "Littoral",
+    "adamaoua": "Adamaoua",
+    "sud-ouest": "Sud-Ouest",
+    "nord-ouest": "Nord-Ouest",
+    "extreme-nord": "Extrême-Nord",
+}
+_TOPIC_REGION = re.compile(
+    r"\b(?:plats?|cuisine|nourriture|gastronomie|specialites?|spécialités?|"
+    r"traditionnel(?:le)?s?|culture|festivals?|traditions?)\s+"
+    r"(?:(?:du|de\s+la\s+r[eé]gion\s+du|de\s+l['’]|de\s+la\s+r[eé]gion\s+de\s+l['’]|au|a\s+l['’]|à\s+l['’])\s*)?"
+    r"(?P<region>sud[- ]ouest|nord[- ]ouest|extreme[- ]nord|centre|sud|nord|est|ouest|littoral|adamaoua)\b"
+    r"(?!\s+(?:ville|faunique|touristique|commercial|culturel))",
+    re.IGNORECASE,
+)
+
 # Cultural area cues → region (no city invented).
 _OUEST_CULTURE = re.compile(
     r"\b(bamoun|bamum|bamil[eé]k[eé]|grassfields|chefferies?\s+de\s+l['’]?ouest)\b",
@@ -406,6 +428,14 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         if slots.location is None:
             slots.location = label
         break
+
+    if slots.region is None:
+        topic_region = _TOPIC_REGION.search(folded)
+        if topic_region:
+            label = _TOPIC_REGION_LABELS[topic_region.group("region").replace(" ", "-")]
+            slots.region = label
+            if slots.location is None:
+                slots.location = label
 
     if slots.region is None and _OUEST_CULTURE.search(folded):
         slots.region = "Ouest"

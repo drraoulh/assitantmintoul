@@ -153,6 +153,13 @@ _EVENTS_FRESH = re.compile(
     re.IGNORECASE,
 )
 
+_GREETING = re.compile(
+    r"^\s*(?:bonjour|bonsoir|salut|coucou|hello|hi|hey|good\s+(?:morning|evening|afternoon)|"
+    r"merci(?:\s+beaucoup)?|thanks?(?:\s+you)?)\b[\s!.,?]*"
+    r"(?:smart\s*mboa|smartmboa)?[\s!.,?]*$",
+    re.IGNORECASE,
+)
+
 _AMBIGUOUS = re.compile(
     r"\b("
     r"quelque\s+chose\s+de\s+bien|something\s+(?:nice|good|cool)|"
@@ -177,6 +184,9 @@ def classify_with_rules(
 
     if not raw:
         return RuleHit("CLARIFICATION", 0.3, "empty")
+
+    if _GREETING.match(raw):
+        return RuleHit("CLARIFICATION", 0.95, "greeting")
 
     # Phase 2.8 — geographic relation Qs before tourism search / itinerary
     from app.services.agents.knowledge.geography import is_geo_simple_query

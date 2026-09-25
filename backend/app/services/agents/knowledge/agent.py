@@ -90,7 +90,9 @@ class KnowledgeAgent:
                         score=0.95,
                     ),
                 ]
-            culture = culture_evidence_for_query(query, language=language)
+            culture = culture_evidence_for_query(
+                query, language=language, region=intent.region
+            )
             if culture:
                 knowledge = [*knowledge, *culture]
 

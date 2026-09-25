@@ -84,7 +84,7 @@ export function ResponseRenderer({
         </div>
       ) : null}
 
-      {kind === 'CLARIFICATION' || kind === 'INSUFFICIENT_INFORMATION' ? (
+      {kind === 'INSUFFICIENT_INFORMATION' ? (
         <p className="rounded-xl bg-[var(--mint-soft)] px-4 py-3 text-sm text-[var(--muted)]">
           SmartMboa n&apos;a pas trouvé assez d&apos;informations vérifiées pour cette
           demande. Reformulez ou précisez une région.
