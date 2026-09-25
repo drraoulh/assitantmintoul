@@ -127,6 +127,23 @@ async def test_president_question_gets_direct_web_answer() -> None:
 
 
 @pytest.mark.asyncio
+async def test_direct_answer_prefers_reference_sites_over_social_media() -> None:
+    rows = [
+        _row(
+            "President Paul Biya | Facebook",
+            "https://www.facebook.com/PresidentPaulBiya",
+            "President Paul Biya. 1123298 followers · 678 talking about this. Président de la République du Cameroun.",
+        ),
+        *PRESIDENT_ROWS,
+    ]
+    orch = AgentOrchestrator(web_search=WebSearchService(FakeProvider(rows)), prefer_deterministic=True)
+    result = await orch.run("Qui est le président du Cameroun ?", locale="fr")
+    text = result.final_response.text
+    assert "followers" not in text and "facebook.com" not in text
+    assert "Paul Biya" in text
+
+
+@pytest.mark.asyncio
 async def test_president_question_without_web_is_honest_not_clarifying() -> None:
     orch = AgentOrchestrator(web_search=WebSearchService(FakeProvider([])), prefer_deterministic=True)
     result = await orch.run("Qui est le président du Cameroun ?", locale="fr")

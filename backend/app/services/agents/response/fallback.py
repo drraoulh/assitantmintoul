@@ -175,6 +175,12 @@ def is_general_fact(intent: IntentResult) -> bool:
 
 _FR_HINT = re.compile(r"\b(?:le|la|les|est|du|des|une?|depuis|et|au|en)\b", re.IGNORECASE)
 _EN_HINT = re.compile(r"\b(?:the|is|of|since|and|has|was|in)\b", re.IGNORECASE)
+_SOCIAL_DOMAINS = re.compile(r"(?:^|\.)(?:facebook|instagram|x|twitter|tiktok|youtube|linkedin)\.com$")
+_SOCIAL_NOISE = re.compile(
+    r"[\d\s.,]+(?:[kKmM]\s*)?(?:followers?|abonnés|likes?|j['’]aime|talking about this|"
+    r"en parlent|views?|vues)\b\s*[·.]?",
+    re.IGNORECASE,
+)
 
 
 def _render_general_fact(
@@ -186,14 +192,17 @@ def _render_general_fact(
         content = chunk.content or ""
         if not (chunk.chunk_id or "").startswith("web:") or "low confidence" in content.casefold():
             continue
-        text = content.split("\n", 1)[0]
-        text = re.sub(r"^\[web evidence[^\]]*\]\s*", "", text).strip()
+        first_line = content.split("\n", 1)[0]
+        text = _SOCIAL_NOISE.sub("", re.sub(r"^\[web evidence[^\]]*\]\s*", "", first_line)).strip(" ·.-")
         if not text:
             continue
+        domain = extract_domain(chunk.source_id or "")
         hint = _EN_HINT if lang == "en" else _FR_HINT
-        same_lang = len(hint.findall(text)) >= 2
-        score = semantic_overlap(text, user_query) + (0.3 if same_lang else 0.0) + 0.05 * (chunk.score or 0)
-        candidates.append((score, text, extract_domain(chunk.source_id or "")))
+        score = semantic_overlap(text, user_query) + 0.05 * (chunk.score or 0)
+        score += 0.3 if len(hint.findall(text)) >= 2 else 0.0
+        score += 0.3 if first_line.startswith("[web evidence — institutional]") else 0.0
+        score -= 0.6 if _SOCIAL_DOMAINS.search(domain) else 0.0
+        candidates.append((score, text, domain))
     if not candidates:
         return (
             "I couldn't verify this online right now. Please try again in a moment."
