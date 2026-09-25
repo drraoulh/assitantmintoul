@@ -1,21 +1,19 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight,
-  Backpack,
   Camera,
   Compass,
   Hotel,
   MapPin,
   Mic,
   Sparkles,
-  Utensils,
 } from 'lucide-react';
 import Link from 'next/link';
 
-import { FadeIn, SlideUp } from '@/components/motion';
 import { PlaceCard } from '@/components/places/PlaceCard';
 import { RegionCoverGrid } from '@/components/places/RegionCoverCard';
 import { Button, Input, Skeleton } from '@/components/ui';
@@ -28,43 +26,21 @@ import { REGIONS } from '@/lib/regions';
 import { isHotelCategory } from '@/lib/utils/response';
 import type { TouristSite } from '@/lib/types';
 
-const QUICK = [
-  {
-    icon: MapPin,
-    label: 'Lieux près de moi',
-    href: '/assistant?q=Quels%20lieux%20touristiques%20v%C3%A9rifi%C3%A9s%20puis-je%20visiter%20au%20Cameroun%20%3F',
-  },
-  {
-    icon: Compass,
-    label: 'Planifier un voyage',
-    href: '/planifier',
-  },
-  {
-    icon: Backpack,
-    label: 'Découvrir la culture',
-    href: '/culture',
-  },
-  {
-    icon: Sparkles,
-    label: 'Explorer la nature',
-    href: '/assistant?q=Quels%20parcs%20et%20sites%20nature%20v%C3%A9rifi%C3%A9s%20recommandez-vous%20au%20Cameroun%20%3F',
-  },
-  {
-    icon: Utensils,
-    label: 'Découvrir la gastronomie',
-    href: '/assistant?q=Quels%20plats%20et%20exp%C3%A9riences%20culinaires%20camerounaises%20puis-je%20d%C3%A9couvrir%20%3F',
-  },
-] as const;
-
 export default function HomePage() {
   const { t } = useLocale();
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(true);
   const [q, setQ] = useState('');
   const [allPlaces, setAllPlaces] = useState<TouristSite[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loadingPlaces, setLoadingPlaces] = useState(true);
   const onIntroComplete = useCallback(() => setReady(true), []);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('reset_intro') === '1') {
+      setReady(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
@@ -130,33 +106,34 @@ export default function HomePage() {
     <>
       {!ready ? <SmartMboaIntro onComplete={onIntroComplete} /> : null}
 
-      <div
-        className={`transition-opacity duration-700 ${ready ? 'opacity-100' : 'opacity-0'}`}
-      >
-        <section className="relative overflow-hidden">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-80"
-            style={{
-              background:
-                'radial-gradient(ellipse 70% 50% at 90% -10%, rgba(214,168,79,0.18), transparent 55%), radial-gradient(ellipse 60% 40% at 0% 100%, rgba(20,92,67,0.12), transparent 50%)',
-            }}
-          />
-          <div className="relative mx-auto max-w-3xl px-4 pb-10 pt-12 md:px-6 md:pt-16">
-            <SlideUp>
-              <p className="text-sm font-medium text-[var(--gold)]">Bonjour</p>
-              <h1 className="mt-2 font-display text-3xl font-bold leading-tight text-[var(--green-deep)] md:text-4xl">
-                Que souhaitez-vous découvrir au Cameroun ?
+      <div className={ready ? '' : 'hidden'}>
+        <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#007A5E]/5 to-[#FCD116]/35">
+          <div className="mx-auto flex max-w-6xl flex-col-reverse items-center gap-10 px-4 py-14 sm:px-8 md:flex-row md:gap-6 md:py-20 lg:px-12">
+            <div className="w-full md:w-1/2">
+              <h1 className="text-center text-3xl font-bold tracking-tight text-black sm:text-4xl md:text-left lg:text-[52px] lg:leading-[56px]">
+                Explorez le{' '}
+                <span className="text-[#CE1126]">Cameroun</span>
+                <br />
+                avec passion et confiance
               </h1>
-              <p className="mt-3 text-[var(--muted)]">
-                {APP_NAME} — sites, culture, nature et planification, en un seul guide intelligent.
+              <p className="mx-auto mt-6 max-w-xl text-center text-lg font-semibold text-[#007A5E] sm:text-xl md:mx-0 md:text-left lg:text-2xl">
+                Sites, culture, nature et itinéraires — un seul guide intelligent.
               </p>
-            </SlideUp>
-
-            <FadeIn delay={0.1} className="mt-8">
-              <form
-                onSubmit={onAsk}
-                className="flex items-center gap-2 rounded-full border border-[var(--line)] bg-white p-2 shadow-[var(--shadow-soft)]"
-              >
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row md:mt-10">
+                <Link
+                  href="/explorer"
+                  className="rounded-full bg-[#007A5E] px-8 py-3 text-center text-base font-bold text-white shadow-md hover:bg-[#00614b]"
+                >
+                  Découvrir nos sites
+                </Link>
+                <Link
+                  href="/assistant"
+                  className="rounded-full bg-white px-8 py-3 text-center text-base font-bold text-[#CE1126] shadow-md ring-1 ring-[#CE1126]/20 hover:bg-[#fff6f6]"
+                >
+                  Parler à l&apos;assistant
+                </Link>
+              </div>
+              <form onSubmit={onAsk} className="mt-8 flex items-center gap-2 rounded-full border border-gray-200 bg-white p-2 shadow-lg">
                 <label className="sr-only" htmlFor="home-ask">
                   Demandez à SmartMboa
                 </label>
@@ -170,7 +147,7 @@ export default function HomePage() {
                 <button
                   type="button"
                   aria-label="Parler à l'assistant"
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)] hover:bg-[var(--line)]"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FCD116] text-[#1a1a1a] hover:brightness-95"
                   onClick={() => router.push('/assistant?voice=1')}
                 >
                   <Mic className="h-5 w-5" />
@@ -178,25 +155,175 @@ export default function HomePage() {
                 <button
                   type="submit"
                   aria-label="Envoyer"
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--green-deep)] text-white hover:bg-[var(--green)]"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#007A5E] text-white hover:bg-[#00614b]"
                 >
                   <ArrowRight className="h-5 w-5" />
                 </button>
               </form>
-            </FadeIn>
+            </div>
+            <div className="relative flex w-full justify-center md:w-1/2">
+              <div
+                className="absolute inset-6 rounded-full bg-gradient-to-tl from-transparent via-[#FCD116] to-[#CE1126] opacity-80 animate-pulse"
+                aria-hidden
+              />
+              <Image
+                src="/brand/logo.png"
+                alt="Smartmboa Tour"
+                width={475}
+                height={378}
+                priority
+                className="relative z-10 h-64 w-auto drop-shadow-xl sm:h-80"
+              />
+            </div>
+          </div>
+        </section>
 
-            <div className="mt-5 flex gap-2 overflow-x-auto no-scrollbar pb-1">
-              {QUICK.map((item) => (
+        <section className="bg-gray-100 py-16">
+          <div className="mx-auto max-w-6xl px-4 md:px-8">
+            <h2 className="mb-8 text-center text-3xl font-bold text-[#007A5E] md:text-4xl">
+              Ce que nous proposons
+            </h2>
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {[
+                {
+                  icon: Compass,
+                  title: 'Explorer une région',
+                  body: 'Parcourez les dix régions et les lieux vérifiés de notre catalogue.',
+                  href: '/explorer',
+                },
+                {
+                  icon: MapPin,
+                  title: 'Planifier un voyage',
+                  body: 'Itinéraire, budget et hébergements à partir des données disponibles.',
+                  href: '/planifier',
+                },
+                {
+                  icon: Sparkles,
+                  title: 'Demander au guide',
+                  body: 'Posez une question en texte ou à la voix. La réponse reste ancrée dans les sources.',
+                  href: '/assistant',
+                },
+              ].map((card) => (
                 <Link
-                  key={item.label}
-                  href={item.href}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-sm text-[var(--ink)] transition hover:border-[var(--gold)] hover:bg-[var(--mint-soft)]"
+                  key={card.href}
+                  href={card.href}
+                  className="rounded-lg bg-white p-6 text-center shadow-lg transition duration-300 hover:scale-105"
                 >
-                  <item.icon className="h-4 w-4 text-[var(--green)]" aria-hidden />
-                  {item.label}
+                  <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FCD116]/40">
+                    <card.icon className="h-7 w-7 text-[#007A5E]" aria-hidden />
+                  </span>
+                  <h3 className="mb-2 text-xl font-bold text-[#007A5E]">{card.title}</h3>
+                  <p className="text-sm text-[#535557]">{card.body}</p>
                 </Link>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-16">
+          <div className="mx-auto max-w-3xl px-4 text-center md:px-8">
+            <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#CE1126]/10">
+              <MapPin className="h-7 w-7 text-[#CE1126]" aria-hidden />
+            </span>
+            <h2 className="mb-4 text-3xl font-bold text-[#007A5E] lg:text-4xl">
+              Choisissez une région
+            </h2>
+            <p className="mx-auto mb-8 max-w-2xl text-lg text-[#535557]">
+              De Yaoundé à Maroua, chaque région a sa personnalité.
+            </p>
+            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
+              <div className="flex flex-wrap justify-center gap-2">
+                {REGIONS.map((region) => (
+                  <Link
+                    key={region.id}
+                    href="/explorer"
+                    className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-[#007A5E] hover:text-[#007A5E]"
+                  >
+                    {region.nameFr}
+                    {counts[region.id] ? ` · ${counts[region.id]}` : ''}
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href="/explorer"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#007A5E] py-3 font-semibold text-white hover:bg-[#00614b]"
+              >
+                Tout explorer
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gray-100 py-16">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 md:grid-cols-2 md:px-8 lg:gap-12">
+            <div className="relative overflow-hidden rounded-xl bg-gray-200 shadow-lg">
+              <Image
+                src="/regions/littoral.jpg"
+                alt="Littoral, Cameroun"
+                width={960}
+                height={720}
+                className="h-72 w-full object-cover md:h-96"
+              />
+            </div>
+            <div>
+              <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FCD116]/40">
+                <Camera className="h-7 w-7 text-[#007A5E]" aria-hidden />
+              </span>
+              <h2 className="mb-4 text-3xl font-bold text-[#373839] lg:text-4xl">
+                Votre guide, où que vous soyez
+              </h2>
+              <p className="mb-8 text-lg leading-relaxed text-[#535557]">
+                Loin de Douala ou de Yaoundé ? {APP_NAME} répond depuis le navigateur, avec les lieux déjà présents dans la base.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  'Questions en texte ou à la voix',
+                  'Photos de lieux pour les identifier',
+                  'Itinéraires construits à partir du catalogue',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-4">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#007A5E]/10">
+                      <ArrowRight className="h-5 w-5 text-[#007A5E]" aria-hidden />
+                    </span>
+                    <span className="pt-1.5 text-[#373839]">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+                <Link
+                  href="/assistant"
+                  className="rounded-full bg-[#007A5E] px-6 py-3 text-center font-semibold text-white hover:bg-[#00614b]"
+                >
+                  Commencer
+                </Link>
+                <Link
+                  href="/culture"
+                  className="rounded-full border-2 border-[#CE1126] px-6 py-3 text-center font-semibold text-[#CE1126] hover:bg-[#CE1126] hover:text-white"
+                >
+                  En savoir plus
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#007A5E] px-4 py-16 text-white md:px-8">
+          <h2 className="mb-3 text-center text-3xl font-bold md:text-4xl">Le Cameroun, en chiffres</h2>
+          <p className="mx-auto mb-12 max-w-lg text-center text-white/80">
+            Un pays, dix régions, un guide pour s&apos;y retrouver.
+          </p>
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 sm:grid-cols-3">
+            {[
+              ['10', 'régions à explorer'],
+              [loadingPlaces ? '—' : String(allPlaces.length || '—'), 'lieux dans le catalogue'],
+              ['1', 'assistant pour tout le pays'],
+            ].map(([value, label]) => (
+              <div key={label} className="flex flex-col items-center space-y-3 text-center">
+                <p className="text-4xl font-bold text-[#FCD116] md:text-6xl">{value}</p>
+                <div className="mb-1 h-1 w-20 bg-[#CE1126]" />
+                <p className="text-sm md:text-lg">{label}</p>
+              </div>
+            ))}
           </div>
         </section>
 

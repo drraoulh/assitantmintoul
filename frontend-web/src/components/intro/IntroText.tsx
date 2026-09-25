@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
 import { typeHaptic } from '@/lib/haptics';
@@ -227,16 +228,10 @@ function linesFor(phase: IntroPhase): TypeLine[] | null {
     case 'READY':
       return [
         {
-          text: 'SMARTMBOA',
-          className: 'font-display text-4xl font-bold tracking-tight md:text-5xl',
-          accent: 'ivory',
-          msPerChar: MS_PER_CHAR_TITLE,
-        },
-        {
           text: 'Votre guide intelligent pour découvrir le Cameroun.',
           className: 'mt-3 text-base text-white/85 md:text-lg',
           accent: 'ivory',
-          delayBefore: 520,
+          delayBefore: 280,
         },
         {
           text: 'Découvrez. Explorez. Vivez.',
@@ -277,6 +272,16 @@ export function IntroText({
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.4 }}
           >
+            {phase === 'BRAND' || phase === 'READY' ? (
+              <Image
+                src="/brand/logo.png"
+                alt="Smartmboa Tour"
+                width={475}
+                height={378}
+                priority
+                className="mx-auto h-44 w-auto md:h-56"
+              />
+            ) : null}
             <Typewriter
               lines={lines}
               reduce={reduce}
@@ -306,7 +311,13 @@ export function ReducedIntroCopy() {
         Grassfields · Sawa · Fang-Beti · Soudano-Sahélienne
       </p>
       <p className="mt-4 font-display text-lg">Un seul Cameroun.</p>
-      <p className="mt-6 font-display text-3xl font-bold">SMARTMBOA</p>
+      <Image
+        src="/brand/logo.png"
+        alt="Smartmboa Tour"
+        width={475}
+        height={378}
+        className="mx-auto mt-6 h-36 w-auto"
+      />
     </div>
   );
 }

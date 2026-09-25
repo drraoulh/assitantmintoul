@@ -2,19 +2,21 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  /* SmartMboa brand palette */
-  --green-deep: #0b3d2e;
-  --green: #145c43;
-  --green-mid: #1a7a56;
-  --gold: #d6a84f;
-  --gold-soft: #e8c878;
-  --ivory: #f8f6f0;
+  /* Cameroon flag — green, red, yellow */
+  --green-deep: #007a5e;
+  --green: #00966f;
+  --green-mid: #00a86b;
+  --gold: #a67c00;
+  --gold-soft: #fcd116;
+  --ivory: #ffffff;
   --white: #ffffff;
-  --ink: #17201c;
-  --muted: #6b746e;
-  --mint-soft: #eef5f0;
-  --line: #e4e6e2;
-  --danger: #b42318;
+  --ink: #1a1a1a;
+  --muted: #535557;
+  --mint-soft: #e7f6f1;
+  --line: #e5e7eb;
+  --danger: #ce1126;
+  --cm-red: #ce1126;
+  --cm-yellow: #fcd116;
   /* Intro cinematic accents (scoped usage — do not restyle whole site) */
   --intro-black: #050505;
   --intro-anthracite: #151515;
@@ -63,7 +65,7 @@ body {
   min-height: 100%;
   min-height: 100svh;
   color: var(--ink);
-  background: var(--ivory);
+  background: #f3f4f6;
   font-family: var(--font-body), "Plus Jakarta Sans", sans-serif;
 }
 
@@ -136,6 +138,22 @@ select {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@keyframes assistant-halo {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.08);
+  }
+}
+
+.assistant-halo {
+  animation: assistant-halo 3.8s ease-in-out infinite;
 }
 
 /* Skeleton shimmer */

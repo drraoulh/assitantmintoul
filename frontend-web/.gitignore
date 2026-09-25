@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# group chat rooms (local, no accounts)
+/.data/
+
 # production
 /build
 

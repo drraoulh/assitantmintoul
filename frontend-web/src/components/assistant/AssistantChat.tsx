@@ -3,14 +3,20 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Camera,
+  Compass,
+  Hotel,
+  Landmark,
+  MapPin,
   Mic,
   SendHorizontal,
-  Sparkles,
   Square,
+  Trees,
+  Utensils,
   Volume2,
 } from 'lucide-react';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
+import { AssistantMark } from '@/components/brand/AssistantMark';
 import {
   VoiceMode,
   type VoiceExchange,
@@ -34,12 +40,12 @@ interface Msg {
 }
 
 const SUGGESTIONS = [
-  { label: '📍 Lieux près de moi', q: 'Je suis à Bafoussam et je veux visiter un site touristique.' },
-  { label: '🗺️ Planifier un voyage', q: 'Propose un itinéraire de 3 jours à Limbé.' },
-  { label: '🏛️ Découvrir la culture', q: 'Parle-moi de la culture et des chefferies au Cameroun.' },
-  { label: '🌿 Explorer la nature', q: 'Quels parcs naturels vérifiés recommandez-vous ?' },
-  { label: '🍲 Découvrir la gastronomie', q: "C'est quoi la nourriture traditionnelle au Sud-Ouest ?" },
-  { label: '🏨 Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
+  { icon: MapPin, label: 'Lieux près de moi', q: 'Je suis à Bafoussam et je veux visiter un site touristique.' },
+  { icon: Compass, label: 'Planifier un voyage', q: 'Propose un itinéraire de 3 jours à Limbé.' },
+  { icon: Landmark, label: 'Découvrir la culture', q: 'Parle-moi de la culture et des chefferies au Cameroun.' },
+  { icon: Trees, label: 'Explorer la nature', q: 'Quels parcs naturels vérifiés recommandez-vous ?' },
+  { icon: Utensils, label: 'Découvrir la gastronomie', q: "C'est quoi la nourriture traditionnelle au Sud-Ouest ?" },
+  { icon: Hotel, label: 'Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
 ] as const;
 
 export function AssistantChat({
@@ -272,17 +278,14 @@ export function AssistantChat({
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[var(--ivory)]">
-      <header className="shrink-0 border-b border-[var(--line)] bg-white/90 px-4 py-3 backdrop-blur-md md:px-6">
-        <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--green-deep)] text-white">
-            <Sparkles className="h-4 w-4" aria-hidden />
-          </span>
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-gray-100">
+      <header className="shrink-0 border-b border-gray-200 bg-white px-4 py-3 md:px-6">
+        <div className="mx-auto flex max-w-5xl items-center gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="font-display text-lg font-bold text-[var(--green-deep)] md:text-xl">
+            <h1 className="text-lg font-bold text-[#007A5E] md:text-xl">
               {t('assistant.title')}
             </h1>
-            <p className="truncate text-xs text-[var(--muted)] md:text-sm">
+            <p className="truncate text-xs text-[#535557] md:text-sm">
               Votre guide intelligent pour découvrir le Cameroun.
             </p>
           </div>
@@ -290,7 +293,7 @@ export function AssistantChat({
             <button
               type="button"
               onClick={stopAllAudio}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger)] px-3 py-1.5 text-xs font-semibold text-white"
+              className="inline-flex items-center gap-1.5 rounded-full bg-[#CE1126] px-4 py-2 text-xs font-semibold text-white"
               aria-label="Arrêter la lecture"
             >
               <Square className="h-3.5 w-3.5 fill-current" aria-hidden />
@@ -300,7 +303,7 @@ export function AssistantChat({
           <button
             type="button"
             onClick={openVoice}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-deep)] px-3 py-1.5 text-xs font-semibold text-white"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#007A5E] px-4 py-2 text-xs font-semibold text-white shadow-md hover:bg-[#00614b]"
             aria-label="Ouvrir le mode vocal"
           >
             <Mic className="h-3.5 w-3.5" aria-hidden />
@@ -309,32 +312,39 @@ export function AssistantChat({
         </div>
       </header>
 
-      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-6 md:px-6">
         {messages.length === 0 && !sending ? (
-          <div className="mx-auto max-w-lg py-6 text-center">
-            <p className="font-display text-2xl font-semibold text-[var(--green-deep)]">
-              Bonjour
-            </p>
-            <p className="mt-2 text-sm text-[var(--muted)]">
-              Je suis SmartMboa, votre guide intelligent pour découvrir le Cameroun.
-            </p>
-            <button
-              type="button"
-              onClick={openVoice}
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--green-deep)] px-5 py-3 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition hover:bg-[var(--green)]"
-            >
-              <Mic className="h-4 w-4" aria-hidden />
-              Parler au guide
-            </button>
-            <div className="mt-6 flex gap-2 overflow-x-auto pb-2 no-scrollbar md:flex-wrap md:justify-center md:overflow-visible">
+          <div className="mx-auto max-w-5xl">
+            <div className="text-center">
+              <AssistantMark size="lg" className="mx-auto" />
+              <p className="mt-5 text-3xl font-bold tracking-tight text-black md:text-4xl">
+                Posez votre question sur le{' '}
+                <span className="text-[#CE1126]">Cameroun</span>
+              </p>
+              <p className="mx-auto mt-3 max-w-xl text-lg font-semibold text-[#007A5E]">
+                Je suis SmartMboa. Sites, culture, nature et itinéraires.
+              </p>
+              <button
+                type="button"
+                onClick={openVoice}
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#007A5E] px-8 py-3 text-sm font-bold text-white shadow-md hover:bg-[#00614b]"
+              >
+                <Mic className="h-4 w-4" aria-hidden />
+                Parler au guide
+              </button>
+            </div>
+            <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {SUGGESTIONS.map((s) => (
                 <button
                   key={s.label}
                   type="button"
                   onClick={() => void ask(s.q)}
-                  className="shrink-0 rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-left text-xs text-[var(--ink)] transition hover:border-[var(--gold)] hover:bg-[var(--mint-soft)]"
+                  className="rounded-lg bg-white p-5 text-left shadow-lg transition duration-300 hover:scale-[1.02]"
                 >
-                  {s.label}
+                  <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#FCD116]/50">
+                    <s.icon className="h-6 w-6 text-[#007A5E]" aria-hidden />
+                  </span>
+                  <span className="block text-base font-bold text-[#007A5E]">{s.label}</span>
                 </button>
               ))}
             </div>
@@ -392,13 +402,13 @@ export function AssistantChat({
                 {msg.content}
               </div>
             ) : msg.role === 'assistant' && !msg.isError ? (
-              <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)]">
+              <div className="rounded-xl bg-white px-4 py-4 shadow-lg">
                 <ResponseRenderer text={msg.content} ui={msg.ui} />
               </div>
             ) : msg.isError ? (
               <ErrorState message={msg.content} />
             ) : (
-              <div className="rounded-2xl bg-[var(--green-deep)] px-4 py-3 text-white">
+              <div className="rounded-2xl bg-[#007A5E] px-4 py-3 text-white shadow-md">
                 {msg.content}
               </div>
             )}
@@ -411,12 +421,12 @@ export function AssistantChat({
 
       <form
         onSubmit={onSubmit}
-        className="shrink-0 border-t border-[var(--line)] bg-white/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md md:p-4"
+        className="shrink-0 bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.04)] md:p-4"
       >
-        <div className="mx-auto flex max-w-4xl items-center gap-2">
+        <div className="mx-auto flex max-w-3xl items-center gap-2 rounded-full border border-gray-200 bg-white p-2 shadow-lg">
           <button
             type="button"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FCD116]/50 text-[#007A5E]"
             aria-label="Ouvrir la vision"
             onClick={() => fileRef.current?.click()}
             disabled={sending}
@@ -436,14 +446,14 @@ export function AssistantChat({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Posez votre question…"
-            className="min-w-0 flex-1"
+            className="min-w-0 flex-1 border-0 shadow-none focus:ring-0"
             aria-label="Message"
             disabled={sending}
           />
 
           <button
             type="button"
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--green-deep)] text-white"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FCD116] text-[#1a1a1a]"
             aria-label="Ouvrir le mode vocal"
             disabled={sending}
             onClick={openVoice}
@@ -455,6 +465,7 @@ export function AssistantChat({
             type="submit"
             disabled={sending || !input.trim()}
             aria-label="Envoyer"
+            className="bg-[#007A5E] hover:bg-[#00614b]"
           >
             <SendHorizontal className="h-4 w-4" />
           </Button>
