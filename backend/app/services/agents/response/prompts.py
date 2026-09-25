@@ -153,9 +153,49 @@ TEXT_RULES_EN = """Text mode:
 """
 
 
-def agent4_system_prompt(*, language: str, response_mode: str) -> str:
+GENERAL_KNOWLEDGE_FR = """Connaissances générales (prioritaires sur les interdictions ci-dessus) :
+Tu es aussi un guide expert du Cameroun. Complète le contexte avec tes connaissances
+générales fiables : sites et monuments connus, musées, quartiers, culture, histoire,
+peuples, fêtes traditionnelles, plats et où ils sont typiques, régions, conseils de visite.
+Réponds à TOUTE la demande : si l'utilisateur combine plat + culture + plan, propose un
+plan concret (étapes, ville, moments de la journée) qui relie le plat et les visites ;
+la règle « Plat : parle du plat uniquement » ne s'applique alors pas.
+Interprète les fautes de frappe évidentes selon le sens de la phrase
+(« tu me proposes quoi comme plant » = « comme plan »).
+Un plan ou programme peut aller jusqu'à environ 220 mots ; termine toujours tes phrases.
+Le contexte SmartMboa et les résultats Web restent prioritaires quand ils existent.
+Reste interdit sans source dans le contexte : prix, tarifs, horaires, disponibilités,
+numéros de téléphone, adresses précises, noms de restaurants ou d'hôtels récents, URL.
+Si tu n'es pas sûr qu'un lieu existe encore, ne le cite pas.
+"""
+
+GENERAL_KNOWLEDGE_EN = """General knowledge (overrides the restrictions above):
+You are also an expert Cameroon guide. Complete the context with reliable general
+knowledge: well-known sites and monuments, museums, neighbourhoods, culture, history,
+peoples, traditional festivals, dishes and where they are typical, regions, visiting tips.
+Answer the WHOLE request: if the user combines a dish + culture + a plan, give a concrete
+plan (steps, town, times of day) linking the dish and the visits; the rule "Dish: talk
+about the dish only" does not apply then.
+Read obvious typos from the meaning of the sentence.
+A plan or programme may run to about 220 words; always finish your sentences.
+SmartMboa context and web results take priority when present.
+Still forbidden without a source in the context: prices, fares, opening hours,
+availability, phone numbers, exact addresses, names of recent restaurants or hotels, URLs.
+If you are not sure a place still exists, do not mention it.
+"""
+
+
+def agent4_system_prompt(
+    *, language: str, response_mode: str, general_knowledge: bool | None = None
+) -> str:
     lang = "en" if (language or "fr").lower().startswith("en") else "fr"
     base = AGENT4_SYSTEM_EN if lang == "en" else AGENT4_SYSTEM_FR
+    if general_knowledge is None:
+        from app.core.config import get_settings
+
+        general_knowledge = bool(get_settings().llm_general_knowledge)
+    if general_knowledge:
+        base = f"{base}\n{GENERAL_KNOWLEDGE_EN if lang == 'en' else GENERAL_KNOWLEDGE_FR}"
     if response_mode == "voice":
         style = VOICE_RULES_EN if lang == "en" else VOICE_RULES_FR
     else:

@@ -183,6 +183,10 @@ def evidence_is_insufficient_for_llm(
     intent_name = intent.intent or ""
     if (intent.reason or "").endswith("greeting"):
         return True
+    from app.core.config import get_settings
+
+    if get_settings().llm_general_knowledge and intent_name != "BOOKING":
+        return False
     # Clarifications / greetings / simple QA can use LLM lightly if desired,
     # but fact-heavy tourism intents with empty evidence must not.
     fact_heavy = intent_name in {

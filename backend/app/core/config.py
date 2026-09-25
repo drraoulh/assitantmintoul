@@ -191,6 +191,22 @@ class Settings(BaseSettings):
         default=90,
         validation_alias=AliasChoices("GEMINI_TIMEOUT_SECONDS"),
     )
+    # LLM_PROVIDER=gemini: chat/voice completions through Gemini's OpenAI-compatible API.
+    gemini_llm_model: str = Field(
+        default="gemini-3.5-flash",
+        validation_alias=AliasChoices("GEMINI_LLM_MODEL"),
+    )
+    # "none" disables thinking (lowest latency); empty = model default.
+    gemini_reasoning_effort: str = Field(
+        default="none",
+        validation_alias=AliasChoices("GEMINI_REASONING_EFFORT"),
+    )
+    # Let Agent 4 add well-known Cameroon places / culture / dishes from the model's own
+    # knowledge. Prices, hours, availability and URLs still require evidence.
+    llm_general_knowledge: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("LLM_GENERAL_KNOWLEDGE"),
+    )
 
     # Phase 2.1 Agent 1 — Intent & Router (progressive). Default OFF so the
     # Phase-1 voice path is unchanged. When observe=true, classify_intent runs

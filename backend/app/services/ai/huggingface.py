@@ -40,6 +40,7 @@ ROUTE_MAX_TOKENS = 640
 # every request falls back to the deterministic answer at once instead of waiting.
 _QUOTA_PAUSE_S = 600.0
 _TIMEOUT_PAUSE_S = 120.0
+_RATE_LIMIT_PAUSE_S = 30.0
 _llm_paused_until = 0.0
 _llm_pause_reason = ""
 
@@ -126,8 +127,16 @@ class HuggingFaceAIService(AIService):
         client: httpx.AsyncClient | None = None,
         rag_top_k: int | None = None,
         web_search_max_results: int | None = None,
+        provider: str = "huggingface",
     ) -> None:
         settings = get_settings()
+        self._provider = provider
+        self._reasoning_effort = ""
+        if provider == "gemini":
+            api_base_url = api_base_url or f"{settings.gemini_api_base_url.rstrip('/')}/openai"
+            model = model or settings.gemini_llm_model
+            api_token = api_token if api_token is not None else settings.gemini_api_key
+            self._reasoning_effort = settings.gemini_reasoning_effort.strip()
         self._store = conversation_store or InMemoryConversationStore()
         self._rag = rag_service if rag_service is not None else get_rag_service()
         self._web = (
@@ -193,7 +202,7 @@ class HuggingFaceAIService(AIService):
                     "role": "assistant",
                     "message": str(event.get("text") or full),
                     "text": str(event.get("text") or full),
-                    "provider": "huggingface",
+                    "provider": self._provider,
                     "sources": sources,
                     **ui,
                 }
@@ -1349,7 +1358,7 @@ class HuggingFaceAIService(AIService):
             async with client.stream(
                 "POST",
                 "/chat/completions",
-                json=dict(body),
+                json=self._request_body(body),
                 headers=headers,
                 timeout=timeout,
             ) as response:
@@ -1362,6 +1371,9 @@ class HuggingFaceAIService(AIService):
                             "You have depleted your monthly included credits. "
                             f"HTTP 402. {detail}"
                         )
+                    if response.status_code == 429:
+                        _pause_llm(_RATE_LIMIT_PAUSE_S, "rate_limit_429")
+                        raise HuggingFaceUnavailableError(f"LLM rate limited (HTTP 429). {detail}")
                     if response.status_code in {401, 403}:
                         _pause_llm(_QUOTA_PAUSE_S, f"auth_{response.status_code}")
                         raise HuggingFaceAuthError(
@@ -1477,7 +1489,7 @@ class HuggingFaceAIService(AIService):
         async with client.stream(
             "POST",
             "/chat/completions",
-            json=dict(body),
+            json=self._request_body(body),
             headers=headers,
             timeout=timeout,
         ) as response:
@@ -1566,6 +1578,15 @@ class HuggingFaceAIService(AIService):
                 if piece:
                     yield piece
 
+    def _request_body(self, body: Mapping[str, Any]) -> dict[str, Any]:
+        out = dict(body)
+        if self._provider == "gemini":
+            # Qwen-only field; Gemini rejects unknown top-level keys.
+            out.pop("chat_template_kwargs", None)
+            if self._reasoning_effort:
+                out["reasoning_effort"] = self._reasoning_effort
+        return out
+
     async def _post(self, path: str, body: Mapping[str, Any]) -> httpx.Response:
         timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
         headers = {
@@ -1578,7 +1599,7 @@ class HuggingFaceAIService(AIService):
         )
         return await client.post(
             path,
-            json=dict(body),
+            json=self._request_body(body),
             headers=headers,
             timeout=timeout,
         )

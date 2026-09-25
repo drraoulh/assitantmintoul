@@ -17,8 +17,11 @@ def create_ai_service() -> AIService:
         return OllamaAIService(conversation_store=store)
     if provider in {"huggingface", "hf"}:
         return HuggingFaceAIService(conversation_store=store)
+    if provider == "gemini":
+        # Same agent pipeline; completions go to Gemini's OpenAI-compatible endpoint.
+        return HuggingFaceAIService(conversation_store=store, provider="gemini")
 
     raise ValueError(
         f"Unknown LLM_PROVIDER '{provider}'. "
-        "Use huggingface, ollama, or placeholder."
+        "Use huggingface, gemini, ollama, or placeholder."
     )
