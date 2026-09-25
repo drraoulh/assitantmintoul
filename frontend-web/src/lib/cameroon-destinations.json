@@ -1,0 +1,907 @@
+[
+  {
+    "id": "abong-mbang",
+    "name": "Abong-Mbang",
+    "nameEn": "Abong-Mbang",
+    "region": "Est",
+    "aliases": [
+      "abong-mbang",
+      "abong mbang"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-adamaoua",
+    "name": "Adamaoua",
+    "nameEn": "Adamawa",
+    "region": "Adamaoua",
+    "aliases": [
+      "adamaoua",
+      "adamawa",
+      "adamaoua"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "ambam",
+    "name": "Ambam",
+    "nameEn": "Ambam",
+    "region": "Sud",
+    "aliases": [
+      "ambam"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bafang",
+    "name": "Bafang",
+    "nameEn": "Bafang",
+    "region": "Ouest",
+    "aliases": [
+      "bafang"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bafoussam",
+    "name": "Bafoussam",
+    "nameEn": "Bafoussam",
+    "region": "Ouest",
+    "aliases": [
+      "bafoussam"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bafut",
+    "name": "Bafut",
+    "nameEn": "Bafut",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "bafut"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "baham",
+    "name": "Baham",
+    "nameEn": "Baham",
+    "region": "Ouest",
+    "aliases": [
+      "baham"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bamenda",
+    "name": "Bamenda",
+    "nameEn": "Bamenda",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "bamenda"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bana",
+    "name": "Bana",
+    "nameEn": "Bana",
+    "region": "Ouest",
+    "aliases": [
+      "bana"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bandjoun",
+    "name": "Bandjoun",
+    "nameEn": "Bandjoun",
+    "region": "Ouest",
+    "aliases": [
+      "bandjoun"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bangangte",
+    "name": "Bangangté",
+    "nameEn": "Bangangté",
+    "region": "Ouest",
+    "aliases": [
+      "bangangté"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "banyo",
+    "name": "Banyo",
+    "nameEn": "Banyo",
+    "region": "Adamaoua",
+    "aliases": [
+      "banyo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "batcham",
+    "name": "Batcham",
+    "nameEn": "Batcham",
+    "region": "Ouest",
+    "aliases": [
+      "batcham"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "batoufam",
+    "name": "Batoufam",
+    "nameEn": "Batoufam",
+    "region": "Ouest",
+    "aliases": [
+      "batoufam"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "batouri",
+    "name": "Batouri",
+    "nameEn": "Batouri",
+    "region": "Est",
+    "aliases": [
+      "batouri"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "bertoua",
+    "name": "Bertoua",
+    "nameEn": "Bertoua",
+    "region": "Est",
+    "aliases": [
+      "bertoua"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "buea",
+    "name": "Buea",
+    "nameEn": "Buea",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "buea"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "extra-7",
+    "name": "Cameroun",
+    "nameEn": "Cameroun",
+    "region": "",
+    "aliases": [
+      "cameroun",
+      "cameroon",
+      "cameroun"
+    ],
+    "kind": "country"
+  },
+  {
+    "id": "campo",
+    "name": "Campo",
+    "nameEn": "Campo",
+    "region": "Sud",
+    "aliases": [
+      "campo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-centre",
+    "name": "Centre",
+    "nameEn": "Centre",
+    "region": "Centre",
+    "aliases": [
+      "centre",
+      "centre",
+      "centre"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "extra-6",
+    "name": "Chutes de la Lobé",
+    "nameEn": "Chutes de la Lobé",
+    "region": "Sud",
+    "aliases": [
+      "chutes de la lobé",
+      "lobe",
+      "lobé",
+      "chutes lobe"
+    ],
+    "kind": "place"
+  },
+  {
+    "id": "douala",
+    "name": "Douala",
+    "nameEn": "Douala",
+    "region": "Littoral",
+    "aliases": [
+      "douala",
+      "duala"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "dschang",
+    "name": "Dschang",
+    "nameEn": "Dschang",
+    "region": "Ouest",
+    "aliases": [
+      "dschang"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "ebolowa",
+    "name": "Ebolowa",
+    "nameEn": "Ebolowa",
+    "region": "Sud",
+    "aliases": [
+      "ebolowa"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "edea",
+    "name": "Edéa",
+    "nameEn": "Edéa",
+    "region": "Littoral",
+    "aliases": [
+      "edéa",
+      "edea"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-est",
+    "name": "Est",
+    "nameEn": "East",
+    "region": "Est",
+    "aliases": [
+      "est",
+      "east",
+      "est"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "region-extreme-nord",
+    "name": "Extrême-Nord",
+    "nameEn": "Far North",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "extrême-nord",
+      "far north",
+      "extreme-nord"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "figuil",
+    "name": "Figuil",
+    "nameEn": "Figuil",
+    "region": "Nord",
+    "aliases": [
+      "figuil"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "foumban",
+    "name": "Foumban",
+    "nameEn": "Foumban",
+    "region": "Ouest",
+    "aliases": [
+      "foumban"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "fundong",
+    "name": "Fundong",
+    "nameEn": "Fundong",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "fundong"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "galim",
+    "name": "Galim",
+    "nameEn": "Galim",
+    "region": "Ouest",
+    "aliases": [
+      "galim"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "garoua",
+    "name": "Garoua",
+    "nameEn": "Garoua",
+    "region": "Nord",
+    "aliases": [
+      "garoua"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "guider",
+    "name": "Guider",
+    "nameEn": "Guider",
+    "region": "Nord",
+    "aliases": [
+      "guider"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "kaele",
+    "name": "Kaélé",
+    "nameEn": "Kaele",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "kaele",
+      "kaélé"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "kousseri",
+    "name": "Kousséri",
+    "nameEn": "Kousseri",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "kousseri",
+      "kousséri"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "kribi",
+    "name": "Kribi",
+    "nameEn": "Kribi",
+    "region": "Sud",
+    "aliases": [
+      "kribi"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "kumba",
+    "name": "Kumba",
+    "nameEn": "Kumba",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "kumba"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "kumbo",
+    "name": "Kumbo",
+    "nameEn": "Kumbo",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "kumbo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "limbe",
+    "name": "Limbé",
+    "nameEn": "Limbe",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "limbe",
+      "limbé"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-littoral",
+    "name": "Littoral",
+    "nameEn": "Littoral",
+    "region": "Littoral",
+    "aliases": [
+      "littoral",
+      "littoral",
+      "littoral"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "maga",
+    "name": "Maga",
+    "nameEn": "Maga",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "maga"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mamfe",
+    "name": "Mamfe",
+    "nameEn": "Mamfe",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "mamfe"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "maroua",
+    "name": "Maroua",
+    "nameEn": "Maroua",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "maroua"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mbalmayo",
+    "name": "Mbalmayo",
+    "nameEn": "Mbalmayo",
+    "region": "Centre",
+    "aliases": [
+      "mbalmayo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mbengwi",
+    "name": "Mbengwi",
+    "nameEn": "Mbengwi",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "mbengwi"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mbouda",
+    "name": "Mbouda",
+    "nameEn": "Mbouda",
+    "region": "Ouest",
+    "aliases": [
+      "mbouda"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "meiganga",
+    "name": "Meiganga",
+    "nameEn": "Meiganga",
+    "region": "Adamaoua",
+    "aliases": [
+      "meiganga"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "melong",
+    "name": "Melong",
+    "nameEn": "Melong",
+    "region": "Littoral",
+    "aliases": [
+      "melong"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mfou",
+    "name": "Mfou",
+    "nameEn": "Mfou",
+    "region": "Centre",
+    "aliases": [
+      "mfou"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mokolo",
+    "name": "Mokolo",
+    "nameEn": "Mokolo",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "mokolo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "moloundou",
+    "name": "Moloundou",
+    "nameEn": "Moloundou",
+    "region": "Est",
+    "aliases": [
+      "moloundou"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "monatele",
+    "name": "Monatélé",
+    "nameEn": "Monatélé",
+    "region": "Centre",
+    "aliases": [
+      "monatélé",
+      "monatele"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "extra-2",
+    "name": "Mont Cameroun",
+    "nameEn": "Mont Cameroun",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "mont cameroun",
+      "mount cameroon",
+      "mt cameroun"
+    ],
+    "kind": "place"
+  },
+  {
+    "id": "mora",
+    "name": "Mora",
+    "nameEn": "Mora",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "mora"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mouanko",
+    "name": "Mouanko",
+    "nameEn": "Mouanko",
+    "region": "Littoral",
+    "aliases": [
+      "mouanko"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "mundemba",
+    "name": "Mundemba",
+    "nameEn": "Mundemba",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "mundemba"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "ndop",
+    "name": "Ndop",
+    "nameEn": "Ndop",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "ndop"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "ngaoundere",
+    "name": "Ngaoundéré",
+    "nameEn": "Ngaoundéré",
+    "region": "Adamaoua",
+    "aliases": [
+      "ngaoundere",
+      "ngaoundéré"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "nkambe",
+    "name": "Nkambe",
+    "nameEn": "Nkambe",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "nkambe"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "nkolmetet",
+    "name": "Nkolmétet",
+    "nameEn": "Nkolmétet",
+    "region": "Centre",
+    "aliases": [
+      "nkolmétet",
+      "nkolmetet"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "nkongsamba",
+    "name": "Nkongsamba",
+    "nameEn": "Nkongsamba",
+    "region": "Littoral",
+    "aliases": [
+      "nkongsamba"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-nord",
+    "name": "Nord",
+    "nameEn": "North",
+    "region": "Nord",
+    "aliases": [
+      "nord",
+      "north",
+      "nord"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "region-nord-ouest",
+    "name": "Nord-Ouest",
+    "nameEn": "North-West",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "nord-ouest",
+      "north-west",
+      "nord-ouest"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "oku",
+    "name": "Oku",
+    "nameEn": "Oku",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "oku"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-ouest",
+    "name": "Ouest",
+    "nameEn": "West",
+    "region": "Ouest",
+    "aliases": [
+      "ouest",
+      "west",
+      "ouest"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "extra-4",
+    "name": "Parc de la Bénoué",
+    "nameEn": "Parc de la Bénoué",
+    "region": "Nord",
+    "aliases": [
+      "parc de la bénoué",
+      "benoue",
+      "bénoué"
+    ],
+    "kind": "place"
+  },
+  {
+    "id": "extra-3",
+    "name": "Parc de Waza",
+    "nameEn": "Parc de Waza",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "parc de waza",
+      "waza",
+      "parc waza"
+    ],
+    "kind": "place"
+  },
+  {
+    "id": "penka-michel",
+    "name": "Penka-Michel",
+    "nameEn": "Penka-Michel",
+    "region": "Ouest",
+    "aliases": [
+      "penka-michel"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "poli",
+    "name": "Poli",
+    "nameEn": "Poli",
+    "region": "Nord",
+    "aliases": [
+      "poli"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "rhumsiki",
+    "name": "Rhumsiki",
+    "nameEn": "Rhumsiki",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "rhumsiki",
+      "roumsiki"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "sangmelima",
+    "name": "Sangmélima",
+    "nameEn": "Sangmélima",
+    "region": "Sud",
+    "aliases": [
+      "sangmélima",
+      "sangmelima"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "soa",
+    "name": "Soa",
+    "nameEn": "Soa",
+    "region": "Centre",
+    "aliases": [
+      "soa"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "somalomo",
+    "name": "Somalomo",
+    "nameEn": "Somalomo",
+    "region": "Est",
+    "aliases": [
+      "somalomo"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "region-sud",
+    "name": "Sud",
+    "nameEn": "South",
+    "region": "Sud",
+    "aliases": [
+      "sud",
+      "south",
+      "sud"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "region-sud-ouest",
+    "name": "Sud-Ouest",
+    "nameEn": "South-West",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "sud-ouest",
+      "south-west",
+      "sud-ouest"
+    ],
+    "kind": "region"
+  },
+  {
+    "id": "tchollire",
+    "name": "Tcholliré",
+    "nameEn": "Tchollire",
+    "region": "Nord",
+    "aliases": [
+      "tchollire",
+      "tcholliré"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "tibati",
+    "name": "Tibati",
+    "nameEn": "Tibati",
+    "region": "Adamaoua",
+    "aliases": [
+      "tibati"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "tignere",
+    "name": "Tignère",
+    "nameEn": "Tignere",
+    "region": "Adamaoua",
+    "aliases": [
+      "tignere",
+      "tignère"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "tiko",
+    "name": "Tiko",
+    "nameEn": "Tiko",
+    "region": "Sud-Ouest",
+    "aliases": [
+      "tiko"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "touboro",
+    "name": "Touboro",
+    "nameEn": "Touboro",
+    "region": "Nord",
+    "aliases": [
+      "touboro"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "waza",
+    "name": "Waza",
+    "nameEn": "Waza",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "waza"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "wum",
+    "name": "Wum",
+    "nameEn": "Wum",
+    "region": "Nord-Ouest",
+    "aliases": [
+      "wum"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "yabassi",
+    "name": "Yabassi",
+    "nameEn": "Yabassi",
+    "region": "Littoral",
+    "aliases": [
+      "yabassi"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "yagoua",
+    "name": "Yagoua",
+    "nameEn": "Yagoua",
+    "region": "Extrême-Nord",
+    "aliases": [
+      "yagoua"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "yaounde",
+    "name": "Yaoundé",
+    "nameEn": "Yaoundé",
+    "region": "Centre",
+    "aliases": [
+      "yaounde",
+      "yaoundé"
+    ],
+    "kind": "city"
+  },
+  {
+    "id": "yokadouma",
+    "name": "Yokadouma",
+    "nameEn": "Yokadouma",
+    "region": "Est",
+    "aliases": [
+      "yokadouma"
+    ],
+    "kind": "city"
+  }
+]

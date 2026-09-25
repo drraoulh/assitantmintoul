@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { ArrowRight, Calendar, MapPin, Users, Wallet } from 'lucide-react';
 
 import { ResponseRenderer, BudgetCard } from '@/components/assistant/ResponseRenderer';
+import { DestinationAutocomplete } from '@/components/planner/DestinationAutocomplete';
 import { PageTransition } from '@/components/motion';
 import { Button, Input, Select, ThinkingDots } from '@/components/ui';
 import { friendlyError, sendChatMessage } from '@/lib/api/client';
+import { resolveCameroonDestination } from '@/lib/cameroon-destinations';
 import { useLocale } from '@/lib/i18n';
 import { setTripMeta } from '@/lib/trip-store';
 import { structuredFromChatResponse } from '@/lib/utils/response';
@@ -26,6 +28,7 @@ export default function PlanifierPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [destination, setDestination] = useState('');
+  const [destinationValid, setDestinationValid] = useState(false);
   const [days, setDays] = useState('3');
   const [travelers, setTravelers] = useState('2');
   const [budget, setBudget] = useState('150000');
@@ -37,17 +40,24 @@ export default function PlanifierPage() {
 
   async function onGenerate(e?: FormEvent) {
     e?.preventDefault();
+    const matched = resolveCameroonDestination(destination);
+    if (!matched) {
+      setError('Area not found in Cameroon, check spelling');
+      setStep(0);
+      return;
+    }
+    const destLabel = matched.name;
     setLoading(true);
     setError(null);
     const prompt =
       locale === 'fr'
-        ? `Je veux rester ${days} jours à ${destination} avec ${travelers} voyageurs et un budget de ${budget} FCFA. Centres d'intérêt : ${interests}. Style : ${style}. Propose un itinéraire vérifié.`
-        : `I want to stay ${days} days in ${destination} with ${travelers} travelers and a budget of ${budget} FCFA. Interests: ${interests}. Style: ${style}. Propose a verified itinerary.`;
+        ? `Je veux rester ${days} jours à ${destLabel} avec ${travelers} voyageurs et un budget de ${budget} FCFA. Centres d'intérêt : ${interests}. Style : ${style}. Propose un itinéraire vérifié.`
+        : `I want to stay ${days} days in ${destLabel} with ${travelers} travelers and a budget of ${budget} FCFA. Interests: ${interests}. Style: ${style}. Propose a verified itinerary.`;
     try {
       const res = await sendChatMessage({ message: prompt, locale });
       setResult(res);
       setTripMeta({
-        destination,
+        destination: destLabel,
         dates: `${days} jours`,
         travelers: Number(travelers) || undefined,
         budgetFcfa: Number(budget) || undefined,
@@ -93,6 +103,17 @@ export default function PlanifierPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            if (step === 0) {
+              const matched = resolveCameroonDestination(destination);
+              if (!matched) {
+                setError('Area not found in Cameroon, check spelling');
+                return;
+              }
+              setDestination(matched.name);
+              setError(null);
+              setStep(1);
+              return;
+            }
             if (step < STEPS.length - 1) setStep((s) => s + 1);
             else void onGenerate();
           }}
@@ -101,13 +122,18 @@ export default function PlanifierPage() {
           {step === 0 && (
             <label className="block text-sm font-medium">
               Destination
-              <Input
-                className="mt-1"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="Ex. Bafoussam, Limbé, Yaoundé…"
-                required
-              />
+              <div className="mt-1">
+                <DestinationAutocomplete
+                  value={destination}
+                  onChange={(v) => {
+                    setDestination(v);
+                    setError(null);
+                  }}
+                  onValidityChange={setDestinationValid}
+                  locale={locale}
+                  required
+                />
+              </div>
             </label>
           )}
           {step === 1 && (
@@ -171,7 +197,13 @@ export default function PlanifierPage() {
                 Retour
               </Button>
             ) : null}
-            <Button type="submit" disabled={loading || (step === 0 && !destination.trim())}>
+            <Button
+              type="submit"
+              disabled={
+                loading ||
+                (step === 0 && (!destination.trim() || !destinationValid))
+              }
+            >
               {step < STEPS.length - 1 ? (
                 <>
                   Continuer <ArrowRight className="h-4 w-4" aria-hidden />
