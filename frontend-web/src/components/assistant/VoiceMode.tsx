@@ -1,6 +1,13 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+} from 'react';
+import { createPortal } from 'react-dom';
 import { Loader2, Mic, Volume2, X } from 'lucide-react';
 
 import { audioPlayback } from '@/lib/audio/playback';
@@ -112,6 +119,12 @@ export function VoiceMode({
   const conversationIdRef = useRef(conversationId);
   const finishRef = useRef<() => Promise<void>>(async () => undefined);
   const holdingRef = useRef(false);
+  const shutdownRef = useRef<() => void>(() => undefined);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -429,10 +442,15 @@ export function VoiceMode({
     }
   }, [stopRecorder]);
 
-  // Reset / cleanup when closing
+  // Reset / cleanup when closing — keep shutdown out of deps to avoid
+  // re-running cleanup on every callback identity change while open.
+  useEffect(() => {
+    shutdownRef.current = shutdown;
+  }, [shutdown]);
+
   useEffect(() => {
     if (!open) {
-      shutdown();
+      shutdownRef.current();
       setUserText('');
       setAssistantText('');
       setHint(null);
@@ -441,31 +459,31 @@ export function VoiceMode({
     setPhase('idle');
     setHint(null);
     return () => {
-      shutdown();
+      shutdownRef.current();
     };
-  }, [open, shutdown]);
+  }, [open]);
 
   // Escape to close
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        shutdown();
+        shutdownRef.current();
         onClose();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose, shutdown]);
+  }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const copy = phaseCopy(phase);
   const live = phase === 'listening' || phase === 'speaking';
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[90] flex flex-col bg-[var(--green-deep)] text-white"
+      className="fixed inset-0 z-[200] flex flex-col bg-[var(--green-deep)] text-white"
       role="dialog"
       aria-modal="true"
       aria-label="Mode vocal SmartMboa"
@@ -571,6 +589,7 @@ export function VoiceMode({
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
