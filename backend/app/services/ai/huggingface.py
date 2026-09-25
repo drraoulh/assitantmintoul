@@ -34,6 +34,8 @@ from app.services.search.factory import get_web_search_service
 
 logger = logging.getLogger(__name__)
 
+ROUTE_MAX_TOKENS = 640
+
 
 def _serialize_ui(ui: dict[str, Any]) -> dict[str, Any]:
     """JSON-ready dump of structured UI models."""
@@ -1036,7 +1038,7 @@ class HuggingFaceAIService(AIService):
             "model": self._model,
             "messages": messages,
             "temperature": 0.45,
-            "max_tokens": self._voice_max_tokens if brief else self._max_tokens,
+            "max_tokens": self._token_budget(brief, messages),
             "stream": True,
             "chat_template_kwargs": {"enable_thinking": False},
         }
@@ -1209,6 +1211,14 @@ class HuggingFaceAIService(AIService):
             "orchestrator": orch_obs,
         }
 
+    def _token_budget(self, brief: bool, messages: list[dict[str, str]]) -> int:
+        if brief:
+            return self._voice_max_tokens
+        # Route answers carry a multi-section draft (transport, to confirm, what to do, sources).
+        if any('"route_brief"' in (m.get("content") or "") for m in messages[-2:]):
+            return max(self._max_tokens, ROUTE_MAX_TOKENS)
+        return self._max_tokens
+
     def _make_web_tool_caller(self):
         """Non-streamed Qwen call exposing the ``web_search`` tool (decision only)."""
 
@@ -1258,7 +1268,7 @@ class HuggingFaceAIService(AIService):
                 "model": self._model,
                 "messages": messages,
                 "temperature": 0.45,
-                "max_tokens": self._voice_max_tokens if brief else self._max_tokens,
+                "max_tokens": self._token_budget(brief, messages),
                 "stream": True,
                 "chat_template_kwargs": {"enable_thinking": False},
             }
@@ -1363,7 +1373,7 @@ class HuggingFaceAIService(AIService):
             "model": self._model,
             "messages": messages,
             "temperature": 0.45,
-            "max_tokens": self._voice_max_tokens if brief else self._max_tokens,
+            "max_tokens": self._token_budget(brief, messages),
             "stream": True,
             "chat_template_kwargs": {"enable_thinking": False},
         }

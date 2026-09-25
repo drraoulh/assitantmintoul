@@ -12,6 +12,7 @@ import re
 import unicodedata
 from dataclasses import dataclass, field
 
+from app.services.agents.intent.extractors import mentioned_towns
 from app.services.agents.web_research.models import WebEvidence
 
 MAX_TRANSPORT_SOURCES = 4
@@ -66,6 +67,9 @@ def concreteness(ev: WebEvidence) -> int:
     return len(_CONCRETE.findall(fold(f"{ev.title} {ev.snippet}")))
 
 
+_SOCIAL = re.compile(r"(?:^|\.)(?:facebook|instagram|x|twitter|tiktok|youtube|linkedin)\.com$")
+
+
 def select_transport(
     evidence: list[WebEvidence], origin: str | None, dest: str, *, limit: int = MAX_TRANSPORT_SOURCES
 ) -> list[WebEvidence]:
@@ -81,7 +85,14 @@ def select_transport(
             continue
         kept.append(ev)
     order = {"direct": 0, "both": 1, None: 1, "reverse": 2}
-    kept.sort(key=lambda e: (order.get(e.route_match, 1), -concreteness(e), -e.rank_score))
+    kept.sort(
+        key=lambda e: (
+            order.get(e.route_match, 1),
+            bool(_SOCIAL.search(e.domain or "")),
+            -concreteness(e),
+            -e.rank_score,
+        )
+    )
     return kept[:limit]
 
 
@@ -192,18 +203,24 @@ def extract_transport_facts(
     the title (« Yaoundé → Foumban : horaires ») counts as context for that check.
     """
     facts = TransportFacts()
+    pair = {fold(t) for t in (origin, dest) if t}
     for item in items:
         text, domain = item[0], item[1]
         context = fold(f"{item[2] if len(item) > 2 else ''} {text}")
+        # Figures only from snippets that themselves name the trip (a title alone is not
+        # enough: « Yaoundé - Foumban » posts often quote a Bafoussam fare).
+        snippet_on_pair = not origin or (_names(fold(text), origin) and (not dest or _names(fold(text), dest)))
         for clause in _clauses(text):
             low = fold(clause)
             flight = bool(_FLIGHT.search(low))
+            other_town = bool({fold(t) for t in mentioned_towns(clause)} - pair)
+            figures = snippet_on_pair and not other_town
             for label, pattern in _MODES:
-                if pattern.search(low):
+                if figures and pattern.search(low):
                     doms = facts.modes.setdefault(label, [])
                     if domain not in doms:
                         doms.append(domain)
-            if not flight:
+            if figures and not flight:
                 for m in _DURATION.finditer(low):
                     if _CLOCK_BEFORE.search(low[max(0, m.start() - 20):m.start()]):
                         continue

@@ -68,18 +68,22 @@ def test_select_destination_requires_destination_and_skips_route_pages():
 def test_transport_facts_keep_source_currency_and_ranges():
     facts = extract_transport_facts(
         [
-            ("Le meilleur moyen est le bus et taxi, ce qui dure 8 h 46 m et coûte $65 - $85.", "rome2rio.com"),
-            ("Trajet d'environ 5 h 30, billet à 6 000 FCFA ; départs de la gare routière de Mvan.", "bus.cm",
+            ("De Yaoundé à Foumban, le meilleur moyen est le bus et taxi, ce qui dure 8 h 46 m et coûte $65 - $85.", "rome2rio.com"),
+            ("Yaoundé - Foumban : trajet d'environ 5 h 30, billet à 6 000 FCFA ; départs de la gare routière de Mvan.", "bus.cm",
              "Bus Yaoundé Foumban"),
             ("There is no direct connection from Yaoundé to Foumban.", "rome2rio.com"),
             ("Vol Yaoundé Foumban en 1 h", "air.com"),
-            ("Distance 268 km, cheapest fares from $14.", "fromto.travel"),
+            ("Yaoundé to Foumban: distance 268 km, cheapest fares from $14.", "fromto.travel"),
+            ("BAFOUSSAM-YAOUNDÉ avec Bluebird, 8000 FCFA aller simple.", "fb.com", "Yaoundé - Foumban en VIP"),
+            ("Le trajet sera couvert en 24 heures.", "fb.com", "Camexco line Yaoundé Foumban"),
             ("Mercredi matin aux environs de 5h, j'ai vu le bus de Foumbot à l'agence direction Foumban.", "fb.com"),
         ],
         origin="Yaoundé",
         dest="Foumban",
     )
     assert not any("Foumbot" in d for d, _ in facts.departures)
+    assert not any(p[1] == "FCFA" and p[0] == "8000" for p in facts.prices)
+    assert all(m < 24 * 60 for m, _ in facts.durations)
     assert ("14", "USD", "fromto.travel", True) in facts.prices
     assert sorted(m for m, _ in facts.durations) == [330, 526]
     assert ("65–85", "USD", "rome2rio.com", False) in facts.prices

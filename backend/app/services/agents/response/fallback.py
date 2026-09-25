@@ -1023,6 +1023,16 @@ def _route_section(intent: IntentResult, knowledge: KnowledgeResult, *, lang: st
     return f"### {title}\n{body}\n\n" + "\n".join(confirm), set()
 
 
+def route_brief(intent: IntentResult, knowledge: KnowledgeResult, *, lang: str) -> str | None:
+    """Deterministic route draft handed to Agent 4 so figures, currencies and sources
+    survive the LLM rewrite unchanged."""
+    if not intent.destination or intent.intent not in {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}:
+        return None
+    if intent.intent == "TRAVEL_ROUTE":
+        return _render_travel_route(intent, knowledge, lang=lang, voice=False)
+    return _route_section(intent, knowledge, lang=lang)[0]
+
+
 def _map_available(origin: str | None, dest: str) -> bool:
     try:
         from app.services.agents.response.structured_ui import _city_point

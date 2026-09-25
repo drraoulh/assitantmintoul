@@ -497,6 +497,12 @@ _DISHES: dict[str, str] = {
 }
 
 
+def mentioned_towns(text: str) -> set[str]:
+    """Display names of the Cameroonian towns named in ``text`` (accent-insensitive)."""
+    folded = fold(text)
+    return {label for key, label in _CITIES.items() if re.search(rf"\b{re.escape(key)}\b", folded)}
+
+
 def _extract_route(folded: str) -> tuple[str | None, str | None]:
     if not _TRAVEL_CUE.search(folded):
         return None, None

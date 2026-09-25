@@ -217,6 +217,11 @@ def build_structured_context(
         }
 
     evidence = build_allowed_evidence(intent, knowledge, tourism_plan)
+    route_draft = None
+    if response_mode != "voice":
+        from app.services.agents.response.fallback import route_brief
+
+        route_draft = route_brief(intent, knowledge, lang=resolve_language(intent))
     return {
         "user_query": user_query,
         "response_mode": response_mode,
@@ -248,6 +253,7 @@ def build_structured_context(
         )[:12],
         "tourism_plan": plan_payload,
         "allowed_evidence": evidence.as_prompt_dict(),
+        **({"route_brief": route_draft} if route_draft else {}),
     }
 
 

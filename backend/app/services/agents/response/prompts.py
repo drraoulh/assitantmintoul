@@ -56,6 +56,11 @@ n'invente jamais de conversion en FCFA ni de tarif officiel. Aucun tarif fiable 
 « Je n'ai pas trouvé de tarif actuel suffisamment fiable en ligne. Il est préférable de
 confirmer auprès de l'agence avant le départ. »
 N'invente jamais compagnie, agence, fréquence, adresse, téléphone ou correspondance.
+Si route_brief est présent, c'est le brouillon de la réponse : garde ses titres, son
+ordre (🚍, ⚠️, 🏛️, 🗺️, 📚), chaque chiffre, devise, fourchette et domaine cité, tels quels.
+Tu peux fluidifier les phrases et décrire brièvement les lieux SmartMboa de places ;
+n'ajoute aucune information de transport absente de route_brief et ne déplace pas
+une information de transport dans « QUE FAIRE ».
 Plat (intent.dish présent) : parle du plat uniquement, sans lieux touristiques ni hôtels.
 Photos demandées : les images trouvées en ligne sont affichées sous ta réponse ; ne les
 décris pas. Si missing_information contient "images", dis qu'aucune photo n'a été trouvée.
@@ -112,6 +117,10 @@ Reference currency is FCFA. USD/EUR/GBP amounts stay in their original currency
 conversion or an official fare. No reliable fare: say you found no sufficiently reliable
 current fare online and to confirm with the agency before leaving.
 Never invent companies, agencies, frequencies, addresses, phone numbers or connections.
+If route_brief is present it is the draft answer: keep its headings, their order
+(🚍, ⚠️, 🏛️, 🗺️, 📚), and every figure, currency, range and cited domain unchanged.
+You may smooth the sentences and briefly describe the SmartMboa places; add no transport
+information absent from route_brief and never move transport details under "WHAT TO DO".
 Dish (intent.dish set): talk about the dish only, no tourist places or hotels.
 Photos requested: images found online are shown under your answer; do not describe them.
 If missing_information contains "images", say no photo was found.
@@ -132,13 +141,13 @@ VOICE_RULES_EN = """Voice mode:
 """
 
 TEXT_RULES_FR = """Mode texte :
-- Clair et concis (environ 90–130 mots sauf demande contraire).
+- Clair et concis (environ 90–130 mots sauf demande contraire ; avec route_brief, garde toutes ses sections).
 - Tu peux utiliser des titres courts et des puces si utiles.
 - Pas d'emoji (sauf les titres de trajet ci-dessus).
 """
 
 TEXT_RULES_EN = """Text mode:
-- Clear and concise (~90–130 words unless more detail is needed).
+- Clear and concise (~90–130 words unless more detail is needed; with route_brief, keep all its sections).
 - Short headings and bullets are OK when helpful.
 - No emoji (except the route headings above).
 """
