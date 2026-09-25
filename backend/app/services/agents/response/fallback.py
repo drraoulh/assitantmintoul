@@ -755,6 +755,9 @@ def _render_place_list(
         return base
 
     bullets = "\n".join(f"- {n}" for n in names)
+    web = _web_points(knowledge, limit=2, keep=_ACTIVITY, mentions=intent.city)
+    if web:
+        bullets += "\n\n" + ("Online:" if lang == "en" else "En ligne :") + "\n" + _bullets(web)
     if lang == "en":
         header = f"I currently have {count} verified place(s)"
         if intent.city:
@@ -855,36 +858,40 @@ def _web_points(
     *,
     limit: int,
     keep: re.Pattern[str] | None = None,
-    drop: re.Pattern[str] | None = None,
     exclude: set[str] | None = None,
     mentions: str | None = None,
 ) -> list[tuple[str, str]]:
-    """(snippet, domain) pairs straight from web evidence — never rewritten."""
-    points: list[tuple[str, str]] = []
+    """(snippet, domain) pairs straight from web evidence — never rewritten.
+
+    Social-media posts come last and hashtag-heavy snippets are skipped.
+    """
+    candidates: list[tuple[bool, str, str, str]] = []
     for chunk in knowledge.knowledge:
         if not (chunk.chunk_id or "").startswith("web:"):
             continue
         if "low confidence" in (chunk.content or "")[:40].casefold():
             continue
-        text = " ".join(_WEB_PREFIX.sub("", (chunk.content or "").split("\n", 1)[0]).split())
-        if not text or (exclude and chunk.chunk_id in exclude):
+        if exclude and chunk.chunk_id in exclude:
+            continue
+        raw = _WEB_PREFIX.sub("", (chunk.content or "").split("\n", 1)[0])
+        text = _SOCIAL_NOISE.sub("", " ".join(raw.split())).lstrip("-–·•* ").strip()
+        if not text or text.count("#") >= 2:
             continue
         blob = f"{chunk.title or ''} {text}"
         if keep is not None and not keep.search(blob):
-            continue
-        if drop is not None and drop.search(blob) and not (keep and keep.search(blob)):
             continue
         if mentions and _fold(mentions) not in _fold(blob):
             continue
         if len(text) > 240:
             text = text[:239].rsplit(" ", 1)[0] + "…"
-        if any(text == p[0] for p in points):
+        if any(text == c[1] for c in candidates):
             continue
-        points.append((text, extract_domain(chunk.source_id or "")))
-        if exclude is not None:
-            exclude.add(chunk.chunk_id)
-        if len(points) >= limit:
-            break
+        domain = extract_domain(chunk.source_id or "")
+        candidates.append((bool(_SOCIAL_DOMAINS.search(domain)), text, domain, chunk.chunk_id))
+    candidates.sort(key=lambda c: c[0])
+    points = [(text, domain) for _, text, domain, _ in candidates[:limit]]
+    if exclude is not None:
+        exclude.update(c[3] for c in candidates[:limit])
     return points
 
 

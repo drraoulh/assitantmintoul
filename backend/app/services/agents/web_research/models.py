@@ -48,6 +48,6 @@ class WebResearchResult(BaseModel):
             "research_ms": self.research_ms,
             "provider": self.provider,
             "decision": self.decision,
-            "search_queries": list(self.search_queries)[:3],
+            "search_queries": list(self.search_queries),
             "warnings": list(self.warnings)[:5],
         }
