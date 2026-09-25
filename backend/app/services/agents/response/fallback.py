@@ -877,16 +877,16 @@ def _web_points(
         text = _SOCIAL_NOISE.sub("", " ".join(raw.split())).lstrip("-–·•* ").strip()
         if not text or text.count("#") >= 2:
             continue
+        domain = extract_domain(chunk.source_id or "")
         blob = f"{chunk.title or ''} {text}"
         if keep is not None and not keep.search(blob):
             continue
-        if mentions and _fold(mentions) not in _fold(blob):
+        if mentions and _fold(mentions) not in _fold(f"{blob} {domain}"):
             continue
         if len(text) > 240:
             text = text[:239].rsplit(" ", 1)[0] + "…"
         if any(text == c[1] for c in candidates):
             continue
-        domain = extract_domain(chunk.source_id or "")
         candidates.append((bool(_SOCIAL_DOMAINS.search(domain)), text, domain, chunk.chunk_id))
     candidates.sort(key=lambda c: c[0])
     points = [(text, domain) for _, text, domain, _ in candidates[:limit]]
