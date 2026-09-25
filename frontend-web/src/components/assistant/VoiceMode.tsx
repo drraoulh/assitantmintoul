@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react';
 import { Loader2, Mic, Volume2, X } from 'lucide-react';
 
 import { audioPlayback } from '@/lib/audio/playback';
@@ -32,7 +32,7 @@ function phaseCopy(phase: VoicePhase): {
       return {
         title: 'Je vous écoute',
         subtitle: 'Parlez naturellement, comme à un guide.',
-        action: 'Appuyer pour envoyer',
+        action: 'Relâchez pour envoyer',
       };
     case 'thinking':
       return {
@@ -49,8 +49,8 @@ function phaseCopy(phase: VoicePhase): {
     default:
       return {
         title: 'Prêt à vous écouter',
-        subtitle: 'Appuyez sur le micro pour commencer.',
-        action: 'Appuyer pour parler',
+        subtitle: 'Maintenez le micro pour parler, relâchez pour envoyer.',
+        action: 'Maintenir pour parler',
       };
   }
 }
@@ -111,6 +111,7 @@ export function VoiceMode({
   const phaseRef = useRef<VoicePhase>('idle');
   const conversationIdRef = useRef(conversationId);
   const finishRef = useRef<() => Promise<void>>(async () => undefined);
+  const holdingRef = useRef(false);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -288,6 +289,11 @@ export function VoiceMode({
       maxTimerRef.current = window.setTimeout(() => {
         void finishRef.current();
       }, MAX_RECORD_MS);
+
+      // User already released while mic was arming
+      if (!holdingRef.current) {
+        void finishRef.current();
+      }
     } catch (err) {
       const msg =
         err instanceof Error && /Permission|NotAllowed/i.test(err.message)
@@ -375,14 +381,6 @@ export function VoiceMode({
 
   const onOrbPress = useCallback(() => {
     if (phase === 'thinking') return;
-    if (phase === 'idle') {
-      void startListening();
-      return;
-    }
-    if (phase === 'listening') {
-      void finishListeningAndSend();
-      return;
-    }
     if (phase === 'speaking') {
       audioPlayback.stop();
       try {
@@ -390,9 +388,46 @@ export function VoiceMode({
       } catch {
         /* ignore */
       }
-      void startListening();
+      // After interrupt, wait for hold to speak again
+      setPhase('idle');
+      setHint(null);
     }
-  }, [finishListeningAndSend, phase, startListening]);
+  }, [phase]);
+
+  const onOrbPointerDown = useCallback(
+    (e: PointerEvent<HTMLButtonElement>) => {
+      if (phase === 'thinking' || phase === 'speaking') return;
+      holdingRef.current = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      void startListening();
+    },
+    [phase, startListening],
+  );
+
+  const onOrbPointerUp = useCallback(
+    (e: PointerEvent<HTMLButtonElement>) => {
+      holdingRef.current = false;
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+      if (phaseRef.current === 'listening') {
+        void finishListeningAndSend();
+      }
+    },
+    [finishListeningAndSend],
+  );
+
+  const onOrbPointerCancel = useCallback(() => {
+    holdingRef.current = false;
+    if (phaseRef.current === 'listening') {
+      stopRecorder();
+      chunksRef.current = [];
+      setPhase('idle');
+      setHint('Enregistrement annulé.');
+    }
+  }, [stopRecorder]);
 
   // Reset / cleanup when closing
   useEffect(() => {
@@ -478,9 +513,13 @@ export function VoiceMode({
           <button
             type="button"
             onClick={onOrbPress}
+            onPointerDown={onOrbPointerDown}
+            onPointerUp={onOrbPointerUp}
+            onPointerCancel={onOrbPointerCancel}
+            onContextMenu={(e) => e.preventDefault()}
             disabled={phase === 'thinking'}
             aria-label={copy.action}
-            className={`relative flex h-36 w-36 items-center justify-center rounded-full shadow-[0_0_0_12px_rgba(214,168,79,0.15)] transition disabled:cursor-wait disabled:opacity-70 md:h-44 md:w-44 ${
+            className={`relative flex h-36 w-36 touch-none items-center justify-center rounded-full shadow-[0_0_0_12px_rgba(214,168,79,0.15)] transition select-none disabled:cursor-wait disabled:opacity-70 md:h-44 md:w-44 ${
               phase === 'listening'
                 ? 'bg-[var(--danger)] shadow-[0_0_0_16px_rgba(180,35,24,0.25)]'
                 : phase === 'speaking'
