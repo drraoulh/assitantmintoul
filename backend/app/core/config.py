@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     )
     hf_api_base_url: str = "https://router.huggingface.co/v1"
     hf_timeout_seconds: float = 60
+    # Max wait for the next streamed chunk (first token included) before Agent 4
+    # gives up and serves the deterministic answer.
+    llm_read_timeout_seconds: float = Field(
+        default=20,
+        validation_alias=AliasChoices("LLM_READ_TIMEOUT_SECONDS"),
+    )
 
     # Generation budgets. Shorter answers = faster TTFT + TTS.
     llm_max_tokens: int = Field(

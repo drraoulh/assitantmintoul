@@ -36,6 +36,28 @@ logger = logging.getLogger(__name__)
 
 ROUTE_MAX_TOKENS = 640
 
+# When the provider refuses (quota / auth) or hangs, stop calling it for a while so
+# every request falls back to the deterministic answer at once instead of waiting.
+_QUOTA_PAUSE_S = 600.0
+_TIMEOUT_PAUSE_S = 120.0
+_llm_paused_until = 0.0
+_llm_pause_reason = ""
+
+
+def _pause_llm(seconds: float, reason: str) -> None:
+    global _llm_paused_until, _llm_pause_reason
+    _llm_paused_until = time.monotonic() + seconds
+    _llm_pause_reason = reason
+    logger.warning("llm_paused reason=%s seconds=%.0f", reason, seconds)
+
+
+def _raise_if_llm_paused() -> None:
+    remaining = _llm_paused_until - time.monotonic()
+    if remaining > 0:
+        raise HuggingFaceUnavailableError(
+            f"LLM paused after {_llm_pause_reason} ({remaining:.0f}s left)"
+        )
+
 
 def _serialize_ui(ui: dict[str, Any]) -> dict[str, Any]:
     """JSON-ready dump of structured UI models."""
@@ -1311,7 +1333,9 @@ class HuggingFaceAIService(AIService):
         trace: LlmStreamTrace | None = None,  # noqa: ARG002 — reserved for shared traces
     ) -> AsyncIterator[str]:
         """Stream Qwen tokens; record HTTP status; no automatic retry loops."""
-        timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
+        _raise_if_llm_paused()
+        read_timeout = min(self._timeout_seconds, get_settings().llm_read_timeout_seconds)
+        timeout = httpx.Timeout(self._timeout_seconds, connect=10.0, read=read_timeout)
         headers = {
             "Authorization": f"Bearer {self._token}",
             "Content-Type": "application/json",
@@ -1321,46 +1345,52 @@ class HuggingFaceAIService(AIService):
             base_url=self._base_url,
             timeout_seconds=self._timeout_seconds,
         )
-        async with client.stream(
-            "POST",
-            "/chat/completions",
-            json=dict(body),
-            headers=headers,
-            timeout=timeout,
-        ) as response:
-            self._last_hf_http_status = int(response.status_code)
-            if response.status_code >= 400:
-                detail = (await response.aread()).decode("utf-8", errors="replace")[:200]
-                if response.status_code == 402:
-                    raise HuggingFaceUnavailableError(
-                        "You have depleted your monthly included credits. "
-                        f"HTTP 402. {detail}"
+        try:
+            async with client.stream(
+                "POST",
+                "/chat/completions",
+                json=dict(body),
+                headers=headers,
+                timeout=timeout,
+            ) as response:
+                self._last_hf_http_status = int(response.status_code)
+                if response.status_code >= 400:
+                    detail = (await response.aread()).decode("utf-8", errors="replace")[:200]
+                    if response.status_code == 402:
+                        _pause_llm(_QUOTA_PAUSE_S, "quota_402")
+                        raise HuggingFaceUnavailableError(
+                            "You have depleted your monthly included credits. "
+                            f"HTTP 402. {detail}"
+                        )
+                    if response.status_code in {401, 403}:
+                        _pause_llm(_QUOTA_PAUSE_S, f"auth_{response.status_code}")
+                        raise HuggingFaceAuthError(
+                            f"Hugging Face rejected the token (HTTP {response.status_code})."
+                        )
+                    raise GenerationFailedError(
+                        f"HF chat HTTP {response.status_code}: {detail}"
                     )
-                if response.status_code in {401, 403}:
-                    raise HuggingFaceAuthError(
-                        f"Hugging Face rejected the token (HTTP {response.status_code})."
-                    )
-                raise GenerationFailedError(
-                    f"HF chat HTTP {response.status_code}: {detail}"
-                )
-            async for line in response.aiter_lines():
-                if not line:
-                    continue
-                if line.startswith("data:"):
-                    data = line[5:].strip()
-                    if data == "[DONE]":
-                        break
-                    try:
-                        payload = json.loads(data)
-                    except json.JSONDecodeError:
+                async for line in response.aiter_lines():
+                    if not line:
                         continue
-                    choices = payload.get("choices") or []
-                    if not choices:
-                        continue
-                    delta = (choices[0] or {}).get("delta") or {}
-                    piece = delta.get("content") or ""
-                    if piece:
-                        yield str(piece)
+                    if line.startswith("data:"):
+                        data = line[5:].strip()
+                        if data == "[DONE]":
+                            break
+                        try:
+                            payload = json.loads(data)
+                        except json.JSONDecodeError:
+                            continue
+                        choices = payload.get("choices") or []
+                        if not choices:
+                            continue
+                        delta = (choices[0] or {}).get("delta") or {}
+                        piece = delta.get("content") or ""
+                        if piece:
+                            yield str(piece)
+        except httpx.TimeoutException as exc:
+            _pause_llm(_TIMEOUT_PAUSE_S, "timeout")
+            raise GenerationTimeoutError(f"LLM timed out after {read_timeout:.0f}s") from exc
 
     async def _stream_tokens(
         self,
@@ -1408,6 +1438,7 @@ class HuggingFaceAIService(AIService):
         *,
         trace: LlmStreamTrace | None = None,
     ) -> AsyncIterator[str]:
+        _raise_if_llm_paused()
         timeout = httpx.Timeout(self._timeout_seconds, connect=10.0)
         headers = {
             "Authorization": f"Bearer {self._token}",

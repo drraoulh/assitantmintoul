@@ -9,6 +9,11 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from app.core.config import get_settings
+from app.core.exceptions import (
+    GenerationTimeoutError,
+    HuggingFaceAuthError,
+    HuggingFaceUnavailableError,
+)
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
@@ -121,6 +126,17 @@ class ResponseGenerator:
                 llm_ttft_ms = llm_generation_ms  # single-shot complete; no stream TTFT here
                 if not (text or "").strip():
                     raise ValueError("empty llm response")
+            except (HuggingFaceUnavailableError, HuggingFaceAuthError, GenerationTimeoutError) as exc:
+                logger.warning("agent4_llm_unavailable_using_fallback: %s", str(exc)[:160])
+                text = render_deterministic(
+                    user_query,
+                    intent_result,
+                    knowledge_result,
+                    tourism_plan,
+                    language=language,
+                    response_mode=response_mode,
+                )
+                fallback_used = True
             except Exception:
                 logger.exception("agent4_llm_failed_using_fallback")
                 text = render_deterministic(
