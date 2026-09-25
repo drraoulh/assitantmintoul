@@ -5,12 +5,60 @@ from __future__ import annotations
 import re
 
 from app.services.agents.web_research.ranker import semantic_overlap
+from app.services.web_search.source_parser import extract_domain
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
 
 
+_LEAD_REASONS = {"FORCED_HOTEL_SEARCH", "FORCED_RESTAURANT_SEARCH"}
+
+
 def render_deterministic(
+    user_query: str,
+    intent: IntentResult,
+    knowledge: KnowledgeResult,
+    tourism_plan: TourismPlan | None,
+    *,
+    language: str = "fr",
+    response_mode: str = "text",
+) -> str:
+    text = _render_core(
+        user_query,
+        intent,
+        knowledge,
+        tourism_plan,
+        language=language,
+        response_mode=response_mode,
+    )
+    if response_mode != "voice" and (intent.web_reason or "") in _LEAD_REASONS:
+        leads = _web_leads(knowledge, limit=3)
+        if leads:
+            title = (
+                "Leads found online (unverified — check before you go):"
+                if language == "en"
+                else "Pistes trouvées en ligne (non vérifiées — à confirmer avant d’y aller) :"
+            )
+            text = f"{text}\n\n{title}\n" + "\n".join(f"- {lead}" for lead in leads)
+    return text
+
+
+def _web_leads(knowledge: KnowledgeResult, *, limit: int) -> list[str]:
+    leads: list[str] = []
+    for chunk in knowledge.knowledge:
+        if not (chunk.chunk_id or "").startswith("web:"):
+            continue
+        title = " ".join((chunk.title or "").split())[:90]
+        domain = extract_domain(chunk.source_id or "")
+        if not title or any(title in lead for lead in leads):
+            continue
+        leads.append(f"{title} ({domain})" if domain else title)
+        if len(leads) >= limit:
+            break
+    return leads
+
+
+def _render_core(
     user_query: str,
     intent: IntentResult,
     knowledge: KnowledgeResult,

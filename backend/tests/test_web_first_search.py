@@ -325,3 +325,24 @@ def test_food_places_are_scoped_to_requested_city():
         ],
     )
     assert [p.name for p in _scope_places(knowledge, intent).places] == ["Down Beach"]
+
+
+def test_deterministic_hotel_answer_shows_unverified_web_leads():
+    from app.services.agents.response.fallback import render_deterministic
+
+    intent = classify_intent("Quels hôtels à Kribi ?", locale="fr")
+    knowledge = KnowledgeResult(
+        query="q",
+        intent=intent.intent,
+        knowledge=[
+            KnowledgeEvidence(
+                chunk_id="web:r:0",
+                title="Les 10 meilleurs hôtels à Kribi",
+                content="[web evidence — community] Hôtels à Kribi dès 26 €.",
+                source_id="https://www.booking.com/city/cm/kribi.html",
+            )
+        ],
+    )
+    text = render_deterministic("Quels hôtels à Kribi ?", intent, knowledge, None)
+    assert "non vérifiées" in text
+    assert "Les 10 meilleurs hôtels à Kribi (booking.com)" in text
