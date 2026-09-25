@@ -26,6 +26,7 @@ from app.schemas.chat_ui import (
 )
 from app.services.agents.knowledge.models import KnowledgeResult, PlaceEvidence
 from app.services.agents.planner.models import TourismPlan
+from app.services.agents.response.context import is_food_relevant_place
 from app.services.agents.response.models import FinalResponse
 
 _HOTEL_HINTS = ("hotel", "hôtel", "heberg", "héberg", "lodge", "resort", "auberge", "inn")
@@ -51,6 +52,13 @@ def build_structured_ui(
     response_type = _normalize_response_type(str(response_type), plan)
 
     places = _places_ui(knowledge)
+    hidden_place_names: set[str] = set()
+    if response_type == "FOOD":
+        kept = [
+            p for p in places if is_food_relevant_place(p.name, p.description, p.category)
+        ]
+        hidden_place_names = {p.name for p in places if p not in kept}
+        places = kept
     hotels = _hotels_ui(places, knowledge, response_type)
     # Hotel intents: keep places as hotel places too for cards.
     if response_type == "HOTEL" and hotels and not places:
@@ -77,6 +85,8 @@ def build_structured_ui(
     booking = _booking_ui(response_type, language=language)
     vision = _vision_ui(vision_summary, places)
     ui_sources = _sources_ui(final, knowledge)
+    if hidden_place_names:
+        ui_sources = [s for s in ui_sources if s.title not in hidden_place_names]
     actions = _actions_ui(places, map_ui, itinerary, hotels, ui_sources, language=language)
 
     # Drop empty collections that confuse clients for non-tourism answers.

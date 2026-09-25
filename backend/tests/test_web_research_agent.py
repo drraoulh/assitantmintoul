@@ -246,3 +246,128 @@ async def test_orchestrator_calls_web_research_when_kb_thin(monkeypatch):
 
 def test_extract_domain():
     assert extract_domain("https://www.Mintoul.gov.cm/path") == "mintoul.gov.cm"
+
+
+def test_greeting_is_not_itinerary_clarification():
+    from app.services.agents.intent.router import classify_intent
+    from app.services.agents.knowledge.models import KnowledgeResult
+    from app.services.agents.response.fallback import render_deterministic
+
+    intent = classify_intent("Bonjour", locale="fr", mode="text")
+    assert intent.reason == "greeting"
+    assert intent.needs_web is False
+    text = render_deterministic(
+        "Bonjour", intent, KnowledgeResult(query="Bonjour", intent=intent.intent), None
+    )
+    assert text.startswith("Bonjour")
+    assert "budget" not in text.casefold()
+
+
+def test_food_region_follow_up_overrides_context_region():
+    from app.services.agents.intent.router import classify_intent
+
+    follow_up = classify_intent(
+        "Et le plat traditionnel centre ?",
+        locale="fr",
+        mode="text",
+        conversation_context="Plat traditionnel sud ouest",
+    )
+    assert follow_up.intent == "FOOD"
+    assert follow_up.region == "Centre"
+    assert follow_up.needs_web is True
+    assert follow_up.web_reason == "REGIONAL_GASTRONOMY"
+
+    anaphora = classify_intent(
+        "Et la nourriture ?",
+        locale="fr",
+        mode="text",
+        conversation_context="Je veux découvrir le Sud-Ouest",
+    )
+    assert anaphora.region == "Sud-Ouest"
+
+
+def test_voice_food_skips_web():
+    from app.services.agents.intent.router import classify_intent
+
+    voice = classify_intent("Plat traditionnel du centre", locale="fr", mode="voice")
+    assert voice.intent == "FOOD"
+    assert voice.needs_web is False
+
+
+def test_culture_pack_follows_resolved_region():
+    from app.services.agents.knowledge.culture_packs import culture_evidence_for_query
+
+    ev = culture_evidence_for_query("Et la nourriture ?", language="fr", region="Centre")
+    assert ev
+    assert all(e.source_id == "culture:centre" for e in ev)
+
+
+def test_filter_regional_drops_other_regions():
+    from app.services.agents.web_research.validator import filter_regional
+
+    items = [
+        WebEvidence(title="Koki", url="https://x/1", snippet="Koki is a dish from the Southwest region of Cameroon."),
+        WebEvidence(title="Alloco", url="https://x/2", snippet="L'alloco est un plat ivoirien populaire au Cameroun."),
+    ]
+    kept = filter_regional(items, "Sud-Ouest")
+    assert [e.title for e in kept] == ["Koki"]
+
+
+def test_national_capital_is_yaounde():
+    from app.services.agents.knowledge.geography import answer_geo_query
+
+    facts = answer_geo_query("Quelle est la capitale du Cameroun ?", language="fr")
+    assert facts and facts[0].subject == "Yaoundé"
+    east = answer_geo_query("Quel est le chef-lieu de la région de l'Est ?", language="fr")
+    assert east and east[0].subject == "Bertoua"
+
+
+def test_food_ui_hides_unrelated_places():
+    from app.services.agents.knowledge.models import KnowledgeResult, PlaceEvidence
+    from app.services.agents.response.models import FinalResponse
+    from app.services.agents.response.structured_ui import build_structured_ui
+
+    knowledge = KnowledgeResult(
+        query="food",
+        intent="FOOD",
+        places=[
+            PlaceEvidence(place_id="beach", name="Moland Beach", description="Plage de sable noir.", category=["nature"]),
+            PlaceEvidence(place_id="mokolo", name="Marché Mokolo", description="Grand marché de Yaoundé.", category=["market"]),
+        ],
+    )
+    final = FinalResponse(text="x", language="fr", response_type="FOOD", response_mode="text")
+    ui = build_structured_ui(final=final, knowledge=knowledge)
+    assert [p.name for p in ui["places"]] == ["Marché Mokolo"]
+
+
+def test_event_search_without_dated_evidence_is_honest():
+    from app.services.agents.intent.router import classify_intent
+    from app.services.agents.knowledge.models import KnowledgeEvidence
+    from app.services.agents.response.fallback import render_deterministic
+
+    q = "Quels festivals ce mois-ci au Cameroun ?"
+    intent = classify_intent(q, locale="fr", mode="text")
+    assert intent.intent == "WEB_SEARCH"
+    knowledge = KnowledgeResult(
+        query=q,
+        intent=intent.intent,
+        knowledge=[
+            KnowledgeEvidence(
+                chunk_id="doc:history_culture:7",
+                content="## Festivals et célébrations (indicatifs)\n- Fêtes nationales.",
+            ),
+            KnowledgeEvidence(
+                chunk_id="doc:travel_tips:0",
+                content="# Conseils pratiques\nQue mettre dans le sac.",
+            ),
+            KnowledgeEvidence(
+                chunk_id="web:x:0",
+                content="[web evidence — institutional] Présentation générale du Cameroun.",
+            ),
+        ],
+    )
+    text = render_deterministic(q, intent, knowledge, None)
+    assert "pas trouvé de programme" in text
+    assert "Festivals et célébrations" in text
+    assert "sac" not in text
+    assert "Présentation générale" not in text

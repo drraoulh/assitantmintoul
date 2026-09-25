@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
@@ -18,6 +20,9 @@ def render_deterministic(
 ) -> str:
     lang = "en" if language == "en" else "fr"
     voice = response_mode == "voice"
+
+    if is_greeting(intent):
+        return _greeting(user_query, lang)
 
     if intent.intent == "CLARIFICATION" or intent.confidence < 0.6:
         return _clarification(intent, lang)
@@ -62,7 +67,7 @@ def render_deterministic(
         k for k in knowledge.knowledge if "[web evidence" in (k.content or "").casefold()
     ]
     if intent.intent == "WEB_SEARCH" and (web_chunks or knowledge.knowledge):
-        return _render_knowledge(knowledge, lang=lang, voice=voice)
+        return _render_web_search(user_query, knowledge, lang=lang, voice=voice)
 
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
@@ -88,6 +93,28 @@ def render_deterministic(
         return _render_knowledge(knowledge, lang=lang, voice=voice)
 
     return _insufficient(lang)
+
+
+def is_greeting(intent: IntentResult) -> bool:
+    return (intent.reason or "").endswith("greeting")
+
+
+def _greeting(user_query: str, lang: str) -> str:
+    thanks = any(t in (user_query or "").casefold() for t in ("merci", "thank"))
+    if lang == "en":
+        if thanks:
+            return "You're welcome! Ask me anything else about travelling in Cameroon."
+        return (
+            "Hello! I'm SmartMboa, your Cameroon travel guide. Ask me about places "
+            "to visit, traditional food, an itinerary or hotels."
+        )
+    if thanks:
+        return "Avec plaisir ! Posez-moi une autre question sur le Cameroun."
+    return (
+        "Bonjour ! Je suis SmartMboa, votre guide touristique du Cameroun. "
+        "Demandez-moi des lieux à visiter, des plats traditionnels, un itinéraire "
+        "ou un hôtel."
+    )
 
 
 def _clarification(intent: IntentResult, lang: str) -> str:
@@ -312,6 +339,93 @@ def _missing_sentence(missing: list[str], lang: str) -> str:
     return f"Non renseigné dans mes données vérifiées : {joined}."
 
 
+def _web_facts(knowledge: KnowledgeResult, *, limit: int) -> list[str]:
+    facts: list[str] = []
+    for chunk in knowledge.knowledge:
+        content = chunk.content or ""
+        lowered = content.casefold()
+        if "[web evidence" not in lowered or "[web evidence — community]" in lowered:
+            continue
+        text = content.split("\n", 1)[0]
+        for prefix in ("[web evidence — institutional]", "[web evidence — unverified]"):
+            text = text.replace(prefix, "")
+        text = " ".join(text.split())
+        if len(text) > 220:
+            text = text[:219].rstrip() + "…"
+        if text and text not in facts:
+            facts.append(text)
+        if len(facts) >= limit:
+            break
+    return facts
+
+
+_EVENT_QUERY = re.compile(
+    r"\b(?:festival|festivals|[ée]v[ée]nements?|events?|foires?|concerts?|"
+    r"agenda|programme|ce mois|this month|cette semaine|this week|actualit[ée]s?)\b",
+    re.IGNORECASE,
+)
+_EVENT_FACT = re.compile(
+    r"\b(?:festivals?|f[êe]tes?|foires?|concerts?|c[ée]l[ée]brations?|ngondo|nguon|lela|salon|[ée]dition|"
+    r"janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|"
+    r"novembre|d[ée]cembre|january|february|march|april|june|july|august|"
+    r"september|october|november|december|20\d\d)\b",
+    re.IGNORECASE,
+)
+
+
+def _first_section(text: str, *, limit: int) -> str:
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    body = " ".join(ln.lstrip("#").strip() for ln in lines)
+    body = " ".join(body.split())
+    if len(body) > limit:
+        body = body[: limit - 1].rsplit(" ", 1)[0] + "…"
+    return body
+
+
+def _render_web_search(
+    user_query: str, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    facts = _web_facts(knowledge, limit=3)
+    event_query = bool(_EVENT_QUERY.search(user_query or ""))
+    if event_query:
+        facts = [f for f in facts if _EVENT_FACT.search(f)]
+    kb_chunks = [
+        k.content
+        for k in knowledge.knowledge
+        if k.content and "[web evidence" not in k.content.casefold()
+    ]
+    if event_query:
+        kb_chunks = [c for c in kb_chunks if _EVENT_FACT.search(c)] or kb_chunks[:0]
+    kb_note = _first_section(kb_chunks[0], limit=320) if kb_chunks else ""
+
+    parts: list[str] = []
+    if facts:
+        intro = (
+            "From the web sources I consulted:"
+            if lang == "en"
+            else "D’après les sources web consultées :"
+        )
+        parts.append(intro + "\n" + "\n".join(f"- {f}" for f in facts))
+    elif event_query:
+        parts.append(
+            "I couldn't find a dated, verified event programme for this period."
+            if lang == "en"
+            else "Je n’ai pas trouvé de programme d’événements daté et vérifié pour cette période."
+        )
+    if kb_note:
+        parts.append(kb_note)
+    if not parts:
+        return _insufficient(lang)
+    if voice:
+        return " ".join(" ".join(parts).split())[:500]
+    parts.append(
+        "Check the official sources listed below, or tell me a city to narrow it down."
+        if lang == "en"
+        else "Consultez les sources officielles ci-dessous, ou indiquez-moi une ville pour affiner."
+    )
+    return "\n\n".join(parts)
+
+
 def _render_culture_food(
     culture_chunks,
     knowledge: KnowledgeResult,
@@ -337,7 +451,19 @@ def _render_culture_food(
         body = (d.content or "").strip()
         parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
     if policy:
-        parts.append(policy[0].content.strip())
+        parts.append(
+            "Aucun restaurant n'est encore vérifié dans ma base pour cette région."
+            if lang != "en"
+            else "No restaurant is verified in my knowledge base for this region yet."
+        )
+    web_facts = _web_facts(knowledge, limit=2)
+    if web_facts and not voice:
+        parts.append(
+            "Complément issu de sources web consultées :"
+            if lang != "en"
+            else "Additional notes from consulted web sources:"
+        )
+        parts.extend(f"- {fact}" for fact in web_facts)
     hotels = []
     for p in knowledge.places:
         cat = p.category
@@ -506,6 +632,7 @@ def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> 
             "[web evidence — institutional]",
             "[web evidence — unverified]",
             "[web evidence — unverified] ",
+            "[web evidence — community]",
             "Key facts:",
         ):
             text = text.replace(prefix, "")
@@ -528,7 +655,7 @@ def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> 
             "Souhaitez-vous que je précise pour une ville (Buea, Limbe, …) ?"
         )
 
-    body = " ".join(_clean(c) for c in chunks)
+    body = "\n\n".join(_clean(_first_section(c, limit=380)) for c in chunks[:2])
     if voice:
         return " ".join(body.split())[:500]
     title = "From verified notes:" if lang == "en" else "D’après les notes vérifiées :"

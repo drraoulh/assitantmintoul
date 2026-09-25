@@ -109,6 +109,14 @@ class IntentRouter:
         if intent == "FOOD" and "food" not in interests:
             interests.append("food")
 
+        needs_web = caps.needs_web
+        web_reason = "EXPLICIT_SEARCH" if intent == "WEB_SEARCH" else None
+        # Regional gastronomy: KB packs list only a few dishes, so complement with
+        # sourced web evidence. Voice skips this to keep TTFA low.
+        if intent == "FOOD" and self.mode != "voice" and (slots.region or slots.city):
+            needs_web = True
+            web_reason = "REGIONAL_GASTRONOMY"
+
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         result = IntentResult(
             intent=intent,  # type: ignore[arg-type]
@@ -127,8 +135,8 @@ class IntentRouter:
             needs_knowledge=caps.needs_knowledge,
             needs_places=caps.needs_places,
             needs_planner=caps.needs_planner,
-            needs_web=caps.needs_web,
-            web_reason=("EXPLICIT_SEARCH" if intent == "WEB_SEARCH" else None),
+            needs_web=needs_web,
+            web_reason=web_reason,
             needs_booking=caps.needs_booking,
             needs_vision=caps.needs_vision,
             confidence=confidence if intent != "CLARIFICATION" else min(confidence, 0.59),

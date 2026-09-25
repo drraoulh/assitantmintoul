@@ -162,6 +162,8 @@ def evidence_is_insufficient_for_llm(
 ) -> bool:
     """Pre-generation gate: skip Qwen when there is nothing verified to formulate."""
     intent_name = intent.intent or ""
+    if (intent.reason or "").endswith("greeting"):
+        return True
     # Clarifications / greetings / simple QA can use LLM lightly if desired,
     # but fact-heavy tourism intents with empty evidence must not.
     fact_heavy = intent_name in {

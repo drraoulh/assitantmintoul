@@ -280,6 +280,41 @@ def validate_evidence(
     return kept[:8]
 
 
+_REGION_ALIASES: dict[str, tuple[str, ...]] = {
+    "sud-ouest": ("sud-ouest", "sud ouest", "south-west", "southwest", "south west", "buea", "limbe", "limbé", "kumba", "bakweri", "fako"),
+    "nord-ouest": ("nord-ouest", "nord ouest", "north-west", "northwest", "north west", "bamenda", "grassfields"),
+    "centre": ("region du centre", "région du centre", "centre region", "yaoundé", "yaounde", "beti", "ewondo", "eton"),
+    "sud": ("region du sud", "région du sud", "south region", "ebolowa", "kribi", "bulu"),
+    "ouest": ("region de l'ouest", "région de l'ouest", "west region", "bafoussam", "bamiléké", "bamileke", "bamoun", "bamum", "dschang"),
+    "littoral": ("littoral", "douala", "sawa", "duala"),
+    "nord": ("region du nord", "région du nord", "north region", "garoua"),
+    "extreme-nord": ("extrême-nord", "extreme-nord", "far north", "maroua"),
+    "adamaoua": ("adamaoua", "adamawa", "ngaoundéré", "ngaoundere"),
+    "est": ("region de l'est", "région de l'est", "east region", "bertoua"),
+}
+
+
+def filter_regional(
+    evidence: list[WebEvidence],
+    region: str | None,
+    *,
+    topic: str | None = None,
+) -> list[WebEvidence]:
+    """Keep evidence naming the requested region (towns / peoples) and, if given, the topic."""
+    hints = _TOPIC_HINTS.get(topic or "") or ()
+    key = (region or "").casefold().replace("ê", "e").replace(" ", "-")
+    aliases = _REGION_ALIASES.get(key) if region else None
+    kept = []
+    for ev in evidence:
+        blob = f"{ev.title} {ev.snippet}".casefold()
+        if aliases and not any(a in blob for a in aliases):
+            continue
+        if hints and not any(h in blob for h in hints):
+            continue
+        kept.append(ev)
+    return kept
+
+
 def is_answerable(evidence: list[WebEvidence]) -> bool:
     if not evidence:
         return False

@@ -27,6 +27,7 @@ GeoRelation = Literal[
     "PART_OF_REGION",
     "PART_OF_DIVISION",
     "IS_REGION_CAPITAL",
+    "IS_NATIONAL_CAPITAL",
     "IS_NOT_EQUIVALENT",
 ]
 
@@ -182,12 +183,25 @@ def _find_city_in_query(q: str, idx: GeographyIndex) -> str | None:
     return None
 
 
+_EST_REGION_CUE = re.compile(r"(?:\bl['’ ]\s*est\b|\bregion\s+(?:de\s+l['’ ]\s*)?est\b|\beast\b)")
+
+
 def _find_region_in_query(q: str, idx: GeographyIndex) -> str | None:
     aliases = sorted(idx.alias_to_region.keys(), key=len, reverse=True)
     for alias in aliases:
-        if alias and re.search(rf"\b{re.escape(alias)}\b", q):
-            return idx.alias_to_region[alias]
+        if not alias or not re.search(rf"\b{re.escape(alias)}\b", q):
+            continue
+        # « est » is usually the verb (« quelle est… »); require an explicit region cue.
+        if alias == "est" and not _EST_REGION_CUE.search(q):
+            continue
+        return idx.alias_to_region[alias]
     return None
+
+
+_NATIONAL_CAPITAL = re.compile(
+    r"capitale\s+(?:du\s+|de\s+)?(?:cameroun|pays)|capital\s+(?:city\s+)?of\s+cameroon|"
+    r"cameroon['’]?s\s+capital"
+)
 
 
 def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
@@ -460,6 +474,25 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                 ),
                 source="Découpage administratif officiel (10 régions)",
                 entity_ids=("sud", "kribi", "ebolowa"),
+            )
+        ]
+
+    if _NATIONAL_CAPITAL.search(q):
+        return [
+            GeoFact(
+                subject="Yaoundé",
+                relation="IS_NATIONAL_CAPITAL",
+                object="Cameroun",
+                text_fr=(
+                    "Yaoundé est la capitale politique du Cameroun ; "
+                    "Douala en est la capitale économique."
+                ),
+                text_en=(
+                    "Yaoundé is the political capital of Cameroon; "
+                    "Douala is its economic capital."
+                ),
+                source="Découpage administratif officiel (10 régions)",
+                entity_ids=("yaounde", "centre"),
             )
         ]
 

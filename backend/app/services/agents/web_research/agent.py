@@ -19,6 +19,7 @@ from app.services.agents.web_research.search import build_search_queries
 from app.services.agents.web_research.validator import (
     extract_domain,
     extract_key_facts,
+    filter_regional,
     is_answerable,
     score_hit,
     validate_evidence,
@@ -102,6 +103,8 @@ class WebResearchAgent:
             logger.exception("web_research_failed request_id=%s", request_id)
 
         evidence = validate_evidence(evidence, query=user_query, intent=intent.intent)
+        if intent.intent == "FOOD":
+            evidence = filter_regional(evidence, intent.region, topic="FOOD")
         facts = extract_key_facts(evidence)
         answerable = is_answerable(evidence) and bool(facts)
         confidence = 0.0

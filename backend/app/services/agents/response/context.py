@@ -11,8 +11,48 @@ from app.services.agents.planner.models import TourismPlan
 from app.services.agents.response.evidence import build_allowed_evidence
 
 _CONTENT_MAX = 320
-_KNOWLEDGE_MAX = 4
+_KNOWLEDGE_MAX = 8
 _PLACES_MAX = 12
+
+_FOOD_PLACE_HINTS = (
+    "march",
+    "restaur",
+    "gastronom",
+    "cuisine",
+    "maquis",
+    "menu",
+    "plats",
+    "food",
+    "market",
+    "dining",
+)
+
+
+def is_food_relevant_place(name: str | None, description: str | None, category: Any) -> bool:
+    cats = category if isinstance(category, (list, tuple)) else [category]
+    blob = " ".join(
+        str(x) for x in [name or "", description or "", *[c for c in cats if c]]
+    ).casefold()
+    return any(h in blob for h in _FOOD_PLACE_HINTS)
+
+
+def _chunk_priority(chunk: Any) -> int:
+    cid = chunk.chunk_id or ""
+    content = (chunk.content or "").casefold()
+    if cid.startswith("culture-dish-"):
+        return 0
+    if "[web evidence" in content:
+        return 1
+    if (chunk.source_id or "").startswith("culture:"):
+        return 2
+    if cid.startswith("geo-"):
+        return 0
+    return 3
+
+
+def prioritized_knowledge(knowledge: KnowledgeResult) -> list[Any]:
+    """Region packs and web evidence first — they are the most specific proofs."""
+    return sorted(knowledge.knowledge, key=_chunk_priority)
 
 
 def map_response_type(intent: IntentResult, plan: TourismPlan | None) -> str:
@@ -55,7 +95,14 @@ def build_structured_context(
 ) -> dict[str, Any]:
     """Serialize only what Agent 4 needs — compact and grounded."""
     places = []
-    for place in knowledge.places[:_PLACES_MAX]:
+    candidate_places = knowledge.places
+    if intent.intent == "FOOD":
+        candidate_places = [
+            p
+            for p in knowledge.places
+            if is_food_relevant_place(p.name, p.description, p.category)
+        ]
+    for place in candidate_places[:_PLACES_MAX]:
         places.append(
             {
                 "place_id": place.place_id,
@@ -75,7 +122,7 @@ def build_structured_context(
         )
 
     knowledge_items = []
-    for chunk in knowledge.knowledge[:_KNOWLEDGE_MAX]:
+    for chunk in prioritized_knowledge(knowledge)[:_KNOWLEDGE_MAX]:
         knowledge_items.append(
             {
                 "chunk_id": chunk.chunk_id,

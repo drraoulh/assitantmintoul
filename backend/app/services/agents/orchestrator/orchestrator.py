@@ -447,11 +447,12 @@ class AgentOrchestrator:
             snippet = (ev.snippet or "").strip()
             if not snippet:
                 continue
-            prefix = (
-                "[web evidence — institutional]"
-                if ev.tier <= 2
-                else "[web evidence — unverified]"
-            )
+            if ev.tier <= 2:
+                prefix = "[web evidence — institutional]"
+            elif ev.tier == 3:
+                prefix = "[web evidence — unverified]"
+            else:
+                prefix = "[web evidence — community]"
             content = f"{prefix} {snippet}"
             if research.key_facts and i == 0:
                 facts = " | ".join(research.key_facts[:4])

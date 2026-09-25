@@ -521,14 +521,34 @@ def _pack_evidence(region_id: str, pack: dict, *, language: str, flags: dict[str
     return out
 
 
-def culture_evidence_for_query(query: str, *, language: str = "fr") -> list[KnowledgeEvidence]:
-    """Return structured culture/food evidence for matching region packs."""
+def _region_label_to_pack_id(region: str | None) -> str | None:
+    if not region:
+        return None
+    key = fold(region).replace(" ", "-").replace("extrême", "extreme")
+    return key if key in _PACK_TRIGGERS else None
+
+
+def culture_evidence_for_query(
+    query: str,
+    *,
+    language: str = "fr",
+    region: str | None = None,
+) -> list[KnowledgeEvidence]:
+    """Return structured culture/food evidence for matching region packs.
+
+    When Agent 1 resolved a region (possibly from conversation context), only that
+    region's pack is used so dish tokens like « eru » cannot pull in another region.
+    """
     q = fold(query)
     flags = _intent_flags(q)
     out: list[KnowledgeEvidence] = []
 
+    forced = _region_label_to_pack_id(region)
     for region_id, tokens in _PACK_TRIGGERS.items():
-        if not _trigger_hits(q, region_id, tokens):
+        if forced is not None:
+            if region_id != forced:
+                continue
+        elif not _trigger_hits(q, region_id, tokens):
             continue
         try:
             pack = _load_pack(region_id)
