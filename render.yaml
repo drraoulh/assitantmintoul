@@ -85,7 +85,11 @@ services:
       - key: KNOWLEDGE_GEOGRAPHY_ENABLED
         value: "true"
       - key: WEB_KNOWLEDGE_FALLBACK_ENABLED
-        value: "false"
+        value: "true"
+      - key: WEB_RESEARCH_TIMEOUT_SECONDS
+        value: "9"
+      - key: WEB_RESEARCH_CACHE_TTL_SECONDS
+        value: "1800"
       # Explicit browser origins (Expo static + Next.js + local). No secrets.
       # After first deploy, confirm smartmboa-web hostname in Render dashboard.
       - key: CORS_ORIGINS
