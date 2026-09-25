@@ -71,6 +71,25 @@ _NO_PLACE_INTENTS = {"FOOD", "IMAGE_SEARCH"}
 _ROUTE_INTENTS = {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}
 
 
+def _intent_entities_block(intent: IntentResult) -> str:
+    """Pass Agent 1 slots to Gemini. Does not decide tools."""
+    slots = {
+        "intent": intent.intent,
+        "location": intent.location or intent.city or intent.region,
+        "origin": intent.origin,
+        "destination": intent.destination,
+        "start_date": intent.start_date,
+        "end_date": intent.end_date,
+        "budget_xaf": intent.budget_xaf,
+        "language": intent.language,
+        "dish": intent.dish,
+    }
+    filled = [f"{key}={value}" for key, value in slots.items() if value not in (None, "")]
+    if not filled:
+        return ""
+    return "Extracted entities (Agent 1):\n" + "\n".join(f"- {item}" for item in filled)
+
+
 def _scope_places(knowledge: KnowledgeResult, intent: IntentResult) -> KnowledgeResult:
     """Keep only the places the user's intent is about.
 
@@ -239,9 +258,34 @@ class AgentOrchestrator:
                 )
 
         self.last_tool_decision = None
-        web_decision = await self._decide_web(
-            user_query, intent, knowledge, response_mode=response_mode, request_id=rid
-        )
+        tools_used: list[str] = []
+        gemini_fallback = False
+        if self._should_run_gemini(response_mode):
+            knowledge, tools_used, gemini_ms, gemini_obs, gemini_fallback = (
+                await self._run_gemini_tools(
+                    user_query,
+                    intent,
+                    knowledge,
+                    conversation_context=conversation_context,
+                    request_id=rid,
+                    locale=locale_eff,
+                )
+            )
+            timings.web_ms = gemini_ms
+            agents_called.append("gemini")
+            web_obs = gemini_obs
+            # Gemini already chose whether to use tools. On failure, Agent 4 / Qwen
+            # answers once from existing knowledge — no second pre-classified search.
+            if gemini_fallback:
+                logger.info(
+                    "gemini_fallback_qwen request_id=%s",
+                    rid,
+                )
+            web_decision = None
+        else:
+            web_decision = await self._decide_web(
+                user_query, intent, knowledge, response_mode=response_mode, request_id=rid
+            )
         if web_decision is not None:
             label, llm_queries = web_decision
             knowledge, web_hit_count, web_ms = await self._run_web_research(
@@ -304,6 +348,7 @@ class AgentOrchestrator:
             web_hit_count=web_hit_count,
             web_research=web_obs,
             images=images,
+            tools_used=tools_used,
         )
 
     async def _search_images(
@@ -406,9 +451,109 @@ class AgentOrchestrator:
             web_research=ctx.web_research,
             images=ctx.images,
             fallback_used=final.fallback_used,
+            tools_used=list(ctx.tools_used or (ctx.knowledge.tools_used if ctx.knowledge else [])),
         )
         logger.info("orchestration_completed %s", result.observability())
         return result
+
+    @staticmethod
+    def _should_run_gemini(response_mode: str) -> bool:
+        from app.services.gemini.gemini_config import load_gemini_config
+
+        cfg = load_gemini_config()
+        if not cfg.chat_enabled:
+            return False
+        if response_mode == "voice" and not cfg.voice_enabled:
+            return False
+        return True
+
+    @staticmethod
+    def _config_allows_legacy_web() -> bool:
+        from app.services.gemini.gemini_config import load_gemini_config
+
+        return bool(load_gemini_config().fallback_to_qwen)
+
+    async def _run_gemini_tools(
+        self,
+        user_query: str,
+        intent: IntentResult,
+        knowledge: KnowledgeResult | None,
+        *,
+        conversation_context: str | None,
+        request_id: str,
+        locale: str | None,
+    ) -> tuple[KnowledgeResult, list[str], float, dict[str, Any], bool]:
+        """One Gemini call with native tools declared. Gemini chooses to use them."""
+        from app.services.agents.knowledge.gemini_merge import merge_gemini_into_knowledge
+        from app.services.gemini import (
+            GeminiGenerateRequest,
+            GeminiService,
+            GeminiServiceError,
+        )
+        from app.services.gemini.gemini_config import DEFAULT_TOOL_NAMES, load_gemini_config
+
+        cfg = load_gemini_config()
+        base = knowledge or self._empty_knowledge(user_query, intent, request_id)
+        kb_bits: list[str] = []
+        entities = _intent_entities_block(intent)
+        if entities:
+            kb_bits.append(entities)
+        for place in base.places[:6]:
+            kb_bits.append(f"- {place.name} ({place.city or place.region or ''})")
+        for chunk in base.knowledge[:4]:
+            if chunk.content:
+                kb_bits.append(chunk.content[:280])
+        conversation: list[dict[str, str]] = []
+        if conversation_context:
+            conversation.append({"role": "user", "content": conversation_context})
+        t0 = time.perf_counter()
+        try:
+            service = GeminiService(cfg)
+            result = await service.generate(
+                GeminiGenerateRequest(
+                    user_message=user_query,
+                    conversation=conversation,
+                    kb_context="\n".join(kb_bits) or None,
+                    language=intent.language or locale or "fr",
+                    enabled_tools=list(DEFAULT_TOOL_NAMES) if cfg.tools_enabled else [],
+                )
+            )
+        except GeminiServiceError as exc:
+            elapsed = round((time.perf_counter() - t0) * 1000.0, 3)
+            logger.warning(
+                "gemini_generate_failed request_id=%s status=%s error=%s fallback_qwen=%s",
+                request_id,
+                exc.status_code,
+                str(exc)[:160],
+                cfg.fallback_to_qwen,
+            )
+            obs = {
+                "decision": "gemini_error",
+                "error": type(exc).__name__,
+                "status": exc.status_code,
+                "fallback_to_qwen": cfg.fallback_to_qwen,
+                "tools_used": [],
+            }
+            return base, [], elapsed, obs, True
+        elapsed = round((time.perf_counter() - t0) * 1000.0, 3)
+        merged = merge_gemini_into_knowledge(base, result)
+        obs = {
+            "decision": "gemini_native_tools",
+            "model": result.model,
+            "tools_used": list(result.tools_used),
+            "web_sources": len(result.web_sources),
+            "map_results": len(result.map_results),
+            "fallback_used": result.fallback_used,
+            "research_ms": elapsed,
+        }
+        logger.info(
+            "gemini_generate_completed request_id=%s model=%s tools_used=%s ms=%s",
+            request_id,
+            result.model,
+            result.tools_used,
+            elapsed,
+        )
+        return merged, list(result.tools_used), elapsed, obs, False
 
     def _should_retrieve_knowledge(self, intent: IntentResult) -> bool:
         """Skip Agent 2 when it cannot help (greeting/clarification/booking-without-provider)."""

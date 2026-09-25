@@ -87,6 +87,7 @@ class ChatResponse(BaseModel):
     # Web images (IMAGE_SEARCH / dish photos) and the resolved chat intent.
     images: list[ImageUI] = Field(default_factory=list)
     routing: dict[str, Any] | None = None
+    tools_used: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _mirror_text(self) -> ChatResponse:

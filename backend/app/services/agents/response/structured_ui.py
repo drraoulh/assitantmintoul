@@ -132,6 +132,11 @@ def build_structured_ui(
         "images": [ImageUI.model_validate(img) for img in images or []],
         "routing": intent.routing() if intent else None,
         "structured_build_ms": elapsed,
+        "tools_used": list(
+            (final.tools_used if final and final.tools_used else None)
+            or (knowledge.tools_used if knowledge else [])
+            or []
+        ),
     }
 
 
@@ -159,6 +164,7 @@ def log_chat_observability(
         "images_count": len(ui.get("images") or []),
         "places_displayed": [getattr(p, "name", "") for p in ui.get("places") or []],
         "response_type": ui.get("response_type"),
+        "tools_used": list(ui.get("tools_used") or (knowledge.tools_used if knowledge else [])),
     }
     logger.info("chat_observability %s", json.dumps(data, ensure_ascii=False, default=str))
     return data

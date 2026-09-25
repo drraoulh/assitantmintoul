@@ -88,6 +88,12 @@ class KnowledgeResult(BaseModel):
     verified_places_count: int = 0
     knowledge_completeness: Literal["HIGH", "MEDIUM", "LOW", "NONE"] = "NONE"
     geo_facts_count: int = 0
+    answer_context: str | None = None
+    web_sources: list[SourceEvidence] = Field(default_factory=list)
+    map_results: list[dict] = Field(default_factory=list)
+    tools_used: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+    gemini_answer: str | None = None
 
     def observability(self) -> dict[str, object]:
         """Safe metrics — no raw knowledge text / PII."""
@@ -108,4 +114,7 @@ class KnowledgeResult(BaseModel):
             "verified_places_count": self.verified_places_count,
             "knowledge_completeness": self.knowledge_completeness,
             "geo_facts_count": self.geo_facts_count,
+            "tools_used": list(self.tools_used),
+            "warnings_count": len(self.warnings),
+            "gemini_used": bool(self.gemini_answer),
         }

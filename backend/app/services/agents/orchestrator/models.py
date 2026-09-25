@@ -38,6 +38,7 @@ class OrchestrationContext(BaseModel):
     web_hit_count: int = 0
     web_research: dict[str, Any] | None = None
     images: list[dict[str, Any]] = Field(default_factory=list)
+    tools_used: list[str] = Field(default_factory=list)
 
 
 class OrchestrationResult(BaseModel):
@@ -56,6 +57,7 @@ class OrchestrationResult(BaseModel):
     web_research: dict[str, Any] | None = None
     images: list[dict[str, Any]] = Field(default_factory=list)
     fallback_used: bool = False
+    tools_used: list[str] = Field(default_factory=list)
 
     def observability(self) -> dict[str, Any]:
         """Safe metrics payload — no raw user text / secrets."""
@@ -77,6 +79,7 @@ class OrchestrationResult(BaseModel):
             "web_hit_count": self.web_hit_count,
             "web_research": self.web_research,
             "fallback_used": self.fallback_used,
+            "tools_used": list(self.tools_used),
             "knowledge_source": self.knowledge.source if self.knowledge else None,
             "plan_feasibility": self.plan.feasibility if self.plan else None,
         }

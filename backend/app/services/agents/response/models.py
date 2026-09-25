@@ -55,6 +55,7 @@ class FinalResponse(BaseModel):
     grounding_violations: list[str] = Field(default_factory=list)
     # Violations of the LLM draft that caused it to be replaced by the fallback.
     replaced_violations: list[str] = Field(default_factory=list)
+    tools_used: list[str] = Field(default_factory=list)
 
     @field_validator("sources", mode="before")
     @classmethod
@@ -79,4 +80,5 @@ class FinalResponse(BaseModel):
             "grounding_ok": self.grounding_ok,
             "grounding_validation_ms": self.grounding_validation_ms,
             "grounding_violation_count": len(self.grounding_violations),
+            "tools_used": list(self.tools_used),
         }

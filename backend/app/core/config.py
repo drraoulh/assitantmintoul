@@ -179,11 +179,41 @@ class Settings(BaseSettings):
     )
     gemini_vision_model: str = Field(
         default="gemini-3.6-flash",
-        validation_alias=AliasChoices("GEMINI_VISION_MODEL", "GEMINI_MODEL"),
+        validation_alias=AliasChoices("GEMINI_VISION_MODEL"),
     )
     gemini_timeout_seconds: float = Field(
         default=90,
         validation_alias=AliasChoices("GEMINI_TIMEOUT_SECONDS"),
+    )
+    # Chat + native tools (google_search / google_maps). Model never hard-coded
+    # in service call sites — see app.services.gemini.gemini_config.
+    gemini_model: str = Field(
+        default="gemini-3.5-flash-lite",
+        validation_alias=AliasChoices("GEMINI_MODEL", "GEMINI_CHAT_MODEL"),
+    )
+    gemini_fallback_model: str = Field(
+        default="gemini-3.1-flash-lite",
+        validation_alias=AliasChoices("GEMINI_FALLBACK_MODEL"),
+    )
+    gemini_fallback_to_qwen: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("GEMINI_FALLBACK_TO_QWEN"),
+    )
+    gemini_chat_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("GEMINI_CHAT_ENABLED"),
+    )
+    gemini_tools_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("GEMINI_TOOLS_ENABLED"),
+    )
+    gemini_voice_enabled: bool = Field(
+        default=False,
+        validation_alias=AliasChoices("GEMINI_VOICE_ENABLED"),
+    )
+    gemini_max_retries: int = Field(
+        default=1,
+        validation_alias=AliasChoices("GEMINI_MAX_RETRIES"),
     )
 
     # Phase 2.1 Agent 1 — Intent & Router (progressive). Default OFF so the

@@ -728,7 +728,7 @@ class HuggingFaceAIService(AIService):
 
         intent = result.intent
         skip_kb = intent.intent in {"CLARIFICATION", "SIMPLE_QA"} and not intent.needs_places
-        skip_web = not intent.needs_web
+        skip_web = not (result.tools_used or intent.needs_web)
         yield {
             "type": "route",
             "kind": "orchestrated",
@@ -792,6 +792,7 @@ class HuggingFaceAIService(AIService):
                 **result.web_research,
                 "answer_replaced_by_fallback": result.final_response.replaced_violations,
             }
+        ui["tools_used"] = list(result.tools_used or result.final_response.tools_used)
         log_chat_observability(result.intent, result.knowledge, ui)
 
         phrase_buf = ""
@@ -933,7 +934,11 @@ class HuggingFaceAIService(AIService):
         trace.set_meta(agent_orchestrator=orch_obs)
 
         skip_kb = intent.intent in {"CLARIFICATION", "SIMPLE_QA"} and not intent.needs_places
-        skip_web = not intent.needs_web
+        skip_web = not (
+            list(ctx.tools_used or [])
+            or list(knowledge.tools_used if knowledge else [])
+            or intent.needs_web
+        )
         yield {
             "type": "route",
             "kind": "orchestrated_stream",
@@ -943,6 +948,89 @@ class HuggingFaceAIService(AIService):
             "intent": intent.observability(),
             "orchestrator": orch_obs,
         }
+
+        gemini_answer = (knowledge.gemini_answer or "").strip() if knowledge else ""
+        if gemini_answer:
+            from app.services.gemini.gemini_tools import ensure_unverified_notice
+
+            language = resolve_language(intent, locale)
+            text = ensure_unverified_notice(
+                gemini_answer,
+                list(knowledge.tools_used if knowledge else []),
+                language,
+            )
+            logger.info(
+                "stream_using_gemini_answer tools_used=%s chars=%s",
+                knowledge.tools_used if knowledge else [],
+                len(text),
+            )
+            for i, word in enumerate(text.split(" ")):
+                piece = word if i == 0 else f" {word}"
+                yield {"type": "token", "text": piece}
+            evidence = build_allowed_evidence(intent, knowledge, plan)
+            g_report = validate_grounding(
+                text, evidence, catalog_names=set(), enforcement_enabled=enforce
+            )
+            timer.mark("grounding", g_report.validation_ms)
+            timer.mark("llm", 0.0)
+            timer.mark("llm_ttft", 0.0)
+            timer.mark("response_agent", g_report.validation_ms)
+            self._last_agent4_llm = {
+                "calls": 0,
+                "http_status": None,
+                "ttft_ms": None,
+                "total_ms": 0.0,
+                "model": "gemini",
+                "streaming": True,
+                "gemini_answer": True,
+            }
+            orch_obs["llm"] = {
+                "use_llm_flag": False,
+                "streaming": True,
+                "model": "gemini",
+                "calls": 0,
+                "gemini_answer": True,
+                "fallback_used": False,
+                "tools_used": list(knowledge.tools_used if knowledge else []),
+                "grounding": g_report.as_dict(),
+            }
+            await self._store.add_messages(
+                thread_id,
+                [("user", message), ("assistant", text.strip())],
+            )
+            trace.note_llm_end()
+            stream_ui = build_structured_ui(
+                knowledge=knowledge,
+                plan=plan,
+                vision_summary=ctx.vision_summary,
+                language=language,
+                intent=intent,
+                images=ctx.images,
+            )
+            stream_ui["response_type"] = map_response_type(intent, plan)
+            stream_ui["web_research"] = ctx.web_research
+            stream_ui["tools_used"] = list(ctx.tools_used or knowledge.tools_used or [])
+            log_chat_observability(intent, knowledge, stream_ui)
+            timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
+            yield {
+                "type": "done",
+                "conversation_id": thread_id,
+                "text": text.strip(),
+                "sources": [
+                    ChatSource(
+                        title=src.name or src.source_id,
+                        organization=None,
+                        url=src.url,
+                    ).model_dump()
+                    for src in (knowledge.sources if knowledge else [])
+                    if src.source_id
+                ],
+                "ui": _serialize_ui(stream_ui),
+                "metrics": timer.as_dict(),
+                "llm_trace": trace.as_dict(),
+                "orchestrator": orch_obs,
+            }
+            return
 
         # Phase 2.7 — empty fact-heavy evidence: deterministic only (0 LLM calls)
         if skip_llm:
@@ -1002,6 +1090,7 @@ class HuggingFaceAIService(AIService):
             )
             stream_ui["response_type"] = map_response_type(intent, plan)
             stream_ui["web_research"] = ctx.web_research
+            stream_ui["tools_used"] = list(ctx.tools_used or (knowledge.tools_used if knowledge else []))
             log_chat_observability(intent, knowledge, stream_ui)
             timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
             yield {
@@ -1191,6 +1280,7 @@ class HuggingFaceAIService(AIService):
             images=ctx.images,
         )
         stream_ui["web_research"] = ctx.web_research
+        stream_ui["tools_used"] = list(ctx.tools_used or (knowledge.tools_used if knowledge else []))
         log_chat_observability(intent, knowledge, stream_ui)
         timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
         yield {

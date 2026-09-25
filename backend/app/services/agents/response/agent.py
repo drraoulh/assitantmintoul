@@ -30,6 +30,7 @@ from app.services.agents.response.grounding_enforcement import (
 )
 from app.services.agents.response.models import FinalResponse, SourceReference
 from app.services.agents.response.prompts import agent4_system_prompt
+from app.services.gemini.gemini_tools import ensure_unverified_notice
 
 logger = logging.getLogger(__name__)
 
@@ -102,18 +103,31 @@ class ResponseGenerator:
         skip_llm = enforce and evidence_is_insufficient_for_llm(
             intent_result, knowledge_result, tourism_plan, user_query=user_query
         )
+        gemini_text = (knowledge_result.gemini_answer or "").strip()
+        tools_used = list(knowledge_result.tools_used or [])
+        used_gemini = bool(gemini_text)
         use_llm = (
             self._llm is not None
             and not self._prefer_deterministic
             and not skip_llm
+            and not used_gemini
         )
-        if skip_llm:
+        if used_gemini:
+            logger.info(
+                "agent4_using_gemini_answer tools_used=%s chars=%s",
+                tools_used,
+                len(gemini_text),
+            )
+        elif skip_llm:
             logger.info(
                 "[GROUNDING] skip_llm insufficient_evidence intent=%s",
                 intent_result.intent,
             )
 
-        if use_llm:
+        if used_gemini:
+            text = ensure_unverified_notice(gemini_text, tools_used, language)
+            fallback_used = False
+        elif use_llm:
             try:
                 t_llm = time.perf_counter()
                 text = await self._llm(messages)
@@ -156,7 +170,16 @@ class ResponseGenerator:
             enforcement_enabled=enforce,
         )
         replaced: list[str] = []
-        if enforce and grounding_report.critical and use_llm and not fallback_used:
+        replace_unsourced_gemini = (
+            enforce
+            and grounding_report.critical
+            and used_gemini
+            and not tools_used
+            and not fallback_used
+        )
+        if replace_unsourced_gemini or (
+            enforce and grounding_report.critical and use_llm and not fallback_used
+        ):
             replaced = [f"{v.kind}:{v.detail}"[:80] for v in grounding_report.violations[:6]]
             logger.warning(
                 "[GROUNDING] critical_violation replacing_with_fallback kinds=%s",
@@ -189,6 +212,7 @@ class ResponseGenerator:
         warnings = list(
             dict.fromkeys(
                 list(knowledge_result.missing_information)[:4]
+                + list(knowledge_result.warnings)[:4]
                 + (list(tourism_plan.warnings)[:4] if tourism_plan else [])
             )
         )
@@ -207,7 +231,7 @@ class ResponseGenerator:
             sources=sources,
             warnings=warnings,
             confidence=round(confidence, 3),
-            fallback_used=fallback_used or self._prefer_deterministic,
+            fallback_used=False if used_gemini else (fallback_used or self._prefer_deterministic),
             request_id=rid,
             prompt_build_ms=round(prompt_build_ms, 3),
             llm_ttft_ms=round(llm_ttft_ms, 3) if llm_ttft_ms is not None else None,
@@ -223,6 +247,7 @@ class ResponseGenerator:
                 f"{v.kind}:{v.detail}" for v in (grounding_report.violations if grounding_report else [])[:8]
             ],
             replaced_violations=replaced,
+            tools_used=tools_used,
         )
         allowed = allowed_place_names(knowledge_result, tourism_plan)
         result_meta = {
