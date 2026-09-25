@@ -12,6 +12,10 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Literal
 
+from app.services.agents.knowledge.national_facts import (
+    NATIONAL_FACTS_SOURCE,
+    answer_national_fact,
+)
 from app.services.agents.knowledge.place_store import fold
 
 _DATA_PATH = (
@@ -29,6 +33,7 @@ GeoRelation = Literal[
     "IS_REGION_CAPITAL",
     "IS_NATIONAL_CAPITAL",
     "IS_NOT_EQUIVALENT",
+    "NATIONAL_FACT",
 ]
 
 
@@ -493,6 +498,20 @@ def answer_geo_query(query: str, *, language: str = "fr") -> list[GeoFact]:
                 ),
                 source="Découpage administratif officiel (10 régions)",
                 entity_ids=("yaounde", "centre"),
+            )
+        ]
+
+    national = answer_national_fact(query)
+    if national is not None:
+        return [
+            GeoFact(
+                subject="Cameroun",
+                relation="NATIONAL_FACT",
+                object=national.key,
+                text_fr=national.text_fr,
+                text_en=national.text_en,
+                source=NATIONAL_FACTS_SOURCE,
+                entity_ids=("cm",),
             )
         ]
 

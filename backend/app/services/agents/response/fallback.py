@@ -86,6 +86,9 @@ def _render_core(
     if geo_chunks and intent.intent in {"SIMPLE_QA", "TOURISM_INFO", "PLACE_DETAILS"}:
         return geo_chunks[0].content.split(" (source:")[0].strip()
 
+    if is_general_fact(intent):
+        return _render_general_fact(user_query, knowledge, lang=lang, voice=voice)
+
     culture_chunks = [
         k for k in knowledge.knowledge if (k.source_id or "").startswith("culture:")
     ]
@@ -152,6 +155,49 @@ def _render_core(
 
 def is_greeting(intent: IntentResult) -> bool:
     return (intent.reason or "").endswith("greeting")
+
+
+def is_general_fact(intent: IntentResult) -> bool:
+    return intent.intent == "SIMPLE_QA" and (
+        (intent.reason or "") == "general_fact"
+        or intent.web_reason == "FORCED_CURRENT_INFORMATION"
+    )
+
+
+_FR_HINT = re.compile(r"\b(?:le|la|les|est|du|des|une?|depuis|et|au|en)\b", re.IGNORECASE)
+_EN_HINT = re.compile(r"\b(?:the|is|of|since|and|has|was|in)\b", re.IGNORECASE)
+
+
+def _render_general_fact(
+    user_query: str, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    """One direct answer from the best web snippet — no place cards, no « which city? »."""
+    candidates: list[tuple[float, str, str]] = []
+    for chunk in knowledge.knowledge:
+        content = chunk.content or ""
+        if not (chunk.chunk_id or "").startswith("web:") or "low confidence" in content.casefold():
+            continue
+        text = content.split("\n", 1)[0]
+        text = re.sub(r"^\[web evidence[^\]]*\]\s*", "", text).strip()
+        if not text:
+            continue
+        hint = _EN_HINT if lang == "en" else _FR_HINT
+        same_lang = len(hint.findall(text)) >= 2
+        score = semantic_overlap(text, user_query) + (0.3 if same_lang else 0.0) + 0.05 * (chunk.score or 0)
+        candidates.append((score, text, extract_domain(chunk.source_id or "")))
+    if not candidates:
+        return (
+            "I couldn't verify this online right now. Please try again in a moment."
+            if lang == "en"
+            else "Je n’ai pas pu vérifier cette information en ligne pour le moment. Réessayez dans un instant."
+        )
+    candidates.sort(key=lambda c: c[0], reverse=True)
+    _, text, domain = candidates[0]
+    if len(text) > 300:
+        text = text[:299].rsplit(" ", 1)[0] + "…"
+    if voice or not domain:
+        return text
+    return f"{text}\n\nSource: {domain}" if lang == "en" else f"{text}\n\nSource : {domain}"
 
 
 def _greeting(user_query: str, lang: str) -> str:

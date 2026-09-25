@@ -14,6 +14,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.services.agents.knowledge.national_facts import is_volatile_fact_query
+
 FORCED_CURRENT_INFORMATION = "FORCED_CURRENT_INFORMATION"
 FORCED_HOTEL_SEARCH = "FORCED_HOTEL_SEARCH"
 FORCED_RESTAURANT_SEARCH = "FORCED_RESTAURANT_SEARCH"
@@ -93,6 +95,9 @@ def forced_web_reason(intent: str, query: str) -> str | None:
         return FORCED_HOTEL_SEARCH
     if intent == "FOOD" and _RESTAURANT.search(query or ""):
         return FORCED_RESTAURANT_SEARCH
+    # Office holders, population, results… change over time: never answer from KB alone.
+    if intent in {"SIMPLE_QA", "TOURISM_INFO"} and is_volatile_fact_query(query):
+        return FORCED_CURRENT_INFORMATION
     return None
 
 

@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass
 
 from app.services.agents.intent.extractors import ExtractedSlots, fold
+from app.services.agents.knowledge.national_facts import is_general_fact_query
 
 
 @dataclass(frozen=True)
@@ -247,6 +248,13 @@ def classify_with_rules(
     # Festivals / tourist events often need live or external sources.
     if _EVENTS_FRESH.search(raw):
         return RuleHit("WEB_SEARCH", 0.86, "events_need_web")
+
+    # Who / what / when about Cameroon itself (president, anthem, languages…):
+    # answer directly instead of asking the user for a city.
+    if is_general_fact_query(raw) and not (
+        _HOTEL.search(raw) or _FOOD.search(raw) or slots.place_name
+    ):
+        return RuleHit("SIMPLE_QA", 0.9, "general_fact")
 
     if _HOTEL.search(raw) and not _FOOD.search(raw):
         return RuleHit("HOTEL", 0.86, "hotel_keywords")

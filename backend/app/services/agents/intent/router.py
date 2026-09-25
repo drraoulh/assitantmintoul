@@ -20,11 +20,12 @@ from app.services.agents.web_research.policy import forced_web_reason
 logger = logging.getLogger(__name__)
 
 _OPEN_QUESTION = re.compile(
-    r"^\s*(?:qu['’]est[- ]ce\s+que?|c['’]est\s+quoi|qui\s+(?:est|sont|était)|"
-    r"pourquoi|comment\s+(?:se|s['’]|on|est)|quelle?s?\s+(?:est|sont)|que\s+signifie|"
+    r"^\s*(?:qu['’]est[- ]ce\s+que?|c['’]est\s+quoi|qui|quand|combien|"
+    r"pourquoi|comment\s+(?:se|s['’]|on|est)|quel(?:le)?s?\s+(?:est|sont|était)|que\s+signifie|"
     r"parle[sz]?[- ]moi|raconte[sz]?[- ]moi|explique[sz]?[- ]moi|dis[- ]moi|"
-    r"what\s+(?:is|are|was)|who\s+(?:is|are|was)|why|tell\s+me\s+about|explain)\b"
-    r".{6,}",
+    r"what\s+(?:is|are|was)|who|when|how\s+(?:many|much)|why|tell\s+me\s+about|explain)\b"
+    r".{6,}"
+    r"|\bc['’]est\s+(?:qui|quoi|quand)\b",
     re.IGNORECASE,
 )
 _NATIONAL_SCOPE = re.compile(r"\b(?:au|du|le|in|of)\s+(?:cameroun|cameroon)\b", re.IGNORECASE)
