@@ -10,6 +10,7 @@ timeouts, partial results kept) → Cameroon relevance validation → ranker
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import time
 
@@ -18,8 +19,13 @@ from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.web_research.cache import cache_get, cache_set, ttl_for
 from app.services.agents.web_research.models import WebEvidence, WebResearchResult
-from app.services.agents.web_research.query_builder import build_queries
+from app.services.agents.web_research.query_builder import (
+    build_queries,
+    is_route_research,
+    route_query_phases,
+)
 from app.services.agents.web_research.ranker import MAX_SOURCES, rank
+from app.services.agents.web_research.route import select_destination, select_transport
 from app.services.agents.web_research.validator import (
     extract_key_facts,
     filter_mentions,
@@ -87,6 +93,10 @@ class WebResearchAgent:
     ) -> WebResearchResult:
         started = time.perf_counter()
         region = intent.region or intent.city
+        route = not llm_queries and is_route_research(intent)
+        if route:
+            # Same wording, different trip (« retourner à Yaoundé » from Foumban or Kribi).
+            region = f"{intent.origin or ''}->{intent.destination}"
         cached = cache_get(user_query, intent.intent, region)
         if cached is not None:
             cached.cache_hit = True
@@ -102,6 +112,9 @@ class WebResearchAgent:
                 request_id=request_id,
                 research_ms=round((time.perf_counter() - started) * 1000.0, 3),
             )
+
+        if route:
+            return await self._research_route(user_query, intent, region, started, request_id)
 
         queries = build_queries(user_query, intent, llm_queries=llm_queries)
         raw: list[WebSearchResult] = []
@@ -125,7 +138,9 @@ class WebResearchAgent:
             )
 
         evidence = [self._to_evidence(r, user_query) for r in raw]
-        evidence = validate_evidence(evidence, query=user_query, intent=intent.intent)
+        evidence = validate_evidence(
+            evidence, query=user_query, intent=intent.intent, places=(intent.city or "",)
+        )
         if intent.intent == "FOOD" and intent.dish:
             evidence = filter_mentions(evidence, intent.dish)
         elif intent.intent == "FOOD":
@@ -152,6 +167,7 @@ class WebResearchAgent:
         result = WebResearchResult(
             query=user_query,
             search_queries=queries,
+            raw_results_count=len(raw),
             answerable=answerable,
             evidence=evidence,
             key_facts=facts,
@@ -165,6 +181,97 @@ class WebResearchAgent:
         if answerable and not timed_out:
             ttl = self._ttl_override or ttl_for(intent.intent, intent.web_reason)
             cache_set(user_query, intent.intent, result, ttl_seconds=ttl, region=region)
+        return result
+
+    async def _search(self, queries: list[str]) -> tuple[list[WebSearchResult], bool]:
+        if not queries:
+            return [], False
+        try:
+            return await run_parallel(
+                _provider_for(self._web),
+                queries,
+                max_results=self._max,
+                per_query_timeout_s=self._per_query,
+                global_timeout_s=self._timeout,
+            )
+        except Exception:  # noqa: BLE001
+            logger.exception("web_research_failed queries=%s", queries)
+            return [], False
+
+    async def _research_route(
+        self,
+        user_query: str,
+        intent: IntentResult,
+        cache_region: str,
+        started: float,
+        request_id: str | None,
+    ) -> WebResearchResult:
+        """Phase A (origin → destination transport) and Phase B (destination) are
+        searched with separate queries and selected with separate rules."""
+        dest = intent.destination or ""
+        transport_q, destination_q = route_query_phases(intent)
+        (raw_t, to_t), (raw_d, to_d) = await asyncio.gather(
+            self._search(transport_q), self._search(destination_q)
+        )
+        timed_out = to_t or to_d
+        places = tuple(p for p in (intent.origin, dest) if p)
+
+        transport = [self._to_evidence(r, " ".join(transport_q)) for r in raw_t]
+        transport = validate_evidence(transport, query=user_query, intent=intent.intent, places=places, limit=12)
+        transport = rank(transport, " ".join([user_query, dest]), alt_queries=transport_q, limit=12)
+        transport = select_transport(transport, intent.origin, dest)
+
+        seen = {e.url for e in transport}
+        destination = [
+            self._to_evidence(r, " ".join(destination_q)) for r in raw_d if r.url not in seen
+        ]
+        destination = validate_evidence(destination, query=user_query, intent=intent.intent, places=(dest,), limit=12)
+        destination = rank(destination, " ".join([user_query, dest]), alt_queries=destination_q, limit=12)
+        destination = select_destination(destination, dest)
+
+        evidence = [*transport, *destination]
+        facts = extract_key_facts([e for e in evidence if not e.low_confidence])
+        answerable = bool(transport) and bool(facts)
+        warnings: list[str] = []
+        if timed_out:
+            warnings.append("web_research_timeout")
+        if not transport:
+            warnings.append("no_route_specific_source")
+        if destination_q and not destination:
+            warnings.append("no_destination_source")
+        result = WebResearchResult(
+            query=user_query,
+            search_queries=[*transport_q, *destination_q],
+            transport_queries=transport_q,
+            destination_queries=destination_q,
+            raw_results_count=len(raw_t) + len(raw_d),
+            answerable=answerable,
+            evidence=evidence,
+            key_facts=facts,
+            warnings=warnings,
+            confidence=round(min(0.92, max((e.rank_score for e in evidence), default=0.0)), 3),
+            timed_out=timed_out,
+            request_id=request_id,
+            research_ms=round((time.perf_counter() - started) * 1000.0, 3),
+            provider=getattr(_provider_for(self._web), "name", ""),
+        )
+        logger.info(
+            "web_research_route request_id=%s origin=%s destination=%s transport_queries=%s "
+            "destination_queries=%s raw_transport=%s raw_destination=%s selected_transport=%s "
+            "selected_destination=%s",
+            request_id,
+            intent.origin,
+            dest,
+            transport_q,
+            destination_q,
+            len(raw_t),
+            len(raw_d),
+            [f"{e.domain}:{e.route_match}" for e in transport],
+            [e.domain for e in destination],
+        )
+        if answerable and not timed_out:
+            ttl = self._ttl_override or ttl_for(intent.intent, intent.web_reason)
+            cache_set(user_query, intent.intent, result, ttl_seconds=ttl, region=cache_region)
         return result
 
     @staticmethod

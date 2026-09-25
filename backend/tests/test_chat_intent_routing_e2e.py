@@ -62,6 +62,42 @@ ROWS = [
 ]
 
 
+FOUMBAN_ROWS = [
+    _row(
+        "Yaoundé à Foumban en bus",
+        "https://www.rome2rio.com/fr/s/Yaoundé/Foumban",
+        "Le meilleur moyen pour se rendre de Yaoundé à Foumban sans voiture est de bus et Taxi, "
+        "ce qui dure 8 h 46 m et coûte $65 - $85.",
+    ),
+    _row(
+        "Foumban à Cameroun",
+        "https://www.rome2rio.com/fr/s/Foumban/Cameroun",
+        "Il y a 3 façons d'aller de Foumban à Cameroun en taxi, bus ou automobile ; Le meilleur · 7h 57min.",
+    ),
+    _row(
+        "Agence de voyage Yaoundé Foumban",
+        "https://bus.example.cm/yaounde-foumban",
+        "Les bus de Yaoundé pour Foumban partent de la gare routière de Mvan ; trajet d'environ 5 h 30, "
+        "billet à 6 000 FCFA.",
+    ),
+    _row(
+        "Douala Kribi bus",
+        "https://travel.example.com/douala-kribi",
+        "Buses from Douala to Kribi take about 3 hours, Cameroon.",
+    ),
+    _row(
+        "Que faire à Foumban",
+        "https://guide.example.com/foumban",
+        "À Foumban, visitez le palais royal des sultans bamoun, le musée des rois et le village des artisans.",
+    ),
+    _row(
+        "Restaurants à Foumban",
+        "https://resto.example.com/foumban",
+        "Le restaurant Le Bamoun à Foumban sert des plats locaux et des grillades.",
+    ),
+]
+
+
 class RecordingProvider(WebSearchProvider):
     name = "fake"
 
@@ -73,7 +109,7 @@ class RecordingProvider(WebSearchProvider):
         self.queries.append(query)
         await asyncio.sleep(0)
         # Same pool for every query: validation/relevance must pick the on-topic rows.
-        return list(ROWS)
+        return [*ROWS, *FOUMBAN_ROWS]
 
     async def search_images(self, query: str, max_results: int = 6) -> list[ImageSearchResult]:
         self.image_queries.append(query)
@@ -235,7 +271,7 @@ def test_10_three_day_trip_is_itinerary_with_route(chat):
     assert _web_sources(data)
     assert data["itinerary"] and data["itinerary"]["days"]
     assert _place_cities(data) <= {"Buea"}
-    assert "Trajet Yaoundé → Buea" in data["message"]
+    assert "ALLER DE YAOUNDÉ À BUEA" in data["message"]
 
 
 def test_images_disabled_by_flag(chat, monkeypatch):
@@ -268,3 +304,125 @@ def test_route_extraction(message, intent, origin, destination):
 def test_city_mention_alone_does_not_trigger_place_search():
     result = classify_intent("Je veux quitter Yaoundé pour arriver à Buea", locale="fr")
     assert result.intent == "TRAVEL_ROUTE" and result.city == "Buea"
+
+
+# --- Trajet + destination contextualisation (Yaoundé → Foumban) ---------------
+
+
+def test_s1_go_to_foumban_from_yaounde_what_to_do(chat):
+    data = chat("Je veux aller à Foumban, je suis à Yaoundé, que faire ?")
+    routing = data["routing"]
+    assert routing["chat_intent"] == "TRAVEL_ROUTE"
+    assert routing["origin"] == "Yaoundé" and routing["destination"] == "Foumban"
+    web = data["web_research"]
+    assert web["transport_queries"] == [
+        "Yaoundé Foumban transport bus Cameroon",
+        "Yaoundé Foumban agence de voyage bus",
+        "Yaoundé Foumban prix transport durée",
+    ]
+    assert web["destination_queries"] == ["que faire à Foumban Cameroun", "lieux touristiques Foumban Cameroun"]
+    assert "Foumban Cameroun" not in chat.provider.queries
+    assert web["web_results_count"] > 0
+    message = data["message"]
+    assert "🚍 ALLER DE YAOUNDÉ À FOUMBAN" in message
+    assert "⚠️ Informations à confirmer" in message
+    assert "🏛️ QUE FAIRE À FOUMBAN" in message
+    assert "📚 SOURCES" in message
+    # Off-route pages are not presented as the Yaoundé → Foumban journey.
+    assert "Foumban à Cameroun" not in message and "Douala" not in message
+    # Divergent durations are shown as a range, foreign fares keep their currency.
+    assert "entre environ 5 h 30 et 8 h 46" in message
+    assert "environ 65–85 USD" in message and "6 000 FCFA" in message
+    assert "Mvan" in message
+    assert "palais royal" in message
+    assert _place_cities(data) == {"Foumban"}
+    assert "Yaoundé" not in _place_cities(data)
+    assert [m["title"] for m in data["map"]["markers"]][:2] == ["Yaoundé", "Foumban"]
+
+
+def test_s2_how_to_go_from_yaounde_to_foumban(chat):
+    data = chat("Comment aller de Yaoundé à Foumban ?")
+    routing = data["routing"]
+    assert routing["chat_intent"] == "TRAVEL_ROUTE"
+    assert routing["origin"] == "Yaoundé" and routing["destination"] == "Foumban"
+    assert data["web_research"]["destination_queries"] == []
+    assert "Yaoundé" not in _place_cities(data)
+    assert "QUE FAIRE" not in data["message"]
+
+
+def test_s3_what_to_do_in_foumban_is_place_search(chat):
+    data = chat("Que faire à Foumban ?")
+    assert data["routing"]["chat_intent"] == "PLACE_SEARCH"
+    assert data["routing"]["location"] == "Foumban"
+    assert data["places"] and _place_cities(data) == {"Foumban"}
+
+
+def test_s4_in_yaounde_what_to_visit_is_place_search(chat):
+    data = chat("Je suis à Yaoundé, que visiter ?")
+    assert data["routing"]["chat_intent"] == "PLACE_SEARCH"
+    assert data["routing"]["location"] == "Yaoundé"
+    assert data["places"] and _place_cities(data) == {"Yaoundé"}
+
+
+def test_s5_on_site_follow_up_targets_destination(chat):
+    first = chat("Je vais à Foumban")
+    data = chat("Et sur place ?", first["conversation_id"])
+    assert data["routing"]["chat_intent"] == "PLACE_SEARCH"
+    assert data["routing"]["location"] == "Foumban"
+    assert data["places"] and _place_cities(data) == {"Foumban"}
+
+
+def test_s6_hotels_follow_up_targets_destination(chat):
+    first = chat("Je vais à Foumban")
+    data = chat("Et les hôtels ?", first["conversation_id"])
+    assert data["routing"]["chat_intent"] == "HOTEL_SEARCH"
+    assert data["routing"]["location"] == "Foumban"
+    assert any("Foumban" in q for q in chat.provider.queries)
+
+
+def test_s7_want_to_see_foumban_is_image_search(chat):
+    data = chat("Je veux voir Foumban")
+    assert data["routing"]["chat_intent"] == "IMAGE_SEARCH"
+    assert data["routing"]["wants_images"] is True
+    assert chat.provider.image_queries == ["Foumban Cameroun"]
+    assert len(data["images"]) == 3
+    assert all(img["page_url"].startswith("https://") for img in data["images"])
+
+
+def test_s7b_want_to_see_the_palace_searches_the_palace(chat):
+    data = chat("Je veux voir le palais de Foumban")
+    assert data["routing"]["chat_intent"] == "IMAGE_SEARCH"
+    assert chat.provider.image_queries == ["palais de Foumban Cameroun"]
+
+
+def test_s8_where_to_eat_in_foumban_is_restaurant_search(chat):
+    data = chat("Où manger à Foumban ?")
+    routing = data["routing"]
+    assert routing["chat_intent"] == "RESTAURANT_SEARCH"
+    assert routing["location"] == "Foumban"
+    assert chat.provider.queries and _web_sources(data)
+    assert "Le Bamoun" in data["message"]
+
+
+def test_return_trip_follow_up_reverses_the_route(chat):
+    first = chat("Je veux aller à Foumban")
+    data = chat("Et comment retourner à Yaoundé ?", first["conversation_id"])
+    routing = data["routing"]
+    assert routing["chat_intent"] == "TRAVEL_ROUTE"
+    assert routing["origin"] == "Foumban" and routing["destination"] == "Yaoundé"
+    assert data["web_research"]["transport_queries"][0] == "Foumban Yaoundé transport bus Cameroon"
+    assert "ALLER DE FOUMBAN À YAOUNDÉ" in data["message"]
+
+
+def test_restaurants_follow_up_targets_destination(chat):
+    first = chat("Je veux aller à Foumban")
+    data = chat("Et les restaurants ?", first["conversation_id"])
+    assert data["routing"]["chat_intent"] == "RESTAURANT_SEARCH"
+    assert data["routing"]["location"] == "Foumban"
+
+
+def test_visit_origin_before_leaving_is_explicit(chat):
+    first = chat("Je veux aller à Foumban, je suis à Yaoundé.")
+    data = chat("Que visiter à Yaoundé avant de partir ?", first["conversation_id"])
+    assert data["routing"]["chat_intent"] == "PLACE_SEARCH"
+    assert data["routing"]["location"] == "Yaoundé"

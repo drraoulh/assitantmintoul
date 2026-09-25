@@ -148,16 +148,22 @@ def build_structured_context(
     knowledge_items = []
     for chunk in prioritized_knowledge(knowledge)[:_KNOWLEDGE_MAX]:
         content = _clip(chunk.content, _CONTENT_MAX)
-        if "[web evidence" in (chunk.content or "")[:40]:
+        is_web = "[web evidence" in (chunk.content or "")[:40]
+        if is_web:
             content = wrap_web_content(content or "", chunk.source_id)
-        knowledge_items.append(
-            {
-                "chunk_id": chunk.chunk_id,
-                "title": chunk.title,
-                "content": content,
-                "source_id": chunk.source_id,
-            }
-        )
+        item = {
+            "chunk_id": chunk.chunk_id,
+            "title": chunk.title,
+            "content": content,
+            "source_id": chunk.source_id,
+            "provenance": "web" if is_web else "smartmboa",
+        }
+        tags = (chunk.chunk_id or "").split(":")[3:] if is_web else []
+        if "transport" in tags or "destination" in tags:
+            item["phase"] = "transport" if "transport" in tags else "destination"
+        if "reverse" in tags:
+            item["direction"] = "reverse"
+        knowledge_items.append(item)
 
     sources = []
     for src in knowledge.sources[:8]:

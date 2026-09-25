@@ -161,34 +161,52 @@ MAX_ROUTE_QUERIES = 5
 _ROUTE_INTENTS = {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}
 
 
-def route_queries(intent: IntentResult) -> list[str]:
-    """Transport-first queries for an origin → destination question.
+def route_query_phases(intent: IntentResult) -> tuple[list[str], list[str]]:
+    """(transport, destination) queries for an origin → destination question.
 
-    The origin is only used for the journey; places/activities are searched at
-    the destination.
+    Phase A always names the pair of towns so results describe that journey;
+    Phase B (only when the user also asks what to do / for a stay) targets the
+    destination. The two are never mixed in one query.
     """
     dest = intent.destination or ""
     origin = intent.origin or ""
     english = (intent.language or "fr") == "en"
-    if origin:
+    if origin and english:
         transport = [
-            f"transport {origin} {dest} Cameroun bus agence de voyage",
-            f"trajet {origin} {dest} durée route distance",
-            f"how to travel from {origin} to {dest} Cameroon",
+            f"{origin} to {dest} bus transport Cameroon",
+            f"{origin} {dest} travel agency bus",
+            f"{origin} {dest} bus fare travel time",
         ]
+    elif origin:
+        transport = [
+            f"{origin} {dest} transport bus Cameroon",
+            f"{origin} {dest} agence de voyage bus",
+            f"{origin} {dest} prix transport durée",
+        ]
+    elif english:
+        transport = [f"how to get to {dest} Cameroon bus", f"{dest} Cameroon travel agency bus"]
     else:
-        transport = [
-            f"comment aller à {dest} Cameroun transport",
-            f"how to get to {dest} Cameroon",
-        ]
-    if english:
-        transport.insert(0, transport.pop())
-    extra: list[str] = []
+        transport = [f"comment aller à {dest} Cameroun transport bus", f"{dest} Cameroun agence de voyage bus"]
+    destination: list[str] = []
     if intent.wants_activities or intent.duration_days:
-        extra = [f"que faire à {dest} Cameroun", f"things to do in {dest} Cameroon"]
+        destination = (
+            [f"things to do in {dest} Cameroon", f"tourist attractions {dest} Cameroon"]
+            if english
+            else [f"que faire à {dest} Cameroun", f"lieux touristiques {dest} Cameroun"]
+        )
     if intent.duration_days:
-        extra.append(f"{dest} Cameroun itinéraire {intent.duration_days} jours")
-    return [*transport, *extra][:MAX_ROUTE_QUERIES]
+        destination[-1:] = [f"{dest} Cameroun itinéraire {intent.duration_days} jours"]
+    budget = MAX_ROUTE_QUERIES - len(destination)
+    return transport[:budget], destination
+
+
+def route_queries(intent: IntentResult) -> list[str]:
+    transport, destination = route_query_phases(intent)
+    return [*transport, *destination][:MAX_ROUTE_QUERIES]
+
+
+def is_route_research(intent: IntentResult) -> bool:
+    return bool(intent.destination) and intent.intent in _ROUTE_INTENTS
 
 
 def dish_queries(intent: IntentResult) -> list[str]:
@@ -210,6 +228,10 @@ def dish_queries(intent: IntentResult) -> list[str]:
 def build_image_query(intent: IntentResult, user_query: str = "") -> str:
     if intent.dish:
         return f"{intent.dish} plat camerounais"
+    if intent.image_subject:
+        folded = _fold(intent.image_subject)
+        suffix = "" if "cameroun" in folded or "cameroon" in folded else " Cameroun"
+        return f"{intent.image_subject}{suffix}"
     subject = intent.destination or intent.city or intent.location or intent.region
     if subject:
         return f"{subject} Cameroun"

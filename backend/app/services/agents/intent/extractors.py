@@ -392,6 +392,9 @@ class ExtractedSlots:
     dish: str | None = None
     wants_images: bool = False
     wants_activities: bool = False
+    image_subject: str | None = None
+    on_site: bool = False
+    return_trip: bool = False
 
 
 _CITY_ALT = "|".join(re.escape(k) for k in sorted(_CITIES, key=len, reverse=True))
@@ -399,7 +402,21 @@ _TRAVEL_CUE = re.compile(
     r"\b(?:aller|vais|va|allons|allez|rendre|rends|trajet|voyage[rz]?|voyageons|transport|"
     r"bus|cars?|taxi|train|vol|avion|route|quitter|quitte|quittant|partir|pars|part|"
     r"arriver|arrive|rejoindre|distance|duree|combien\s+de\s+temps|chemin|"
-    r"get|go|going|travel(?:l?ing)?|trip|drive|fly|leave|leaving|reach|journey)\b"
+    r"retourner|retourne|rentrer|rentre|revenir|reviens|retour|"
+    r"get|go|going|travel(?:l?ing)?|trip|drive|fly|leave|leaving|reach|journey|return)\b"
+)
+_RETURN_CUE = re.compile(
+    r"\b(?:retourner|retourne|rentrer|rentre|revenir|reviens|retour|return|go\s+back|get\s+back|"
+    r"ensuite|apres\s+ca|puis|then|afterwards)\b"
+)
+_ON_SITE = re.compile(
+    r"\b(?:sur\s+place|la[- ]bas|une\s+fois\s+(?:la[- ]bas|arrive\w*|sur\s+place)|"
+    r"on\s+site|over\s+there|once\s+(?:there|i\s+arrive))\b"
+)
+_CURRENT_LOCATION = re.compile(
+    r"\b(?:je\s+suis(?:\s+actuellement)?|je\s+me\s+trouve|j['’ ]?habite|je\s+vis|"
+    r"nous\s+sommes|on\s+est|i\s+am|i['’ ]?m|we\s+are|we['’ ]?re)\s+(?:a|au|en|in|at)\s+"
+    rf"(?P<o>{_CITY_ALT})\b"
 )
 _ROUTE_PATTERNS = (
     re.compile(
@@ -411,8 +428,25 @@ _ROUTE_PATTERNS = (
     re.compile(rf"\b(?P<o>{_CITY_ALT})\s*(?:->|→|–|—|-)\s*(?P<d>{_CITY_ALT})\b"),
 )
 _DESTINATION_ONLY = re.compile(
-    r"\b(?:aller|me\s+rendre|se\s+rendre|nous\s+rendre|arriver|rejoindre|get|go|travel|getting)\s+"
-    rf"(?:a|au|en|to|jusqu['’ ]?a)\s+(?P<d>{_CITY_ALT})\b"
+    r"\b(?:aller|vais|allons|me\s+rendre|se\s+rendre|nous\s+rendre|arriver|rejoindre|"
+    r"retourner|rentrer|revenir|partir|pars|get|go|travel|getting|return|go\s+back|get\s+back)\s+"
+    rf"(?:a|au|en|to|jusqu['’ ]?a|vers|pour)\s+(?P<d>{_CITY_ALT})\b"
+)
+# "Je veux voir Foumban", "Montre-moi le palais de Foumban" — raw text, keeps accents.
+_SEE_SUBJECT = re.compile(
+    r"(?:\b(?:je\s+veux|je\s+voudrais|j['’]aimerais|on\s+peut|puis[- ]je|i\s+want\s+to|"
+    r"i['’]d\s+like\s+to|can\s+i|let\s+me)\s+(?:voir|see)|\bmontre[sz]?[- ]moi|\bshow\s+me)\s+"
+    r"(?P<s>[^?!.]{2,80})",
+    re.IGNORECASE,
+)
+_SEE_EXCLUDE = re.compile(
+    r"\b(?:hotels?|hebergement\w*|restaurants?|manger|itineraire|trajet|route|programme|"
+    r"lieux|sites|activites?|carte|map|prix|tarifs?|comment|que|quoi|visiter|faire)\b"
+)
+_LEADING_ARTICLE = re.compile(
+    r"^(?:(?:des|les|quelques|some|the)?\s*(?:photos?|images?|pictures?|pics)\s+(?:de\s+la|de\s+l['’]|du|des|de|d['’]|of(?:\s+the)?)\s*)?"
+    r"(?:le|la|les|l['’]|du|des|un|une|the|a)?\s*",
+    re.IGNORECASE,
 )
 _ACTIVITIES = re.compile(
     r"\b(?:que\s+faire|quoi\s+faire|que\s+visiter|quoi\s+visiter|a\s+voir|activites?|"
@@ -473,8 +507,27 @@ def _extract_route(folded: str) -> tuple[str | None, str | None]:
                 return origin, dest
     match = _DESTINATION_ONLY.search(folded)
     if match:
-        return None, _CITIES[match.group("d")]
+        dest = _CITIES[match.group("d")]
+        here = _CURRENT_LOCATION.search(folded)
+        origin = _CITIES[here.group("o")] if here else None
+        return (origin if origin != dest else None), dest
     return None, None
+
+
+def _extract_image_subject(raw: str) -> str | None:
+    match = _SEE_SUBJECT.search(raw)
+    if not match:
+        return None
+    subject = match.group("s").strip(" ,;:")
+    if _SEE_EXCLUDE.search(fold(subject)):
+        return None
+    subject = _LEADING_ARTICLE.sub("", subject).strip()
+    folded = fold(subject)
+    if not any(re.search(rf"\b{re.escape(k)}\b", folded) for k in _CITIES) and not any(
+        k in folded for k in _KNOWN_PLACES
+    ):
+        return None
+    return subject[:80] or None
 
 
 def _extract_dish(folded: str) -> str | None:
@@ -655,5 +708,11 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
     slots.wants_images = bool(_IMAGE_REQUEST.search(folded)) or bool(
         slots.dish and _SEE_WORD.search(folded)
     )
+    if not slots.dish and not slots.destination and not slots.wants_activities:
+        slots.image_subject = _extract_image_subject(raw)
+        if slots.image_subject:
+            slots.wants_images = True
+    slots.on_site = bool(_ON_SITE.search(folded))
+    slots.return_trip = bool(_RETURN_CUE.search(folded))
 
     return slots

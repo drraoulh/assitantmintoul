@@ -213,6 +213,7 @@ def _is_cameroon_relevant(
     *,
     query: str,
     intent: str = "",
+    extra_markers: tuple[str, ...] = (),
 ) -> bool:
     """Reject European / unrelated hits when the user asked about Cameroon tourism."""
     q = (query or "").casefold()
@@ -236,7 +237,11 @@ def _is_cameroon_relevant(
     # Neighbor-country pages that barely mention Cameroon
     if any(m in blob for m in _NEIGHBOR_ONLY) and "cameroun" not in blob and "cameroon" not in blob:
         return False
-    cm_ok = any(m in blob for m in _CAMEROON_MARKERS) or (ev.domain or "").endswith(".cm")
+    cm_ok = (
+        any(m in blob for m in _CAMEROON_MARKERS)
+        or any(m in _fold(blob) for m in extra_markers)
+        or (ev.domain or "").endswith(".cm")
+    )
     if not cm_ok and ev.tier <= 2 and (
         "tourismo" in (ev.domain or "")
         or "tourism237" in (ev.domain or "")
@@ -264,8 +269,15 @@ def validate_evidence(
     *,
     query: str = "",
     intent: str = "",
+    places: tuple[str, ...] = (),
+    limit: int = 8,
 ) -> list[WebEvidence]:
-    """Keep only usable evidence; tier-4 alone cannot make answerable."""
+    """Keep only usable evidence; tier-4 alone cannot make answerable.
+
+    ``places`` are Cameroonian towns resolved by Agent 1 — naming one is enough
+    geographic context (« Foumban » without the word « Cameroun »).
+    """
+    markers = tuple(_fold(p) for p in places if p)
     kept: list[WebEvidence] = []
     seen_urls: set[str] = set()
     for ev in items:
@@ -273,7 +285,7 @@ def validate_evidence(
         snippet = (ev.snippet or "").strip()
         if not snippet or len(snippet) < 24:
             continue
-        if not _is_cameroon_relevant(ev, query=query, intent=intent):
+        if not _is_cameroon_relevant(ev, query=query, intent=intent, extra_markers=markers):
             continue
         key = url or f"{ev.domain}:{snippet[:40]}"
         if key in seen_urls:
@@ -284,7 +296,7 @@ def validate_evidence(
         kept.append(ev)
     # Prefer higher tier / score
     kept.sort(key=lambda e: (e.tier, -e.relevance_score))
-    return kept[:8]
+    return kept[:limit]
 
 
 _REGION_ALIASES: dict[str, tuple[str, ...]] = {

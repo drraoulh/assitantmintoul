@@ -327,7 +327,7 @@ def test_english_language():
         )
     )
     assert final.language == "en"
-    assert "verified" in final.text.casefold() or "include" in final.text.casefold()
+    assert "listed in smartmboa" in final.text.casefold() or "include" in final.text.casefold()
 
 
 def test_voice_mode_clean():

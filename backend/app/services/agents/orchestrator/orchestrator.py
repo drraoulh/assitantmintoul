@@ -705,9 +705,11 @@ class AgentOrchestrator:
             if research.key_facts and i == 0:
                 facts = " | ".join(research.key_facts[:4])
                 content = f"{content}\nKey facts: {facts}"
+            # Phase / direction ride on the id so Agent 4 knows which question a snippet answers.
+            tag = "".join(f":{t}" for t in (ev.phase, ev.route_match) if t)
             updated.knowledge.append(
                 KnowledgeEvidence(
-                    chunk_id=f"web:{request_id}:{i}",
+                    chunk_id=f"web:{request_id}:{i}{tag}",
                     content=content[:900],
                     source_id=ev.url or f"web:{ev.domain or i}",
                     title=(ev.title or ev.domain or "Web")[:120],

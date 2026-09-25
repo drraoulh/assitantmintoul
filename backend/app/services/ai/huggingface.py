@@ -17,7 +17,7 @@ from app.core.exceptions import (
 )
 from app.core.http import shared_async_client
 from app.schemas.chat import ChatResponse, ChatSource
-from app.services.agents.response.structured_ui import build_structured_ui
+from app.services.agents.response.structured_ui import build_structured_ui, log_chat_observability
 from app.services.ai.base import AIService
 from app.services.ai.context import sources_from_knowledge
 from app.services.ai.grounding import build_grounded_system_prompt
@@ -790,6 +790,7 @@ class HuggingFaceAIService(AIService):
                 **result.web_research,
                 "answer_replaced_by_fallback": result.final_response.replaced_violations,
             }
+        log_chat_observability(result.intent, result.knowledge, ui)
 
         phrase_buf = ""
         first_phrase = True
@@ -999,6 +1000,7 @@ class HuggingFaceAIService(AIService):
             )
             stream_ui["response_type"] = map_response_type(intent, plan)
             stream_ui["web_research"] = ctx.web_research
+            log_chat_observability(intent, knowledge, stream_ui)
             timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
             yield {
                 "type": "done",
@@ -1187,6 +1189,7 @@ class HuggingFaceAIService(AIService):
             images=ctx.images,
         )
         stream_ui["web_research"] = ctx.web_research
+        log_chat_observability(intent, knowledge, stream_ui)
         timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
         yield {
             "type": "done",

@@ -83,6 +83,8 @@ class IntentResult(BaseModel):
     dish: str | None = None
     wants_images: bool = False
     wants_activities: bool = False
+    # Visual subject as the user phrased it (« palais de Foumban »), for image queries.
+    image_subject: str | None = None
 
     @property
     def chat_intent(self) -> str:

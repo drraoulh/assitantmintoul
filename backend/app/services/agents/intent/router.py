@@ -101,6 +101,19 @@ class IntentRouter:
         slots.dish = current_slots.dish
         slots.wants_images = current_slots.wants_images
         slots.wants_activities = current_slots.wants_activities
+        slots.image_subject = current_slots.image_subject
+        # « Et comment retourner à Yaoundé ? » after a trip to Foumban: the active
+        # destination of the conversation becomes the origin of the new leg.
+        if (
+            conversation_context
+            and current_slots.destination
+            and not current_slots.origin
+            and current_slots.return_trip
+        ):
+            ctx = extract_slots(conversation_context, locale=locale)
+            active = ctx.destination or ctx.city
+            if active and active != current_slots.destination:
+                slots.origin = active
         if current_slots.destination:
             slots.city = current_slots.destination
             slots.location = current_slots.destination
@@ -110,6 +123,15 @@ class IntentRouter:
         intent = hit.intent
         confidence = hit.confidence
         reason = hit.reason
+        # « Et sur place ? » → things to do at the active destination.
+        if (
+            confidence < self.confidence_threshold
+            and current_slots.on_site
+            and slots.city
+            and not current_slots.city
+        ):
+            intent, confidence, reason = "PLACE_SEARCH", 0.8, "on_site_followup"
+            slots.wants_activities = True
         source: Literal["rules", "hybrid", "llm", "fallback"] = "rules"
 
         # Low confidence → clarification, except real open questions, which go to
@@ -201,6 +223,7 @@ class IntentRouter:
             dish=slots.dish,
             wants_images=slots.wants_images or intent == "IMAGE_SEARCH",
             wants_activities=slots.wants_activities,
+            image_subject=slots.image_subject,
         )
 
         if self.mode == "voice" and elapsed_ms > VOICE_MAX_ROUTER_MS:

@@ -105,7 +105,7 @@ export function ResponseRenderer({
       {showPlaces && !(kind === 'PLACE_DETAILS' && places.length === 1) ? (
         <div className="space-y-3">
           <p className="text-sm font-semibold text-[var(--green-deep)]">
-            Lieux vérifiés
+            📍 Lieux référencés dans SmartMboa
           </p>
           <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 no-scrollbar">
             {places.map((p) => (
@@ -215,7 +215,7 @@ function ImageGallery({ images }: { images: ImageUI[] }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={img.thumbnail_url || img.image_url}
-                alt={img.title || img.source_domain || 'Photo'}
+                alt={img.alt_text || img.title || img.source_domain || 'Photo'}
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 className="h-full w-full object-cover"
@@ -603,6 +603,11 @@ function SourcesBlock({
         Sources consultées
       </p>
       {withUrl.length ? (
+        <p className="mb-1 text-xs font-medium text-[var(--muted)]">
+          🌐 Résultats trouvés sur le Web
+        </p>
+      ) : null}
+      {withUrl.length ? (
         <ul className="space-y-1 text-sm">
           {withUrl.map((s, i) => (
             <li key={`${s.url}-${i}`}>
@@ -624,7 +629,12 @@ function SourcesBlock({
         </ul>
       ) : null}
       {kbOnly.length && kind !== 'SIMPLE_ANSWER' ? (
-        <ul className="mt-2 space-y-1 text-xs text-[var(--muted)]">
+        <p className="mt-3 mb-1 text-xs font-medium text-[var(--muted)]">
+          📍 Données SmartMboa
+        </p>
+      ) : null}
+      {kbOnly.length && kind !== 'SIMPLE_ANSWER' ? (
+        <ul className="space-y-1 text-xs text-[var(--muted)]">
           {kbOnly.slice(0, 6).map((s, i) => (
             <li key={`${s.title}-${i}`}>
               {s.title}

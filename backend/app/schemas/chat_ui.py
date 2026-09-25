@@ -34,6 +34,7 @@ class ImageUI(BaseModel):
     page_url: str
     title: str = ""
     source_domain: str = ""
+    alt_text: str | None = None
 
 
 class PlaceUI(BaseModel):

@@ -19,11 +19,18 @@ class WebEvidence(BaseModel):
     rank_score: float = Field(default=0.0, ge=0.0, le=1.0)
     low_confidence: bool = False
     provider: str = ""
+    # Route answers: "transport" (origin → destination) or "destination" (what to do there).
+    phase: str | None = None
+    # "direct" / "reverse" / "both" when the pair of towns is named.
+    route_match: str | None = None
 
 
 class WebResearchResult(BaseModel):
     query: str
     search_queries: list[str] = Field(default_factory=list)
+    transport_queries: list[str] = Field(default_factory=list)
+    destination_queries: list[str] = Field(default_factory=list)
+    raw_results_count: int = 0
     answerable: bool = False
     evidence: list[WebEvidence] = Field(default_factory=list)
     key_facts: list[str] = Field(default_factory=list)
@@ -49,5 +56,9 @@ class WebResearchResult(BaseModel):
             "provider": self.provider,
             "decision": self.decision,
             "search_queries": list(self.search_queries),
+            "transport_queries": list(self.transport_queries),
+            "destination_queries": list(self.destination_queries),
+            "web_results_count": self.raw_results_count,
+            "selected_sources": [e.domain or e.url for e in self.evidence],
             "warnings": list(self.warnings)[:5],
         }

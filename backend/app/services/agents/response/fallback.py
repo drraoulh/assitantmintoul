@@ -6,6 +6,7 @@ import re
 import unicodedata
 
 from app.services.agents.web_research.ranker import semantic_overlap
+from app.services.agents.web_research.route import extract_transport_facts, format_duration
 from app.services.web_search.source_parser import extract_domain
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
@@ -673,7 +674,7 @@ def _render_culture_traditions(
         if lang == "en":
             parts.append(f"Related verified places: {names}.")
         else:
-            parts.append(f"Lieux vérifiés associés : {names}.")
+            parts.append(f"📍 Lieux référencés dans SmartMboa : {names}.")
     text = "\n".join(parts) if not voice else " ".join(parts)
     return text.strip()
 
@@ -741,12 +742,12 @@ def _render_place_list(
         joined = ", ".join(names)
         if lang == "en":
             where = f" in {intent.city}" if intent.city else ""
-            base = f"I currently have {count} verified place(s){where}: {joined}."
+            base = f"SmartMboa lists {count} place(s){where}: {joined}."
             if completeness in {"LOW", "MEDIUM"} and count <= 3:
                 base += " I can present these, or look for more recent tourist information if you want."
             return base
         where = f" à {intent.city}" if intent.city else ""
-        base = f"J’ai actuellement {count} lieu(x) vérifié(s){where} : {joined}."
+        base = f"SmartMboa référence {count} lieu(x){where} : {joined}."
         if completeness in {"LOW", "MEDIUM"} and count <= 3:
             base += (
                 " Je peux te les présenter, ou rechercher davantage d’activités "
@@ -757,12 +758,12 @@ def _render_place_list(
     bullets = "\n".join(f"- {n}" for n in names)
     web = _web_points(knowledge, limit=2, keep=_ACTIVITY, mentions=intent.city)
     if web:
-        bullets += "\n\n" + ("Online:" if lang == "en" else "En ligne :") + "\n" + _bullets(web)
+        bullets += "\n\n" + ("🌐 Results found on the web:" if lang == "en" else "🌐 Résultats trouvés sur le Web :") + "\n" + _bullets(web)
     if lang == "en":
-        header = f"I currently have {count} verified place(s)"
+        header = "📍 Places listed in SmartMboa"
         if intent.city:
             header += f" for {intent.city}"
-        header += " in my knowledge base:"
+        header += f" ({count}):"
         footer = ""
         if completeness in {"LOW", "MEDIUM"} and count <= 3:
             footer = (
@@ -770,10 +771,10 @@ def _render_place_list(
                 "tourist activities and sites if you want."
             )
         return f"{header}\n{bullets}{footer}"
-    header = f"J’ai actuellement {count} lieu(x) vérifié(s)"
+    header = "📍 Lieux référencés dans SmartMboa"
     if intent.city:
         header += f" autour de {intent.city}"
-    header += " dans ma base :"
+    header += f" ({count}) :"
     footer = ""
     if completeness in {"LOW", "MEDIUM"} and count <= 3:
         footer = (
@@ -899,59 +900,188 @@ def _bullets(points: list[tuple[str, str]]) -> str:
     return "\n".join(f"- {text}" + (f" ({domain})" if domain else "") for text, domain in points)
 
 
+def _web_chunks(knowledge: KnowledgeResult, phase: str) -> list[tuple[str, str, bool]]:
+    """(snippet, domain, reverse) for web evidence tagged with ``phase`` by the web agent."""
+    out: list[tuple[str, str, bool]] = []
+    for chunk in knowledge.knowledge:
+        cid = chunk.chunk_id or ""
+        tags = cid.split(":")[3:]
+        if not cid.startswith("web:") or phase not in tags:
+            continue
+        raw = _WEB_PREFIX.sub("", (chunk.content or "").split("\n", 1)[0])
+        text = " ".join(raw.split())
+        if text:
+            out.append((text, extract_domain(chunk.source_id or ""), "reverse" in tags))
+    return out
+
+
+def _domains(items: list[str]) -> str:
+    return ", ".join(dict.fromkeys(d for d in items if d))
+
+
+def _transport_lines(origin: str | None, dest: str, knowledge: KnowledgeResult, *, lang: str) -> tuple[list[str], bool]:
+    """Bullets built only from phase="transport" snippets; returns (lines, fare_found)."""
+    en = lang == "en"
+    items = _web_chunks(knowledge, "transport")
+    if not items:
+        # Evidence merged without phase tags (older cache entries / non-route research).
+        items = [(t, d, False) for t, d in _web_points(knowledge, limit=4, keep=_TRANSPORT, mentions=dest)]
+        if origin:
+            items = [i for i in items if _fold(origin) in _fold(i[0])]
+    facts = extract_transport_facts(
+        [(text, f"{domain} ({'reverse direction' if en else 'sens inverse'})" if rev else domain)
+         for text, domain, rev in items]
+    )
+    lines: list[str] = []
+    if facts.modes:
+        modes = ", ".join(facts.modes)
+        doms = _domains([d for ds in facts.modes.values() for d in ds])
+        lines.append(f"{'Transport modes mentioned' if en else 'Moyens de transport mentionnés'} : {modes} ({doms}).")
+    if facts.durations:
+        values = sorted({m for m, _ in facts.durations})
+        doms = _domains([d for _, d in facts.durations])
+        lo, hi = format_duration(values[0]), format_duration(values[-1])
+        if values[-1] - values[0] > 30:
+            lines.append(
+                f"Duration: the sources give between about {lo} and {hi} depending on the route, mode and connections ({doms})."
+                if en
+                else f"Durée : les sources consultées indiquent entre environ {lo} et {hi} selon l’itinéraire, le mode et les correspondances ({doms})."
+            )
+        else:
+            lines.append(f"Duration: about {lo} according to {doms}." if en else f"Durée : environ {lo} selon {doms}.")
+    if facts.distances:
+        kms = sorted({k for k, _ in facts.distances})
+        doms = _domains([d for _, d in facts.distances])
+        fmt = lambda k: f"{k:g}".replace(".", "," if not en else ".")  # noqa: E731
+        dist = fmt(kms[0]) if len(kms) == 1 else f"{fmt(kms[0])}–{fmt(kms[-1])}"
+        lines.append(f"Distance: about {dist} km according to {doms}." if en else f"Distance : environ {dist} km selon {doms}.")
+    for amount, currency, domain, minimum in facts.prices[:3]:
+        qualifier = ("from" if en else "à partir de") if minimum else ("about" if en else "environ")
+        if currency == "FCFA":
+            lines.append(
+                f"Fare: according to {domain}, {qualifier} {amount} FCFA (to be confirmed)."
+                if en
+                else f"Tarif : selon {domain}, {qualifier} {amount} FCFA (à confirmer)."
+            )
+        else:
+            lines.append(
+                f"Fare: according to {domain}, {qualifier} {amount} {currency}. Local fares may differ (no official FCFA fare found)."
+                if en
+                else f"Tarif : selon {domain}, {qualifier} {amount} {currency}. Les tarifs locaux peuvent différer (aucun tarif officiel en FCFA trouvé)."
+            )
+    for sentence, domain in facts.connections[:2]:
+        lines.append(f"{'Connection' if en else 'Correspondance'} : {'according to' if en else 'selon'} {domain}, « {sentence} »")
+    for sentence, domain in facts.departures[:2]:
+        lines.append(
+            f"{'Departure / agencies' if en else 'Point de départ / agences'} : {'according to' if en else 'selon'} {domain}, « {sentence} »"
+        )
+    if not lines:
+        lines = [
+            f"{'According to' if en else 'Selon'} {domain} : {text[:220]}" for text, domain, _ in items[:3]
+        ]
+    return lines, bool(facts.prices)
+
+
 def _route_section(intent: IntentResult, knowledge: KnowledgeResult, *, lang: str) -> tuple[str, set[str]]:
     dest = intent.destination or ""
     origin = intent.origin
-    used: set[str] = set()
-    transport = _web_points(knowledge, limit=4, keep=_TRANSPORT, exclude=used, mentions=dest)
-    if lang == "en":
-        title = f"Getting from {origin} to {dest}" if origin else f"Getting to {dest}"
-        lead = "What the web sources I consulted say:"
-        missing = f"I couldn't find reliable transport information online for this trip."
-        note = (
-            "Fares, timetables and companies are only given when a source states them — "
-            "confirm with the travel agencies before you leave."
+    en = lang == "en"
+    lines, fare_found = _transport_lines(origin, dest, knowledge, lang=lang)
+    if en:
+        title = f"🚍 GETTING FROM {origin.upper()} TO {dest.upper()}" if origin else f"🚍 GETTING TO {dest.upper()}"
+        lead = "Information found on the web:"
+        missing = (
+            f"I couldn't find a reliable web source describing the {origin} → {dest} journey."
+            if origin
+            else f"I couldn't find reliable transport information online to reach {dest}."
         )
+        confirm = ["⚠️ To be confirmed"]
+        if not fare_found:
+            confirm.append("- I couldn't find a sufficiently reliable current fare online. Please confirm with the agency before leaving.")
+        confirm.append("- Fares, timetables, availability and departures can change: check with the travel agency before you go.")
     else:
-        title = f"Trajet {origin} → {dest}" if origin else f"Pour rejoindre {dest}"
-        lead = "Ce que disent les sources web consultées :"
-        missing = "Je n’ai pas trouvé d’information de transport fiable en ligne pour ce trajet."
-        note = (
-            "Tarifs, horaires et compagnies ne sont indiqués que s’ils figurent dans une source : "
-            "confirmez-les auprès des agences de voyage avant de partir."
+        title = f"🚍 ALLER DE {origin.upper()} À {dest.upper()}" if origin else f"🚍 ALLER À {dest.upper()}"
+        lead = "Informations trouvées sur le Web :"
+        missing = (
+            f"Je n’ai pas trouvé de source Web fiable décrivant précisément le trajet {origin} → {dest}."
+            if origin
+            else f"Je n’ai pas trouvé d’information de transport fiable en ligne pour rejoindre {dest}."
         )
-    body = f"{lead}\n{_bullets(transport)}" if transport else missing
-    return f"### {title}\n{body}\n\n{note}", used
+        confirm = ["⚠️ Informations à confirmer"]
+        if not fare_found:
+            confirm.append(
+                "- Je n’ai pas trouvé de tarif actuel suffisamment fiable en ligne. "
+                "Il est préférable de confirmer auprès de l’agence avant le départ."
+            )
+        confirm.append(
+            "- Prix, horaires, disponibilité et départs peuvent changer : "
+            "confirmez-les auprès de l’agence de voyage avant de partir."
+        )
+    body = f"{lead}\n" + "\n".join(f"- {line}" for line in lines) if lines else missing
+    return f"### {title}\n{body}\n\n" + "\n".join(confirm), set()
+
+
+def _map_available(origin: str | None, dest: str) -> bool:
+    try:
+        from app.services.agents.response.structured_ui import _city_point
+
+        return bool(origin and _city_point(origin) and _city_point(dest))
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def _render_travel_route(
     intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
 ) -> str:
-    section, used = _route_section(intent, knowledge, lang=lang)
+    en = lang == "en"
+    dest = intent.destination or ""
+    origin = intent.origin
+    section, _ = _route_section(intent, knowledge, lang=lang)
     parts = [section]
-    if intent.wants_activities:
-        dest = intent.destination or ""
-        names = [p.name for p in knowledge.places if (p.city or "").casefold() == dest.casefold()][:5]
-        web = _web_points(knowledge, limit=2, keep=_ACTIVITY, exclude=used, mentions=dest)
-        title = f"### What to do in {dest}" if lang == "en" else f"### Que faire à {dest}"
+    kb_names = [p.name for p in knowledge.places if (p.city or "").casefold() == dest.casefold()][:5]
+    web_dest = [(t, d) for t, d, _ in _web_chunks(knowledge, "destination")][:3]
+    if intent.wants_activities or intent.duration_days:
+        title = f"### 🏛️ WHAT TO DO IN {dest.upper()}" if en else f"### 🏛️ QUE FAIRE À {dest.upper()}"
         lines: list[str] = []
-        if names:
+        if kb_names:
             lines.append(
-                ("Verified places in SmartMboa:" if lang == "en" else "Lieux vérifiés dans SmartMboa :")
+                ("📍 Places listed in SmartMboa:" if en else "📍 Lieux référencés dans SmartMboa :")
                 + "\n"
-                + "\n".join(f"- {n}" for n in names)
+                + "\n".join(f"- {n}" for n in kb_names)
             )
-        if web:
-            lines.append(("Online:" if lang == "en" else "En ligne :") + "\n" + _bullets(web))
+        if web_dest:
+            clipped = [(t if len(t) <= 240 else t[:239].rsplit(" ", 1)[0] + "…", d) for t, d in web_dest]
+            lines.append(("🌐 Results found on the web:" if en else "🌐 Résultats trouvés sur le Web :") + "\n" + _bullets(clipped))
         if not lines:
             lines.append(
-                f"I couldn't find verified activities in {dest}."
-                if lang == "en"
-                else f"Je n’ai pas trouvé d’activités vérifiées à {dest}."
+                f"I couldn't find activities in {dest} in SmartMboa or in the web sources consulted."
+                if en
+                else f"Je n’ai trouvé aucune activité à {dest} dans SmartMboa ni dans les sources Web consultées."
             )
         parts.append(title + "\n" + "\n\n".join(lines))
-    text = "\n\n".join(parts)
-    return " ".join(text.replace("###", "").split())[:500] if voice else text
+    if voice:
+        return " ".join("\n\n".join(parts).replace("###", "").split())[:500]
+    if _map_available(origin, dest):
+        parts.append(
+            f"### 🗺️ ROUTE\nMap {origin} → {dest} shown below."
+            if en
+            else f"### 🗺️ TRAJET\nCarte {origin} → {dest} affichée ci-dessous."
+        )
+    web_src = list(dict.fromkeys(
+        d for d in (
+            extract_domain(c.source_id or "")
+            for c in knowledge.knowledge
+            if (c.chunk_id or "").startswith("web:")
+        ) if d
+    ))[:8]
+    src_lines = ["### 📚 SOURCES"]
+    if web_src:
+        src_lines.append(("🌐 Web sources" if en else "🌐 Sources Web") + "\n" + "\n".join(f"- {d}" for d in web_src))
+    if kb_names and (intent.wants_activities or intent.duration_days):
+        src_lines.append(("📍 SmartMboa data" if en else "📍 Données SmartMboa") + "\n" + "\n".join(f"- {n}" for n in kb_names))
+    if len(src_lines) > 1:
+        parts.append("\n".join(src_lines))
+    return "\n\n".join(parts)
 
 
 def _dish_kb_notes(knowledge: KnowledgeResult, dish: str, *, limit: int) -> list[str]:
@@ -1036,19 +1166,23 @@ def _render_restaurants(
 def _render_image_search(
     intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
 ) -> str:
-    subject = intent.city or intent.location or intent.region or ""
+    subject = intent.image_subject or intent.city or intent.location or intent.region or ""
     found = "images" not in knowledge.missing_information
+    # « palais de Foumban » — a common noun cannot follow « photos de ».
+    quoted = bool(intent.image_subject and intent.image_subject[:1].islower())
     if lang == "en":
+        about = f"for « {subject} »" if quoted else f"of {subject}"
         head = (
-            f"Here are photos of {subject} found online (sources under each image)."
+            f"Here are photos {about} found online (sources under each image)."
             if found
-            else f"I couldn't find photos of {subject} online."
+            else f"I couldn't find photos {about} online."
         )
     else:
+        about = f"pour « {subject} »" if quoted else f"de {subject}"
         head = (
-            f"Voici des photos de {subject} trouvées en ligne (source sous chaque image)."
+            f"Voici des photos {about} trouvées en ligne (source sous chaque image)."
             if found
-            else f"Je n’ai pas trouvé de photos de {subject} en ligne."
+            else f"Je n’ai pas trouvé de photos {about} en ligne."
         )
     kb = [c for c in knowledge.knowledge if c.content and not (c.chunk_id or "").startswith("web:")]
     if kb and not voice:

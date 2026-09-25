@@ -171,6 +171,7 @@ export interface ImageUI {
   page_url: string;
   title?: string;
   source_domain?: string;
+  alt_text?: string | null;
 }
 
 /** Intent the backend routed the message to (web-first chat). */

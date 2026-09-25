@@ -5,6 +5,8 @@ No LLM. Overhead target < 50 ms. Never invents coordinates, prices, or URLs.
 
 from __future__ import annotations
 
+import json
+import logging
 import time
 import unicodedata
 from typing import Any
@@ -30,6 +32,8 @@ from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult, PlaceEvidence
 from app.services.agents.planner.models import TourismPlan
 from app.services.agents.response.models import FinalResponse
+
+logger = logging.getLogger(__name__)
 
 _HOTEL_HINTS = ("hotel", "hôtel", "heberg", "héberg", "lodge", "resort", "auberge", "inn")
 _PLACE_CARD_TYPES = {
@@ -129,6 +133,35 @@ def build_structured_ui(
         "routing": intent.routing() if intent else None,
         "structured_build_ms": elapsed,
     }
+
+
+def log_chat_observability(
+    intent: IntentResult | None,
+    knowledge: KnowledgeResult | None,
+    ui: dict[str, Any],
+    *,
+    request_id: str | None = None,
+) -> dict[str, Any]:
+    """One line per chat answer: what was searched, selected and displayed."""
+    web = ui.get("web_research") or {}
+    data = {
+        "request_id": request_id or (intent.request_id if intent else None),
+        "intent": intent.chat_intent if intent else None,
+        "origin": intent.origin if intent else None,
+        "destination": intent.destination if intent else None,
+        "location": (intent.city or intent.region or intent.location) if intent else None,
+        "web_queries": web.get("transport_queries") or web.get("search_queries") or [],
+        "destination_queries": web.get("destination_queries") or [],
+        "web_results_count": web.get("web_results_count", 0),
+        "selected_sources": web.get("selected_sources") or [],
+        "smartmboa_results_count": len(knowledge.places) if knowledge else 0,
+        "image_search_used": bool(intent and intent.wants_images),
+        "images_count": len(ui.get("images") or []),
+        "places_displayed": [getattr(p, "name", "") for p in ui.get("places") or []],
+        "response_type": ui.get("response_type"),
+    }
+    logger.info("chat_observability %s", json.dumps(data, ensure_ascii=False, default=str))
+    return data
 
 
 def apply_structured_ui(chat_fields: dict[str, Any], ui: dict[str, Any]) -> dict[str, Any]:
