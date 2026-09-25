@@ -900,8 +900,8 @@ def _bullets(points: list[tuple[str, str]]) -> str:
     return "\n".join(f"- {text}" + (f" ({domain})" if domain else "") for text, domain in points)
 
 
-def _web_chunks(knowledge: KnowledgeResult, phase: str) -> list[tuple[str, str, bool]]:
-    """(snippet, domain, reverse) for web evidence tagged with ``phase`` by the web agent."""
+def _web_chunks(knowledge: KnowledgeResult, phase: str) -> list[tuple[str, str, bool, str]]:
+    """(snippet, domain, reverse, title) for web evidence tagged with ``phase`` by the web agent."""
     out: list[tuple[str, str, bool]] = []
     for chunk in knowledge.knowledge:
         cid = chunk.chunk_id or ""
@@ -911,7 +911,7 @@ def _web_chunks(knowledge: KnowledgeResult, phase: str) -> list[tuple[str, str, 
         raw = _WEB_PREFIX.sub("", (chunk.content or "").split("\n", 1)[0])
         text = " ".join(raw.split())
         if text:
-            out.append((text, extract_domain(chunk.source_id or ""), "reverse" in tags))
+            out.append((text, extract_domain(chunk.source_id or ""), "reverse" in tags, chunk.title or ""))
     return out
 
 
@@ -925,12 +925,14 @@ def _transport_lines(origin: str | None, dest: str, knowledge: KnowledgeResult, 
     items = _web_chunks(knowledge, "transport")
     if not items:
         # Evidence merged without phase tags (older cache entries / non-route research).
-        items = [(t, d, False) for t, d in _web_points(knowledge, limit=4, keep=_TRANSPORT, mentions=dest)]
+        items = [(t, d, False, "") for t, d in _web_points(knowledge, limit=4, keep=_TRANSPORT, mentions=dest)]
         if origin:
             items = [i for i in items if _fold(origin) in _fold(i[0])]
     facts = extract_transport_facts(
-        [(text, f"{domain} ({'reverse direction' if en else 'sens inverse'})" if rev else domain)
-         for text, domain, rev in items]
+        [(text, f"{domain} ({'reverse direction' if en else 'sens inverse'})" if rev else domain, title)
+         for text, domain, rev, title in items],
+        origin=origin,
+        dest=dest,
     )
     lines: list[str] = []
     if facts.modes:
@@ -977,7 +979,7 @@ def _transport_lines(origin: str | None, dest: str, knowledge: KnowledgeResult, 
         )
     if not lines:
         lines = [
-            f"{'According to' if en else 'Selon'} {domain} : {text[:220]}" for text, domain, _ in items[:3]
+            f"{'According to' if en else 'Selon'} {domain} : {text[:220]}" for text, domain, _, _ in items[:3]
         ]
     return lines, bool(facts.prices)
 
@@ -1039,7 +1041,7 @@ def _render_travel_route(
     section, _ = _route_section(intent, knowledge, lang=lang)
     parts = [section]
     kb_names = [p.name for p in knowledge.places if (p.city or "").casefold() == dest.casefold()][:5]
-    web_dest = [(t, d) for t, d, _ in _web_chunks(knowledge, "destination")][:3]
+    web_dest = [(t, d) for t, d, _, _ in _web_chunks(knowledge, "destination")][:3]
     if intent.wants_activities or intent.duration_days:
         title = f"### 🏛️ WHAT TO DO IN {dest.upper()}" if en else f"### 🏛️ QUE FAIRE À {dest.upper()}"
         lines: list[str] = []

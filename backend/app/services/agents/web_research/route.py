@@ -140,6 +140,8 @@ _MODES = (
     ("train", re.compile(r"\b(?:trains?|camrail)\b")),
     ("avion", _FLIGHT),
 )
+# « à 5h », « aux environs de 5h », « vers 7 h », « at 6am »: a clock time, not a duration.
+_CLOCK_BEFORE = re.compile(r"(?:\ba|\bvers|environs\s+de|\bdes|\bdepuis|\bat|\baround|\bby|\bjusqu'?a)\s*$")
 _FROM = re.compile(r"\b(?:from|a\s+partir\s+de|des|starting\s+at)\s*$")
 _CLAUSE_SPLIT = re.compile(r"(?<=[.!?])\s+|\s+(?:\.\.\.|…|·|\|)\s+|\s;\s")
 
@@ -168,10 +170,31 @@ def _clauses(text: str) -> list[str]:
     return [c.strip(" -•") for c in _CLAUSE_SPLIT.split(text) if len(c.strip()) > 8]
 
 
-def extract_transport_facts(items: list[tuple[str, str]]) -> TransportFacts:
-    """``items`` = (snippet, domain). Values are copied verbatim, never converted."""
+def _starts_at_origin(clause: str, snippet: str, origin: str | None, dest: str | None) -> bool:
+    """« partent de Mvan » in a Yaoundé → Foumban snippet: yes; an anecdote about a bus
+    to Foumban from elsewhere (origin never named): no."""
+    if not origin:
+        return True
+    if _names(clause, origin):
+        return True
+    return _names(snippet, origin) and not (dest and _names(clause, dest))
+
+
+def extract_transport_facts(
+    items: list[tuple[str, str] | tuple[str, str, str]],
+    *,
+    origin: str | None = None,
+    dest: str | None = None,
+) -> TransportFacts:
+    """``items`` = (snippet, domain[, title]). Values are copied verbatim, never converted.
+
+    A departure sentence is only kept when it concerns a trip starting at ``origin``;
+    the title (« Yaoundé → Foumban : horaires ») counts as context for that check.
+    """
     facts = TransportFacts()
-    for text, domain in items:
+    for item in items:
+        text, domain = item[0], item[1]
+        context = fold(f"{item[2] if len(item) > 2 else ''} {text}")
         for clause in _clauses(text):
             low = fold(clause)
             flight = bool(_FLIGHT.search(low))
@@ -182,6 +205,8 @@ def extract_transport_facts(items: list[tuple[str, str]]) -> TransportFacts:
                         doms.append(domain)
             if not flight:
                 for m in _DURATION.finditer(low):
+                    if _CLOCK_BEFORE.search(low[max(0, m.start() - 20):m.start()]):
+                        continue
                     h = int(m.group("h") or m.group("h3"))
                     mins = int(m.group("m") or m.group("m2") or m.group("m3") or 0)
                     if 1 <= h <= 30 and mins < 60:
@@ -198,20 +223,25 @@ def extract_transport_facts(items: list[tuple[str, str]]) -> TransportFacts:
                         lo, hi, cur = m.group(4), m.group(5), m.group(6)
                     amount = f"{_amount(lo)}–{_amount(hi)}" if hi else _amount(lo)
                     minimum = bool(_FROM.search(fold(lowered[max(0, m.start() - 16):m.start()])))
-                    facts.prices.append((amount, _CURRENCY.get(cur, cur.upper()), domain, minimum))
+                    _add_price(facts, (amount, _CURRENCY.get(cur, cur.upper()), domain, minimum))
                 for m in _LOCAL_PRICE.finditer(low):
                     lo, hi = m.group(1), m.group(2)
                     amount = f"{_amount(lo)}–{_amount(hi)}" if hi else _amount(lo)
                     minimum = bool(_FROM.search(low[max(0, m.start() - 16):m.start()]))
-                    facts.prices.append((amount, "FCFA", domain, minimum))
+                    _add_price(facts, (amount, "FCFA", domain, minimum))
             sentence = " ".join(clause.split())[:220]
             if _CONNECTION.search(low):
                 if not any(sentence == c for c, _ in facts.connections):
                     facts.connections.append((sentence, domain))
-            elif _DEPARTURE.search(low) and not flight:
+            elif _DEPARTURE.search(low) and not flight and _starts_at_origin(low, context, origin, dest):
                 if not any(sentence == c for c, _ in facts.departures):
                     facts.departures.append((sentence, domain))
     return facts
+
+
+def _add_price(facts: TransportFacts, price: tuple[str, str, str, bool]) -> None:
+    if not any(p[:3] == price[:3] for p in facts.prices):
+        facts.prices.append(price)
 
 
 def format_duration(minutes: int) -> str:

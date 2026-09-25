@@ -69,12 +69,17 @@ def test_transport_facts_keep_source_currency_and_ranges():
     facts = extract_transport_facts(
         [
             ("Le meilleur moyen est le bus et taxi, ce qui dure 8 h 46 m et coûte $65 - $85.", "rome2rio.com"),
-            ("Trajet d'environ 5 h 30, billet à 6 000 FCFA ; départs de la gare routière de Mvan.", "bus.cm"),
+            ("Trajet d'environ 5 h 30, billet à 6 000 FCFA ; départs de la gare routière de Mvan.", "bus.cm",
+             "Bus Yaoundé Foumban"),
             ("There is no direct connection from Yaoundé to Foumban.", "rome2rio.com"),
             ("Vol Yaoundé Foumban en 1 h", "air.com"),
             ("Distance 268 km, cheapest fares from $14.", "fromto.travel"),
-        ]
+            ("Mercredi matin aux environs de 5h, j'ai vu le bus de Foumbot à l'agence direction Foumban.", "fb.com"),
+        ],
+        origin="Yaoundé",
+        dest="Foumban",
     )
+    assert not any("Foumbot" in d for d, _ in facts.departures)
     assert ("14", "USD", "fromto.travel", True) in facts.prices
     assert sorted(m for m, _ in facts.durations) == [330, 526]
     assert ("65–85", "USD", "rome2rio.com", False) in facts.prices
