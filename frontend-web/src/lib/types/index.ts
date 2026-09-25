@@ -19,6 +19,8 @@ export type ChatResponseType =
   | 'VISION'
   | 'CLARIFICATION'
   | 'INSUFFICIENT_INFORMATION'
+  | 'TRAVEL_ROUTE'
+  | 'IMAGES'
   | string;
 
 /** @deprecated Prefer ChatResponseType — kept for older call sites. */
@@ -162,6 +164,29 @@ export interface ActionUI {
   target_id?: string | null;
 }
 
+/** Web image result — URLs come from the image search provider. */
+export interface ImageUI {
+  image_url: string;
+  thumbnail_url?: string | null;
+  page_url: string;
+  title?: string;
+  source_domain?: string;
+}
+
+/** Intent the backend routed the message to (web-first chat). */
+export interface ChatRoutingUI {
+  chat_intent: string;
+  intent: string;
+  location?: string | null;
+  origin?: string | null;
+  destination?: string | null;
+  dish?: string | null;
+  duration_days?: number | null;
+  wants_images?: boolean;
+  is_route?: boolean;
+  web_reason?: string | null;
+}
+
 /**
  * Structured UI block attached to HTTP ChatResponse and voice `turn_done.ui`.
  */
@@ -176,6 +201,8 @@ export interface StructuredChatUI {
   vision?: VisionUI | null;
   ui_sources?: SourceUI[];
   actions?: ActionUI[];
+  images?: ImageUI[];
+  routing?: ChatRoutingUI | null;
   structured_build_ms?: number | null;
 }
 

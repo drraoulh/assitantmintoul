@@ -29,6 +29,7 @@ import type {
   BookingUI,
   ChatResponseType,
   HotelUI,
+  ImageUI,
   ItineraryUI,
   PlaceUI,
   SourceUI,
@@ -51,16 +52,16 @@ export function ResponseRenderer({
   const places = ui?.places?.length ? ui.places : [];
   const hotels = ui?.hotels?.length ? ui.hotels : [];
   const markers = chatMarkersFromResponse(ui ?? {});
+  const images = ui?.images?.length ? ui.images : [];
+  // Place cards only for place-oriented answers (never for dishes or photos).
   const showPlaces =
     places.length > 0 &&
     (kind === 'PLACE_LIST' ||
       kind === 'PLACE_DETAILS' ||
       kind === 'NATURE' ||
-      kind === 'CULTURE' ||
-      kind === 'FOOD' ||
-      kind === 'TOURISM_INFORMATION' ||
       kind === 'ITINERARY' ||
-      kind === 'BUDGET_TRIP');
+      kind === 'BUDGET_TRIP' ||
+      kind === 'TRAVEL_ROUTE');
 
   const webSources =
     ui?.ui_sources?.filter(
@@ -90,6 +91,8 @@ export function ResponseRenderer({
           demande. Reformulez ou précisez une région.
         </p>
       ) : null}
+
+      {images.length > 0 ? <ImageGallery images={images} /> : null}
 
       {ui?.vision && (ui.vision.description || ui.vision.matched_place_id) ? (
         <VisionBlock vision={ui.vision} />
@@ -148,7 +151,9 @@ export function ResponseRenderer({
 
       {markers.length > 0 ? (
         <div className="space-y-2">
-          <p className="text-sm font-semibold text-[var(--green-deep)]">Carte</p>
+          <p className="text-sm font-semibold text-[var(--green-deep)]">
+            {kind === 'TRAVEL_ROUTE' ? 'Trajet' : 'Carte'}
+          </p>
           <TourismMap markers={markers} className="h-72" />
         </div>
       ) : null}
@@ -189,6 +194,40 @@ export function ResponseRenderer({
         uiSources={ui?.ui_sources}
         kind={kind}
       />
+    </div>
+  );
+}
+
+function ImageGallery({ images }: { images: ImageUI[] }) {
+  return (
+    <div className="space-y-3">
+      <p className="text-sm font-semibold text-[var(--green-deep)]">Photos trouvées en ligne</p>
+      <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 no-scrollbar">
+        {images.map((img, i) => (
+          <a
+            key={`${img.image_url}-${i}`}
+            href={img.page_url}
+            target="_blank"
+            rel="noreferrer"
+            className="w-[70%] shrink-0 snap-start overflow-hidden rounded-2xl border border-[var(--line)] bg-white sm:w-[40%] lg:w-[28%]"
+          >
+            <div className="relative aspect-[4/3] bg-[var(--mint-soft)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={img.thumbnail_url || img.image_url}
+                alt={img.title || img.source_domain || 'Photo'}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <p className="flex items-center gap-1 truncate px-3 py-2 text-xs text-[var(--muted)]">
+              <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
+              {img.source_domain || img.title}
+            </p>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

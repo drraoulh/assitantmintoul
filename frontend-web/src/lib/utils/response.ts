@@ -23,6 +23,8 @@ const KNOWN_TYPES = new Set<string>([
   'VISION',
   'CLARIFICATION',
   'INSUFFICIENT_INFORMATION',
+  'TRAVEL_ROUTE',
+  'IMAGES',
 ]);
 
 export function normalizeResponseType(
@@ -191,6 +193,8 @@ export function structuredFromChatResponse(res: ChatResponse): StructuredChatUI 
     vision: res.vision ?? null,
     ui_sources: res.ui_sources ?? [],
     actions: res.actions ?? [],
+    images: res.images ?? [],
+    routing: res.routing ?? null,
     structured_build_ms: res.structured_build_ms ?? null,
   };
 }
