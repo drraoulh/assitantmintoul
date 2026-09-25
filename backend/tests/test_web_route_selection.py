@@ -98,3 +98,13 @@ def test_image_query_uses_the_requested_subject():
     assert intent.intent == "IMAGE_SEARCH"
     assert build_image_query(intent) == "palais de Foumban Cameroun"
     assert build_image_query(classify_intent("Montre-moi Foumban", locale="fr")) == "Foumban Cameroun"
+
+
+def test_place_search_uses_destination_queries():
+    from app.services.agents.web_research.query_builder import build_queries
+
+    intent = classify_intent("Et sur place ?", locale="fr", conversation_context="Je vais à Foumban")
+    assert build_queries("Et sur place ?", intent) == [
+        "que faire à Foumban Cameroun",
+        "lieux touristiques Foumban Cameroun",
+    ]

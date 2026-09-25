@@ -161,6 +161,12 @@ MAX_ROUTE_QUERIES = 5
 _ROUTE_INTENTS = {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}
 
 
+def destination_queries(place: str, *, english: bool = False) -> list[str]:
+    if english:
+        return [f"things to do in {place} Cameroon", f"tourist attractions {place} Cameroon"]
+    return [f"que faire à {place} Cameroun", f"lieux touristiques {place} Cameroun"]
+
+
 def route_query_phases(intent: IntentResult) -> tuple[list[str], list[str]]:
     """(transport, destination) queries for an origin → destination question.
 
@@ -189,11 +195,7 @@ def route_query_phases(intent: IntentResult) -> tuple[list[str], list[str]]:
         transport = [f"comment aller à {dest} Cameroun transport bus", f"{dest} Cameroun agence de voyage bus"]
     destination: list[str] = []
     if intent.wants_activities or intent.duration_days:
-        destination = (
-            [f"things to do in {dest} Cameroon", f"tourist attractions {dest} Cameroon"]
-            if english
-            else [f"que faire à {dest} Cameroun", f"lieux touristiques {dest} Cameroun"]
-        )
+        destination = destination_queries(dest, english=english)
     if intent.duration_days:
         destination[-1:] = [f"{dest} Cameroun itinéraire {intent.duration_days} jours"]
     budget = MAX_ROUTE_QUERIES - len(destination)
@@ -250,6 +252,8 @@ def build_queries(
         return route_queries(intent)
     if not llm_queries and intent.dish and intent.intent == "FOOD":
         return dish_queries(intent)
+    if not llm_queries and intent.intent == "PLACE_SEARCH" and intent.city:
+        return destination_queries(intent.city, english=(intent.language or "fr") == "en")
     fr_loc, en_loc = _region_labels(intent)
     has_loc = (fr_loc, en_loc) != ("Cameroun", "Cameroon")
     now_eff = now or datetime.now(timezone.utc)
