@@ -11,12 +11,15 @@ import {
 } from 'lucide-react';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
+import {
+  VoiceMode,
+  type VoiceExchange,
+} from '@/components/assistant/VoiceMode';
 import { Button, ErrorState, Input, ThinkingDots } from '@/components/ui';
 import { friendlyError, sendChatMessage, synthesizeSpeech } from '@/lib/api/client';
 import { audioPlayback } from '@/lib/audio/playback';
 import { useLocale } from '@/lib/i18n';
 import { structuredFromChatResponse } from '@/lib/utils/response';
-import { VoiceSocket, blobToBase64 } from '@/lib/websocket/voice';
 import type { StructuredChatUI } from '@/lib/types';
 
 interface Msg {
@@ -25,7 +28,6 @@ interface Msg {
   content: string;
   ui?: StructuredChatUI | null;
   isError?: boolean;
-  /** Soft tip (e.g. empty mic) — not a hard failure banner */
   isTip?: boolean;
   streaming?: boolean;
 }
@@ -39,12 +41,6 @@ const SUGGESTIONS = [
   { label: '🏨 Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
 ] as const;
 
-/** Max recording length as safety net (user should stop earlier). */
-const MAX_RECORD_MS = 20_000;
-const MIN_RECORD_MS = 800;
-
-type VoicePhase = 'listening' | 'thinking' | 'speaking' | null;
-
 export function AssistantChat({
   initialQuestion,
   autoVoice,
@@ -57,22 +53,14 @@ export function AssistantChat({
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [conversationId, setConversationId] = useState<string>();
-  const [voicePhase, setVoicePhase] = useState<VoicePhase>(null);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
   const [audioPlaying, setAudioPlaying] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const streamMsgId = useRef<string | null>(null);
-
-  const voiceSocketRef = useRef<VoiceSocket | null>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const mediaStreamRef = useRef<MediaStream | null>(null);
-  const recordChunksRef = useRef<BlobPart[]>([]);
-  const recordStartedAtRef = useRef(0);
-  const maxRecordTimerRef = useRef<number | undefined>(undefined);
   const ttsAbortRef = useRef<AbortController | null>(null);
-  const sendingAudioRef = useRef(false);
+  const streamAssistantIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     return audioPlayback.subscribe(setAudioPlaying);
@@ -80,23 +68,7 @@ export function AssistantChat({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, sending, voicePhase]);
-
-  const cleanupMedia = useCallback(() => {
-    if (maxRecordTimerRef.current !== undefined) {
-      clearTimeout(maxRecordTimerRef.current);
-      maxRecordTimerRef.current = undefined;
-    }
-    try {
-      mediaRecorderRef.current?.stop();
-    } catch {
-      /* already stopped */
-    }
-    mediaRecorderRef.current = null;
-    mediaStreamRef.current?.getTracks().forEach((tr) => tr.stop());
-    mediaStreamRef.current = null;
-    recordChunksRef.current = [];
-  }, []);
+  }, [messages, sending]);
 
   const stopAllAudio = useCallback(() => {
     ttsAbortRef.current?.abort();
@@ -105,28 +77,9 @@ export function AssistantChat({
     setSpeakingMsgId(null);
   }, []);
 
-  const stopVoiceSession = useCallback(() => {
-    sendingAudioRef.current = false;
-    try {
-      voiceSocketRef.current?.interrupt();
-    } catch {
-      /* ignore */
-    }
-    try {
-      voiceSocketRef.current?.close();
-    } catch {
-      /* ignore */
-    }
-    voiceSocketRef.current = null;
-    cleanupMedia();
-    stopAllAudio();
-    setVoicePhase(null);
-    streamMsgId.current = null;
-  }, [cleanupMedia, stopAllAudio]);
-
   async function ask(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || sending || voicePhase) return;
+    if (!trimmed || sending || voiceOpen) return;
     stopAllAudio();
     setSending(true);
     setMessages((m) => [
@@ -167,309 +120,89 @@ export function AssistantChat({
 
   useEffect(() => {
     if (started.current) return;
+    if (autoVoice) {
+      started.current = true;
+      setVoiceOpen(true);
+      return;
+    }
     if (initialQuestion) {
       started.current = true;
       void ask(initialQuestion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialQuestion]);
+  }, [initialQuestion, autoVoice]);
 
-  const finishRecordingAndSend = useCallback(async () => {
-    const recorder = mediaRecorderRef.current;
-    const socket = voiceSocketRef.current;
-    if (!recorder || !socket || sendingAudioRef.current) {
-      if (!recorder || !socket) stopVoiceSession();
-      return;
-    }
+  const handleVoiceExchange = useCallback((ex: VoiceExchange) => {
+    if (ex.conversationId) setConversationId(ex.conversationId);
 
-    const elapsed = Date.now() - recordStartedAtRef.current;
-    if (elapsed < MIN_RECORD_MS) {
+    if (ex.userText) {
       setMessages((m) => [
         ...m,
-        {
-          id: `${Date.now()}-ve`,
-          role: 'assistant',
-          content: 'Enregistrement trop court. Parlez un peu plus longtemps, puis appuyez sur Stop.',
-          isError: true,
-        },
+        { id: `${Date.now()}-vu`, role: 'user', content: ex.userText! },
       ]);
-      stopVoiceSession();
-      return;
     }
 
-    sendingAudioRef.current = true;
-    setVoicePhase('thinking');
-    if (maxRecordTimerRef.current !== undefined) {
-      clearTimeout(maxRecordTimerRef.current);
-      maxRecordTimerRef.current = undefined;
-    }
-
-    // Flush final chunk, then stop
-    await new Promise<void>((resolve) => {
-      const done = () => resolve();
-      recorder.onstop = done;
-      try {
-        if (recorder.state === 'recording') {
-          try {
-            recorder.requestData();
-          } catch {
-            /* some browsers */
-          }
-          recorder.stop();
-        } else {
-          done();
-        }
-      } catch {
-        done();
-      }
-    });
-
-    mediaStreamRef.current?.getTracks().forEach((tr) => tr.stop());
-    mediaStreamRef.current = null;
-    mediaRecorderRef.current = null;
-
-    const mime = (recorder.mimeType || 'audio/webm').split(';')[0] || 'audio/webm';
-    const blob = new Blob(recordChunksRef.current, { type: mime });
-    recordChunksRef.current = [];
-
-    if (blob.size < 1200) {
-      setMessages((m) => [
-        ...m,
-        {
-          id: `${Date.now()}-ve`,
-          role: 'assistant',
-          content: 'Enregistrement trop court. Parlez un peu plus longtemps, puis appuyez sur Stop.',
-          isError: true,
-        },
-      ]);
-      stopVoiceSession();
-      return;
-    }
-
-    try {
-      const b64 = await blobToBase64(blob);
-      // Single WS message — never follow with bare `utterance` (cancels the turn).
-      socket.sendAudioBase64(b64, mime, locale);
-    } catch (error) {
-      setMessages((m) => [
-        ...m,
-        {
-          id: `${Date.now()}-ve`,
-          role: 'assistant',
-          content: friendlyError(error),
-          isError: true,
-        },
-      ]);
-      stopVoiceSession();
-    }
-  }, [locale, stopVoiceSession]);
-
-  async function startVoice() {
-    if (voicePhase === 'listening') {
-      await finishRecordingAndSend();
-      return;
-    }
-    if (voicePhase === 'thinking' || voicePhase === 'speaking') {
-      stopVoiceSession();
-      return;
-    }
-
-    stopAllAudio();
-    setVoicePhase('listening');
-    streamMsgId.current = null;
-    sendingAudioRef.current = false;
-
-    const socket = new VoiceSocket();
-    voiceSocketRef.current = socket;
-    let assistantText = '';
-
-    try {
-      await socket.connect((ev) => {
-        if (ev.type === 'status') {
-          const phase = (ev.phase || '').toLowerCase();
-          const msg = (ev.message || '').toLowerCase();
-          const blob = `${phase} ${msg}`;
-          if (/listen|écoute|recording|mic/.test(blob)) setVoicePhase('listening');
-          else if (/think|analy|process|llm|rag|transcrib/.test(blob))
-            setVoicePhase('thinking');
-          else if (/speak|tts|audio|play/.test(blob)) setVoicePhase('speaking');
-          else if (ev.message || ev.phase) setVoicePhase('thinking');
-        }
-        if (ev.type === 'transcript' && ev.text) {
-          setMessages((m) => [
-            ...m,
-            { id: `${Date.now()}-vt`, role: 'user', content: ev.text },
-          ]);
-        }
-        if (ev.type === 'token' && ev.text) {
-          assistantText += ev.text;
-          setVoicePhase('speaking');
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid
-                  ? { ...msg, content: assistantText, streaming: true }
-                  : msg,
-              );
-            }
-            const id = `stream-${Date.now()}`;
-            streamMsgId.current = id;
-            return [
-              ...m,
-              { id, role: 'assistant', content: assistantText, streaming: true },
-            ];
-          });
-        }
-        if (ev.type === 'assistant_text' && ev.text) {
-          assistantText = ev.text;
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid ? { ...msg, content: assistantText } : msg,
-              );
-            }
-            const id = `stream-${Date.now()}`;
-            streamMsgId.current = id;
-            return [
-              ...m,
-              { id, role: 'assistant', content: assistantText, streaming: true },
-            ];
-          });
-        }
-        if (ev.type === 'audio_chunk' && ev.data) {
-          setVoicePhase('speaking');
-          audioPlayback.enqueueBase64(ev.data);
-        }
-        if (ev.type === 'turn_done') {
-          sendingAudioRef.current = false;
-          if (ev.conversation_id) setConversationId(ev.conversation_id);
-          const ui = ev.ui ?? null;
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid
-                  ? {
-                      ...msg,
-                      content: assistantText || msg.content,
-                      ui: ui ?? undefined,
-                      streaming: false,
-                    }
-                  : msg,
-              );
-            }
-            if (assistantText || ui) {
-              return [
-                ...m,
-                {
-                  id: `${Date.now()}-a`,
-                  role: 'assistant',
-                  content: assistantText,
-                  ui: ui ?? undefined,
-                },
-              ];
-            }
-            return m;
-          });
-          streamMsgId.current = null;
-          setVoicePhase(null);
-          socket.close();
-          voiceSocketRef.current = null;
-          cleanupMedia();
-        }
-        if (ev.type === 'interrupted') {
-          // Ignore mid-flight interrupt we didn't ask for only if still sending
-          if (!sendingAudioRef.current) {
-            setVoicePhase(null);
-            streamMsgId.current = null;
-          }
-        }
-        if (ev.type === 'error') {
-          sendingAudioRef.current = false;
-          setVoicePhase(null);
-          const soft =
-            ev.code === 'empty_transcript' ||
-            /parole détectée|no speech/i.test(ev.message || '');
-          setMessages((m) => [
-            ...m,
-            soft
+    if (ex.assistantText || ex.ui) {
+      setMessages((m) => {
+        const sid = streamAssistantIdRef.current;
+        if (sid) {
+          streamAssistantIdRef.current = null;
+          return m.map((msg) =>
+            msg.id === sid
               ? {
-                  id: `${Date.now()}-ve`,
-                  role: 'assistant',
-                  content:
-                    'Aucune parole détectée. Parlez clairement près du micro, puis appuyez sur Stop.',
-                  isTip: true,
+                  ...msg,
+                  content: ex.assistantText || msg.content,
+                  ui: ex.ui ?? msg.ui,
+                  streaming: false,
                 }
-              : {
-                  id: `${Date.now()}-ve`,
-                  role: 'assistant',
-                  content: ev.message || 'La voix est momentanément indisponible.',
-                  isError: true,
-                },
-          ]);
-          socket.close();
-          voiceSocketRef.current = null;
-          cleanupMedia();
-          stopAllAudio();
+              : msg,
+          );
         }
+        return [
+          ...m,
+          {
+            id: `${Date.now()}-va`,
+            role: 'assistant',
+            content: ex.assistantText || '',
+            ui: ex.ui ?? undefined,
+          },
+        ];
       });
+    }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          channelCount: 1,
+    if (ex.tip) {
+      setMessages((m) => [
+        ...m,
+        {
+          id: `${Date.now()}-tip`,
+          role: 'assistant',
+          content: ex.tip!,
+          isTip: true,
         },
-      });
-      mediaStreamRef.current = stream;
-      const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : MediaRecorder.isTypeSupported('audio/webm')
-          ? 'audio/webm'
-          : MediaRecorder.isTypeSupported('audio/mp4')
-            ? 'audio/mp4'
-            : undefined;
-      const recorder = mime
-        ? new MediaRecorder(stream, { mimeType: mime })
-        : new MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-      recordChunksRef.current = [];
-      recordStartedAtRef.current = Date.now();
-      recorder.ondataavailable = (e) => {
-        if (e.data.size) recordChunksRef.current.push(e.data);
-      };
-      // Prefer one blob on stop (more reliable headers for STT) vs timeslices
-      recorder.start();
+      ]);
+    }
 
-      maxRecordTimerRef.current = window.setTimeout(() => {
-        void finishRecordingAndSend();
-      }, MAX_RECORD_MS);
-    } catch (error) {
+    if (ex.error) {
       setMessages((m) => [
         ...m,
         {
           id: `${Date.now()}-ve`,
           role: 'assistant',
-          content: friendlyError(error),
+          content: ex.error!,
           isError: true,
         },
       ]);
-      stopVoiceSession();
     }
-  }
+  }, []);
 
   async function speakMessage(msg: Msg) {
     const text = msg.content?.trim();
-    if (!text || msg.isError) return;
+    if (!text || msg.isError || msg.isTip) return;
 
     if (speakingMsgId === msg.id) {
       stopAllAudio();
       return;
     }
-
-    if (voicePhase) stopVoiceSession();
 
     stopAllAudio();
     setSpeakingMsgId(msg.id);
@@ -498,34 +231,20 @@ export function AssistantChat({
   }
 
   useEffect(() => {
-    if (autoVoice && !started.current) {
-      started.current = true;
-      void startVoice();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoVoice]);
-
-  useEffect(() => {
     return () => {
-      stopVoiceSession();
+      stopAllAudio();
     };
-  }, [stopVoiceSession]);
+  }, [stopAllAudio]);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     void ask(input);
   }
 
-  const voiceLabel =
-    voicePhase === 'listening'
-      ? 'Écoute… appuyez sur Stop pour envoyer'
-      : voicePhase === 'thinking'
-        ? t('assistant.thinking')
-        : voicePhase === 'speaking'
-          ? 'SmartMboa parle…'
-          : null;
-
-  const busy = sending || !!voicePhase;
+  function openVoice() {
+    stopAllAudio();
+    setVoiceOpen(true);
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[var(--ivory)]">
@@ -542,33 +261,27 @@ export function AssistantChat({
               Votre guide intelligent pour découvrir le Cameroun.
             </p>
           </div>
-          {(voicePhase || audioPlaying || speakingMsgId) && (
+          {(audioPlaying || speakingMsgId) && (
             <button
               type="button"
-              onClick={() => {
-                if (voicePhase) stopVoiceSession();
-                else stopAllAudio();
-              }}
+              onClick={stopAllAudio}
               className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger)] px-3 py-1.5 text-xs font-semibold text-white"
-              aria-label="Arrêter la lecture ou le micro"
+              aria-label="Arrêter la lecture"
             >
               <Square className="h-3.5 w-3.5 fill-current" aria-hidden />
               Stop
             </button>
           )}
-        </div>
-        {voiceLabel ? (
-          <p
-            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-sm font-medium text-[var(--green)]"
-            aria-live="polite"
+          <button
+            type="button"
+            onClick={openVoice}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-deep)] px-3 py-1.5 text-xs font-semibold text-white"
+            aria-label="Ouvrir le mode vocal"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--green)] opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--green)]" />
-            </span>
-            {voiceLabel}
-          </p>
-        ) : null}
+            <Mic className="h-3.5 w-3.5" aria-hidden />
+            Vocal
+          </button>
+        </div>
       </header>
 
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
@@ -580,6 +293,14 @@ export function AssistantChat({
             <p className="mt-2 text-sm text-[var(--muted)]">
               Je suis SmartMboa, votre guide intelligent pour découvrir le Cameroun.
             </p>
+            <button
+              type="button"
+              onClick={openVoice}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--green-deep)] px-5 py-3 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition hover:bg-[var(--green)]"
+            >
+              <Mic className="h-4 w-4" aria-hidden />
+              Parler au guide
+            </button>
             <div className="mt-6 flex gap-2 overflow-x-auto pb-2 no-scrollbar md:flex-wrap md:justify-center md:overflow-visible">
               {SUGGESTIONS.map((s) => (
                 <button
@@ -609,7 +330,10 @@ export function AssistantChat({
                 {msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
                 {msg.streaming ? ' · …' : ''}
               </p>
-              {msg.role === 'assistant' && !msg.isError && msg.content.trim() ? (
+              {msg.role === 'assistant' &&
+              !msg.isError &&
+              !msg.isTip &&
+              msg.content.trim() ? (
                 <button
                   type="button"
                   onClick={() => void speakMessage(msg)}
@@ -670,7 +394,7 @@ export function AssistantChat({
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
             aria-label="Ouvrir la vision"
             onClick={() => fileRef.current?.click()}
-            disabled={busy}
+            disabled={sending}
           >
             <Camera className="h-5 w-5" />
           </button>
@@ -689,54 +413,35 @@ export function AssistantChat({
             placeholder="Posez votre question…"
             className="min-w-0 flex-1"
             aria-label="Message"
-            disabled={busy}
+            disabled={sending}
           />
 
-          {voicePhase || audioPlaying || speakingMsgId ? (
-            <button
-              type="button"
-              className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--danger)] text-white ${
-                voicePhase === 'listening'
-                  ? 'ring-2 ring-[var(--danger)] ring-offset-2'
-                  : ''
-              }`}
-              aria-label={
-                voicePhase === 'listening'
-                  ? 'Stop — envoyer l’enregistrement'
-                  : 'Stop — arrêter la voix'
-              }
-              onClick={() => {
-                if (voicePhase === 'listening') void finishRecordingAndSend();
-                else if (voicePhase) stopVoiceSession();
-                else stopAllAudio();
-              }}
-            >
-              {voicePhase === 'listening' ? (
-                <span className="absolute inset-0 animate-ping rounded-full bg-[var(--danger)] opacity-30" />
-              ) : null}
-              <Square className="relative h-4 w-4 fill-current" />
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
-              aria-label="Micro — parler à SmartMboa"
-              disabled={sending}
-              onClick={() => void startVoice()}
-            >
-              <Mic className="h-5 w-5" />
-            </button>
-          )}
+          <button
+            type="button"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--green-deep)] text-white"
+            aria-label="Ouvrir le mode vocal"
+            disabled={sending}
+            onClick={openVoice}
+          >
+            <Mic className="h-5 w-5" />
+          </button>
 
           <Button
             type="submit"
-            disabled={busy || !input.trim()}
+            disabled={sending || !input.trim()}
             aria-label="Envoyer"
           >
             <SendHorizontal className="h-4 w-4" />
           </Button>
         </div>
       </form>
+
+      <VoiceMode
+        open={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        conversationId={conversationId}
+        onExchange={handleVoiceExchange}
+      />
     </div>
   );
 }
