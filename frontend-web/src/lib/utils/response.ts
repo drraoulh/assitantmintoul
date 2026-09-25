@@ -1,39 +1,57 @@
 import type {
-  ChatPlace,
   ChatResponse,
-  ChatSource,
+  ChatResponseType,
   MapMarker,
-  ResponseKind,
+  MapUI,
+  PlaceUI,
+  StructuredChatUI,
   TouristSite,
 } from '../types';
 
-const TYPE_MAP: Record<string, ResponseKind> = {
-  PLACE_LIST: 'PLACE_LIST',
-  PLACE_SEARCH: 'PLACE_SEARCH',
-  PLACE_DETAILS: 'PLACE_DETAILS',
-  ITINERARY: 'ITINERARY',
-  BUDGET_TRIP: 'BUDGET_TRIP',
-  HOTEL: 'HOTEL',
-  BOOKING: 'BOOKING',
-  VISION: 'VISION',
-  SIMPLE_ANSWER: 'SIMPLE_ANSWER',
-  SIMPLE_QA: 'SIMPLE_ANSWER',
-  TOURISM_INFO: 'SIMPLE_ANSWER',
-  NATURE: 'PLACE_LIST',
-  CULTURE: 'PLACE_LIST',
-};
+const KNOWN_TYPES = new Set<string>([
+  'SIMPLE_ANSWER',
+  'TOURISM_INFORMATION',
+  'PLACE_LIST',
+  'PLACE_DETAILS',
+  'ITINERARY',
+  'BUDGET_TRIP',
+  'NATURE',
+  'CULTURE',
+  'FOOD',
+  'HOTEL',
+  'BOOKING',
+  'VISION',
+  'CLARIFICATION',
+  'INSUFFICIENT_INFORMATION',
+]);
 
-export function resolveResponseKind(response: ChatResponse): ResponseKind {
-  const raw = response.response_type?.trim().toUpperCase();
-  if (raw && TYPE_MAP[raw]) return TYPE_MAP[raw];
+export function normalizeResponseType(
+  raw: string | null | undefined,
+): ChatResponseType {
+  if (!raw) return 'SIMPLE_ANSWER';
+  const upper = raw.trim().toUpperCase();
+  if (KNOWN_TYPES.has(upper)) return upper;
+  // Legacy aliases
+  if (upper === 'PLACE_SEARCH') return 'PLACE_LIST';
+  if (upper === 'SIMPLE_QA') return 'SIMPLE_ANSWER';
+  return upper || 'SIMPLE_ANSWER';
+}
+
+export function resolveResponseKind(
+  response: Pick<ChatResponse, 'response_type' | 'message' | 'sources' | 'places'>,
+): ChatResponseType {
+  if (response.response_type) {
+    return normalizeResponseType(response.response_type);
+  }
   return inferResponseKind(response.message, response.sources, response.places);
 }
 
+/** Fallback only when backend omits response_type. */
 export function inferResponseKind(
   message: string,
-  sources: ChatSource[] | undefined,
-  places?: ChatPlace[] | null,
-): ResponseKind {
+  sources: ChatResponse['sources'],
+  places?: PlaceUI[] | null,
+): ChatResponseType {
   const m = message.toLowerCase();
   if (/réservation|reservation|booking|smb-/i.test(m)) return 'BOOKING';
   if (
@@ -50,7 +68,7 @@ export function inferResponseKind(
   return 'SIMPLE_ANSWER';
 }
 
-export function placesToMarkers(places: ChatPlace[] | null | undefined): MapMarker[] {
+export function placesToMarkers(places: PlaceUI[] | null | undefined): MapMarker[] {
   if (!places?.length) return [];
   const markers: MapMarker[] = [];
   for (const p of places) {
@@ -72,9 +90,30 @@ export function placesToMarkers(places: ChatPlace[] | null | undefined): MapMark
   return markers;
 }
 
+export function mapUiToMarkers(map: MapUI | null | undefined): MapMarker[] {
+  if (!map?.enabled && map?.enabled !== undefined && !map.markers?.length) {
+    return [];
+  }
+  if (!map?.markers?.length) return [];
+  return map.markers
+    .filter(
+      (m) =>
+        typeof m.latitude === 'number' &&
+        typeof m.longitude === 'number' &&
+        Number.isFinite(m.latitude) &&
+        Number.isFinite(m.longitude),
+    )
+    .map((m) => ({
+      id: m.place_id,
+      name: m.title,
+      latitude: m.latitude,
+      longitude: m.longitude,
+    }));
+}
+
 export function sourcesToMarkers(
   sites: TouristSite[],
-  sources: ChatSource[] | undefined,
+  sources: ChatResponse['sources'],
 ): MapMarker[] {
   if (!sources?.length) return [];
   const markers: MapMarker[] = [];
@@ -126,35 +165,39 @@ export function isHotelCategory(category: string): boolean {
   return /hotel|hôtel|heberg|lodg|resort|auberge/i.test(category);
 }
 
+export function chatMarkersFromResponse(
+  response: ChatResponse | StructuredChatUI,
+  sitesCache: TouristSite[] = [],
+): MapMarker[] {
+  const fromMap = mapUiToMarkers(response.map);
+  if (fromMap.length) return fromMap;
+  const fromPlaces = placesToMarkers(response.places);
+  if (fromPlaces.length) return fromPlaces;
+  if ('sources' in response) {
+    return sourcesToMarkers(sitesCache, response.sources);
+  }
+  return [];
+}
+
+export function structuredFromChatResponse(res: ChatResponse): StructuredChatUI {
+  return {
+    response_type: resolveResponseKind(res),
+    places: res.places ?? [],
+    map: res.map ?? null,
+    itinerary: res.itinerary ?? null,
+    budget: res.budget ?? null,
+    hotels: res.hotels ?? [],
+    booking: res.booking ?? null,
+    vision: res.vision ?? null,
+    ui_sources: res.ui_sources ?? [],
+    actions: res.actions ?? [],
+    structured_build_ms: res.structured_build_ms ?? null,
+  };
+}
+
 export function enrichChat(response: ChatResponse) {
   return {
     ...response,
     kind: resolveResponseKind(response),
   };
-}
-
-export function chatMarkersFromResponse(
-  response: ChatResponse,
-  sitesCache: TouristSite[],
-): MapMarker[] {
-  const fromMap =
-    response.map?.markers
-      ?.filter(
-        (m) =>
-          typeof m.latitude === 'number' &&
-          typeof m.longitude === 'number' &&
-          Number.isFinite(m.latitude) &&
-          Number.isFinite(m.longitude),
-      )
-      .map((m, i) => ({
-        id: m.id || `map-${i}`,
-        name: m.name || 'Lieu',
-        latitude: m.latitude,
-        longitude: m.longitude,
-        category: m.category ?? undefined,
-      })) ?? [];
-  if (fromMap.length) return fromMap;
-  const fromPlaces = placesToMarkers(response.places);
-  if (fromPlaces.length) return fromPlaces;
-  return sourcesToMarkers(sitesCache, response.sources ?? response.ui_sources ?? undefined);
 }

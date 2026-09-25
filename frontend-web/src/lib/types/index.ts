@@ -3,6 +3,27 @@ export type ChatMode = 'text' | 'voice';
 export type ChatLocale = 'fr' | 'en';
 export type BackendStatus = 'checking' | 'waking' | 'online' | 'offline';
 
+/** Mirrors backend ChatResponseType (Phase 3.1). */
+export type ChatResponseType =
+  | 'SIMPLE_ANSWER'
+  | 'TOURISM_INFORMATION'
+  | 'PLACE_LIST'
+  | 'PLACE_DETAILS'
+  | 'ITINERARY'
+  | 'BUDGET_TRIP'
+  | 'NATURE'
+  | 'CULTURE'
+  | 'FOOD'
+  | 'HOTEL'
+  | 'BOOKING'
+  | 'VISION'
+  | 'CLARIFICATION'
+  | 'INSUFFICIENT_INFORMATION'
+  | string;
+
+/** @deprecated Prefer ChatResponseType — kept for older call sites. */
+export type ResponseKind = ChatResponseType;
+
 export interface ChatSource {
   title: string;
   city?: string | null;
@@ -20,8 +41,8 @@ export interface ChatRequest {
   locale?: ChatLocale;
 }
 
-/** Place payload returned by structured ChatResponse (when present). */
-export interface ChatPlace {
+/** PlaceUI */
+export interface PlaceUI {
   id: string;
   name: string;
   description?: string | null;
@@ -35,81 +56,139 @@ export interface ChatPlace {
   estimated_cost_xaf?: number | null;
 }
 
-export interface ChatMapMarker {
-  id?: string;
-  name?: string;
+/** Alias used across the app */
+export type ChatPlace = PlaceUI;
+
+export interface MapMarkerUI {
+  place_id: string;
   latitude: number;
   longitude: number;
-  category?: string | null;
+  title: string;
 }
 
-export interface ChatMapPayload {
-  markers?: ChatMapMarker[] | null;
-  center?: { latitude: number; longitude: number } | null;
+export interface MapCenterUI {
+  latitude: number;
+  longitude: number;
 }
 
-export interface ChatItineraryDay {
-  day?: number;
-  title?: string | null;
-  summary?: string | null;
-  places?: ChatPlace[] | null;
-  activities?: string[] | null;
+export interface MapUI {
+  enabled?: boolean;
+  center: MapCenterUI;
+  markers?: MapMarkerUI[];
 }
 
-export interface ChatItinerary {
-  title?: string | null;
-  destination?: string | null;
-  days?: ChatItineraryDay[] | null;
-  summary?: string | null;
+export interface ItineraryItemUI {
+  time?: string | null;
+  place_id?: string | null;
+  title: string;
+  duration_minutes?: number | null;
 }
 
-export interface ChatBudget {
-  total_xaf?: number | null;
-  currency?: string | null;
-  lines?: { label: string; amount_xaf?: number | null }[] | null;
-  note?: string | null;
+export interface ItineraryDayUI {
+  day: number;
+  items?: ItineraryItemUI[];
 }
 
-export interface ChatHotel {
-  id?: string;
+export interface ItineraryUI {
+  title: string;
+  days?: ItineraryDayUI[];
+}
+
+export type ChatItinerary = ItineraryUI;
+export type ChatItineraryDay = ItineraryDayUI;
+
+export interface BudgetItemUI {
+  label: string;
+  amount?: number | null;
+  status?: 'KNOWN' | 'UNKNOWN' | 'INDICATIVE';
+}
+
+export interface BudgetUI {
+  currency?: string;
+  items?: BudgetItemUI[];
+  total_known?: number | null;
+}
+
+export type ChatBudget = BudgetUI;
+
+export interface HotelUI {
+  id: string;
   name: string;
-  city?: string | null;
-  region?: string | null;
-  category?: string | null;
-  price?: string | null;
+  location?: string | null;
   image_url?: string | null;
   description?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
+  price?: number | null;
+  price_status?: 'KNOWN' | 'INDICATIVE' | 'UNKNOWN';
+  amenities?: string[];
+  booking_available?: boolean;
+  demo_booking?: boolean;
+  source_url?: string | null;
 }
 
-export interface ChatVisionPayload {
+export type ChatHotel = HotelUI;
+
+export interface BookingUI {
+  available?: boolean;
+  demo?: boolean;
+  message?: string | null;
+}
+
+export interface VisionUI {
   description?: string | null;
   matched_place_id?: string | null;
   confidence?: number | null;
 }
 
+export type ChatVisionPayload = VisionUI;
+
+export interface SourceUI {
+  title: string;
+  url?: string | null;
+  type?: 'WEB' | 'KB' | 'OTHER';
+}
+
+export type ActionType =
+  | 'VIEW_PLACE'
+  | 'ADD_TO_TRIP'
+  | 'VIEW_MAP'
+  | 'PLAN_TRIP'
+  | 'BOOK_HOTEL'
+  | 'ASK_AI'
+  | 'VIEW_SOURCE';
+
+export interface ActionUI {
+  type: ActionType | string;
+  label: string;
+  target_id?: string | null;
+}
+
 /**
- * Chat API response. Core fields always present; structured fields
- * (response_type, places, …) are consumed when the orchestrator returns them.
+ * Structured UI block attached to HTTP ChatResponse and voice `turn_done.ui`.
  */
-export interface ChatResponse {
+export interface StructuredChatUI {
+  response_type?: ChatResponseType | null;
+  places?: PlaceUI[];
+  map?: MapUI | null;
+  itinerary?: ItineraryUI | null;
+  budget?: BudgetUI | null;
+  hotels?: HotelUI[];
+  booking?: BookingUI | null;
+  vision?: VisionUI | null;
+  ui_sources?: SourceUI[];
+  actions?: ActionUI[];
+  structured_build_ms?: number | null;
+}
+
+/**
+ * Full HTTP ChatResponse (Expo-compatible + Phase 3.1 structured fields).
+ */
+export interface ChatResponse extends StructuredChatUI {
   conversation_id: string;
-  role: 'assistant';
+  role?: 'assistant';
   message: string;
   provider: string;
   sources?: ChatSource[];
-  text?: string;
-  response_type?: string | null;
-  places?: ChatPlace[] | null;
-  map?: ChatMapPayload | null;
-  itinerary?: ChatItinerary | null;
-  budget?: ChatBudget | null;
-  hotels?: ChatHotel[] | null;
-  booking?: unknown;
-  vision?: ChatVisionPayload | null;
-  ui_sources?: ChatSource[] | null;
-  actions?: { label: string; href?: string; type?: string }[] | null;
+  text?: string | null;
 }
 
 export interface ConversationSummary {
@@ -179,18 +258,6 @@ export interface VisionIdentifyResponse {
   description: string;
   provider: string;
 }
-
-/** Frontend response kinds — prefer backend response_type when available. */
-export type ResponseKind =
-  | 'PLACE_LIST'
-  | 'PLACE_SEARCH'
-  | 'PLACE_DETAILS'
-  | 'ITINERARY'
-  | 'BUDGET_TRIP'
-  | 'HOTEL'
-  | 'BOOKING'
-  | 'VISION'
-  | 'SIMPLE_ANSWER';
 
 export interface MapMarker {
   id: string;

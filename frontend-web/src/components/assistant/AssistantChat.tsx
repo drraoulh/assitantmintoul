@@ -1,50 +1,33 @@
 'use client';
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { Camera, Mic, SendHorizontal } from 'lucide-react';
+import { Camera, Mic, SendHorizontal, Sparkles } from 'lucide-react';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
 import { Button, ErrorState, Input, ThinkingDots } from '@/components/ui';
-import {
-  friendlyError,
-  listTouristSites,
-  sendChatMessage,
-} from '@/lib/api/client';
+import { friendlyError, sendChatMessage } from '@/lib/api/client';
 import { useLocale } from '@/lib/i18n';
-import {
-  chatMarkersFromResponse,
-  resolveResponseKind,
-} from '@/lib/utils/response';
-import {
-  VoiceSocket,
-  blobToBase64,
-} from '@/lib/websocket/voice';
-import type {
-  ChatBudget,
-  ChatHotel,
-  ChatItinerary,
-  ChatPlace,
-  ChatSource,
-  ChatVisionPayload,
-  MapMarker,
-  ResponseKind,
-  TouristSite,
-} from '@/lib/types';
+import { structuredFromChatResponse } from '@/lib/utils/response';
+import { VoiceSocket, blobToBase64 } from '@/lib/websocket/voice';
+import type { StructuredChatUI } from '@/lib/types';
 
 interface Msg {
   id: string;
   role: 'user' | 'assistant';
   content: string;
-  sources?: ChatSource[];
-  markers?: MapMarker[];
-  places?: ChatPlace[] | null;
-  itinerary?: ChatItinerary | null;
-  budget?: ChatBudget | null;
-  hotels?: ChatHotel[] | null;
-  vision?: ChatVisionPayload | null;
-  kind?: ResponseKind;
+  ui?: StructuredChatUI | null;
   isError?: boolean;
+  streaming?: boolean;
 }
+
+const SUGGESTIONS = [
+  'Je suis à Bafoussam et je veux visiter un site touristique.',
+  'Propose un itinéraire de 3 jours à Limbé.',
+  'Quels parcs naturels vérifiés recommandez-vous ?',
+  'Propose un hôtel vérifié à Douala.',
+] as const;
+
+type VoicePhase = 'listening' | 'thinking' | 'speaking' | null;
 
 export function AssistantChat({
   initialQuestion,
@@ -58,17 +41,11 @@ export function AssistantChat({
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [conversationId, setConversationId] = useState<string>();
-  const [voicePhase, setVoicePhase] = useState<string | null>(null);
-  const [sitesCache, setSitesCache] = useState<TouristSite[]>([]);
+  const [voicePhase, setVoicePhase] = useState<VoicePhase>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    void listTouristSites()
-      .then((r) => setSitesCache(r.items))
-      .catch(() => undefined);
-  }, []);
+  const streamMsgId = useRef<string | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -90,22 +67,13 @@ export function AssistantChat({
         locale,
       });
       setConversationId(res.conversation_id);
-      const kind = resolveResponseKind(res);
-      const markers = chatMarkersFromResponse(res, sitesCache);
       setMessages((m) => [
         ...m,
         {
           id: `${Date.now()}-a`,
           role: 'assistant',
           content: res.message || res.text || '',
-          sources: res.sources ?? res.ui_sources ?? undefined,
-          markers,
-          places: res.places,
-          itinerary: res.itinerary,
-          budget: res.budget,
-          hotels: res.hotels,
-          vision: res.vision,
-          kind,
+          ui: structuredFromChatResponse(res),
         },
       ]);
     } catch (error) {
@@ -133,13 +101,25 @@ export function AssistantChat({
   }, [initialQuestion]);
 
   async function startVoice() {
-    setVoicePhase(t('assistant.listening'));
+    setVoicePhase('listening');
     const socket = new VoiceSocket();
     let assistantText = '';
+    streamMsgId.current = null;
+
     try {
       await socket.connect((ev) => {
         if (ev.type === 'status') {
-          setVoicePhase(ev.message || ev.phase || t('assistant.listening'));
+          const phase = (ev.phase || '').toLowerCase();
+          const msg = (ev.message || '').toLowerCase();
+          if (/listen|écoute|recording|mic/.test(`${phase} ${msg}`)) {
+            setVoicePhase('listening');
+          } else if (/think|analy|process|llm|rag/.test(`${phase} ${msg}`)) {
+            setVoicePhase('thinking');
+          } else if (/speak|tts|audio|play/.test(`${phase} ${msg}`)) {
+            setVoicePhase('speaking');
+          } else if (ev.message || ev.phase) {
+            setVoicePhase('thinking');
+          }
         }
         if (ev.type === 'transcript' && ev.text) {
           setMessages((m) => [
@@ -149,26 +129,95 @@ export function AssistantChat({
         }
         if (ev.type === 'token' && ev.text) {
           assistantText += ev.text;
-          setVoicePhase(null);
+          setVoicePhase('speaking');
           setMessages((m) => {
-            const last = m[m.length - 1];
-            if (last?.role === 'assistant' && last.id.startsWith('stream-')) {
-              return [...m.slice(0, -1), { ...last, content: assistantText }];
+            const sid = streamMsgId.current;
+            if (sid) {
+              return m.map((msg) =>
+                msg.id === sid
+                  ? { ...msg, content: assistantText, streaming: true }
+                  : msg,
+              );
             }
+            const id = `stream-${Date.now()}`;
+            streamMsgId.current = id;
             return [
               ...m,
-              { id: `stream-${Date.now()}`, role: 'assistant', content: assistantText },
+              {
+                id,
+                role: 'assistant',
+                content: assistantText,
+                streaming: true,
+              },
             ];
           });
         }
         if (ev.type === 'assistant_text' && ev.text) {
           assistantText = ev.text;
+          setMessages((m) => {
+            const sid = streamMsgId.current;
+            if (sid) {
+              return m.map((msg) =>
+                msg.id === sid ? { ...msg, content: assistantText } : msg,
+              );
+            }
+            const id = `stream-${Date.now()}`;
+            streamMsgId.current = id;
+            return [
+              ...m,
+              { id, role: 'assistant', content: assistantText, streaming: true },
+            ];
+          });
         }
         if (ev.type === 'audio_chunk' && ev.data) {
+          setVoicePhase('speaking');
           void playChunk(ev.data);
         }
-        if (ev.type === 'turn_done' || ev.type === 'error') {
+        if (ev.type === 'turn_done') {
+          if (ev.conversation_id) setConversationId(ev.conversation_id);
+          const ui = ev.ui ?? null;
+          setMessages((m) => {
+            const sid = streamMsgId.current;
+            if (sid) {
+              return m.map((msg) =>
+                msg.id === sid
+                  ? {
+                      ...msg,
+                      content: assistantText || msg.content,
+                      ui: ui ?? undefined,
+                      streaming: false,
+                    }
+                  : msg,
+              );
+            }
+            if (assistantText || ui) {
+              return [
+                ...m,
+                {
+                  id: `${Date.now()}-a`,
+                  role: 'assistant',
+                  content: assistantText,
+                  ui: ui ?? undefined,
+                },
+              ];
+            }
+            return m;
+          });
+          streamMsgId.current = null;
           setVoicePhase(null);
+          socket.close();
+        }
+        if (ev.type === 'error') {
+          setVoicePhase(null);
+          setMessages((m) => [
+            ...m,
+            {
+              id: `${Date.now()}-ve`,
+              role: 'assistant',
+              content: ev.message || 'La voix est momentanément indisponible.',
+              isError: true,
+            },
+          ]);
           socket.close();
         }
       });
@@ -188,7 +237,7 @@ export function AssistantChat({
       stream.getTracks().forEach((tr) => tr.stop());
       const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
       const b64 = await blobToBase64(blob);
-      setVoicePhase(t('assistant.thinking'));
+      setVoicePhase('thinking');
       socket.sendAudioBase64(b64, blob.type || 'audio/webm');
       socket.send({ type: 'utterance', locale });
     } catch (error) {
@@ -219,40 +268,59 @@ export function AssistantChat({
     void ask(input);
   }
 
+  const voiceLabel =
+    voicePhase === 'listening'
+      ? t('assistant.listening')
+      : voicePhase === 'thinking'
+        ? t('assistant.thinking')
+        : voicePhase === 'speaking'
+          ? 'SmartMboa parle…'
+          : null;
+
   return (
-    <div className="flex min-h-[calc(100svh-8rem)] flex-col bg-[var(--ivory)] lg:min-h-[75vh] lg:rounded-3xl lg:border lg:border-[var(--line)] lg:bg-white lg:shadow-[var(--shadow-soft)]">
-      <div className="border-b border-[var(--line)] px-5 py-5">
-        <h1 className="font-display text-2xl font-bold text-[var(--green-deep)]">
-          {t('assistant.title')}
-        </h1>
-        <p className="mt-1 text-sm text-[var(--muted)]">
-          Votre guide intelligent pour découvrir le Cameroun.
-        </p>
-        {voicePhase ? (
-          <p className="mt-2 text-sm font-medium text-[var(--green)]" aria-live="polite">
-            {voicePhase}
+    <div className="flex min-h-[calc(100svh-8rem)] flex-col bg-[var(--ivory)] lg:min-h-[78vh] lg:rounded-3xl lg:border lg:border-[var(--line)] lg:bg-white lg:shadow-[var(--shadow-soft)]">
+      <header className="border-b border-[var(--line)] px-5 py-5">
+        <div className="flex items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--green-deep)] text-white">
+            <Sparkles className="h-4 w-4" aria-hidden />
+          </span>
+          <div>
+            <h1 className="font-display text-xl font-bold text-[var(--green-deep)] md:text-2xl">
+              {t('assistant.title')}
+            </h1>
+            <p className="text-sm text-[var(--muted)]">
+              Votre guide intelligent pour découvrir le Cameroun.
+            </p>
+          </div>
+        </div>
+        {voiceLabel ? (
+          <p
+            className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-sm font-medium text-[var(--green)]"
+            aria-live="polite"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--green)] opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--green)]" />
+            </span>
+            {voiceLabel}
           </p>
         ) : null}
-      </div>
+      </header>
 
       <div className="flex-1 space-y-6 overflow-y-auto px-4 py-6 md:px-6">
         {messages.length === 0 && !sending ? (
-          <div className="mx-auto max-w-md py-10 text-center">
-            <p className="font-display text-xl font-semibold text-[var(--green-deep)]">
+          <div className="mx-auto max-w-lg py-8 text-center">
+            <p className="font-display text-2xl font-semibold text-[var(--green-deep)]">
               Bonjour
             </p>
             <p className="mt-2 text-sm text-[var(--muted)]">{t('home.assistantHint')}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              {[
-                'Je suis à Bafoussam et je veux visiter un site touristique.',
-                'Propose un itinéraire de 3 jours à Limbé.',
-                'Quels parcs naturels vérifiés recommandez-vous ?',
-              ].map((s) => (
+              {SUGGESTIONS.map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => void ask(s)}
-                  className="rounded-full border border-[var(--line)] bg-white px-3 py-1.5 text-left text-xs text-[var(--ink)] hover:border-[var(--gold)]"
+                  className="rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-left text-xs text-[var(--ink)] transition hover:border-[var(--gold)] hover:bg-[var(--mint-soft)]"
                 >
                   {s}
                 </button>
@@ -260,27 +328,23 @@ export function AssistantChat({
             </div>
           </div>
         ) : null}
+
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={msg.role === 'user' ? 'ml-auto max-w-[90%] md:max-w-[75%]' : 'mr-auto max-w-[95%] md:max-w-[90%]'}
+            className={
+              msg.role === 'user'
+                ? 'ml-auto max-w-[90%] md:max-w-[75%]'
+                : 'mr-auto max-w-[98%] md:max-w-[92%]'
+            }
           >
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
               {msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
+              {msg.streaming ? ' · …' : ''}
             </p>
             {msg.role === 'assistant' && !msg.isError ? (
-              <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)] lg:shadow-none lg:ring-0 lg:px-0 lg:py-0">
-                <ResponseRenderer
-                  text={msg.content}
-                  kind={msg.kind ?? 'SIMPLE_ANSWER'}
-                  sources={msg.sources}
-                  markers={msg.markers}
-                  places={msg.places}
-                  itinerary={msg.itinerary}
-                  budget={msg.budget}
-                  hotels={msg.hotels}
-                  vision={msg.vision}
-                />
+              <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)] lg:bg-transparent lg:px-0 lg:py-1 lg:shadow-none lg:ring-0">
+                <ResponseRenderer text={msg.content} ui={msg.ui} />
               </div>
             ) : msg.isError ? (
               <ErrorState message={msg.content} />
@@ -291,13 +355,14 @@ export function AssistantChat({
             )}
           </div>
         ))}
-        {sending ? <ThinkingDots /> : null}
+
+        {sending ? <ThinkingDots label="SmartMboa réfléchit…" /> : null}
         <div ref={bottomRef} />
       </div>
 
       <form
         onSubmit={onSubmit}
-        className="sticky bottom-0 flex items-center gap-2 border-t border-[var(--line)] bg-[var(--ivory)]/95 p-3 backdrop-blur-md lg:static lg:bg-white lg:p-4"
+        className="sticky bottom-0 z-10 flex items-center gap-2 border-t border-[var(--line)] bg-[var(--ivory)]/95 p-3 backdrop-blur-md lg:static lg:bg-white lg:p-4"
       >
         <button
           type="button"
@@ -313,29 +378,35 @@ export function AssistantChat({
           accept="image/*"
           className="hidden"
           onChange={(e) => {
-            if (e.target.files?.[0]) {
-              window.location.href = '/vision';
-            }
+            if (e.target.files?.[0]) window.location.href = '/vision';
           }}
         />
         <Input
-          id="assistant-message"
-          name="message"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder={t('home.placeholder')}
+          placeholder="Demandez-moi quelque chose…"
           className="min-w-0 flex-1"
           aria-label="Message"
+          disabled={sending || !!voicePhase}
         />
         <button
           type="button"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
-          aria-label="Microphone"
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
+            voicePhase
+              ? 'bg-[var(--gold)] text-[var(--green-deep)]'
+              : 'bg-[var(--mint-soft)] text-[var(--green-deep)]'
+          }`}
+          aria-label="Micro — parler à SmartMboa"
+          disabled={sending || !!voicePhase}
           onClick={() => void startVoice()}
         >
           <Mic className="h-5 w-5" />
         </button>
-        <Button type="submit" disabled={sending || !input.trim()} aria-label="Envoyer">
+        <Button
+          type="submit"
+          disabled={sending || !input.trim() || !!voicePhase}
+          aria-label="Envoyer"
+        >
           <SendHorizontal className="h-4 w-4" />
         </Button>
       </form>
@@ -371,3 +442,13 @@ async function playChunk(b64: string) {
   playing = false;
 }
 
+/** @deprecated Prefer AssistantChat with searchParams props from the page. */
+export function AssistantPageClient({
+  initialQuestion,
+  autoVoice,
+}: {
+  initialQuestion?: string;
+  autoVoice?: boolean;
+}) {
+  return <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />;
+}
