@@ -58,6 +58,41 @@ _SLOGAN_RE = re.compile(
 )
 _URL_RE = re.compile(r"https?://[^\s)>\]]+", re.IGNORECASE)
 
+# Named Cameroonian dishes (folded). A reply may only name one that appears in
+# this turn's evidence text (or the user's own question).
+_DISH_LEXICON = (
+    "mbongo tchobi",
+    "mbongo",
+    "ndole",
+    "eru",
+    "okok",
+    "achu",
+    "koki",
+    "kondre",
+    "nkui",
+    "kati kati",
+    "ekwang",
+    "nnam ngon",
+    "sanga",
+    "kwacoco",
+    "ekomba",
+    "mintoumba",
+    "ndomba",
+    "folong",
+    "pepper soup",
+    "corn chaff",
+    "water fufu",
+    "miondo",
+    "bobolo",
+    "poulet dg",
+    "sauce jaune",
+    "taro",
+    "okra soup",
+    "mbanga soup",
+    "kpwem",
+    "kwem",
+)
+
 
 @dataclass
 class GroundingViolation:
@@ -182,6 +217,16 @@ def validate_grounding(
                 GroundingViolation("unauthorized_url", url[:120])
             )
             report.critical = True
+
+    # 9) Dishes not present in evidence
+    if evidence.evidence_text_folded:
+        for dish in _DISH_LEXICON:
+            pattern = rf"\b{re.escape(dish)}\b"
+            if re.search(pattern, folded) and not re.search(
+                pattern, evidence.evidence_text_folded
+            ):
+                report.violations.append(GroundingViolation("unauthorized_dish", dish))
+                report.critical = True
 
     report.ok = len(report.violations) == 0
     report.validation_ms = (time.perf_counter() - started) * 1000.0

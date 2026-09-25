@@ -371,3 +371,32 @@ def test_event_search_without_dated_evidence_is_honest():
     assert "Festivals et célébrations" in text
     assert "sac" not in text
     assert "Présentation générale" not in text
+
+
+def test_invented_dish_is_a_critical_grounding_violation():
+    from app.services.agents.intent.router import classify_intent
+    from app.services.agents.knowledge.models import KnowledgeEvidence
+    from app.services.agents.response.evidence import build_allowed_evidence
+    from app.services.agents.response.grounding_enforcement import validate_grounding
+
+    q = "Et le plat traditionnel centre ?"
+    intent = classify_intent(q, locale="fr", mode="text")
+    knowledge = KnowledgeResult(
+        query=q,
+        intent=intent.intent,
+        knowledge=[
+            KnowledgeEvidence(
+                chunk_id="culture-dish-centre-0",
+                content="Poulet DG : poulet sauté avec plantains et légumes.",
+            )
+        ],
+    )
+    evidence = build_allowed_evidence(intent, knowledge, None)
+    bad = validate_grounding(
+        "Le plat emblématique du Centre est le Mbongo Tchobi, avec du Poulet DG.",
+        evidence,
+    )
+    assert bad.critical
+    assert any(v.kind == "unauthorized_dish" and v.detail == "mbongo tchobi" for v in bad.violations)
+    good = validate_grounding("À Yaoundé, goûtez le Poulet DG.", evidence)
+    assert good.ok

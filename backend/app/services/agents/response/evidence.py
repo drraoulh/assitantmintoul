@@ -32,6 +32,7 @@ class AllowedEvidence:
     has_web_evidence: bool = False
     has_plan_places: bool = False
     missing_tags: list[str] = field(default_factory=list)
+    evidence_text_folded: str = ""
 
     def as_prompt_dict(self) -> dict[str, Any]:
         return {
@@ -146,6 +147,11 @@ def build_allowed_evidence(
     if intent.region:
         ev.place_names.add(intent.region)
         ev.place_names_folded.add(fold(intent.region))
+
+    corpus = [knowledge.query or ""]
+    corpus.extend(c.content or "" for c in knowledge.knowledge)
+    corpus.extend(f"{p.name or ''} {p.description or ''}" for p in knowledge.places)
+    ev.evidence_text_folded = fold(" ".join(corpus))
 
     ev.has_verified_places = bool(knowledge.places)
     ev.has_plan_places = bool(plan and plan.selected_places)
