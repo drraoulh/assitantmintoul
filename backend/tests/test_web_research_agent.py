@@ -337,7 +337,7 @@ def test_food_ui_hides_unrelated_places():
     )
     final = FinalResponse(text="x", language="fr", response_type="FOOD", response_mode="text")
     ui = build_structured_ui(final=final, knowledge=knowledge)
-    assert [p.name for p in ui["places"]] == ["Marché Mokolo"]
+    assert ui["places"] == [] and ui["map"] is None
 
 
 def test_event_search_without_dated_evidence_is_honest():

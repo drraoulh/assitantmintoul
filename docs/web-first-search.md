@@ -37,8 +37,10 @@ Orchestrateur, grounding et voix l'utilisent donc sans autre changement.
 |---|---|---|
 | Interdit | backend | salutations, remerciements, clarification : ni Web ni appel LLM |
 | **Forcé** | backend (Agent 1) | `WEB_SEARCH` → `FORCED_CURRENT_INFORMATION`, `HOTEL` → `FORCED_HOTEL_SEARCH`, `FOOD` + restaurant/resto/maquis/où manger → `FORCED_RESTAURANT_SEARCH` |
+| Forcé (trajet) | backend (Agent 1) | `TRAVEL_ROUTE`, ou `ITINERARY` / `BUDGET_TRIP` avec origine → destination → `FORCED_TRAVEL_ROUTE` |
 | Routé | backend (Agent 1) | gastronomie régionale (texte) → `REGIONAL_GASTRONOMY` |
-| Optionnel | **Qwen** via tool call `web_search` | mode texte, toutes les autres intentions |
+| **Web-first** | backend (orchestrateur) | mode texte, `CHAT_WEB_FIRST_ENABLED=true` (défaut) : toutes les autres intentions cherchent → `WEB_FIRST`. Exceptions : `BOOKING`, `VISION`, `IMAGE_SEARCH`, et un fait stable déjà présent dans la table géographique (capitale…) |
+| Optionnel | **Qwen** via tool call `web_search` | seulement si `CHAT_WEB_FIRST_ENABLED=false` |
 | Filet | backend (Agent 2) | KB insuffisante → `KB_INSUFFICIENT` |
 
 Flux optionnel :

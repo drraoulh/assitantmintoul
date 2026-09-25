@@ -148,7 +148,10 @@ async def test_greeting_never_searches_nor_asks_llm():
 
 
 @pytest.mark.asyncio
-async def test_optional_intent_uses_llm_tool_call_queries():
+async def test_optional_intent_uses_llm_tool_call_queries(monkeypatch):
+    from app.core.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "chat_web_first_enabled", False)
     provider = RecordingProvider([FESTIVAL_ROW])
     caller = SearchingCaller(["histoire du Ngondo Douala"])
     orch = AgentOrchestrator(web_search=WebSearchService(provider), web_tool_caller=caller)
@@ -156,6 +159,17 @@ async def test_optional_intent_uses_llm_tool_call_queries():
     assert caller.calls == 1
     assert result.web_research["decision"] == "llm_tool_call"
     assert provider.queries[0].startswith("histoire du Ngondo Douala")
+
+
+@pytest.mark.asyncio
+async def test_web_first_chat_searches_without_asking_llm():
+    provider = RecordingProvider([FESTIVAL_ROW])
+    caller = SearchingCaller(["histoire du Ngondo Douala"])
+    orch = AgentOrchestrator(web_search=WebSearchService(provider), web_tool_caller=caller)
+    result = await orch.run("Parle-moi de la tradition du Ngondo", locale="fr")
+    assert caller.calls == 0
+    assert result.web_research["decision"] == "web_first"
+    assert provider.queries
 
 
 @pytest.mark.asyncio
@@ -311,7 +325,7 @@ def test_web_chunks_are_delimited_for_the_llm():
     assert ctx["knowledge"][0]["content"].startswith("<web_result")
 
 
-def test_food_places_are_scoped_to_requested_city():
+def test_food_answers_never_carry_tourist_places():
     from app.services.agents.knowledge.models import PlaceEvidence
     from app.services.agents.orchestrator.orchestrator import _scope_places
 
@@ -324,7 +338,8 @@ def test_food_places_are_scoped_to_requested_city():
             PlaceEvidence(place_id="b", name="Down Beach", city="Limbe", region="Sud-Ouest"),
         ],
     )
-    assert [p.name for p in _scope_places(knowledge, intent).places] == ["Down Beach"]
+    # The catalog has no restaurants: restaurant leads come from the web only.
+    assert _scope_places(knowledge, intent).places == []
 
 
 def test_deterministic_hotel_answer_shows_unverified_web_leads():
