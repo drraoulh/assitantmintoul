@@ -309,3 +309,19 @@ def test_web_chunks_are_delimited_for_the_llm():
     )
     ctx = build_structured_context("q", intent, knowledge, None)
     assert ctx["knowledge"][0]["content"].startswith("<web_result")
+
+
+def test_food_places_are_scoped_to_requested_city():
+    from app.services.agents.knowledge.models import PlaceEvidence
+    from app.services.agents.orchestrator.orchestrator import _scope_places
+
+    intent = classify_intent("What are the best restaurants in Limbe?", locale="en")
+    knowledge = KnowledgeResult(
+        query="q",
+        intent=intent.intent,
+        places=[
+            PlaceEvidence(place_id="a", name="Mvog-Mbi", city="Yaoundé", region="Centre"),
+            PlaceEvidence(place_id="b", name="Down Beach", city="Limbe", region="Sud-Ouest"),
+        ],
+    )
+    assert [p.name for p in _scope_places(knowledge, intent).places] == ["Down Beach"]

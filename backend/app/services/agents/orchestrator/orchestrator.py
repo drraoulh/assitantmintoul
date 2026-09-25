@@ -10,6 +10,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
+import unicodedata
 import uuid
 from collections.abc import Awaitable, Callable
 from typing import Any, Literal
@@ -52,6 +53,28 @@ LlmComplete = Callable[[list[dict[str, str]]], Awaitable[str]]
 # (messages, tools) -> OpenAI-style assistant message (may contain tool_calls)
 WebToolCaller = Callable[[list[dict[str, Any]], list[dict[str, Any]]], Awaitable[dict[str, Any] | None]]
 Mode = Literal["text", "voice"]
+
+
+def _fold(text: str | None) -> str:
+    decomposed = unicodedata.normalize("NFKD", (text or "").casefold())
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch)).strip()
+
+
+def _scope_places(knowledge: KnowledgeResult, intent: IntentResult) -> KnowledgeResult:
+    """Food/hotel answers must not show places from another city or region."""
+    if intent.intent not in {"FOOD", "HOTEL"} or not (intent.city or intent.region):
+        return knowledge
+    city, region = _fold(intent.city), _fold(intent.region)
+    kept = [
+        p
+        for p in knowledge.places
+        if (city and _fold(p.city) == city) or (region and _fold(p.region) == region)
+    ]
+    if len(kept) == len(knowledge.places):
+        return knowledge
+    scoped = knowledge.model_copy(deep=True)
+    scoped.places = [p for p in scoped.places if p.place_id in {k.place_id for k in kept}]
+    return scoped
 
 
 class AgentOrchestrator:
@@ -155,7 +178,7 @@ class AgentOrchestrator:
         if self._should_retrieve_knowledge(intent):
             logger.info("knowledge_started request_id=%s", rid)
             t_know = time.perf_counter()
-            knowledge = await self._run_knowledge(user_query, intent, rid)
+            knowledge = _scope_places(await self._run_knowledge(user_query, intent, rid), intent)
             timings.knowledge_ms = round((time.perf_counter() - t_know) * 1000.0, 3)
             agents_called.append("knowledge")
         else:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -81,6 +81,8 @@ class ChatResponse(BaseModel):
     ui_sources: list[SourceUI] = Field(default_factory=list)
     actions: list[ActionUI] = Field(default_factory=list)
     structured_build_ms: float | None = None
+    # Web phase summary: decision, provider, queries, evidence_count, research_ms.
+    web_research: dict[str, Any] | None = None
 
     @model_validator(mode="after")
     def _mirror_text(self) -> ChatResponse:
