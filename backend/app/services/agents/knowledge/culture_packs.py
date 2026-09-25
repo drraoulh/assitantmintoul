@@ -63,6 +63,9 @@ _PACK_TRIGGERS: dict[str, tuple[str, ...]] = {
         "region du centre",
         "région du centre",
         "centre du cameroun",
+        "du centre",
+        "au centre",
+        "le centre",
         "yaounde",
         "yaoundé",
         "mbalmayo",
@@ -269,6 +272,20 @@ def _trigger_hits(q: str, region_id: str, tokens: tuple[str, ...]) -> bool:
             continue
         if region_id == "nord" and tok in {"nord", "north"} and compound_nord:
             continue
+        # Avoid "centre touristique / faunique / ville" false positives
+        if region_id == "centre" and tok in {"du centre", "au centre", "le centre"}:
+            if any(
+                bad in q
+                for bad in (
+                    "centre ville",
+                    "centre-ville",
+                    "centre faunique",
+                    "centre touristique",
+                    "centre commercial",
+                    "centre culturel",
+                )
+            ):
+                continue
         return True
     return False
 
