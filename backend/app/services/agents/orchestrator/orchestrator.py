@@ -17,7 +17,11 @@ from app.core.config import get_settings
 from app.services.agents.intent import classify_intent
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.agent import KnowledgeAgent
-from app.services.agents.knowledge.models import KnowledgeEvidence, KnowledgeResult
+from app.services.agents.knowledge.models import (
+    KnowledgeEvidence,
+    KnowledgeResult,
+    SourceEvidence,
+)
 from app.services.agents.orchestrator.models import (
     OrchestrationContext,
     OrchestrationResult,
@@ -27,8 +31,9 @@ from app.services.agents.planner import TourismPlanner, build_tourism_plan
 from app.services.agents.planner.models import TourismPlan
 from app.services.agents.response.agent import ResponseGenerator
 from app.services.agents.response.models import FinalResponse
+from app.services.agents.web_research import WebResearchAgent, WebResearchResult
 from app.services.rag.base import RAGService
-from app.services.search.base import WebSearchHit, WebSearchService
+from app.services.search.base import WebSearchService
 from app.services.vision.base import VisionService
 
 logger = logging.getLogger(__name__)
@@ -143,20 +148,12 @@ class AgentOrchestrator:
                 )
 
         if intent.needs_web and self._web is not None:
-            logger.info("web_started request_id=%s", rid)
-            t_web = time.perf_counter()
-            try:
-                hits = await self._web.search(user_query, max_results=self._web_max)
-            except Exception:  # noqa: BLE001
-                logger.exception("web_search_failed request_id=%s", rid)
-                hits = []
-            timings.web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
-            web_hit_count = len(hits)
-            if hits:
-                knowledge = self._merge_web_evidence(
-                    knowledge, hits, user_query, intent, rid
-                )
-            agents_called.append("web")
+            intent.web_reason = intent.web_reason or "EXPLICIT_OR_ROUTING"
+            knowledge, web_hit_count, web_ms = await self._run_web_research(
+                user_query, intent, knowledge, rid
+            )
+            timings.web_ms = web_ms
+            agents_called.append("web_research")
         elif (
             knowledge is not None
             and knowledge.web_needed
@@ -164,21 +161,14 @@ class AgentOrchestrator:
             and get_settings().web_knowledge_fallback_enabled
             and not intent.needs_web
         ):
-            # Phase 2.8 — conditional KB-thin fallback (still not an Agent 5)
-            logger.info("web_fallback_started request_id=%s", rid)
-            t_web = time.perf_counter()
-            try:
-                hits = await self._web.search(user_query, max_results=self._web_max)
-            except Exception:  # noqa: BLE001
-                logger.exception("web_fallback_failed request_id=%s", rid)
-                hits = []
-            timings.web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
-            web_hit_count = len(hits)
-            if hits:
-                knowledge = self._merge_web_evidence(
-                    knowledge, hits, user_query, intent, rid
-                )
-            agents_called.append("web")
+            # KB-thin fallback — Web Research Agent (once)
+            intent.needs_web = True
+            intent.web_reason = "KB_INSUFFICIENT"
+            knowledge, web_hit_count, web_ms = await self._run_web_research(
+                user_query, intent, knowledge, rid
+            )
+            timings.web_ms = web_ms
+            agents_called.append("web_research")
 
         if intent.needs_planner and self._knowledge_usable_for_planner(knowledge):
             logger.info("planner_started request_id=%s", rid)
@@ -373,21 +363,136 @@ class AgentOrchestrator:
             source="empty",
         )
 
+    async def _run_web_research(
+        self,
+        user_query: str,
+        intent: IntentResult,
+        knowledge: KnowledgeResult | None,
+        request_id: str,
+    ) -> tuple[KnowledgeResult, int, float]:
+        """Call Web Research Agent at most once; merge validated evidence into KB."""
+        logger.info(
+            "web_research_started request_id=%s reason=%s",
+            request_id,
+            intent.web_reason,
+        )
+        t_web = time.perf_counter()
+        settings = get_settings()
+        agent = WebResearchAgent(
+            self._web,
+            timeout_seconds=float(settings.web_research_timeout_seconds),
+            max_results=max(self._web_max, 5),
+            cache_ttl_seconds=float(settings.web_research_cache_ttl_seconds),
+        )
+        try:
+            result = await agent.research(
+                user_query,
+                intent,
+                knowledge=knowledge,
+                request_id=request_id,
+            )
+        except Exception:  # noqa: BLE001
+            logger.exception("web_research_failed request_id=%s", request_id)
+            result = WebResearchResult(
+                query=user_query,
+                answerable=False,
+                warnings=["web_research_error"],
+                request_id=request_id,
+            )
+        web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
+        base = knowledge or self._empty_knowledge(user_query, intent, request_id)
+        merged = self._merge_web_research(base, result, user_query, intent, request_id)
+        logger.info(
+            "web_research_completed request_id=%s answerable=%s evidence=%s ms=%s",
+            request_id,
+            result.answerable,
+            len(result.evidence),
+            web_ms,
+        )
+        return merged, len(result.evidence), web_ms
+
     @staticmethod
-    def _merge_web_evidence(
+    def _merge_web_research(
         knowledge: KnowledgeResult,
-        hits: list[WebSearchHit],
+        research: WebResearchResult,
         query: str,
         intent: IntentResult,
         request_id: str,
     ) -> KnowledgeResult:
-        """Attach web hits as evidence only — never treat as verified truth."""
+        """Attach validated web evidence + sources. Never invent beyond snippets."""
+        updated = knowledge.model_copy(deep=True)
+        existing_urls = {
+            (s.url or "").rstrip("/") for s in updated.sources if s.url
+        }
+        for i, ev in enumerate(research.evidence):
+            snippet = (ev.snippet or "").strip()
+            if not snippet:
+                continue
+            prefix = (
+                "[web evidence — institutional]"
+                if ev.tier <= 2
+                else "[web evidence — unverified]"
+            )
+            content = f"{prefix} {snippet}"
+            if research.key_facts and i == 0:
+                facts = " | ".join(research.key_facts[:4])
+                content = f"{content}\nKey facts: {facts}"
+            updated.knowledge.append(
+                KnowledgeEvidence(
+                    chunk_id=f"web:{request_id}:{i}",
+                    content=content[:900],
+                    source_id=ev.url or f"web:{ev.domain or i}",
+                    title=(ev.title or ev.domain or "Web")[:120],
+                    score=min(0.85, max(0.3, ev.relevance_score)),
+                )
+            )
+            url = (ev.url or "").strip()
+            if url and url.rstrip("/") not in existing_urls:
+                existing_urls.add(url.rstrip("/"))
+                updated.sources.append(
+                    SourceEvidence(
+                        source_id=url,
+                        name=ev.title or ev.domain or "Web",
+                        url=url,
+                        source_type=f"web_tier_{ev.tier}",
+                    )
+                )
+        if research.timed_out:
+            updated.missing_information = list(
+                dict.fromkeys([*updated.missing_information, "web_timeout"])
+            )
+        if research.answerable and updated.source == "empty":
+            updated.source = "documents"
+        if research.answerable:
+            updated.confidence = max(updated.confidence, research.confidence)
+            # Clear soft web_needed once research ran
+            updated.web_needed = False
+            if "knowledge_chunks" in updated.missing_information and research.key_facts:
+                updated.missing_information = [
+                    m for m in updated.missing_information if m != "knowledge_chunks"
+                ]
+        updated.query = query or updated.query
+        updated.intent = intent.intent
+        return updated
+
+    @staticmethod
+    def _merge_web_evidence(
+        knowledge: KnowledgeResult,
+        hits: list,
+        query: str,
+        intent: IntentResult,
+        request_id: str,
+    ) -> KnowledgeResult:
+        """Legacy adapter kept for tests — prefer _merge_web_research."""
+        from app.services.search.base import WebSearchHit
+
         updated = knowledge.model_copy(deep=True)
         for i, hit in enumerate(hits):
+            if not isinstance(hit, WebSearchHit):
+                continue
             snippet = (hit.snippet or hit.title or "").strip()
             if not snippet:
                 continue
-            # Prefix marks unverified web evidence for Agent 4 grounding prompts.
             content = f"[web evidence — unverified] {snippet}"
             updated.knowledge.append(
                 KnowledgeEvidence(

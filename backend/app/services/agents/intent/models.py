@@ -67,6 +67,7 @@ class IntentResult(BaseModel):
     needs_web: bool = False
     needs_booking: bool = False
     needs_vision: bool = False
+    web_reason: str | None = None
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     reason: str = ""
     request_id: str | None = None
@@ -106,6 +107,7 @@ class IntentResult(BaseModel):
             "needs_places": self.needs_places,
             "needs_planner": self.needs_planner,
             "needs_web": self.needs_web,
+            "web_reason": self.web_reason,
             "needs_booking": self.needs_booking,
             "needs_vision": self.needs_vision,
             "source": self.source,

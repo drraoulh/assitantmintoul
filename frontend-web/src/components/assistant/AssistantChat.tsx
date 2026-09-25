@@ -21,10 +21,12 @@ interface Msg {
 }
 
 const SUGGESTIONS = [
-  'Je suis à Bafoussam et je veux visiter un site touristique.',
-  'Propose un itinéraire de 3 jours à Limbé.',
-  'Quels parcs naturels vérifiés recommandez-vous ?',
-  'Propose un hôtel vérifié à Douala.',
+  { label: '📍 Lieux près de moi', q: 'Je suis à Bafoussam et je veux visiter un site touristique.' },
+  { label: '🗺️ Planifier un voyage', q: 'Propose un itinéraire de 3 jours à Limbé.' },
+  { label: '🏛️ Découvrir la culture', q: 'Parle-moi de la culture et des chefferies au Cameroun.' },
+  { label: '🌿 Explorer la nature', q: 'Quels parcs naturels vérifiés recommandez-vous ?' },
+  { label: '🍲 Découvrir la gastronomie', q: "C'est quoi la nourriture traditionnelle au Sud-Ouest ?" },
+  { label: '🏨 Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
 ] as const;
 
 type VoicePhase = 'listening' | 'thinking' | 'speaking' | null;
@@ -278,24 +280,24 @@ export function AssistantChat({
           : null;
 
   return (
-    <div className="flex min-h-[calc(100svh-8rem)] flex-col bg-[var(--ivory)] lg:min-h-[78vh] lg:rounded-3xl lg:border lg:border-[var(--line)] lg:bg-white lg:shadow-[var(--shadow-soft)]">
-      <header className="border-b border-[var(--line)] px-5 py-5">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[var(--ivory)]">
+      <header className="shrink-0 border-b border-[var(--line)] bg-white/90 px-4 py-3 backdrop-blur-md md:px-6">
         <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--green-deep)] text-white">
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--green-deep)] text-white">
             <Sparkles className="h-4 w-4" aria-hidden />
           </span>
-          <div>
-            <h1 className="font-display text-xl font-bold text-[var(--green-deep)] md:text-2xl">
+          <div className="min-w-0">
+            <h1 className="font-display text-lg font-bold text-[var(--green-deep)] md:text-xl">
               {t('assistant.title')}
             </h1>
-            <p className="text-sm text-[var(--muted)]">
+            <p className="truncate text-xs text-[var(--muted)] md:text-sm">
               Votre guide intelligent pour découvrir le Cameroun.
             </p>
           </div>
         </div>
         {voiceLabel ? (
           <p
-            className="mt-3 inline-flex items-center gap-2 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-sm font-medium text-[var(--green)]"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-sm font-medium text-[var(--green)]"
             aria-live="polite"
           >
             <span className="relative flex h-2 w-2">
@@ -307,22 +309,24 @@ export function AssistantChat({
         ) : null}
       </header>
 
-      <div className="flex-1 space-y-6 overflow-y-auto px-4 py-6 md:px-6">
+      <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
         {messages.length === 0 && !sending ? (
-          <div className="mx-auto max-w-lg py-8 text-center">
+          <div className="mx-auto max-w-lg py-6 text-center">
             <p className="font-display text-2xl font-semibold text-[var(--green-deep)]">
-              Bonjour
+              Bonjour 👋
             </p>
-            <p className="mt-2 text-sm text-[var(--muted)]">{t('home.assistantHint')}</p>
-            <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Je suis SmartMboa, votre guide intelligent pour découvrir le Cameroun.
+            </p>
+            <div className="mt-6 flex gap-2 overflow-x-auto pb-2 no-scrollbar md:flex-wrap md:justify-center md:overflow-visible">
               {SUGGESTIONS.map((s) => (
                 <button
-                  key={s}
+                  key={s.label}
                   type="button"
-                  onClick={() => void ask(s)}
-                  className="rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-left text-xs text-[var(--ink)] transition hover:border-[var(--gold)] hover:bg-[var(--mint-soft)]"
+                  onClick={() => void ask(s.q)}
+                  className="shrink-0 rounded-full border border-[var(--line)] bg-white px-3.5 py-2 text-left text-xs text-[var(--ink)] transition hover:border-[var(--gold)] hover:bg-[var(--mint-soft)]"
                 >
-                  {s}
+                  {s.label}
                 </button>
               ))}
             </div>
@@ -335,7 +339,7 @@ export function AssistantChat({
             className={
               msg.role === 'user'
                 ? 'ml-auto max-w-[90%] md:max-w-[75%]'
-                : 'mr-auto max-w-[98%] md:max-w-[92%]'
+                : 'mr-auto w-full max-w-[98%] md:max-w-[92%]'
             }
           >
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
@@ -343,7 +347,7 @@ export function AssistantChat({
               {msg.streaming ? ' · …' : ''}
             </p>
             {msg.role === 'assistant' && !msg.isError ? (
-              <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)] lg:bg-transparent lg:px-0 lg:py-1 lg:shadow-none lg:ring-0">
+              <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)]">
                 <ResponseRenderer text={msg.content} ui={msg.ui} />
               </div>
             ) : msg.isError ? (
@@ -362,53 +366,55 @@ export function AssistantChat({
 
       <form
         onSubmit={onSubmit}
-        className="sticky bottom-0 z-10 flex items-center gap-2 border-t border-[var(--line)] bg-[var(--ivory)]/95 p-3 backdrop-blur-md lg:static lg:bg-white lg:p-4"
+        className="shrink-0 border-t border-[var(--line)] bg-white/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md md:p-4"
       >
-        <button
-          type="button"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
-          aria-label="Ouvrir la vision"
-          onClick={() => fileRef.current?.click()}
-        >
-          <Camera className="h-5 w-5" />
-        </button>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            if (e.target.files?.[0]) window.location.href = '/vision';
-          }}
-        />
-        <Input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Demandez-moi quelque chose…"
-          className="min-w-0 flex-1"
-          aria-label="Message"
-          disabled={sending || !!voicePhase}
-        />
-        <button
-          type="button"
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
-            voicePhase
-              ? 'bg-[var(--gold)] text-[var(--green-deep)]'
-              : 'bg-[var(--mint-soft)] text-[var(--green-deep)]'
-          }`}
-          aria-label="Micro — parler à SmartMboa"
-          disabled={sending || !!voicePhase}
-          onClick={() => void startVoice()}
-        >
-          <Mic className="h-5 w-5" />
-        </button>
-        <Button
-          type="submit"
-          disabled={sending || !input.trim() || !!voicePhase}
-          aria-label="Envoyer"
-        >
-          <SendHorizontal className="h-4 w-4" />
-        </Button>
+        <div className="mx-auto flex max-w-4xl items-center gap-2">
+          <button
+            type="button"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
+            aria-label="Ouvrir la vision"
+            onClick={() => fileRef.current?.click()}
+          >
+            <Camera className="h-5 w-5" />
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) window.location.href = '/vision';
+            }}
+          />
+          <Input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Posez votre question…"
+            className="min-w-0 flex-1"
+            aria-label="Message"
+            disabled={sending || !!voicePhase}
+          />
+          <button
+            type="button"
+            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
+              voicePhase
+                ? 'bg-[var(--gold)] text-[var(--green-deep)]'
+                : 'bg-[var(--mint-soft)] text-[var(--green-deep)]'
+            }`}
+            aria-label="Micro — parler à SmartMboa"
+            disabled={sending || !!voicePhase}
+            onClick={() => void startVoice()}
+          >
+            <Mic className="h-5 w-5" />
+          </button>
+          <Button
+            type="submit"
+            disabled={sending || !input.trim() || !!voicePhase}
+            aria-label="Envoyer"
+          >
+            <SendHorizontal className="h-4 w-4" />
+          </Button>
+        </div>
       </form>
     </div>
   );

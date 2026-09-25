@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 
-import { MobileBottomNav } from '@/components/layout/MobileBottomNav';
-import { SiteFooter, SiteHeader } from '@/components/layout/SiteHeader';
+import { AppShell } from '@/components/layout/AppShell';
 import { LocaleProvider } from '@/lib/i18n';
 import { APP_NAME, APP_TAGLINE_FR } from '@/lib/config';
 
@@ -41,12 +40,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${body.variable} antialiased`}>
         <LocaleProvider>
-          <div className="flex min-h-[100svh] flex-col">
-            <SiteHeader />
-            <main className="flex-1 pb-bottom-nav">{children}</main>
-            <SiteFooter />
-            <MobileBottomNav />
-          </div>
+          <AppShell>{children}</AppShell>
         </LocaleProvider>
       </body>
     </html>

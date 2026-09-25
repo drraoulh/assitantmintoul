@@ -97,7 +97,7 @@ _CULTURE = re.compile(
 
 _FOOD = re.compile(
     r"\b("
-    r"plats?|gastronomie|cuisine|ndol[eé]|eru|achu|kondre|"
+    r"nourriture|plats?|gastronomie|cuisine|ndol[eé]|eru|achu|kondre|"
     r"manger|food|dish(?:es)?|spécialit[eé]s?|specialit(?:y|ies)|"
     r"ou\s+manger|où\s+manger|where\s+to\s+eat"
     r")\b",

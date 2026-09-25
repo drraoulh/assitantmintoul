@@ -112,6 +112,7 @@ class IntentRouter:
             needs_places=caps.needs_places,
             needs_planner=caps.needs_planner,
             needs_web=caps.needs_web,
+            web_reason=("EXPLICIT_SEARCH" if intent == "WEB_SEARCH" else None),
             needs_booking=caps.needs_booking,
             needs_vision=caps.needs_vision,
             confidence=confidence if intent != "CLARIFICATION" else min(confidence, 0.59),

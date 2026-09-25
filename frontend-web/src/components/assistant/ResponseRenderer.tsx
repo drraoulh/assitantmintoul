@@ -62,8 +62,22 @@ export function ResponseRenderer({
       kind === 'ITINERARY' ||
       kind === 'BUDGET_TRIP');
 
+  const webSources =
+    ui?.ui_sources?.filter(
+      (s) =>
+        s.type === 'WEB' ||
+        (s.url || '').startsWith('http'),
+    ) ?? [];
+  const usedWeb = webSources.some((s) => s.type === 'WEB' || !!(s.url && s.url.startsWith('http')));
+
   return (
     <div className="space-y-5">
+      {usedWeb ? (
+        <p className="inline-flex items-center gap-1.5 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-xs font-medium text-[var(--green-deep)]">
+          🌐 Recherche Web — informations issues de sources consultées
+        </p>
+      ) : null}
+
       {text ? (
         <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-[var(--ink)]">
           {text}
@@ -72,8 +86,8 @@ export function ResponseRenderer({
 
       {kind === 'CLARIFICATION' || kind === 'INSUFFICIENT_INFORMATION' ? (
         <p className="rounded-xl bg-[var(--mint-soft)] px-4 py-3 text-sm text-[var(--muted)]">
-          SmartMboa ne dispose pas de davantage d&apos;informations vérifiées pour cette
-          demande. Reformulez ou explorez une autre région.
+          SmartMboa n&apos;a pas trouvé assez d&apos;informations vérifiées pour cette
+          demande. Reformulez ou précisez une région.
         </p>
       ) : null}
 
@@ -90,9 +104,14 @@ export function ResponseRenderer({
           <p className="text-sm font-semibold text-[var(--green-deep)]">
             Lieux vérifiés
           </p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 no-scrollbar">
             {places.map((p) => (
-              <PlaceCard key={p.id} site={p} />
+              <div
+                key={p.id}
+                className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]"
+              >
+                <PlaceCard site={p} />
+              </div>
             ))}
           </div>
         </div>
@@ -112,9 +131,14 @@ export function ResponseRenderer({
           <p className="text-sm font-semibold text-[var(--green-deep)]">
             Hébergements
           </p>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 no-scrollbar">
             {hotels.map((h) => (
-              <HotelBlock key={h.id} hotel={h} />
+              <div
+                key={h.id}
+                className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]"
+              >
+                <HotelBlock hotel={h} />
+              </div>
             ))}
           </div>
         </div>
@@ -537,7 +561,7 @@ function SourcesBlock({
   return (
     <div>
       <p className="mb-2 text-sm font-semibold text-[var(--green-deep)]">
-        Sources utilisées
+        Sources consultées
       </p>
       {withUrl.length ? (
         <ul className="space-y-1 text-sm">

@@ -420,6 +420,8 @@ def _sources_ui(
             raw_type = (src.source_type or "").upper()
             if raw_type in {"WEB", "KB"}:
                 stype = raw_type
+            elif raw_type.startswith("WEB"):
+                stype = "WEB"
             elif src.url and str(src.url).startswith("http"):
                 stype = "WEB"
             else:

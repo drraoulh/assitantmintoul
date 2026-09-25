@@ -141,6 +141,11 @@ def should_request_web(intent: str, missing: list[str], confidence: float) -> bo
         return True
     if intent == "HOTEL" and ("matching_places" in missing or "live_availability" in missing):
         return True
+    # Gastronomy / culture / tourism info with empty KB → web research
+    if intent in {"FOOD", "CULTURE", "TOURISM_INFO"} and (
+        "knowledge_chunks" in missing or confidence < 0.4
+    ):
+        return True
     if confidence < 0.35 and intent not in {"CLARIFICATION", "VISION"}:
         return True
     return False
