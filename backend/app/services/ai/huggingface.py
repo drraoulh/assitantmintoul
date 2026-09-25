@@ -689,6 +689,9 @@ class HuggingFaceAIService(AIService):
                 llm_complete=llm_complete,
                 web_search=self._web,
                 rag=self._rag,
+                web_tool_caller=(
+                    self._make_web_tool_caller() if use_llm and not brief else None
+                ),
             )
             result = await orch.run(
                 message,
@@ -1189,6 +1192,35 @@ class HuggingFaceAIService(AIService):
             "llm_trace": trace.as_dict(),
             "orchestrator": orch_obs,
         }
+
+    def _make_web_tool_caller(self):
+        """Non-streamed Qwen call exposing the ``web_search`` tool (decision only)."""
+
+        async def _call(
+            messages: list[dict[str, Any]], tools: list[dict[str, Any]]
+        ) -> dict[str, Any] | None:
+            body: dict[str, Any] = {
+                "model": self._model,
+                "messages": messages,
+                "tools": tools,
+                "tool_choice": "auto",
+                "temperature": 0.0,
+                "max_tokens": 160,
+                "stream": False,
+                "chat_template_kwargs": {"enable_thinking": False},
+            }
+            response = await self._post("/chat/completions", body)
+            if response.status_code >= 400:
+                raise GenerationFailedError(
+                    f"web tool decision HTTP {response.status_code}"
+                )
+            payload = response.json()
+            choices = payload.get("choices") or []
+            if not choices:
+                return None
+            return choices[0].get("message") or None
+
+        return _call
 
     def _make_agent4_llm_complete(
         self,

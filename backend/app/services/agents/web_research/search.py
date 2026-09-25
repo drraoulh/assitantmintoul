@@ -55,45 +55,9 @@ def build_search_queries(
     user_query: str,
     intent: IntentResult,
     *,
-    missing: list[str] | None = None,
+    missing: list[str] | None = None,  # noqa: ARG001 — kept for callers
 ) -> list[str]:
-    """Return 1–4 focused queries. Prefer institutional site operators when useful."""
-    q = _ensure_cameroon_scope((user_query or "").strip())
-    location = intent.location or intent.region or intent.city or ""
-    en_loc, fr_loc = _region_variants(location)
-    queries: list[str] = []
+    """Compatibility wrapper — see ``query_builder.build_queries``."""
+    from app.services.agents.web_research.query_builder import build_queries
 
-    if q:
-        queries.append(q)
-
-    intent_name = intent.intent
-
-    if intent_name == "FOOD":
-        queries.append(f"traditional food cuisine {en_loc}")
-        queries.append(f"plats traditionnels gastronomie {fr_loc}")
-        queries.append(f"site:mintoul.gov.cm gastronomie {fr_loc}")
-    elif intent_name in {"CULTURE", "TOURISM_INFO"}:
-        queries.append(f"culture tourisme {fr_loc}")
-        queries.append(f"site:gov.cm tourisme {fr_loc}")
-    elif intent_name == "WEB_SEARCH":
-        queries.append(_ensure_cameroon_scope(user_query))
-        if location:
-            queries.append(f"festivals events {en_loc}")
-            queries.append(f"festivals événements {fr_loc}")
-        else:
-            queries.append(f"{user_query} Cameroun tourisme")
-        queries.append(f"site:mintoul.gov.cm {fr_loc or 'Cameroun'}")
-    else:
-        if location and location.casefold() not in q.casefold():
-            queries.append(f"{q} {fr_loc}")
-
-    if missing and "knowledge_chunks" in missing:
-        queries.append(f"{intent_name.lower()} {en_loc} tourism")
-
-    # Deduplicate preserving order
-    out: list[str] = []
-    for item in queries:
-        cleaned = " ".join(item.split())
-        if cleaned and cleaned not in out:
-            out.append(cleaned)
-    return out[:4]
+    return build_queries(user_query, intent)

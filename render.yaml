@@ -87,7 +87,24 @@ services:
       - key: WEB_KNOWLEDGE_FALLBACK_ENABLED
         value: "true"
       - key: WEB_RESEARCH_TIMEOUT_SECONDS
-        value: "9"
+        value: "15"
+      - key: WEB_SEARCH_QUERY_TIMEOUT_SECONDS
+        value: "10"
+      - key: VOICE_WEB_RESEARCH_TIMEOUT_SECONDS
+        value: "3"
+      # auto = serper → tavily → brave (first key found), keyless fallback always on
+      - key: WEB_SEARCH_PROVIDER
+        value: "auto"
+      - key: SERPER_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: WEB_TOOL_CALLING_ENABLED
+        value: "true"
+      - key: WEB_CACHE_TTL_CURRENT_SECONDS
+        value: "3600"
+      - key: WEB_CACHE_TTL_STABLE_SECONDS
+        value: "86400"
       - key: WEB_RESEARCH_CACHE_TTL_SECONDS
         value: "1800"
       # Explicit browser origins (Expo static + Next.js + local). No secrets.

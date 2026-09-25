@@ -50,6 +50,28 @@ def _chunk_priority(chunk: Any) -> int:
     return 3
 
 
+_WEB_PREFIXES = (
+    ("[web evidence — institutional]", "high"),
+    ("[web evidence — unverified]", "medium"),
+    ("[web evidence — community]", "low"),
+    ("[web evidence — low confidence]", "low"),
+)
+
+
+def wrap_web_content(content: str, source: str | None) -> str:
+    """Delimit external web text so the LLM treats it as untrusted data."""
+    text = (content or "").strip()
+    confidence = "medium"
+    for prefix, level in _WEB_PREFIXES:
+        if text.startswith(prefix):
+            text = text[len(prefix):].strip()
+            confidence = level
+            break
+    text = text.replace("<web_result", "&lt;web_result").replace("</web_result", "&lt;/web_result")
+    src = (source or "").replace('"', "")[:160]
+    return f'<web_result source="{src}" confidence="{confidence}">{text}</web_result>'
+
+
 def prioritized_knowledge(knowledge: KnowledgeResult) -> list[Any]:
     """Region packs and web evidence first — they are the most specific proofs."""
     return sorted(knowledge.knowledge, key=_chunk_priority)
@@ -123,11 +145,14 @@ def build_structured_context(
 
     knowledge_items = []
     for chunk in prioritized_knowledge(knowledge)[:_KNOWLEDGE_MAX]:
+        content = _clip(chunk.content, _CONTENT_MAX)
+        if "[web evidence" in (chunk.content or "")[:40]:
+            content = wrap_web_content(content or "", chunk.source_id)
         knowledge_items.append(
             {
                 "chunk_id": chunk.chunk_id,
                 "title": chunk.title,
-                "content": _clip(chunk.content, _CONTENT_MAX),
+                "content": content,
                 "source_id": chunk.source_id,
             }
         )

@@ -15,6 +15,10 @@ class WebEvidence(BaseModel):
     source_type: str = "web"
     verified: bool = False
     tier: int = Field(default=4, ge=1, le=4)
+    published_at: str | None = None
+    rank_score: float = Field(default=0.0, ge=0.0, le=1.0)
+    low_confidence: bool = False
+    provider: str = ""
 
 
 class WebResearchResult(BaseModel):
@@ -29,6 +33,8 @@ class WebResearchResult(BaseModel):
     cache_hit: bool = False
     request_id: str | None = None
     research_ms: float | None = None
+    provider: str = ""
+    decision: str = ""
 
     def observability(self) -> dict[str, object]:
         return {
@@ -40,5 +46,8 @@ class WebResearchResult(BaseModel):
             "timed_out": self.timed_out,
             "cache_hit": self.cache_hit,
             "research_ms": self.research_ms,
+            "provider": self.provider,
+            "decision": self.decision,
+            "search_queries": list(self.search_queries)[:3],
             "warnings": list(self.warnings)[:5],
         }

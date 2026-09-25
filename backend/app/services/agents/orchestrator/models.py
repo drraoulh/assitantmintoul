@@ -36,6 +36,7 @@ class OrchestrationContext(BaseModel):
     mode: str = "text"
     vision_summary: str | None = None
     web_hit_count: int = 0
+    web_research: dict[str, Any] | None = None
 
 
 class OrchestrationResult(BaseModel):
@@ -51,6 +52,7 @@ class OrchestrationResult(BaseModel):
     mode: str = "text"
     vision_summary: str | None = None
     web_hit_count: int = 0
+    web_research: dict[str, Any] | None = None
     fallback_used: bool = False
 
     def observability(self) -> dict[str, Any]:
@@ -71,6 +73,7 @@ class OrchestrationResult(BaseModel):
             "vision_ms": self.timings.vision_ms,
             "web_ms": self.timings.web_ms,
             "web_hit_count": self.web_hit_count,
+            "web_research": self.web_research,
             "fallback_used": self.fallback_used,
             "knowledge_source": self.knowledge.source if self.knowledge else None,
             "plan_feasibility": self.plan.feasibility if self.plan else None,

@@ -344,7 +344,11 @@ def _web_facts(knowledge: KnowledgeResult, *, limit: int) -> list[str]:
     for chunk in knowledge.knowledge:
         content = chunk.content or ""
         lowered = content.casefold()
-        if "[web evidence" not in lowered or "[web evidence — community]" in lowered:
+        if (
+            "[web evidence" not in lowered
+            or "[web evidence — community]" in lowered
+            or "[web evidence — low confidence]" in lowered
+        ):
             continue
         text = content.split("\n", 1)[0]
         for prefix in ("[web evidence — institutional]", "[web evidence — unverified]"):
@@ -365,10 +369,8 @@ _EVENT_QUERY = re.compile(
     re.IGNORECASE,
 )
 _EVENT_FACT = re.compile(
-    r"\b(?:festivals?|f[êe]tes?|foires?|concerts?|c[ée]l[ée]brations?|ngondo|nguon|lela|salon|[ée]dition|"
-    r"janvier|f[ée]vrier|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|"
-    r"novembre|d[ée]cembre|january|february|march|april|june|july|august|"
-    r"september|october|november|december|20\d\d)\b",
+    r"\b(?:festivals?|f[êe]tes?|foires?|concerts?|c[ée]l[ée]brations?|ngondo|nguon|"
+    r"lela|salons?|[ée]ditions?|carnavals?|events?|[ée]v[ée]nements?|fair|fest)\b",
     re.IGNORECASE,
 )
 
@@ -633,6 +635,7 @@ def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> 
             "[web evidence — unverified]",
             "[web evidence — unverified] ",
             "[web evidence — community]",
+            "[web evidence — low confidence]",
             "Key facts:",
         ):
             text = text.replace(prefix, "")

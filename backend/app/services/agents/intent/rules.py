@@ -99,7 +99,8 @@ _FOOD = re.compile(
     r"\b("
     r"nourriture|plats?|gastronomie|cuisine|ndol[eé]|eru|achu|kondre|"
     r"manger|food|dish(?:es)?|spécialit[eé]s?|specialit(?:y|ies)|"
-    r"ou\s+manger|où\s+manger|where\s+to\s+eat"
+    r"ou\s+manger|où\s+manger|where\s+to\s+eat|restaurants?|restos?|maquis|"
+    r"brasseries?|eateries|dining"
     r")\b",
     re.IGNORECASE,
 )

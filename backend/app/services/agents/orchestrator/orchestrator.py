@@ -7,6 +7,7 @@ Does not replace Agents 1–4 or introduce a second RAG / router.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import time
 import uuid
@@ -32,6 +33,15 @@ from app.services.agents.planner.models import TourismPlan
 from app.services.agents.response.agent import ResponseGenerator
 from app.services.agents.response.models import FinalResponse
 from app.services.agents.web_research import WebResearchAgent, WebResearchResult
+from app.services.agents.web_research.policy import (
+    FORCED_REASONS,
+    WEB_SEARCH_TOOL,
+    WebToolDecision,
+    build_decision_messages,
+    kb_summary,
+    parse_tool_decision,
+    web_forbidden,
+)
 from app.services.rag.base import RAGService
 from app.services.search.base import WebSearchService
 from app.services.vision.base import VisionService
@@ -39,6 +49,8 @@ from app.services.vision.base import VisionService
 logger = logging.getLogger(__name__)
 
 LlmComplete = Callable[[list[dict[str, str]]], Awaitable[str]]
+# (messages, tools) -> OpenAI-style assistant message (may contain tool_calls)
+WebToolCaller = Callable[[list[dict[str, Any]], list[dict[str, Any]]], Awaitable[dict[str, Any] | None]]
 Mode = Literal["text", "voice"]
 
 
@@ -58,6 +70,7 @@ class AgentOrchestrator:
         prefer_deterministic: bool = True,
         llm_complete: LlmComplete | None = None,
         web_search_max_results: int = 3,
+        web_tool_caller: WebToolCaller | None = None,
     ) -> None:
         self._knowledge = knowledge_agent
         self._planner = tourism_planner or TourismPlanner()
@@ -72,6 +85,8 @@ class AgentOrchestrator:
         self._prefer_deterministic = prefer_deterministic
         self._llm_complete = llm_complete
         self._web_max = web_search_max_results
+        self._web_tool_caller = web_tool_caller
+        self.last_web_research: WebResearchResult | None = None
 
     async def prepare(
         self,
@@ -121,6 +136,7 @@ class AgentOrchestrator:
         knowledge: KnowledgeResult | None = None
         plan: TourismPlan | None = None
         web_hit_count = 0
+        web_obs: dict[str, Any] | None = None
 
         if intent.needs_vision and image_context and self._vision is not None:
             logger.info("vision_started request_id=%s", rid)
@@ -149,28 +165,24 @@ class AgentOrchestrator:
                     dict.fromkeys([*knowledge.missing_information, "live_availability"])
                 )
 
-        if intent.needs_web and self._web is not None:
-            intent.web_reason = intent.web_reason or "EXPLICIT_OR_ROUTING"
+        web_decision = await self._decide_web(
+            user_query, intent, knowledge, response_mode=response_mode, request_id=rid
+        )
+        if web_decision is not None:
+            label, llm_queries = web_decision
             knowledge, web_hit_count, web_ms = await self._run_web_research(
-                user_query, intent, knowledge, rid
+                user_query,
+                intent,
+                knowledge,
+                rid,
+                llm_queries=llm_queries,
+                decision=label,
+                response_mode=response_mode,
             )
             timings.web_ms = web_ms
             agents_called.append("web_research")
-        elif (
-            knowledge is not None
-            and knowledge.web_needed
-            and self._web is not None
-            and get_settings().web_knowledge_fallback_enabled
-            and not intent.needs_web
-        ):
-            # KB-thin fallback — Web Research Agent (once)
-            intent.needs_web = True
-            intent.web_reason = "KB_INSUFFICIENT"
-            knowledge, web_hit_count, web_ms = await self._run_web_research(
-                user_query, intent, knowledge, rid
-            )
-            timings.web_ms = web_ms
-            agents_called.append("web_research")
+            if self.last_web_research is not None:
+                web_obs = self.last_web_research.observability()
 
         if intent.needs_planner and self._knowledge_usable_for_planner(knowledge):
             logger.info("planner_started request_id=%s", rid)
@@ -200,6 +212,7 @@ class AgentOrchestrator:
             mode=response_mode,
             vision_summary=vision_summary,
             web_hit_count=web_hit_count,
+            web_research=web_obs,
         )
 
     async def run(
@@ -274,6 +287,7 @@ class AgentOrchestrator:
             mode=ctx.mode,
             vision_summary=ctx.vision_summary,
             web_hit_count=ctx.web_hit_count,
+            web_research=ctx.web_research,
             fallback_used=final.fallback_used,
         )
         logger.info("orchestration_completed %s", result.observability())
@@ -378,12 +392,92 @@ class AgentOrchestrator:
             source="empty",
         )
 
+    async def _decide_web(
+        self,
+        user_query: str,
+        intent: IntentResult,
+        knowledge: KnowledgeResult | None,
+        *,
+        response_mode: str,
+        request_id: str,
+    ) -> tuple[str, list[str] | None] | None:
+        """Return (decision_label, llm_queries) when web research must run.
+
+        Order: forbidden → forced/routed by Agent 1 → Qwen tool call (text,
+        optional intents) → KB-thin fallback.
+        """
+        if self._web is None or web_forbidden(intent.intent, intent.reason):
+            return None
+        if intent.needs_web:
+            intent.web_reason = intent.web_reason or "EXPLICIT_OR_ROUTING"
+            if intent.web_reason in FORCED_REASONS:
+                return (f"forced:{intent.web_reason}", None)
+            return (f"router:{intent.web_reason}", None)
+        settings = get_settings()
+        if (
+            self._web_tool_caller is not None
+            and response_mode == "text"
+            and settings.web_tool_calling_enabled
+        ):
+            decision = await self._ask_web_tool(user_query, knowledge, request_id)
+            if decision is not None and decision.search:
+                intent.needs_web = True
+                intent.web_reason = "LLM_TOOL_CALL"
+                return ("llm_tool_call", decision.queries)
+            if decision is not None and not (knowledge is not None and knowledge.web_needed):
+                return None
+        if (
+            knowledge is not None
+            and knowledge.web_needed
+            and settings.web_knowledge_fallback_enabled
+        ):
+            intent.needs_web = True
+            intent.web_reason = "KB_INSUFFICIENT"
+            return ("kb_insufficient", None)
+        return None
+
+    async def _ask_web_tool(
+        self,
+        user_query: str,
+        knowledge: KnowledgeResult | None,
+        request_id: str,
+    ) -> WebToolDecision | None:
+        assert self._web_tool_caller is not None
+        messages = build_decision_messages(user_query, kb_summary(knowledge))
+        t0 = time.perf_counter()
+        try:
+            message = await asyncio.wait_for(
+                self._web_tool_caller(messages, [WEB_SEARCH_TOOL]),
+                timeout=float(get_settings().web_tool_decision_timeout_seconds),
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "web_tool_decision_failed request_id=%s error=%s",
+                request_id,
+                type(exc).__name__,
+            )
+            return None
+        decision = parse_tool_decision(message)
+        logger.info(
+            "web_tool_decision request_id=%s search=%s queries=%s reason=%s ms=%.0f",
+            request_id,
+            decision.search,
+            decision.queries,
+            decision.reason,
+            (time.perf_counter() - t0) * 1000.0,
+        )
+        return decision
+
     async def _run_web_research(
         self,
         user_query: str,
         intent: IntentResult,
         knowledge: KnowledgeResult | None,
         request_id: str,
+        *,
+        llm_queries: list[str] | None = None,
+        decision: str = "",
+        response_mode: str = "text",
     ) -> tuple[KnowledgeResult, int, float]:
         """Call Web Research Agent at most once; merge validated evidence into KB."""
         logger.info(
@@ -393,11 +487,15 @@ class AgentOrchestrator:
         )
         t_web = time.perf_counter()
         settings = get_settings()
+        global_timeout = float(
+            settings.voice_web_research_timeout_seconds
+            if response_mode == "voice"
+            else settings.web_research_timeout_seconds
+        )
         agent = WebResearchAgent(
             self._web,
-            timeout_seconds=float(settings.web_research_timeout_seconds),
+            timeout_seconds=global_timeout,
             max_results=max(self._web_max, 5),
-            cache_ttl_seconds=float(settings.web_research_cache_ttl_seconds),
         )
         try:
             result = await agent.research(
@@ -409,6 +507,7 @@ class AgentOrchestrator:
                     f"missing={','.join((knowledge.missing_information if knowledge else [])[:4])}"
                 ),
                 request_id=request_id,
+                llm_queries=llm_queries,
             )
         except Exception:  # noqa: BLE001
             logger.exception("web_research_failed request_id=%s", request_id)
@@ -418,12 +517,18 @@ class AgentOrchestrator:
                 warnings=["web_research_error"],
                 request_id=request_id,
             )
+        result.decision = decision
+        self.last_web_research = result
         web_ms = round((time.perf_counter() - t_web) * 1000.0, 3)
         base = knowledge or self._empty_knowledge(user_query, intent, request_id)
         merged = self._merge_web_research(base, result, user_query, intent, request_id)
         logger.info(
-            "web_research_completed request_id=%s answerable=%s evidence=%s ms=%s",
+            "web_research_completed request_id=%s decision=%s provider=%s queries=%s "
+            "answerable=%s evidence=%s ms=%s",
             request_id,
+            decision,
+            result.provider,
+            result.search_queries,
             result.answerable,
             len(result.evidence),
             web_ms,
@@ -447,7 +552,9 @@ class AgentOrchestrator:
             snippet = (ev.snippet or "").strip()
             if not snippet:
                 continue
-            if ev.tier <= 2:
+            if ev.low_confidence:
+                prefix = "[web evidence — low confidence]"
+            elif ev.tier <= 2:
                 prefix = "[web evidence — institutional]"
             elif ev.tier == 3:
                 prefix = "[web evidence — unverified]"
@@ -544,9 +651,11 @@ async def run_orchestration(
     vision: VisionService | None = None,
     llm_complete: LlmComplete | None = None,
     booking_available: bool = False,
+    web_tool_caller: WebToolCaller | None = None,
 ) -> OrchestrationResult:
     """Module-level entry point used by chat/voice wiring and tests."""
     orch = AgentOrchestrator(
+        web_tool_caller=web_tool_caller,
         knowledge_agent=knowledge_agent,
         web_search=web_search,
         vision=vision,

@@ -6,6 +6,7 @@ Voice / low-latency mode stays rules-only so TTFA is not inflated.
 from __future__ import annotations
 
 import logging
+import re
 import time
 import uuid
 from typing import Literal
@@ -14,8 +15,11 @@ from app.services.agents.intent.extractors import extract_slots
 from app.services.agents.intent.matrix import apply_matrix
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.intent.rules import classify_with_rules
+from app.services.agents.web_research.policy import forced_web_reason
 
 logger = logging.getLogger(__name__)
+
+_NATIONAL_SCOPE = re.compile(r"\b(?:au|du|le|in|of)\s+(?:cameroun|cameroon)\b", re.IGNORECASE)
 
 CONFIDENCE_THRESHOLD = 0.60
 # Soft ceiling for voice: stay well under a second; rules path is typically <5ms.
@@ -61,6 +65,12 @@ class IntentRouter:
         current_slots = extract_slots(message, locale=locale)
         if current_slots.city:
             slots.city = current_slots.city
+            slots.region = current_slots.region
+            slots.location = current_slots.location or current_slots.city
+        elif not current_slots.region and _NATIONAL_SCOPE.search(message):
+            slots.city = None
+            slots.region = None
+            slots.location = None
         if current_slots.region:
             slots.region = current_slots.region
             slots.location = current_slots.location or slots.location
@@ -110,12 +120,16 @@ class IntentRouter:
             interests.append("food")
 
         needs_web = caps.needs_web
-        web_reason = "EXPLICIT_SEARCH" if intent == "WEB_SEARCH" else None
+        web_reason: str | None = None
         # Regional gastronomy: KB packs list only a few dishes, so complement with
         # sourced web evidence. Voice skips this to keep TTFA low.
         if intent == "FOOD" and self.mode != "voice" and (slots.region or slots.city):
             needs_web = True
             web_reason = "REGIONAL_GASTRONOMY"
+        forced = forced_web_reason(intent, message)
+        if forced:
+            needs_web = True
+            web_reason = forced
 
         elapsed_ms = (time.perf_counter() - started) * 1000.0
         result = IntentResult(

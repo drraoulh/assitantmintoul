@@ -284,13 +284,50 @@ class Settings(BaseSettings):
         default=True,
         validation_alias=AliasChoices("WEB_KNOWLEDGE_FALLBACK_ENABLED"),
     )
+    # Global budget of the web phase (all queries in parallel); partial results
+    # are used when it expires.
     web_research_timeout_seconds: float = Field(
-        default=9.0,
+        default=15.0,
         validation_alias=AliasChoices("WEB_RESEARCH_TIMEOUT_SECONDS"),
     )
     web_research_cache_ttl_seconds: float = Field(
         default=1800.0,
         validation_alias=AliasChoices("WEB_RESEARCH_CACHE_TTL_SECONDS"),
+    )
+    web_cache_ttl_current_seconds: float = Field(
+        default=3600.0,
+        validation_alias=AliasChoices("WEB_CACHE_TTL_CURRENT_SECONDS"),
+    )
+    web_cache_ttl_stable_seconds: float = Field(
+        default=86400.0,
+        validation_alias=AliasChoices("WEB_CACHE_TTL_STABLE_SECONDS"),
+    )
+    # auto | serper | tavily | brave | keyless
+    web_search_provider: str = Field(
+        default="auto",
+        validation_alias=AliasChoices("WEB_SEARCH_PROVIDER"),
+    )
+    serper_api_key: str = Field(default="", validation_alias=AliasChoices("SERPER_API_KEY"))
+    tavily_api_key: str = Field(default="", validation_alias=AliasChoices("TAVILY_API_KEY"))
+    brave_search_api_key: str = Field(
+        default="", validation_alias=AliasChoices("BRAVE_SEARCH_API_KEY", "BRAVE_API_KEY")
+    )
+    web_search_query_timeout_seconds: float = Field(
+        default=10.0,
+        validation_alias=AliasChoices("WEB_SEARCH_QUERY_TIMEOUT_SECONDS"),
+    )
+    voice_web_research_timeout_seconds: float = Field(
+        default=3.0,
+        validation_alias=AliasChoices("VOICE_WEB_RESEARCH_TIMEOUT_SECONDS"),
+    )
+    # Qwen tool calling for optional web search (text mode only).
+    web_tool_calling_enabled: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("WEB_TOOL_CALLING_ENABLED"),
+    )
+    web_tool_decision_timeout_seconds: float = Field(
+        default=4.0,
+        validation_alias=AliasChoices("WEB_TOOL_DECISION_TIMEOUT_SECONDS"),
     )
 
     @property

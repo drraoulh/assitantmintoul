@@ -10,6 +10,8 @@ class WebSearchHit:
     snippet: str
     url: str = ""
     source: str = "web"
+    published_at: str | None = None
+    source_type: str | None = None
 
     def as_text(self) -> str:
         parts = [self.title.strip()]
