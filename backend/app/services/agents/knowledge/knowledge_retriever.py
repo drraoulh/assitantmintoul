@@ -45,6 +45,8 @@ class KnowledgeRetriever:
             "NATURE",
             "ITINERARY",
             "BUDGET_TRIP",
+            "TRAVEL_ROUTE",
+            "IMAGE_SEARCH",
         }:
             return [], (time.perf_counter() - started) * 1000.0
 

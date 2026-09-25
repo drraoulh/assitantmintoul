@@ -190,6 +190,19 @@ def classify_with_rules(
     if _GREETING.match(raw):
         return RuleHit("CLARIFICATION", 0.95, "greeting")
 
+    # A trip between two places is a route question: a mentioned city is not a
+    # request for local places (« quitter Yaoundé pour Buea » ≠ lieux de Yaoundé).
+    if slots.destination:
+        if slots.duration_days is not None:
+            if slots.budget_xaf is not None:
+                return RuleHit("BUDGET_TRIP", 0.9, "route_budget_trip")
+            return RuleHit("ITINERARY", 0.9, "route_itinerary")
+        return RuleHit("TRAVEL_ROUTE", 0.9, "travel_route")
+
+    # Explicit visual request. A dish (« voir le Eru ») stays gastronomy + images.
+    if slots.wants_images and not slots.dish:
+        return RuleHit("IMAGE_SEARCH", 0.9, "image_request")
+
     # Phase 2.8 — geographic relation Qs before tourism search / itinerary
     from app.services.agents.knowledge.geography import is_geo_simple_query
 

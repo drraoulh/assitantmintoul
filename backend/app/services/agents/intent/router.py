@@ -30,6 +30,16 @@ _OPEN_QUESTION = re.compile(
 )
 _NATIONAL_SCOPE = re.compile(r"\b(?:au|du|le|in|of)\s+(?:cameroun|cameroon)\b", re.IGNORECASE)
 
+def _region_of(city: str) -> str | None:
+    try:
+        from app.services.agents.knowledge.geography import city_admin_chain
+
+        chain = city_admin_chain(city)
+    except Exception:  # noqa: BLE001 — geography data is optional here
+        return None
+    return (chain or {}).get("region")
+
+
 CONFIDENCE_THRESHOLD = 0.60
 # Soft ceiling for voice: stay well under a second; rules path is typically <5ms.
 VOICE_MAX_ROUTER_MS = 50.0
@@ -85,6 +95,16 @@ class IntentRouter:
             slots.location = current_slots.location or slots.location
         if current_slots.location and current_slots.region:
             slots.location = current_slots.location
+        # Route / dish / visual cues only come from what the user just said.
+        slots.origin = current_slots.origin
+        slots.destination = current_slots.destination
+        slots.dish = current_slots.dish
+        slots.wants_images = current_slots.wants_images
+        slots.wants_activities = current_slots.wants_activities
+        if current_slots.destination:
+            slots.city = current_slots.destination
+            slots.location = current_slots.destination
+            slots.region = _region_of(current_slots.destination) or current_slots.region
 
         hit = classify_with_rules(message, slots, has_image=has_image)
         intent = hit.intent
@@ -141,7 +161,10 @@ class IntentRouter:
         if intent == "FOOD" and self.mode != "voice" and (slots.region or slots.city):
             needs_web = True
             web_reason = "REGIONAL_GASTRONOMY"
-        forced = forced_web_reason(intent, message)
+        needs_places = caps.needs_places
+        if intent == "TRAVEL_ROUTE" and slots.wants_activities and slots.destination:
+            needs_places = True
+        forced = forced_web_reason(intent, message, is_route=bool(slots.destination))
         if forced:
             needs_web = True
             web_reason = forced
@@ -162,7 +185,7 @@ class IntentRouter:
             end_date=slots.end_date,
             language=slots.language,
             needs_knowledge=caps.needs_knowledge,
-            needs_places=caps.needs_places,
+            needs_places=needs_places,
             needs_planner=caps.needs_planner,
             needs_web=needs_web,
             web_reason=web_reason,
@@ -173,6 +196,11 @@ class IntentRouter:
             request_id=rid,
             router_latency_ms=round(elapsed_ms, 3),
             source=source,
+            origin=slots.origin,
+            destination=slots.destination,
+            dish=slots.dish,
+            wants_images=slots.wants_images or intent == "IMAGE_SEARCH",
+            wants_activities=slots.wants_activities,
         )
 
         if self.mode == "voice" and elapsed_ms > VOICE_MAX_ROUTER_MS:

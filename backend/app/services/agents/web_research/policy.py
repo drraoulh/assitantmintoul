@@ -1,10 +1,10 @@
 """When to search the web (N3).
 
 1. Forced by the backend (never left to the LLM): current information,
-   hotel search, restaurant search.
+   hotel search, restaurant search, travel route.
 2. Forbidden: greetings / small talk / clarification.
-3. Optional: every other intent — Qwen decides through a structured
-   ``web_search`` tool call.
+3. Text chat (CHAT_WEB_FIRST_ENABLED, default on): every other intent searches.
+   Otherwise Qwen decides through a structured ``web_search`` tool call.
 """
 
 from __future__ import annotations
@@ -19,9 +19,28 @@ from app.services.agents.knowledge.national_facts import is_volatile_fact_query
 FORCED_CURRENT_INFORMATION = "FORCED_CURRENT_INFORMATION"
 FORCED_HOTEL_SEARCH = "FORCED_HOTEL_SEARCH"
 FORCED_RESTAURANT_SEARCH = "FORCED_RESTAURANT_SEARCH"
-FORCED_REASONS = {FORCED_CURRENT_INFORMATION, FORCED_HOTEL_SEARCH, FORCED_RESTAURANT_SEARCH}
-
+FORCED_TRAVEL_ROUTE = "FORCED_TRAVEL_ROUTE"
+FORCED_REASONS = {
+    FORCED_CURRENT_INFORMATION,
+    FORCED_HOTEL_SEARCH,
+    FORCED_RESTAURANT_SEARCH,
+    FORCED_TRAVEL_ROUTE,
+}
+# Text chat is web-first: every conversational intent searches, except these.
+WEB_FIRST = "WEB_FIRST"
 _FORBIDDEN_INTENTS = {"CLARIFICATION"}
+_NO_WEB_FIRST_INTENTS = {"BOOKING", "VISION", "IMAGE_SEARCH"}
+
+
+def web_first_applies(intent: str, reason: str | None, *, has_structured_fact: bool) -> bool:
+    """Chat answers come from the web first; the KB only complements.
+
+    Stable facts already answered by the structured geography table (capital,
+    anthem…) do not need a search.
+    """
+    if web_forbidden(intent, reason) or intent in _NO_WEB_FIRST_INTENTS:
+        return False
+    return not (intent == "SIMPLE_QA" and has_structured_fact)
 
 _RESTAURANT = re.compile(
     r"\b(restaurants?|restos?|maquis|brasseries?|snack[- ]?bars?|o[uù]\s+manger|"
@@ -88,7 +107,9 @@ def web_forbidden(intent: str, reason: str | None = None) -> bool:
     return intent in _FORBIDDEN_INTENTS or (reason or "").endswith("greeting")
 
 
-def forced_web_reason(intent: str, query: str) -> str | None:
+def forced_web_reason(intent: str, query: str, *, is_route: bool = False) -> str | None:
+    if intent == "TRAVEL_ROUTE" or (is_route and intent in {"ITINERARY", "BUDGET_TRIP"}):
+        return FORCED_TRAVEL_ROUTE
     if intent == "WEB_SEARCH":
         return FORCED_CURRENT_INFORMATION
     if intent == "HOTEL":

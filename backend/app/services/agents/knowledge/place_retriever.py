@@ -220,6 +220,7 @@ class PlaceRetriever:
             "BOOKING",
             "FOOD",
             "TOURISM_INFO",
+            "TRAVEL_ROUTE",
         }
         if limit <= 0 or (
             not intent.needs_places and intent.intent not in place_intents
@@ -238,6 +239,7 @@ class PlaceRetriever:
         hub = fold(city) if city else ""
 
         city_filter_intents = {
+            "TRAVEL_ROUTE",
             "PLACE_SEARCH",
             "ITINERARY",
             "BUDGET_TRIP",

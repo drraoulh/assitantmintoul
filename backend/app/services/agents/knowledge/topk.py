@@ -22,6 +22,8 @@ PLACE_TOP_K: Mapping[str, int] = {
     "VISION": 0,
     "WEB_SEARCH": 0,
     "CLARIFICATION": 0,
+    "TRAVEL_ROUTE": 6,
+    "IMAGE_SEARCH": 0,
 }
 
 KNOWLEDGE_TOP_K: Mapping[str, int] = {
@@ -39,6 +41,8 @@ KNOWLEDGE_TOP_K: Mapping[str, int] = {
     "VISION": 0,
     "WEB_SEARCH": 4,
     "CLARIFICATION": 2,
+    "TRAVEL_ROUTE": 3,
+    "IMAGE_SEARCH": 2,
 }
 
 # Max characters kept per knowledge chunk evidence (context size control).

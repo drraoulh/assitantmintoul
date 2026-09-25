@@ -25,6 +25,8 @@ class Intent(str, Enum):
     VISION = "VISION"
     WEB_SEARCH = "WEB_SEARCH"
     CLARIFICATION = "CLARIFICATION"
+    TRAVEL_ROUTE = "TRAVEL_ROUTE"
+    IMAGE_SEARCH = "IMAGE_SEARCH"
 
 
 IntentName = Literal[
@@ -42,6 +44,8 @@ IntentName = Literal[
     "VISION",
     "WEB_SEARCH",
     "CLARIFICATION",
+    "TRAVEL_ROUTE",
+    "IMAGE_SEARCH",
 ]
 
 
@@ -73,6 +77,43 @@ class IntentResult(BaseModel):
     request_id: str | None = None
     router_latency_ms: float | None = None
     source: Literal["rules", "hybrid", "llm", "fallback"] = "rules"
+    # Trip between two places: the destination (not the origin) is the tourism context.
+    origin: str | None = None
+    destination: str | None = None
+    dish: str | None = None
+    wants_images: bool = False
+    wants_activities: bool = False
+
+    @property
+    def chat_intent(self) -> str:
+        """User-facing intent label (GREETING, GASTRONOMY, RESTAURANT_SEARCH…)."""
+        if self.reason.endswith("greeting"):
+            return "GREETING"
+        if self.intent == "FOOD":
+            return "RESTAURANT_SEARCH" if self.web_reason == "FORCED_RESTAURANT_SEARCH" else "GASTRONOMY"
+        if self.intent == "ITINERARY" and (self.origin or self.destination):
+            return "ITINERARY"
+        return {
+            "HOTEL": "HOTEL_SEARCH",
+            "WEB_SEARCH": "CURRENT_INFORMATION",
+            "SIMPLE_QA": "GENERAL_CHAT",
+            "TOURISM_INFO": "GENERAL_CHAT",
+            "CLARIFICATION": "GENERAL_CHAT",
+        }.get(self.intent, self.intent)
+
+    def routing(self) -> dict[str, object]:
+        return {
+            "chat_intent": self.chat_intent,
+            "intent": self.intent,
+            "location": self.city or self.region or self.location,
+            "origin": self.origin,
+            "destination": self.destination,
+            "dish": self.dish,
+            "duration_days": self.duration_days,
+            "wants_images": self.wants_images,
+            "is_route": bool(self.origin or self.destination),
+            "web_reason": self.web_reason,
+        }
 
     @field_validator("interests", mode="before")
     @classmethod
@@ -101,6 +142,7 @@ class IntentResult(BaseModel):
         return {
             "request_id": self.request_id,
             "intent": self.intent,
+            "chat_intent": self.chat_intent,
             "confidence": round(self.confidence, 3),
             "router_latency_ms": self.router_latency_ms,
             "needs_knowledge": self.needs_knowledge,

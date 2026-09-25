@@ -387,6 +387,101 @@ class ExtractedSlots:
     end_date: str | None = None
     language: str | None = None
     place_name: str | None = None
+    origin: str | None = None
+    destination: str | None = None
+    dish: str | None = None
+    wants_images: bool = False
+    wants_activities: bool = False
+
+
+_CITY_ALT = "|".join(re.escape(k) for k in sorted(_CITIES, key=len, reverse=True))
+_TRAVEL_CUE = re.compile(
+    r"\b(?:aller|vais|va|allons|allez|rendre|rends|trajet|voyage[rz]?|voyageons|transport|"
+    r"bus|cars?|taxi|train|vol|avion|route|quitter|quitte|quittant|partir|pars|part|"
+    r"arriver|arrive|rejoindre|distance|duree|combien\s+de\s+temps|chemin|"
+    r"get|go|going|travel(?:l?ing)?|trip|drive|fly|leave|leaving|reach|journey)\b"
+)
+_ROUTE_PATTERNS = (
+    re.compile(
+        rf"\b(?:de|d['’ ]|depuis|from|quitter|quitte|quittant|leave|leaving|partir\s+de|pars\s+de|part\s+de)\s*"
+        rf"(?P<o>{_CITY_ALT})\b.{{0,40}}?\b(?:a|au|vers|pour|jusqu['’ ]?a|to|towards|for)\s+(?P<d>{_CITY_ALT})\b"
+    ),
+    re.compile(rf"\bentre\s+(?P<o>{_CITY_ALT})\s+et\s+(?P<d>{_CITY_ALT})\b"),
+    re.compile(rf"\bbetween\s+(?P<o>{_CITY_ALT})\s+and\s+(?P<d>{_CITY_ALT})\b"),
+    re.compile(rf"\b(?P<o>{_CITY_ALT})\s*(?:->|→|–|—|-)\s*(?P<d>{_CITY_ALT})\b"),
+)
+_DESTINATION_ONLY = re.compile(
+    r"\b(?:aller|me\s+rendre|se\s+rendre|nous\s+rendre|arriver|rejoindre|get|go|travel|getting)\s+"
+    rf"(?:a|au|en|to|jusqu['’ ]?a)\s+(?P<d>{_CITY_ALT})\b"
+)
+_ACTIVITIES = re.compile(
+    r"\b(?:que\s+faire|quoi\s+faire|que\s+visiter|quoi\s+visiter|a\s+voir|activites?|"
+    r"visiter|conseill\w*|recommand\w*|programme|things\s+to\s+do|what\s+to\s+do|"
+    r"what\s+to\s+see|activities|suggest\w*)\b"
+)
+_IMAGE_REQUEST = re.compile(
+    r"\b(?:photos?|images?|pictures?|pics|galerie|a\s+quoi\s+ressembl\w+|looks?\s+like|"
+    r"montre[sz]?[- ]moi\s+(?:a\s+quoi|comment))\b"
+)
+_SEE_WORD = re.compile(r"\b(?:voir|see|montre[sz]?[- ]moi|show\s+me)\b")
+
+# Cameroonian dishes (folded → display).
+_DISHES: dict[str, str] = {
+    "eru": "Eru",
+    "ndole": "Ndolé",
+    "achu": "Achu",
+    "koki": "Koki",
+    "okok": "Okok",
+    "poulet dg": "Poulet DG",
+    "mbongo tchobi": "Mbongo Tchobi",
+    "mbongo": "Mbongo Tchobi",
+    "sanga": "Sanga",
+    "kpem": "Kpem",
+    "kwem": "Kwem",
+    "sauce jaune": "Achu (sauce jaune)",
+    "bobolo": "Bobolo",
+    "miondo": "Miondo",
+    "soya": "Soya",
+    "kondre": "Kondrè",
+    "nkui": "Nkui",
+    "folere": "Folléré",
+    "ekwang": "Ekwang",
+    "corn chaff": "Corn chaff",
+    "water fufu": "Water fufu",
+    "fufu": "Fufu",
+    "koki beans": "Koki",
+    "pepper soup": "Pepper soup",
+    "mintumba": "Mintumba",
+    "ndomba": "Ndomba",
+    "nnam ngon": "Nnam ngon",
+    "taro": "Taro",
+    "poisson braise": "Poisson braisé",
+    "puff puff": "Puff-puff",
+    "beignets haricots": "Beignets-haricots",
+    "mbanga soup": "Mbanga soup",
+    "kati kati": "Kati kati",
+}
+
+
+def _extract_route(folded: str) -> tuple[str | None, str | None]:
+    if not _TRAVEL_CUE.search(folded):
+        return None, None
+    for pattern in _ROUTE_PATTERNS:
+        for match in pattern.finditer(folded):
+            origin, dest = _CITIES[match.group("o")], _CITIES[match.group("d")]
+            if origin != dest:
+                return origin, dest
+    match = _DESTINATION_ONLY.search(folded)
+    if match:
+        return None, _CITIES[match.group("d")]
+    return None, None
+
+
+def _extract_dish(folded: str) -> str | None:
+    for key in sorted(_DISHES, key=len, reverse=True):
+        if re.search(rf"\b{re.escape(key)}\b", folded):
+            return _DISHES[key]
+    return None
 
 
 def _parse_int_amount(raw: str) -> int | None:
@@ -549,5 +644,16 @@ def extract_slots(message: str, *, locale: str | None = None) -> ExtractedSlots:
         slots.travel_style = "budget"
     elif re.search(r"\b(famille|family)\b", folded):
         slots.travel_style = "family"
+
+    slots.origin, slots.destination = _extract_route(folded)
+    if slots.destination:
+        # The destination is the tourism context; the origin only matters for the route.
+        slots.city = slots.destination
+        slots.location = slots.destination
+    slots.dish = _extract_dish(folded)
+    slots.wants_activities = bool(_ACTIVITIES.search(folded))
+    slots.wants_images = bool(_IMAGE_REQUEST.search(folded)) or bool(
+        slots.dish and _SEE_WORD.search(folded)
+    )
 
     return slots

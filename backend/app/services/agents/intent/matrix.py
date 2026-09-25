@@ -84,6 +84,9 @@ ROUTING_MATRIX: Mapping[IntentName, CapabilityFlags] = {
         optional_web=True,
     ),
     Intent.CLARIFICATION.value: CapabilityFlags(needs_knowledge=True),
+    # Places of the destination are added by the router only for « que faire ».
+    Intent.TRAVEL_ROUTE.value: CapabilityFlags(needs_knowledge=True, needs_web=True),
+    Intent.IMAGE_SEARCH.value: CapabilityFlags(needs_knowledge=True),
 }
 
 
