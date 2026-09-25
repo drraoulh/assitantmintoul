@@ -360,43 +360,15 @@ export function AssistantChat({
                 : 'mr-auto w-full max-w-[98%] md:max-w-[92%]'
             }
           >
-            <div className="mb-1 flex items-center gap-2">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
-                {msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
-                {msg.streaming ? ' · …' : ''}
-              </p>
-              {msg.role === 'assistant' &&
-              !msg.isError &&
-              !msg.isTip &&
-              msg.content.trim() ? (
-                <button
-                  type="button"
-                  onClick={() => void speakMessage(msg)}
-                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
-                    speakingMsgId === msg.id
-                      ? 'bg-[var(--danger)] text-white'
-                      : 'bg-[var(--mint-soft)] text-[var(--green-deep)] hover:bg-[var(--line)]'
-                  }`}
-                  aria-label={
-                    speakingMsgId === msg.id
-                      ? 'Arrêter la lecture'
-                      : 'Lire la réponse'
-                  }
-                >
-                  {speakingMsgId === msg.id ? (
-                    <>
-                      <Square className="h-3 w-3 fill-current" aria-hidden />
-                      Stop
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 className="h-3.5 w-3.5" aria-hidden />
-                      Lire
-                    </>
-                  )}
-                </button>
-              ) : null}
-            </div>
+            <MessageHeader
+              label={msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
+              streaming={msg.streaming}
+              canSpeak={
+                msg.role === 'assistant' && !msg.isError && !msg.isTip && !!msg.content.trim()
+              }
+              speaking={speakingMsgId === msg.id}
+              onSpeak={() => void speakMessage(msg)}
+            />
             {msg.isTip ? (
               <div className="rounded-2xl border border-[var(--line)] bg-[var(--mint-soft)]/60 px-4 py-3 text-sm text-[var(--green-deep)]">
                 {msg.content}
@@ -478,6 +450,50 @@ export function AssistantChat({
         conversationId={conversationId}
         onExchange={handleVoiceExchange}
       />
+    </div>
+  );
+}
+
+/** Author label + read-aloud control — UI chrome kept outside the answer content. */
+function MessageHeader({
+  label,
+  streaming,
+  canSpeak,
+  speaking,
+  onSpeak,
+}: {
+  label: string;
+  streaming?: boolean;
+  canSpeak: boolean;
+  speaking: boolean;
+  onSpeak: () => void;
+}) {
+  return (
+    <div className="mb-1 flex select-none items-center gap-2">
+      <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
+        {label}
+        {streaming ? ' · …' : ''}
+      </span>
+      {canSpeak ? (
+        <button
+          type="button"
+          onClick={onSpeak}
+          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
+            speaking
+              ? 'bg-[var(--danger)] text-white'
+              : 'bg-[var(--mint-soft)] text-[var(--green-deep)] hover:bg-[var(--line)]'
+          }`}
+          aria-label={speaking ? 'Arrêter la lecture' : 'Lire la réponse à voix haute'}
+          title={speaking ? 'Arrêter la lecture' : 'Lire la réponse à voix haute'}
+        >
+          {speaking ? (
+            <Square className="h-3 w-3 fill-current" aria-hidden />
+          ) : (
+            <Volume2 className="h-3.5 w-3.5" aria-hidden />
+          )}
+          <span>{speaking ? 'Stop' : 'Écouter'}</span>
+        </button>
+      ) : null}
     </div>
   );
 }
