@@ -346,3 +346,12 @@ def test_deterministic_hotel_answer_shows_unverified_web_leads():
     text = render_deterministic("Quels hôtels à Kribi ?", intent, knowledge, None)
     assert "non vérifiées" in text
     assert "Les 10 meilleurs hôtels à Kribi (booking.com)" in text
+
+
+def test_freshness_reads_french_serper_dates():
+    from app.services.agents.web_research.ranker import freshness_score
+
+    assert freshness_score("5 sept. 2026", now=NOW) == 1.0
+    assert freshness_score("il y a 3 jours", now=NOW) == 1.0
+    assert freshness_score("il y a 4 ans", now=NOW) == 0.2
+    assert freshness_score("12 févr. 2025", now=NOW) < 0.8

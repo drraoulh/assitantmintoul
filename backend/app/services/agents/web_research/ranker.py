@@ -68,6 +68,10 @@ def semantic_overlap(text: str, query: str) -> float:
     return len(q & _terms(text)) / len(q)
 
 
+_FR_MONTHS = ("janv", "fevr", "mars", "avr", "mai", "juin", "juil", "aout", "sept", "oct", "nov", "dec")
+_FR_DATE_RE = re.compile(r"(\d{1,2})\s+([a-z]+)\.?\s+(\d{4})")
+
+
 def _age_days(published_at: str | None, now: datetime) -> float | None:
     if not published_at:
         return None
@@ -85,6 +89,17 @@ def _age_days(published_at: str | None, now: datetime) -> float | None:
                 break
             except ValueError:
                 continue
+    if dt is None:
+        fr = _FR_DATE_RE.search(_fold(raw))
+        if fr:
+            month = next(
+                (i for i, m in enumerate(_FR_MONTHS, 1) if fr.group(2).startswith(m)), None
+            )
+            if month:
+                try:
+                    dt = datetime(int(fr.group(3)), month, int(fr.group(1)))
+                except ValueError:
+                    dt = None
     if dt is None:
         return None
     if dt.tzinfo is None:
