@@ -79,11 +79,7 @@ export function ResponseRenderer({
         </p>
       ) : null}
 
-      {text ? (
-        <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-[var(--ink)]">
-          {text}
-        </div>
-      ) : null}
+      {text ? <AnswerText text={text} /> : null}
 
       {kind === 'INSUFFICIENT_INFORMATION' ? (
         <p className="rounded-xl bg-[var(--mint-soft)] px-4 py-3 text-sm text-[var(--muted)]">
@@ -152,7 +148,11 @@ export function ResponseRenderer({
       {markers.length > 0 ? (
         <div className="space-y-2">
           <p className="text-sm font-semibold text-[var(--green-deep)]">
-            {kind === 'TRAVEL_ROUTE' ? 'Trajet' : 'Carte'}
+            {kind === 'TRAVEL_ROUTE' && ui?.routing?.origin && ui.routing.destination
+              ? `🗺️ Trajet ${ui.routing.origin} → ${ui.routing.destination}`
+              : kind === 'TRAVEL_ROUTE'
+                ? '🗺️ Trajet'
+                : 'Carte'}
           </p>
           <TourismMap markers={markers} className="h-72" />
         </div>
@@ -194,6 +194,33 @@ export function ResponseRenderer({
         uiSources={ui?.ui_sources}
         kind={kind}
       />
+    </div>
+  );
+}
+
+/** Answer body: `### Titre` lines become headings, everything else keeps its line breaks. */
+function AnswerText({ text }: { text: string }) {
+  const blocks = text.split(/\n(?=###\s)/);
+  return (
+    <div className="space-y-3 text-[15px] leading-relaxed text-[var(--ink)]">
+      {blocks.map((block, i) => {
+        const match = block.match(/^###\s+(.+)(?:\n([\s\S]*))?$/);
+        if (!match) {
+          return (
+            <div key={i} className="whitespace-pre-wrap">
+              {block.trim()}
+            </div>
+          );
+        }
+        return (
+          <section key={i} className="space-y-1">
+            <h3 className="text-sm font-bold tracking-wide text-[var(--green-deep)]">{match[1]}</h3>
+            {match[2]?.trim() ? (
+              <div className="whitespace-pre-wrap">{match[2].trim()}</div>
+            ) : null}
+          </section>
+        );
+      })}
     </div>
   );
 }
@@ -593,14 +620,22 @@ function SourcesBlock({
   uiSources?: SourceUI[];
   kind: ChatResponseType;
 }) {
-  const withUrl = (uiSources ?? []).filter((s) => s.url);
-  const kbOnly = (uiSources ?? []).filter((s) => !s.url);
+  // Single place where citations are listed (the answer text only names the source of a fact).
+  const seen = new Set<string>();
+  const unique = (uiSources ?? []).filter((s) => {
+    const key = (s.url || s.title || '').replace(/\/+$/, '').toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  const withUrl = unique.filter((s) => s.url);
+  const kbOnly = unique.filter((s) => !s.url);
   if (!withUrl.length && !kbOnly.length) return null;
 
   return (
     <div>
       <p className="mb-2 text-sm font-semibold text-[var(--green-deep)]">
-        Sources consultées
+        📚 Sources
       </p>
       {withUrl.length ? (
         <p className="mb-1 text-xs font-medium text-[var(--muted)]">

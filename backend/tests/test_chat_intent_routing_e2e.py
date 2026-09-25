@@ -327,7 +327,9 @@ def test_s1_go_to_foumban_from_yaounde_what_to_do(chat):
     assert "🚍 ALLER DE YAOUNDÉ À FOUMBAN" in message
     assert "⚠️ Informations à confirmer" in message
     assert "🏛️ QUE FAIRE À FOUMBAN" in message
-    assert "📚 SOURCES" in message
+    # Map and sources are UI blocks (`map`, `ui_sources`), not repeated in the text.
+    assert "TRAJET" not in message and "SOURCES" not in message
+    assert {s["url"] for s in _web_sources(data)} >= {"https://guide.example.com/foumban"}
     # Off-route pages are not presented as the Yaoundé → Foumban journey.
     assert "Foumban à Cameroun" not in message and "Douala" not in message
     # Divergent durations are shown as a range, foreign fares keep their currency.

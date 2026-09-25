@@ -1033,15 +1033,6 @@ def route_brief(intent: IntentResult, knowledge: KnowledgeResult, *, lang: str) 
     return _route_section(intent, knowledge, lang=lang)[0]
 
 
-def _map_available(origin: str | None, dest: str) -> bool:
-    try:
-        from app.services.agents.response.structured_ui import _city_point
-
-        return bool(origin and _city_point(origin) and _city_point(dest))
-    except Exception:  # noqa: BLE001
-        return False
-
-
 def _render_travel_route(
     intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
 ) -> str:
@@ -1071,29 +1062,10 @@ def _render_travel_route(
                 else f"Je n’ai trouvé aucune activité à {dest} dans SmartMboa ni dans les sources Web consultées."
             )
         parts.append(title + "\n" + "\n\n".join(lines))
-    if voice:
-        return " ".join("\n\n".join(parts).replace("###", "").split())[:500]
-    if _map_available(origin, dest):
-        parts.append(
-            f"### 🗺️ ROUTE\nMap {origin} → {dest} shown below."
-            if en
-            else f"### 🗺️ TRAJET\nCarte {origin} → {dest} affichée ci-dessous."
-        )
-    web_src = list(dict.fromkeys(
-        d for d in (
-            extract_domain(c.source_id or "")
-            for c in knowledge.knowledge
-            if (c.chunk_id or "").startswith("web:")
-        ) if d
-    ))[:8]
-    src_lines = ["### 📚 SOURCES"]
-    if web_src:
-        src_lines.append(("🌐 Web sources" if en else "🌐 Sources Web") + "\n" + "\n".join(f"- {d}" for d in web_src))
-    if kb_names and (intent.wants_activities or intent.duration_days):
-        src_lines.append(("📍 SmartMboa data" if en else "📍 Données SmartMboa") + "\n" + "\n".join(f"- {n}" for n in kb_names))
-    if len(src_lines) > 1:
-        parts.append("\n".join(src_lines))
-    return "\n\n".join(parts)
+    text = "\n\n".join(parts)
+    # Map and source list are rendered by the client from `map` / `ui_sources`;
+    # repeating them here showed each block twice.
+    return " ".join(text.replace("###", "").split())[:500] if voice else text
 
 
 def _dish_kb_notes(knowledge: KnowledgeResult, dish: str, *, limit: int) -> list[str]:
