@@ -159,9 +159,14 @@ export async function identifyImage(file: File): Promise<VisionIdentifyResponse>
   }
 }
 
-export async function synthesizeSpeech(text: string): Promise<Blob> {
+export async function synthesizeSpeech(
+  text: string,
+  opts?: { signal?: AbortSignal },
+): Promise<Blob> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const onExternalAbort = () => controller.abort();
+  opts?.signal?.addEventListener('abort', onExternalAbort);
   try {
     const response = await fetch(`${getApiBaseUrl()}/api/speech/synthesize`, {
       method: 'POST',
@@ -182,6 +187,7 @@ export async function synthesizeSpeech(text: string): Promise<Blob> {
     return await response.blob();
   } finally {
     clearTimeout(timeoutId);
+    opts?.signal?.removeEventListener('abort', onExternalAbort);
   }
 }
 
