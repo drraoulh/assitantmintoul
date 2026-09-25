@@ -77,11 +77,24 @@ export function fetchHealth(
   return request<HealthResponse>('/api/health', undefined, timeoutMs);
 }
 
-export function sendChatMessage(payload: ChatRequest): Promise<ChatResponse> {
-  return request<ChatResponse>('/api/chat', {
-    method: 'POST',
-    body: JSON.stringify(payload),
-  });
+export async function sendChatMessage(payload: ChatRequest): Promise<ChatResponse> {
+  const send = () =>
+    request<ChatResponse>('/api/chat', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  try {
+    return await send();
+  } catch (error) {
+    // One retry for edge failures (server waking up, dropped connection) —
+    // not for our own timeout, which already waited REQUEST_TIMEOUT_MS.
+    const edgeFailure =
+      isNetworkError(error) ||
+      (error instanceof ApiError && (error.status === 502 || error.status === 503));
+    if (!edgeFailure) throw error;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return send();
+  }
 }
 
 export function listConversations(limit = 30): Promise<ConversationListResponse> {
@@ -244,14 +257,24 @@ export async function transcribeAudio(
   }
 }
 
+function isNetworkError(error: unknown): boolean {
+  // Chrome: "Failed to fetch", Safari: "Load failed", Firefox: "NetworkError…".
+  return error instanceof TypeError || (
+    error instanceof Error && /failed to fetch|load failed|network/i.test(error.message)
+  );
+}
+
 export function friendlyError(error: unknown): string {
   if (error instanceof ApiError) {
+    if (error.status === 504) {
+      return 'La réponse a pris trop de temps. Veuillez réessayer.';
+    }
     if (error.status >= 500 || error.status === 0) {
       return 'Une erreur est survenue. Veuillez réessayer.';
     }
     return error.message || 'Une erreur est survenue. Veuillez réessayer.';
   }
-  if (error instanceof Error && /failed to fetch|network/i.test(error.message)) {
+  if (isNetworkError(error)) {
     return 'Connexion au serveur indisponible. Veuillez réessayer.';
   }
   return 'Une erreur est survenue. Veuillez réessayer.';

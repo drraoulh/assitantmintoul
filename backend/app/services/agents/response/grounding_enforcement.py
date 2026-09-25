@@ -125,19 +125,28 @@ def validate_grounding(
     *,
     catalog_names: set[str] | None = None,
     enforcement_enabled: bool = True,
+    general_knowledge: bool | None = None,
 ) -> GroundingReport:
-    """Compare reply text against allowed evidence. Deterministic, no LLM."""
+    """Compare reply text against allowed evidence. Deterministic, no LLM.
+
+    With ``general_knowledge`` the model may name well-known places and dishes on its
+    own; figures, hours, availability and URLs are still checked against evidence.
+    """
     started = time.perf_counter()
     report = GroundingReport(enforcement_enabled=enforcement_enabled)
     if not enforcement_enabled:
         report.validation_ms = (time.perf_counter() - started) * 1000.0
         return report
+    if general_knowledge is None:
+        from app.core.config import get_settings
+
+        general_knowledge = bool(get_settings().llm_general_knowledge)
 
     body = text or ""
     folded = fold(body)
 
     # 1) Watchlist hallucinations
-    for name in _HALLUCINATION_WATCHLIST:
+    for name in () if general_knowledge else _HALLUCINATION_WATCHLIST:
         if (
             name in folded
             and name not in evidence.place_names_folded
@@ -149,7 +158,7 @@ def validate_grounding(
             report.critical = True
 
     # 2) Catalog places mentioned but not in whitelist for this turn
-    catalog = catalog_names or set()
+    catalog = set() if general_knowledge else (catalog_names or set())
     for raw in catalog:
         key = fold(raw)
         if len(key) < 4:
@@ -223,7 +232,7 @@ def validate_grounding(
             report.critical = True
 
     # 9) Dishes not present in evidence
-    if evidence.evidence_text_folded:
+    if evidence.evidence_text_folded and not general_knowledge:
         for dish in _DISH_LEXICON:
             pattern = rf"\b{re.escape(dish)}\b"
             if re.search(pattern, folded) and not re.search(
