@@ -138,7 +138,11 @@ def validate_grounding(
 
     # 1) Watchlist hallucinations
     for name in _HALLUCINATION_WATCHLIST:
-        if name in folded and name not in evidence.place_names_folded:
+        if (
+            name in folded
+            and name not in evidence.place_names_folded
+            and name not in evidence.evidence_text_folded
+        ):
             report.violations.append(
                 GroundingViolation("unauthorized_place", name)
             )
@@ -150,7 +154,7 @@ def validate_grounding(
         key = fold(raw)
         if len(key) < 4:
             continue
-        if key in evidence.place_names_folded:
+        if key in evidence.place_names_folded or key in evidence.evidence_text_folded:
             continue
         if re.search(rf"\b{re.escape(key)}\b", folded):
             report.violations.append(

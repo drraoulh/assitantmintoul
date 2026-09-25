@@ -155,7 +155,9 @@ class ResponseGenerator:
             catalog_names=catalog_place_names() if enforce else set(),
             enforcement_enabled=enforce,
         )
+        replaced: list[str] = []
         if enforce and grounding_report.critical and use_llm and not fallback_used:
+            replaced = [f"{v.kind}:{v.detail}"[:80] for v in grounding_report.violations[:6]]
             logger.warning(
                 "[GROUNDING] critical_violation replacing_with_fallback kinds=%s",
                 [v.kind for v in grounding_report.violations[:6]],
@@ -220,6 +222,7 @@ class ResponseGenerator:
             grounding_violations=[
                 f"{v.kind}:{v.detail}" for v in (grounding_report.violations if grounding_report else [])[:8]
             ],
+            replaced_violations=replaced,
         )
         allowed = allowed_place_names(knowledge_result, tourism_plan)
         result_meta = {

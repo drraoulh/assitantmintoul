@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 
+from app.services.agents.web_research.ranker import semantic_overlap
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
@@ -67,6 +68,12 @@ def render_deterministic(
         k for k in knowledge.knowledge if "[web evidence" in (k.content or "").casefold()
     ]
     if intent.intent == "WEB_SEARCH" and (web_chunks or knowledge.knowledge):
+        return _render_web_search(user_query, knowledge, lang=lang, voice=voice)
+    if (
+        intent.intent in {"CULTURE", "TOURISM_INFO", "SIMPLE_QA"}
+        and web_chunks
+        and not (tourism_plan and tourism_plan.selected_places)
+    ):
         return _render_web_search(user_query, knowledge, lang=lang, voice=voice)
 
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
@@ -397,7 +404,9 @@ def _render_web_search(
         if k.content and "[web evidence" not in k.content.casefold()
     ]
     if event_query:
-        kb_chunks = [c for c in kb_chunks if _EVENT_FACT.search(c)] or kb_chunks[:0]
+        kb_chunks = [c for c in kb_chunks if _EVENT_FACT.search(c)]
+    else:
+        kb_chunks = [c for c in kb_chunks if semantic_overlap(c, user_query) >= 0.34]
     kb_note = _first_section(kb_chunks[0], limit=320) if kb_chunks else ""
 
     parts: list[str] = []

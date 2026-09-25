@@ -5,6 +5,8 @@ Qwen is formulation-only. Every specific tourism claim must map to this set.
 
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -12,6 +14,9 @@ from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.planner.models import TourismPlan
 from app.services.agents.response.validate import fold
+
+
+_NUMBER_RE = re.compile(r"\d{1,3}(?:[\s.,\u202f\u00a0]\d{3})+|\d{4,7}")
 
 
 @dataclass
@@ -152,6 +157,10 @@ def build_allowed_evidence(
     corpus.extend(c.content or "" for c in knowledge.knowledge)
     corpus.extend(f"{p.name or ''} {p.description or ''}" for p in knowledge.places)
     ev.evidence_text_folded = fold(" ".join(corpus))
+    for match in _NUMBER_RE.finditer(" ".join(corpus)):
+        digits = re.sub(r"[^\d]", "", match.group(0))
+        if digits:
+            ev.known_costs_xaf.add(int(digits))
 
     ev.has_verified_places = bool(knowledge.places)
     ev.has_plan_places = bool(plan and plan.selected_places)

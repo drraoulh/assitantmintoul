@@ -19,6 +19,14 @@ from app.services.agents.web_research.policy import forced_web_reason
 
 logger = logging.getLogger(__name__)
 
+_OPEN_QUESTION = re.compile(
+    r"^\s*(?:qu['’]est[- ]ce\s+que?|c['’]est\s+quoi|qui\s+(?:est|sont|était)|"
+    r"pourquoi|comment\s+(?:se|s['’]|on|est)|quelle?s?\s+(?:est|sont)|que\s+signifie|"
+    r"parle[sz]?[- ]moi|raconte[sz]?[- ]moi|explique[sz]?[- ]moi|dis[- ]moi|"
+    r"what\s+(?:is|are|was)|who\s+(?:is|are|was)|why|tell\s+me\s+about|explain)\b"
+    r".{6,}",
+    re.IGNORECASE,
+)
 _NATIONAL_SCOPE = re.compile(r"\b(?:au|du|le|in|of)\s+(?:cameroun|cameroon)\b", re.IGNORECASE)
 
 CONFIDENCE_THRESHOLD = 0.60
@@ -83,8 +91,14 @@ class IntentRouter:
         reason = hit.reason
         source: Literal["rules", "hybrid", "llm", "fallback"] = "rules"
 
-        # Low confidence → clarification (do not invent complex chains).
-        if confidence < self.confidence_threshold:
+        # Low confidence → clarification, except real open questions, which go to
+        # KB + optional web instead of asking the user to rephrase.
+        if confidence < self.confidence_threshold and _OPEN_QUESTION.search(message):
+            intent = "TOURISM_INFO"
+            reason = f"open_question:{hit.reason}"
+            confidence = self.confidence_threshold
+            source = "fallback"
+        elif confidence < self.confidence_threshold:
             intent = "CLARIFICATION"
             # Keep extracted slots only if explicitly present (extractors already do).
             reason = f"low_confidence:{hit.reason}"

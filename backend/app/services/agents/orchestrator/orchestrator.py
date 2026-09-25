@@ -110,6 +110,7 @@ class AgentOrchestrator:
         self._web_max = web_search_max_results
         self._web_tool_caller = web_tool_caller
         self.last_web_research: WebResearchResult | None = None
+        self.last_tool_decision: dict[str, Any] | None = None
 
     async def prepare(
         self,
@@ -188,6 +189,7 @@ class AgentOrchestrator:
                     dict.fromkeys([*knowledge.missing_information, "live_availability"])
                 )
 
+        self.last_tool_decision = None
         web_decision = await self._decide_web(
             user_query, intent, knowledge, response_mode=response_mode, request_id=rid
         )
@@ -206,6 +208,8 @@ class AgentOrchestrator:
             agents_called.append("web_research")
             if self.last_web_research is not None:
                 web_obs = self.last_web_research.observability()
+        if self.last_tool_decision is not None:
+            web_obs = {**(web_obs or {"decision": "none"}), "llm_tool": self.last_tool_decision}
 
         if intent.needs_planner and self._knowledge_usable_for_planner(knowledge):
             logger.info("planner_started request_id=%s", rid)
@@ -475,12 +479,24 @@ class AgentOrchestrator:
             )
         except Exception as exc:  # noqa: BLE001
             logger.warning(
-                "web_tool_decision_failed request_id=%s error=%s",
+                "web_tool_decision_failed request_id=%s error=%s detail=%s",
                 request_id,
                 type(exc).__name__,
+                str(exc)[:200],
             )
+            self.last_tool_decision = {
+                "result": f"error:{type(exc).__name__}",
+                "detail": str(exc)[:160],
+                "ms": round((time.perf_counter() - t0) * 1000.0, 1),
+            }
             return None
         decision = parse_tool_decision(message)
+        self.last_tool_decision = {
+            "result": "search" if decision.search else decision.reason,
+            "queries": decision.queries,
+            "reason": decision.reason if decision.search else None,
+            "ms": round((time.perf_counter() - t0) * 1000.0, 1),
+        }
         logger.info(
             "web_tool_decision request_id=%s search=%s queries=%s reason=%s ms=%.0f",
             request_id,

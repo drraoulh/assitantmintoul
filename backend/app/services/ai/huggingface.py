@@ -784,7 +784,10 @@ class HuggingFaceAIService(AIService):
         trace.set_meta(orchestrator_enabled=True, structured_ui_ms=ui.get("structured_build_ms"))
         trace.mark("orchestrator_response_ready", chars=len(reply))
         if result.web_research:
-            ui["web_research"] = result.web_research
+            ui["web_research"] = {
+                **result.web_research,
+                "answer_replaced_by_fallback": result.final_response.replaced_violations,
+            }
 
         phrase_buf = ""
         first_phrase = True

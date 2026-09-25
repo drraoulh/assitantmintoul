@@ -46,6 +46,9 @@ _STOPWORDS = set(
     the a an of in on at to for is are was what which who how where when can could
     would you me my i please tell about show find search look do does there some any
     it its and or with from by be
+    parle parlez parle-moi parlez-moi raconte racontez raconte-moi racontez-moi explique
+    expliquez explique-moi expliquez-moi dis-moi dites-moi montre-moi aide-moi tell explain
+    qu'est-ce est-ce signifie veut-dire chez
     mois ci mois-ci ce-mois-ci cette-semaine semaine actuellement aujourd hui maintenant recent recents
     recemment actuel actuels actuelle this month week now currently current latest today
     region regions cameroun cameroon
@@ -149,7 +152,7 @@ def _topic_query(intent: IntentResult, fr_loc: str) -> str | None:
         return f"hôtels {fr_loc} avis prix"
     if intent.intent == "FOOD":
         return f"plats traditionnels gastronomie {fr_loc}"
-    if intent.intent in {"CULTURE", "TOURISM_INFO"}:
+    if intent.intent in {"CULTURE", "TOURISM_INFO"} and fr_loc != "Cameroun":
         return f"culture traditions tourisme {fr_loc}"
     return None
 
