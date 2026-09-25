@@ -108,7 +108,7 @@ export function ResponseRenderer({
             {places.map((p) => (
               <div
                 key={p.id}
-                className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]"
+                className="w-[85%] shrink-0 snap-start sm:w-[48%] lg:w-[32%]"
               >
                 <PlaceCard site={p} />
               </div>
@@ -135,7 +135,7 @@ export function ResponseRenderer({
             {hotels.map((h) => (
               <div
                 key={h.id}
-                className="w-[78%] shrink-0 snap-start sm:w-[46%] lg:w-[32%]"
+                className="w-[85%] shrink-0 snap-start sm:w-[48%] lg:w-[32%]"
               >
                 <HotelBlock hotel={h} />
               </div>

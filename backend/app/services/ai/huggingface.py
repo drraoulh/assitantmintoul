@@ -248,6 +248,7 @@ class HuggingFaceAIService(AIService):
                         timer=timer,
                         turn_id=turn_id,
                         trace=trace,
+                        history=history,
                     ):
                         yield event
                     return
@@ -632,6 +633,7 @@ class HuggingFaceAIService(AIService):
         timer: PhaseTimer,
         turn_id: str | None,
         trace: LlmStreamTrace,
+        history: list[dict[str, str]] | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """Serve a turn through AgentOrchestrator (Agents 1–4).
 
@@ -659,6 +661,9 @@ class HuggingFaceAIService(AIService):
         true_stream = bool(
             brief and use_llm and settings.voice_llm_streaming_enabled
         )
+        conv_ctx = [
+            m for m in (history or []) if isinstance(m, dict) and m.get("role") == "user"
+        ][-3:]
 
         if true_stream:
             async for event in self._stream_via_orchestrator_true_stream(
@@ -669,6 +674,7 @@ class HuggingFaceAIService(AIService):
                 timer=timer,
                 turn_id=turn_id,
                 trace=trace,
+                conversation_context=conv_ctx,
             ):
                 yield event
             return
@@ -689,6 +695,7 @@ class HuggingFaceAIService(AIService):
                 mode="voice" if brief else "text",
                 locale=locale,
                 request_id=turn_id,
+                conversation_context=conv_ctx,
             )
 
         timer.mark("agent_orchestrator", result.timings.total_ms or 0.0)
@@ -829,6 +836,7 @@ class HuggingFaceAIService(AIService):
         timer: PhaseTimer,
         turn_id: str | None,
         trace: LlmStreamTrace,
+        conversation_context: list[dict[str, str]] | None = None,
     ) -> AsyncIterator[dict[str, Any]]:
         """True Qwen STREAM → token events (voice WS chunker/TTS overlaps)."""
         from app.services.agents.orchestrator import AgentOrchestrator
@@ -852,6 +860,14 @@ class HuggingFaceAIService(AIService):
                 mode="voice" if brief else "text",
                 locale=locale,
                 request_id=turn_id,
+                conversation_context=(
+                    "\n".join(
+                        str(m.get("content") or "")[:120]
+                        for m in (conversation_context or [])
+                        if isinstance(m, dict)
+                    )[:400]
+                    or None
+                ),
             )
 
         timer.mark("agent_orchestrator", ctx.timings.total_ms or 0.0)

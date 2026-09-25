@@ -132,12 +132,23 @@ _VISION = re.compile(
 _WEB = re.compile(
     r"\b("
     r"actualit[eé]|news|aujourd['’]hui|today|cette\s+semaine|"
+    r"ce\s+mois(?:[- ]ci)?|this\s+month|"
     r"horaires?\s+actuels?|current\s+(?:hours|schedule|price)|"
     r"ouvert\s+maintenant|open\s+now|prix\s+actuel|"
     r"recherche\s+sur\s+(?:internet|le\s+web|google)|"
     r"cherche\s+sur\s+(?:internet|le\s+web|google)|"
     r"search\s+(?:the\s+)?(?:web|internet)|"
     r"sur\s+internet|on\s+the\s+web|google\s+(?:moi|me)"
+    r")\b",
+    re.IGNORECASE,
+)
+
+# Fresh / external tourism facts that should prefer Web Research.
+_EVENTS_FRESH = re.compile(
+    r"\b("
+    r"[eé]v[eé]nements?(?:\s+touristiques?)?|"
+    r"festivals?|foires?|concerts?|"
+    r"tourist(?:ic)?\s+events?|festivals?"
     r")\b",
     re.IGNORECASE,
 )
@@ -218,6 +229,14 @@ def classify_with_rules(
             return RuleHit("BUDGET_TRIP", 0.88, "itinerary_with_budget")
         return RuleHit("ITINERARY", 0.88, "itinerary_or_duration_city")
 
+    # Explicit web / freshness BEFORE culture (festival alone used to steal WEB_SEARCH).
+    if _WEB.search(raw):
+        return RuleHit("WEB_SEARCH", 0.9, "freshness_keywords")
+
+    # Festivals / tourist events often need live or external sources.
+    if _EVENTS_FRESH.search(raw):
+        return RuleHit("WEB_SEARCH", 0.86, "events_need_web")
+
     if _HOTEL.search(raw) and not _FOOD.search(raw):
         return RuleHit("HOTEL", 0.86, "hotel_keywords")
 
@@ -241,9 +260,6 @@ def classify_with_rules(
 
     if _PLACE_SEARCH.search(raw):
         return RuleHit("PLACE_SEARCH", 0.9, "place_search_pattern")
-
-    if _WEB.search(raw):
-        return RuleHit("WEB_SEARCH", 0.8, "freshness_keywords")
 
     if _TOURISM_INFO.search(raw):
         return RuleHit("TOURISM_INFO", 0.85, "tourism_info")

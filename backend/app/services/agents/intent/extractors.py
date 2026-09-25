@@ -132,7 +132,9 @@ _REGION_SAFE_SUBSTRING = {
     "centre": re.compile(
         r"(?:\br[eé]gion\s+(?:du\s+)?centre\b|\bcentre\s+(?:du\s+)?cameroun\b|"
         r"\bdans\s+le\s+centre\b|\bau\s+centre\s+(?:du\s+)?cameroun\b|"
-        r"\bcenter\s+region\b)",
+        # "du/au/le centre" as region when not city-centre / centre touristique / faunique
+        r"\b(?:du|au|le)\s+centre\b(?!\s+(?:ville|ville|faunique|touristique|commercial|culturel))|"
+        r"\bcenter\s+region\b|\bcentral\s+region\b)",
         re.IGNORECASE,
     ),
     "sud": re.compile(

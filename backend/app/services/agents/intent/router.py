@@ -46,11 +46,27 @@ class IntentRouter:
         locale: str | None = None,
         has_image: bool = False,
         request_id: str | None = None,
+        conversation_context: str | None = None,
     ) -> IntentResult:
         started = time.perf_counter()
         rid = request_id or uuid.uuid4().hex[:12]
 
-        slots = extract_slots(message, locale=locale)
+        # Merge tiny conversation hint (location) for anaphora: "Et la nourriture ?"
+        enriched = message
+        if conversation_context and conversation_context.strip():
+            enriched = f"{conversation_context.strip()}\n{message}"
+
+        slots = extract_slots(enriched, locale=locale)
+        # Prefer slots from current message when present
+        current_slots = extract_slots(message, locale=locale)
+        if current_slots.city:
+            slots.city = current_slots.city
+        if current_slots.region:
+            slots.region = current_slots.region
+            slots.location = current_slots.location or slots.location
+        if current_slots.location and current_slots.region:
+            slots.location = current_slots.location
+
         hit = classify_with_rules(message, slots, has_image=has_image)
         intent = hit.intent
         confidence = hit.confidence
@@ -142,6 +158,7 @@ def classify_intent(
     has_image: bool = False,
     request_id: str | None = None,
     allow_llm_fallback: bool = False,
+    conversation_context: str | None = None,
 ) -> IntentResult:
     """Module-level entry point for Agent 1."""
     router = IntentRouter(mode=mode, allow_llm_fallback=allow_llm_fallback)
@@ -150,4 +167,5 @@ def classify_intent(
         locale=locale,
         has_image=has_image,
         request_id=request_id,
+        conversation_context=conversation_context,
     )
