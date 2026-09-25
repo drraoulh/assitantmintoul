@@ -1,5 +1,7 @@
+from collections.abc import AsyncIterator
+
 from fastapi import APIRouter, Depends, File, UploadFile
-from fastapi.responses import Response
+from fastapi.responses import StreamingResponse
 
 from app.api.deps import get_speech_service
 from app.core.config import get_settings
@@ -47,21 +49,34 @@ async def transcribe_audio(
 async def synthesize_speech(
     payload: SynthesisRequest,
     speech_service: SpeechService = Depends(get_speech_service),
-) -> Response:
+) -> StreamingResponse:
     text = payload.text.strip()
     if not text:
         raise SynthesisFailedError("Empty text for speech synthesis.")
 
-    audio_bytes = await speech_service.synthesize(text)
-    if not audio_bytes:
+    # Start Fish immediately and send the first bytes before Render's idle
+    # proxy closes the request. Buffering the whole MP3 first caused
+    # net::ERR_CONNECTION_CLOSED on the free tier.
+    stream = speech_service.synthesize_stream(text)
+    try:
+        first = await anext(stream)
+    except StopAsyncIteration as exc:
+        raise SynthesisFailedError("Empty audio from TTS provider.") from exc
+    if not first:
         raise SynthesisFailedError("Empty audio from TTS provider.")
 
     tts_provider = get_settings().tts_provider.strip().lower()
     if tts_provider in {"fish-audio", "fishspeech", "fish-speech"}:
         tts_provider = "fish"
 
-    return Response(
-        content=audio_bytes,
+    async def chunks() -> AsyncIterator[bytes]:
+        yield first
+        async for piece in stream:
+            if piece:
+                yield piece
+
+    return StreamingResponse(
+        chunks(),
         media_type="audio/mpeg",
         headers={
             "X-TTS-Provider": tts_provider or "fish",

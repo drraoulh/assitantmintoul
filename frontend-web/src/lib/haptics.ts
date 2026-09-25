@@ -28,7 +28,7 @@ function canVibrate(): boolean {
 }
 
 function vibrateSafe(pattern: number | number[]): void {
-  if (!canVibrate()) return;
+  if (!unlocked || !canVibrate()) return;
   try {
     navigator.vibrate(pattern);
   } catch {
@@ -39,7 +39,12 @@ function vibrateSafe(pattern: number | number[]): void {
 /** Mark gesture unlock + fire a tiny pulse so the session is armed. */
 export function unlockHaptics(): void {
   unlocked = true;
-  vibrateSafe(1);
+  if (!canVibrate()) return;
+  try {
+    navigator.vibrate(1);
+  } catch {
+    /* Chrome blocks vibrate until a tap — ignore in iframes / autoplay. */
+  }
 }
 
 export function isHapticsUnlocked(): boolean {
@@ -88,8 +93,7 @@ export function triggerHaptic(type: HapticType = 'light'): void {
  */
 export function typeHaptic(char: string): void {
   if (!char || /\s|[.…,;:!?«»"'’-]/.test(char)) return;
-  // Prefer unlocked path; still attempt if API exists (some Android allow it).
-  vibrateSafe(unlocked ? 7 : 5);
+  vibrateSafe(7);
 }
 
 /** Named pulses used by the cinematic intro (scene changes / CTA). */

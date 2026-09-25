@@ -72,6 +72,22 @@ services:
         value: "true"
       - key: HUGGINGFACE_HUB_TOKEN
         sync: false
+      - key: FISH_AUDIO_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: "gemini-3.5-flash-lite"
+      - key: GEMINI_FALLBACK_MODEL
+        value: "gemini-3.1-flash-lite"
+      - key: GEMINI_FALLBACK_TO_QWEN
+        value: "true"
+      - key: GEMINI_CHAT_ENABLED
+        value: "false"
+      - key: GEMINI_TOOLS_ENABLED
+        value: "false"
+      - key: GEMINI_VOICE_ENABLED
+        value: "false"
       - key: AGENT_ORCHESTRATOR_ENABLED
         value: "true"
       - key: AGENT_ORCHESTRATOR_USE_LLM

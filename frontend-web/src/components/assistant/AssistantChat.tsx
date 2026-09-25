@@ -18,6 +18,7 @@ import {
 import { Button, ErrorState, Input, ThinkingDots } from '@/components/ui';
 import { friendlyError, sendChatMessage, synthesizeSpeech } from '@/lib/api/client';
 import { audioPlayback } from '@/lib/audio/playback';
+import { speakOnDevice, splitForSpeech, stopDeviceSpeech } from '@/lib/audio/tts';
 import { useLocale } from '@/lib/i18n';
 import { structuredFromChatResponse } from '@/lib/utils/response';
 import type { StructuredChatUI } from '@/lib/types';
@@ -73,6 +74,7 @@ export function AssistantChat({
   const stopAllAudio = useCallback(() => {
     ttsAbortRef.current?.abort();
     ttsAbortRef.current = null;
+    stopDeviceSpeech();
     audioPlayback.stop();
     setSpeakingMsgId(null);
   }, []);
@@ -210,11 +212,34 @@ export function AssistantChat({
     ttsAbortRef.current = abort;
 
     try {
-      const blob = await synthesizeSpeech(text, { signal: abort.signal });
-      if (abort.signal.aborted) return;
-      await audioPlayback.playExclusive(blob);
+      const segments = splitForSpeech(text);
+      let usedServer = false;
+      for (const segment of segments) {
+        if (abort.signal.aborted) return;
+        try {
+          const blob = await synthesizeSpeech(segment, { signal: abort.signal });
+          if (abort.signal.aborted) return;
+          if (!usedServer) {
+            audioPlayback.stop();
+            usedServer = true;
+          }
+          audioPlayback.enqueueBlob(blob);
+        } catch (error) {
+          if (abort.signal.aborted) return;
+          if (usedServer) throw error;
+          await speakOnDevice(text, locale);
+          return;
+        }
+      }
+      if (usedServer) await audioPlayback.waitUntilIdle();
     } catch (error) {
       if (abort.signal.aborted) return;
+      try {
+        await speakOnDevice(text, locale);
+        return;
+      } catch {
+        /* fall through */
+      }
       setMessages((m) => [
         ...m,
         {

@@ -185,6 +185,15 @@ export async function synthesizeSpeech(
       );
     }
     return await response.blob();
+  } catch (error) {
+    if (error instanceof ApiError) throw error;
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new ApiError('La synthèse vocale a pris trop de temps. Veuillez réessayer.', 504);
+    }
+    throw new ApiError(
+      'La synthèse vocale a été interrompue. Réessayez ou utilisez le haut-parleur du navigateur.',
+      0,
+    );
   } finally {
     clearTimeout(timeoutId);
     opts?.signal?.removeEventListener('abort', onExternalAbort);
@@ -251,7 +260,10 @@ export function friendlyError(error: unknown): string {
     }
     return error.message || 'Une erreur est survenue. Veuillez réessayer.';
   }
-  if (error instanceof Error && /failed to fetch|network/i.test(error.message)) {
+  if (
+    error instanceof Error &&
+    /failed to fetch|network|connection.?closed|err_connection/i.test(error.message)
+  ) {
     return 'Connexion au serveur indisponible. Veuillez réessayer.';
   }
   return 'Une erreur est survenue. Veuillez réessayer.';

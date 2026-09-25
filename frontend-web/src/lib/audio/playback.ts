@@ -51,6 +51,13 @@ class AudioPlaybackController {
     await this.pump();
   }
 
+  /** Resolve when the current queue has finished playing. */
+  async waitUntilIdle(): Promise<void> {
+    while (this.isPlaying()) {
+      await new Promise((resolve) => setTimeout(resolve, 60));
+    }
+  }
+
   stop() {
     this.stopped = true;
     this.queue = [];
