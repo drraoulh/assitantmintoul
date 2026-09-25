@@ -1,14 +1,25 @@
 'use client';
 
-import { FormEvent, useEffect, useRef, useState } from 'react';
-import { Camera, Mic, SendHorizontal, Sparkles } from 'lucide-react';
+import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Camera,
+  Mic,
+  SendHorizontal,
+  Sparkles,
+  Square,
+  Volume2,
+} from 'lucide-react';
 
 import { ResponseRenderer } from '@/components/assistant/ResponseRenderer';
+import {
+  VoiceMode,
+  type VoiceExchange,
+} from '@/components/assistant/VoiceMode';
 import { Button, ErrorState, Input, ThinkingDots } from '@/components/ui';
-import { friendlyError, sendChatMessage } from '@/lib/api/client';
+import { friendlyError, sendChatMessage, synthesizeSpeech } from '@/lib/api/client';
+import { audioPlayback } from '@/lib/audio/playback';
 import { useLocale } from '@/lib/i18n';
 import { structuredFromChatResponse } from '@/lib/utils/response';
-import { VoiceSocket, blobToBase64 } from '@/lib/websocket/voice';
 import type { StructuredChatUI } from '@/lib/types';
 
 interface Msg {
@@ -17,6 +28,7 @@ interface Msg {
   content: string;
   ui?: StructuredChatUI | null;
   isError?: boolean;
+  isTip?: boolean;
   streaming?: boolean;
 }
 
@@ -28,8 +40,6 @@ const SUGGESTIONS = [
   { label: '🍲 Découvrir la gastronomie', q: "C'est quoi la nourriture traditionnelle au Sud-Ouest ?" },
   { label: '🏨 Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
 ] as const;
-
-type VoicePhase = 'listening' | 'thinking' | 'speaking' | null;
 
 export function AssistantChat({
   initialQuestion,
@@ -43,19 +53,34 @@ export function AssistantChat({
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [conversationId, setConversationId] = useState<string>();
-  const [voicePhase, setVoicePhase] = useState<VoicePhase>(null);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState<string | null>(null);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const started = useRef(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const streamMsgId = useRef<string | null>(null);
+  const ttsAbortRef = useRef<AbortController | null>(null);
+  const streamAssistantIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    return audioPlayback.subscribe(setAudioPlaying);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, sending, voicePhase]);
+  }, [messages, sending]);
+
+  const stopAllAudio = useCallback(() => {
+    ttsAbortRef.current?.abort();
+    ttsAbortRef.current = null;
+    audioPlayback.stop();
+    setSpeakingMsgId(null);
+  }, []);
 
   async function ask(text: string) {
     const trimmed = text.trim();
-    if (!trimmed || sending) return;
+    if (!trimmed || sending || voiceOpen) return;
+    stopAllAudio();
     setSending(true);
     setMessages((m) => [
       ...m,
@@ -95,189 +120,131 @@ export function AssistantChat({
 
   useEffect(() => {
     if (started.current) return;
+    if (autoVoice) {
+      started.current = true;
+      setVoiceOpen(true);
+      return;
+    }
     if (initialQuestion) {
       started.current = true;
       void ask(initialQuestion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialQuestion]);
+  }, [initialQuestion, autoVoice]);
 
-  async function startVoice() {
-    setVoicePhase('listening');
-    const socket = new VoiceSocket();
-    let assistantText = '';
-    streamMsgId.current = null;
+  const handleVoiceExchange = useCallback((ex: VoiceExchange) => {
+    if (ex.conversationId) setConversationId(ex.conversationId);
 
-    try {
-      await socket.connect((ev) => {
-        if (ev.type === 'status') {
-          const phase = (ev.phase || '').toLowerCase();
-          const msg = (ev.message || '').toLowerCase();
-          if (/listen|écoute|recording|mic/.test(`${phase} ${msg}`)) {
-            setVoicePhase('listening');
-          } else if (/think|analy|process|llm|rag/.test(`${phase} ${msg}`)) {
-            setVoicePhase('thinking');
-          } else if (/speak|tts|audio|play/.test(`${phase} ${msg}`)) {
-            setVoicePhase('speaking');
-          } else if (ev.message || ev.phase) {
-            setVoicePhase('thinking');
-          }
+    if (ex.userText) {
+      setMessages((m) => [
+        ...m,
+        { id: `${Date.now()}-vu`, role: 'user', content: ex.userText! },
+      ]);
+    }
+
+    if (ex.assistantText || ex.ui) {
+      setMessages((m) => {
+        const sid = streamAssistantIdRef.current;
+        if (sid) {
+          streamAssistantIdRef.current = null;
+          return m.map((msg) =>
+            msg.id === sid
+              ? {
+                  ...msg,
+                  content: ex.assistantText || msg.content,
+                  ui: ex.ui ?? msg.ui,
+                  streaming: false,
+                }
+              : msg,
+          );
         }
-        if (ev.type === 'transcript' && ev.text) {
-          setMessages((m) => [
-            ...m,
-            { id: `${Date.now()}-vt`, role: 'user', content: ev.text },
-          ]);
-        }
-        if (ev.type === 'token' && ev.text) {
-          assistantText += ev.text;
-          setVoicePhase('speaking');
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid
-                  ? { ...msg, content: assistantText, streaming: true }
-                  : msg,
-              );
-            }
-            const id = `stream-${Date.now()}`;
-            streamMsgId.current = id;
-            return [
-              ...m,
-              {
-                id,
-                role: 'assistant',
-                content: assistantText,
-                streaming: true,
-              },
-            ];
-          });
-        }
-        if (ev.type === 'assistant_text' && ev.text) {
-          assistantText = ev.text;
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid ? { ...msg, content: assistantText } : msg,
-              );
-            }
-            const id = `stream-${Date.now()}`;
-            streamMsgId.current = id;
-            return [
-              ...m,
-              { id, role: 'assistant', content: assistantText, streaming: true },
-            ];
-          });
-        }
-        if (ev.type === 'audio_chunk' && ev.data) {
-          setVoicePhase('speaking');
-          void playChunk(ev.data);
-        }
-        if (ev.type === 'turn_done') {
-          if (ev.conversation_id) setConversationId(ev.conversation_id);
-          const ui = ev.ui ?? null;
-          setMessages((m) => {
-            const sid = streamMsgId.current;
-            if (sid) {
-              return m.map((msg) =>
-                msg.id === sid
-                  ? {
-                      ...msg,
-                      content: assistantText || msg.content,
-                      ui: ui ?? undefined,
-                      streaming: false,
-                    }
-                  : msg,
-              );
-            }
-            if (assistantText || ui) {
-              return [
-                ...m,
-                {
-                  id: `${Date.now()}-a`,
-                  role: 'assistant',
-                  content: assistantText,
-                  ui: ui ?? undefined,
-                },
-              ];
-            }
-            return m;
-          });
-          streamMsgId.current = null;
-          setVoicePhase(null);
-          socket.close();
-        }
-        if (ev.type === 'error') {
-          setVoicePhase(null);
-          setMessages((m) => [
-            ...m,
-            {
-              id: `${Date.now()}-ve`,
-              role: 'assistant',
-              content: ev.message || 'La voix est momentanément indisponible.',
-              isError: true,
-            },
-          ]);
-          socket.close();
-        }
+        return [
+          ...m,
+          {
+            id: `${Date.now()}-va`,
+            role: 'assistant',
+            content: ex.assistantText || '',
+            ui: ex.ui ?? undefined,
+          },
+        ];
       });
+    }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = [];
-      recorder.ondataavailable = (e) => {
-        if (e.data.size) chunks.push(e.data);
-      };
-      recorder.start();
-      await new Promise((r) => setTimeout(r, 4000));
-      recorder.stop();
-      await new Promise((r) => {
-        recorder.onstop = () => r(null);
-      });
-      stream.getTracks().forEach((tr) => tr.stop());
-      const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
-      const b64 = await blobToBase64(blob);
-      setVoicePhase('thinking');
-      socket.sendAudioBase64(b64, blob.type || 'audio/webm');
-      socket.send({ type: 'utterance', locale });
-    } catch (error) {
-      setVoicePhase(null);
+    if (ex.tip) {
+      setMessages((m) => [
+        ...m,
+        {
+          id: `${Date.now()}-tip`,
+          role: 'assistant',
+          content: ex.tip!,
+          isTip: true,
+        },
+      ]);
+    }
+
+    if (ex.error) {
       setMessages((m) => [
         ...m,
         {
           id: `${Date.now()}-ve`,
           role: 'assistant',
+          content: ex.error!,
+          isError: true,
+        },
+      ]);
+    }
+  }, []);
+
+  async function speakMessage(msg: Msg) {
+    const text = msg.content?.trim();
+    if (!text || msg.isError || msg.isTip) return;
+
+    if (speakingMsgId === msg.id) {
+      stopAllAudio();
+      return;
+    }
+
+    stopAllAudio();
+    setSpeakingMsgId(msg.id);
+    const abort = new AbortController();
+    ttsAbortRef.current = abort;
+
+    try {
+      const blob = await synthesizeSpeech(text, { signal: abort.signal });
+      if (abort.signal.aborted) return;
+      await audioPlayback.playExclusive(blob);
+    } catch (error) {
+      if (abort.signal.aborted) return;
+      setMessages((m) => [
+        ...m,
+        {
+          id: `${Date.now()}-tts`,
+          role: 'assistant',
           content: friendlyError(error),
           isError: true,
         },
       ]);
-      socket.close();
+    } finally {
+      if (ttsAbortRef.current === abort) ttsAbortRef.current = null;
+      setSpeakingMsgId((id) => (id === msg.id ? null : id));
     }
   }
 
   useEffect(() => {
-    if (autoVoice && !started.current) {
-      started.current = true;
-      void startVoice();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoVoice]);
+    return () => {
+      stopAllAudio();
+    };
+  }, [stopAllAudio]);
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     void ask(input);
   }
 
-  const voiceLabel =
-    voicePhase === 'listening'
-      ? t('assistant.listening')
-      : voicePhase === 'thinking'
-        ? t('assistant.thinking')
-        : voicePhase === 'speaking'
-          ? 'SmartMboa parle…'
-          : null;
+  function openVoice() {
+    stopAllAudio();
+    setVoiceOpen(true);
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-[var(--ivory)]">
@@ -286,7 +253,7 @@ export function AssistantChat({
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--green-deep)] text-white">
             <Sparkles className="h-4 w-4" aria-hidden />
           </span>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <h1 className="font-display text-lg font-bold text-[var(--green-deep)] md:text-xl">
               {t('assistant.title')}
             </h1>
@@ -294,30 +261,46 @@ export function AssistantChat({
               Votre guide intelligent pour découvrir le Cameroun.
             </p>
           </div>
-        </div>
-        {voiceLabel ? (
-          <p
-            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[var(--mint-soft)] px-3 py-1 text-sm font-medium text-[var(--green)]"
-            aria-live="polite"
+          {(audioPlaying || speakingMsgId) && (
+            <button
+              type="button"
+              onClick={stopAllAudio}
+              className="inline-flex items-center gap-1.5 rounded-full bg-[var(--danger)] px-3 py-1.5 text-xs font-semibold text-white"
+              aria-label="Arrêter la lecture"
+            >
+              <Square className="h-3.5 w-3.5 fill-current" aria-hidden />
+              Stop
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={openVoice}
+            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--green-deep)] px-3 py-1.5 text-xs font-semibold text-white"
+            aria-label="Ouvrir le mode vocal"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--green)] opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--green)]" />
-            </span>
-            {voiceLabel}
-          </p>
-        ) : null}
+            <Mic className="h-3.5 w-3.5" aria-hidden />
+            Vocal
+          </button>
+        </div>
       </header>
 
       <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 py-4 md:px-6">
         {messages.length === 0 && !sending ? (
           <div className="mx-auto max-w-lg py-6 text-center">
             <p className="font-display text-2xl font-semibold text-[var(--green-deep)]">
-              Bonjour 👋
+              Bonjour
             </p>
             <p className="mt-2 text-sm text-[var(--muted)]">
               Je suis SmartMboa, votre guide intelligent pour découvrir le Cameroun.
             </p>
+            <button
+              type="button"
+              onClick={openVoice}
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-[var(--green-deep)] px-5 py-3 text-sm font-semibold text-white shadow-[var(--shadow-soft)] transition hover:bg-[var(--green)]"
+            >
+              <Mic className="h-4 w-4" aria-hidden />
+              Parler au guide
+            </button>
             <div className="mt-6 flex gap-2 overflow-x-auto pb-2 no-scrollbar md:flex-wrap md:justify-center md:overflow-visible">
               {SUGGESTIONS.map((s) => (
                 <button
@@ -342,11 +325,48 @@ export function AssistantChat({
                 : 'mr-auto w-full max-w-[98%] md:max-w-[92%]'
             }
           >
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
-              {msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
-              {msg.streaming ? ' · …' : ''}
-            </p>
-            {msg.role === 'assistant' && !msg.isError ? (
+            <div className="mb-1 flex items-center gap-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--muted)]">
+                {msg.role === 'user' ? t('assistant.you') : t('assistant.bot')}
+                {msg.streaming ? ' · …' : ''}
+              </p>
+              {msg.role === 'assistant' &&
+              !msg.isError &&
+              !msg.isTip &&
+              msg.content.trim() ? (
+                <button
+                  type="button"
+                  onClick={() => void speakMessage(msg)}
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold transition ${
+                    speakingMsgId === msg.id
+                      ? 'bg-[var(--danger)] text-white'
+                      : 'bg-[var(--mint-soft)] text-[var(--green-deep)] hover:bg-[var(--line)]'
+                  }`}
+                  aria-label={
+                    speakingMsgId === msg.id
+                      ? 'Arrêter la lecture'
+                      : 'Lire la réponse'
+                  }
+                >
+                  {speakingMsgId === msg.id ? (
+                    <>
+                      <Square className="h-3 w-3 fill-current" aria-hidden />
+                      Stop
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="h-3.5 w-3.5" aria-hidden />
+                      Lire
+                    </>
+                  )}
+                </button>
+              ) : null}
+            </div>
+            {msg.isTip ? (
+              <div className="rounded-2xl border border-[var(--line)] bg-[var(--mint-soft)]/60 px-4 py-3 text-sm text-[var(--green-deep)]">
+                {msg.content}
+              </div>
+            ) : msg.role === 'assistant' && !msg.isError ? (
               <div className="rounded-2xl bg-white px-4 py-4 shadow-sm ring-1 ring-[var(--line)]">
                 <ResponseRenderer text={msg.content} ui={msg.ui} />
               </div>
@@ -374,6 +394,7 @@ export function AssistantChat({
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--mint-soft)] text-[var(--green-deep)]"
             aria-label="Ouvrir la vision"
             onClick={() => fileRef.current?.click()}
+            disabled={sending}
           >
             <Camera className="h-5 w-5" />
           </button>
@@ -392,63 +413,39 @@ export function AssistantChat({
             placeholder="Posez votre question…"
             className="min-w-0 flex-1"
             aria-label="Message"
-            disabled={sending || !!voicePhase}
+            disabled={sending}
           />
+
           <button
             type="button"
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
-              voicePhase
-                ? 'bg-[var(--gold)] text-[var(--green-deep)]'
-                : 'bg-[var(--mint-soft)] text-[var(--green-deep)]'
-            }`}
-            aria-label="Micro — parler à SmartMboa"
-            disabled={sending || !!voicePhase}
-            onClick={() => void startVoice()}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--green-deep)] text-white"
+            aria-label="Ouvrir le mode vocal"
+            disabled={sending}
+            onClick={openVoice}
           >
             <Mic className="h-5 w-5" />
           </button>
+
           <Button
             type="submit"
-            disabled={sending || !input.trim() || !!voicePhase}
+            disabled={sending || !input.trim()}
             aria-label="Envoyer"
           >
             <SendHorizontal className="h-4 w-4" />
           </Button>
         </div>
       </form>
+
+      <VoiceMode
+        open={voiceOpen}
+        onClose={() => setVoiceOpen(false)}
+        conversationId={conversationId}
+        onExchange={handleVoiceExchange}
+      />
     </div>
   );
 }
 
-const audioQueue: string[] = [];
-let playing = false;
-
-async function playChunk(b64: string) {
-  audioQueue.push(b64);
-  if (playing) return;
-  playing = true;
-  while (audioQueue.length) {
-    const chunk = audioQueue.shift()!;
-    const bytes = Uint8Array.from(atob(chunk), (c) => c.charCodeAt(0));
-    const blob = new Blob([bytes], { type: 'audio/mpeg' });
-    const url = URL.createObjectURL(blob);
-    await new Promise<void>((resolve) => {
-      const audio = new Audio(url);
-      audio.onended = () => {
-        URL.revokeObjectURL(url);
-        resolve();
-      };
-      audio.onerror = () => {
-        URL.revokeObjectURL(url);
-        resolve();
-      };
-      void audio.play().catch(() => resolve());
-    });
-  }
-  playing = false;
-}
-
-/** @deprecated Prefer AssistantChat with searchParams props from the page. */
 export function AssistantPageClient({
   initialQuestion,
   autoVoice,

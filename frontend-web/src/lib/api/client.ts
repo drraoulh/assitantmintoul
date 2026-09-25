@@ -159,9 +159,14 @@ export async function identifyImage(file: File): Promise<VisionIdentifyResponse>
   }
 }
 
-export async function synthesizeSpeech(text: string): Promise<Blob> {
+export async function synthesizeSpeech(
+  text: string,
+  opts?: { signal?: AbortSignal },
+): Promise<Blob> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const onExternalAbort = () => controller.abort();
+  opts?.signal?.addEventListener('abort', onExternalAbort);
   try {
     const response = await fetch(`${getApiBaseUrl()}/api/speech/synthesize`, {
       method: 'POST',
@@ -182,6 +187,60 @@ export async function synthesizeSpeech(text: string): Promise<Blob> {
     return await response.blob();
   } finally {
     clearTimeout(timeoutId);
+    opts?.signal?.removeEventListener('abort', onExternalAbort);
+  }
+}
+
+/** STT — upload recorded audio to `/api/speech/transcribe`. */
+export async function transcribeAudio(
+  blob: Blob,
+  opts?: { mimeType?: string; filename?: string; signal?: AbortSignal },
+): Promise<{ text: string; language?: string | null }> {
+  const mime =
+    opts?.mimeType ||
+    blob.type?.split(';')[0] ||
+    'audio/webm';
+  const ext =
+    mime.includes('mp4') || mime.includes('m4a')
+      ? 'm4a'
+      : mime.includes('ogg')
+        ? 'ogg'
+        : mime.includes('wav')
+          ? 'wav'
+          : 'webm';
+  const filename = opts?.filename || `recording.${ext}`;
+  const body = new FormData();
+  body.append('file', blob, filename);
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const onExternalAbort = () => controller.abort();
+  opts?.signal?.addEventListener('abort', onExternalAbort);
+  try {
+    const response = await fetch(`${getApiBaseUrl()}/api/speech/transcribe`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: { Accept: 'application/json' },
+      body,
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      throw new ApiError(
+        readErrorDetail(payload) ?? `HTTP ${response.status}`,
+        response.status,
+      );
+    }
+    const payload = (await response.json()) as {
+      text?: string;
+      language?: string | null;
+    };
+    return {
+      text: (payload.text || '').trim(),
+      language: payload.language,
+    };
+  } finally {
+    clearTimeout(timeoutId);
+    opts?.signal?.removeEventListener('abort', onExternalAbort);
   }
 }
 
