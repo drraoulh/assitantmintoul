@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 
 from app.services.agents.web_research.ranker import semantic_overlap
 from app.services.web_search.source_parser import extract_domain
@@ -31,7 +32,11 @@ def render_deterministic(
         language=language,
         response_mode=response_mode,
     )
-    if response_mode != "voice" and (intent.web_reason or "") in _LEAD_REASONS:
+    if (
+        response_mode != "voice"
+        and (intent.web_reason or "") in _LEAD_REASONS
+        and intent.intent != "FOOD"
+    ):
         leads = _web_leads(knowledge, limit=3)
         if leads:
             title = (
@@ -89,6 +94,15 @@ def _render_core(
     if is_general_fact(intent):
         return _render_general_fact(user_query, knowledge, lang=lang, voice=voice)
 
+    if intent.intent == "TRAVEL_ROUTE" and intent.destination:
+        return _render_travel_route(intent, knowledge, lang=lang, voice=voice)
+    if intent.intent == "IMAGE_SEARCH":
+        return _render_image_search(intent, knowledge, lang=lang, voice=voice)
+    if intent.intent == "FOOD" and intent.web_reason == "FORCED_RESTAURANT_SEARCH":
+        return _render_restaurants(intent, knowledge, lang=lang, voice=voice)
+    if intent.intent == "FOOD" and intent.dish:
+        return _render_dish(intent, knowledge, lang=lang, voice=voice)
+
     culture_chunks = [
         k for k in knowledge.knowledge if (k.source_id or "").startswith("culture:")
     ]
@@ -127,6 +141,13 @@ def _render_core(
     ):
         return _render_web_search(user_query, knowledge, lang=lang, voice=voice)
 
+    if (
+        intent.destination
+        and intent.intent in {"ITINERARY", "BUDGET_TRIP"}
+        and not (tourism_plan and tourism_plan.days and tourism_plan.selected_places)
+    ):
+        return _render_travel_route(intent, knowledge, lang=lang, voice=voice)
+
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
             return _insufficient(lang)
@@ -139,7 +160,11 @@ def _render_core(
         return _not_feasible(tourism_plan, lang)
 
     if tourism_plan is not None and tourism_plan.days and tourism_plan.selected_places:
-        return _render_plan(tourism_plan, knowledge, lang=lang, voice=voice)
+        plan_text = _render_plan(tourism_plan, knowledge, lang=lang, voice=voice)
+        if intent.destination and not voice:
+            route, _ = _route_section(intent, knowledge, lang=lang)
+            return f"{route}\n\n{plan_text}"
+        return plan_text
 
     if intent.intent == "PLACE_DETAILS" and knowledge.places:
         return _render_place_details(knowledge.places[0], lang=lang, voice=voice)
@@ -565,11 +590,24 @@ def _render_culture_food(
         dishes = [k for k in culture_chunks if "dish" in (k.chunk_id or "")]
     policy = [k for k in culture_chunks if "resto-policy" in (k.chunk_id or "")]
     parts: list[str] = []
-    if lang == "en":
+    web = [] if voice else _web_points(knowledge, limit=3)
+    if web:
+        parts.append(
+            "What the web sources I consulted say:"
+            if lang == "en"
+            else "Ce que disent les sources web consultées :"
+        )
+        parts.append(_bullets(web))
+        parts.append(
+            "\nComplement from my knowledge base:"
+            if lang == "en"
+            else "\nComplément de ma base :"
+        )
+    elif lang == "en":
         parts.append("Typical dishes documented in my knowledge base:")
     else:
         parts.append("Plats typiques documentés dans ma base :")
-    for d in dishes[:5]:
+    for d in dishes[: 3 if web else 5]:
         title = d.title or "Plat"
         body = (d.content or "").strip()
         parts.append(f"- {title} : {body}" if not voice else f"{title}: {body}")
@@ -579,7 +617,7 @@ def _render_culture_food(
             if lang != "en"
             else "No restaurant is verified in my knowledge base for this region yet."
         )
-    web_facts = _web_facts(knowledge, limit=2)
+    web_facts = [] if web else _web_facts(knowledge, limit=2)
     if web_facts and not voice:
         parts.append(
             "Complément issu de sources web consultées :"
@@ -784,3 +822,239 @@ def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> 
         return " ".join(body.split())[:500]
     title = "From verified notes:" if lang == "en" else "D’après les notes vérifiées :"
     return f"{title}\n{body}"
+
+
+_WEB_PREFIX = re.compile(r"^\s*\[web evidence[^\]]*\]\s*", re.IGNORECASE)
+_TRANSPORT = re.compile(
+    r"\b(?:bus|cars?|agences?|agency|agencies|compagnies?|compan(?:y|ies)|taxis?|trajets?|"
+    r"routes?|km|kilom\w*|heures?|hours?|minutes|trains?|vols?|flights?|avion|voyages?|"
+    r"travel\w*|transport\w*|driv\w*|d[ée]parts?|gares?|stations?|motor\s?parks?|"
+    r"autoroute|highway|distance|via)\b",
+    re.IGNORECASE,
+)
+_ACTIVITY = re.compile(
+    r"\b(?:visit\w*|randonn\w*|mont|mount|mus[ée]es?|museums?|jardins?|gardens?|zoo|lacs?|"
+    r"lakes?|plages?|beach\w*|hik\w*|attractions?|activit\w*|sites?|palais|palace|tours?|"
+    r"things\s+to\s+do|que\s+faire|[àa]\s+voir)\b",
+    re.IGNORECASE,
+)
+_RESTAURANT_TERMS = re.compile(
+    r"\b(?:restaurants?|restos?|maquis|snacks?|bars?|menu|grill|eatery|eateries|cafeteria|"
+    r"serves?|sert|servent|chez)\b",
+    re.IGNORECASE,
+)
+
+
+def _fold(text: str | None) -> str:
+    decomposed = unicodedata.normalize("NFKD", (text or "").casefold())
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
+def _web_points(
+    knowledge: KnowledgeResult,
+    *,
+    limit: int,
+    keep: re.Pattern[str] | None = None,
+    drop: re.Pattern[str] | None = None,
+    exclude: set[str] | None = None,
+    mentions: str | None = None,
+) -> list[tuple[str, str]]:
+    """(snippet, domain) pairs straight from web evidence — never rewritten."""
+    points: list[tuple[str, str]] = []
+    for chunk in knowledge.knowledge:
+        if not (chunk.chunk_id or "").startswith("web:"):
+            continue
+        if "low confidence" in (chunk.content or "")[:40].casefold():
+            continue
+        text = " ".join(_WEB_PREFIX.sub("", (chunk.content or "").split("\n", 1)[0]).split())
+        if not text or (exclude and chunk.chunk_id in exclude):
+            continue
+        blob = f"{chunk.title or ''} {text}"
+        if keep is not None and not keep.search(blob):
+            continue
+        if drop is not None and drop.search(blob) and not (keep and keep.search(blob)):
+            continue
+        if mentions and _fold(mentions) not in _fold(blob):
+            continue
+        if len(text) > 240:
+            text = text[:239].rsplit(" ", 1)[0] + "…"
+        if any(text == p[0] for p in points):
+            continue
+        points.append((text, extract_domain(chunk.source_id or "")))
+        if exclude is not None:
+            exclude.add(chunk.chunk_id)
+        if len(points) >= limit:
+            break
+    return points
+
+
+def _bullets(points: list[tuple[str, str]]) -> str:
+    return "\n".join(f"- {text}" + (f" ({domain})" if domain else "") for text, domain in points)
+
+
+def _route_section(intent: IntentResult, knowledge: KnowledgeResult, *, lang: str) -> tuple[str, set[str]]:
+    dest = intent.destination or ""
+    origin = intent.origin
+    used: set[str] = set()
+    transport = _web_points(knowledge, limit=4, keep=_TRANSPORT, exclude=used, mentions=dest)
+    if lang == "en":
+        title = f"Getting from {origin} to {dest}" if origin else f"Getting to {dest}"
+        lead = "What the web sources I consulted say:"
+        missing = f"I couldn't find reliable transport information online for this trip."
+        note = (
+            "Fares, timetables and companies are only given when a source states them — "
+            "confirm with the travel agencies before you leave."
+        )
+    else:
+        title = f"Trajet {origin} → {dest}" if origin else f"Pour rejoindre {dest}"
+        lead = "Ce que disent les sources web consultées :"
+        missing = "Je n’ai pas trouvé d’information de transport fiable en ligne pour ce trajet."
+        note = (
+            "Tarifs, horaires et compagnies ne sont indiqués que s’ils figurent dans une source : "
+            "confirmez-les auprès des agences de voyage avant de partir."
+        )
+    body = f"{lead}\n{_bullets(transport)}" if transport else missing
+    return f"### {title}\n{body}\n\n{note}", used
+
+
+def _render_travel_route(
+    intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    section, used = _route_section(intent, knowledge, lang=lang)
+    parts = [section]
+    if intent.wants_activities:
+        dest = intent.destination or ""
+        names = [p.name for p in knowledge.places if (p.city or "").casefold() == dest.casefold()][:5]
+        web = _web_points(knowledge, limit=2, keep=_ACTIVITY, exclude=used, mentions=dest)
+        title = f"### What to do in {dest}" if lang == "en" else f"### Que faire à {dest}"
+        lines: list[str] = []
+        if names:
+            lines.append(
+                ("Verified places in SmartMboa:" if lang == "en" else "Lieux vérifiés dans SmartMboa :")
+                + "\n"
+                + "\n".join(f"- {n}" for n in names)
+            )
+        if web:
+            lines.append(("Online:" if lang == "en" else "En ligne :") + "\n" + _bullets(web))
+        if not lines:
+            lines.append(
+                f"I couldn't find verified activities in {dest}."
+                if lang == "en"
+                else f"Je n’ai pas trouvé d’activités vérifiées à {dest}."
+            )
+        parts.append(title + "\n" + "\n\n".join(lines))
+    text = "\n\n".join(parts)
+    return " ".join(text.replace("###", "").split())[:500] if voice else text
+
+
+def _dish_kb_notes(knowledge: KnowledgeResult, dish: str, *, limit: int) -> list[str]:
+    """KB lines that name the dish (a table row / bullet, not the whole chunk)."""
+    key = _fold(dish.split()[0]) if dish else ""
+    pattern = re.compile(rf"\b{re.escape(key)}\b") if key else None
+    notes: list[str] = []
+    for chunk in knowledge.knowledge:
+        if (chunk.chunk_id or "").startswith("web:") or not chunk.content:
+            continue
+        title = (chunk.title or "").strip()
+        if pattern and pattern.search(_fold(title)):
+            line = f"{title} : {_first_section(chunk.content, limit=220)}"
+        else:
+            lines = [
+                ln for ln in re.split(r"\n|(?<=\|)\s*\|\s*(?=\|)|\s-\s(?=\*\*)", chunk.content)
+                if pattern is None or pattern.search(_fold(ln))
+            ]
+            if not lines:
+                continue
+            line = " ".join(lines[0].replace("|", " ").replace("**", "").split()).lstrip("- ")
+        if line and line not in notes:
+            notes.append(line[:240])
+        if len(notes) >= limit:
+            break
+    return notes
+
+
+def _render_dish(
+    intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    dish = intent.dish or ""
+    web = _web_points(knowledge, limit=3)
+    kb = _dish_kb_notes(knowledge, dish, limit=2)
+    parts: list[str] = []
+    if web:
+        parts.append(
+            (f"{dish} — what the web sources I consulted say:" if lang == "en"
+             else f"{dish} — ce que disent les sources web consultées :")
+            + "\n" + _bullets(web)
+        )
+    if kb:
+        parts.append(
+            ("From the SmartMboa knowledge base:" if lang == "en" else "Complément de la base SmartMboa :")
+            + "\n" + "\n".join(f"- {n}" for n in kb)
+        )
+    if not parts:
+        return (
+            f"I couldn't find reliable information about {dish}."
+            if lang == "en"
+            else f"Je n’ai pas trouvé d’information fiable sur le {dish}."
+        )
+    if intent.wants_images and "images" not in knowledge.missing_information:
+        parts.append("Photos found online are shown below." if lang == "en" else "Des photos trouvées en ligne sont affichées ci-dessous.")
+    elif intent.wants_images:
+        parts.append("I couldn't find photos online." if lang == "en" else "Je n’ai pas trouvé de photos en ligne.")
+    text = "\n\n".join(parts)
+    return " ".join(text.split())[:500] if voice else text
+
+
+def _render_restaurants(
+    intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    where = intent.city or intent.region or ("Cameroon" if lang == "en" else "Cameroun")
+    dish = intent.dish
+    what = f"{dish} " if dish else ""
+    web = _web_points(knowledge, limit=4, keep=_RESTAURANT_TERMS, mentions=intent.city)
+    if lang == "en":
+        head = f"Where to eat {what}in {where} — leads found online (unverified, check before you go):"
+        none = f"I couldn't find a reliable restaurant {('serving ' + dish + ' ') if dish else ''}in {where} online."
+    else:
+        head = f"Où manger {('du ' + dish + ' ') if dish else ''}à {where} — pistes trouvées en ligne (non vérifiées, à confirmer avant d’y aller) :"
+        none = f"Je n’ai pas trouvé en ligne de restaurant fiable {('servant du ' + dish + ' ') if dish else ''}à {where}."
+    parts = [f"{head}\n{_bullets(web)}" if web else none]
+    kb = _dish_kb_notes(knowledge, dish, limit=1) if dish else []
+    if kb:
+        parts.append(("About the dish: " if lang == "en" else "À propos du plat : ") + kb[0])
+    text = "\n\n".join(parts)
+    return " ".join(text.split())[:500] if voice else text
+
+
+def _render_image_search(
+    intent: IntentResult, knowledge: KnowledgeResult, *, lang: str, voice: bool
+) -> str:
+    subject = intent.city or intent.location or intent.region or ""
+    found = "images" not in knowledge.missing_information
+    if lang == "en":
+        head = (
+            f"Here are photos of {subject} found online (sources under each image)."
+            if found
+            else f"I couldn't find photos of {subject} online."
+        )
+    else:
+        head = (
+            f"Voici des photos de {subject} trouvées en ligne (source sous chaque image)."
+            if found
+            else f"Je n’ai pas trouvé de photos de {subject} en ligne."
+        )
+    kb = [c for c in knowledge.knowledge if c.content and not (c.chunk_id or "").startswith("web:")]
+    if kb and not voice:
+        content = kb[0].content
+        match = _SITE_DESCRIPTION[lang].search(content)
+        note = match.group(1) if match else content
+        name = (kb[0].title or "").strip()
+        body = _first_section(note, limit=260)
+        return f"{head}\n\n{name} : {body}" if match and name else f"{head}\n\n{body}"
+    return head
+
+
+_SITE_DESCRIPTION = {
+    "fr": re.compile(r"\bFR\s*:\s*(.+?)(?:\s+EN\s*:|$)", re.DOTALL),
+    "en": re.compile(r"\bEN\s*:\s*(.+?)(?:\s+FR\s*:|$)", re.DOTALL),
+}

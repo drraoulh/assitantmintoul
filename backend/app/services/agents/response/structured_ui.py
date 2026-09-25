@@ -6,6 +6,7 @@ No LLM. Overhead target < 50 ms. Never invents coordinates, prices, or URLs.
 from __future__ import annotations
 
 import time
+import unicodedata
 from typing import Any
 
 from app.schemas.chat_ui import (
@@ -14,6 +15,7 @@ from app.schemas.chat_ui import (
     BudgetItemUI,
     BudgetUI,
     HotelUI,
+    ImageUI,
     ItineraryDayUI,
     ItineraryItemUI,
     ItineraryUI,
@@ -24,12 +26,23 @@ from app.schemas.chat_ui import (
     SourceUI,
     VisionUI,
 )
+from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.models import KnowledgeResult, PlaceEvidence
 from app.services.agents.planner.models import TourismPlan
-from app.services.agents.response.context import is_food_relevant_place
 from app.services.agents.response.models import FinalResponse
 
 _HOTEL_HINTS = ("hotel", "hôtel", "heberg", "héberg", "lodge", "resort", "auberge", "inn")
+_PLACE_CARD_TYPES = {
+    "PLACE_LIST",
+    "PLACE_DETAILS",
+    "ITINERARY",
+    "BUDGET_TRIP",
+    "NATURE",
+    "HOTEL",
+    "BOOKING",
+    "VISION",
+    "TRAVEL_ROUTE",
+}
 
 
 def build_structured_ui(
@@ -39,8 +52,14 @@ def build_structured_ui(
     plan: TourismPlan | None = None,
     vision_summary: str | None = None,
     language: str = "fr",
+    intent: IntentResult | None = None,
+    images: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Return a dict of ChatResponse structured fields + ``structured_build_ms``."""
+    """Return a dict of ChatResponse structured fields + ``structured_build_ms``.
+
+    Place cards and maps only appear for place-oriented answers; dishes,
+    images and general questions never get them.
+    """
     t0 = time.perf_counter()
 
     response_type = (
@@ -53,12 +72,9 @@ def build_structured_ui(
 
     places = _places_ui(knowledge)
     hidden_place_names: set[str] = set()
-    if response_type == "FOOD":
-        kept = [
-            p for p in places if is_food_relevant_place(p.name, p.description, p.category)
-        ]
-        hidden_place_names = {p.name for p in places if p not in kept}
-        places = kept
+    if response_type not in _PLACE_CARD_TYPES:
+        hidden_place_names = {p.name for p in places}
+        places = []
     hotels = _hotels_ui(places, knowledge, response_type)
     # Hotel intents: keep places as hotel places too for cards.
     if response_type == "HOTEL" and hotels and not places:
@@ -80,6 +96,8 @@ def build_structured_ui(
         ]
 
     map_ui = _map_ui(places)
+    if response_type == "TRAVEL_ROUTE" and intent and intent.origin and intent.destination:
+        map_ui = _route_map_ui(intent.origin, intent.destination, places) or map_ui
     itinerary = _itinerary_ui(plan, language=language)
     budget = _budget_ui(plan, language=language)
     booking = _booking_ui(response_type, language=language)
@@ -107,6 +125,8 @@ def build_structured_ui(
         "vision": vision,
         "ui_sources": ui_sources,
         "actions": actions,
+        "images": [ImageUI.model_validate(img) for img in images or []],
+        "routing": intent.routing() if intent else None,
         "structured_build_ms": elapsed,
     }
 
@@ -126,6 +146,7 @@ def _normalize_response_type(raw: str, plan: TourismPlan | None) -> str:
         "SIMPLE_QA": "SIMPLE_ANSWER",
         "TOURISM_INFO": "TOURISM_INFORMATION",
         "WEB_SEARCH": "TOURISM_INFORMATION",
+        "IMAGE_SEARCH": "IMAGES",
     }
     value = mapping.get(raw, raw)
     if plan is not None and plan.plan_type in {"ITINERARY", "BUDGET_TRIP"} and value in {
@@ -152,16 +173,27 @@ def _normalize_response_type(raw: str, plan: TourismPlan | None) -> str:
         "VISION",
         "CLARIFICATION",
         "INSUFFICIENT_INFORMATION",
+        "TRAVEL_ROUTE",
+        "IMAGES",
     }
     return value if value in allowed else "TOURISM_INFORMATION"
 
 
-def _image_url_for(place_id: str) -> str | None:
-    """Look up a verified catalog image — never invent."""
+def _site_catalog():
     try:
         from app.services.tourism.factory import get_site_catalog
 
-        catalog = get_site_catalog()
+        return get_site_catalog()
+    except Exception:
+        return None
+
+
+def _image_url_for(place_id: str, catalog=None) -> str | None:
+    """Look up a verified catalog image — never invent."""
+    try:
+        catalog = catalog if catalog is not None else _site_catalog()
+        if catalog is None:
+            return None
         site = catalog.get(place_id)
         if site and site.images:
             url = str(site.images[0]).strip()
@@ -185,6 +217,8 @@ def _places_ui(knowledge: KnowledgeResult | None) -> list[PlaceUI]:
     if not knowledge:
         return []
     out: list[PlaceUI] = []
+    # One catalog per build: an unwarmed catalog reloads its JSON on every lookup.
+    catalog = _site_catalog() if knowledge.places else None
     for place in knowledge.places:
         category = place.category[0] if place.category else None
         lat = place.latitude if _finite(place.latitude) else None
@@ -202,7 +236,7 @@ def _places_ui(knowledge: KnowledgeResult | None) -> list[PlaceUI]:
                 region=place.region,
                 latitude=lat,
                 longitude=lon,
-                image_url=_image_url_for(place.place_id),
+                image_url=_image_url_for(place.place_id, catalog),
                 source_url=_source_url_for(place, knowledge),
                 estimated_cost_xaf=place.estimated_cost_xaf,
             )
@@ -281,6 +315,51 @@ def _map_ui(places: list[PlaceUI]) -> MapUI | None:
         center=MapCenterUI(latitude=markers[0].latitude, longitude=markers[0].longitude),
         markers=markers,
     )
+
+
+def _city_point(city: str) -> tuple[float, float] | None:
+    """Median coordinates of the verified catalog places in ``city``."""
+    try:
+        from app.services.tourism.factory import get_site_catalog
+
+        needle = _fold(city)
+        points = [
+            (s.latitude, s.longitude)
+            for s in get_site_catalog().by_city(city)
+            if _fold(s.city) == needle and _finite(s.latitude) and _finite(s.longitude)
+        ]
+    except Exception:
+        return None
+    if not points:
+        return None
+    lats = sorted(p[0] for p in points)
+    lons = sorted(p[1] for p in points)
+    return lats[len(lats) // 2], lons[len(lons) // 2]
+
+
+def _route_map_ui(origin: str, destination: str, places: list[PlaceUI]) -> MapUI | None:
+    start, end = _city_point(origin), _city_point(destination)
+    if start is None or end is None:
+        return None
+    markers = [
+        MapMarkerUI(place_id=f"route:origin:{_fold(origin)}", latitude=start[0], longitude=start[1], title=origin),
+        MapMarkerUI(place_id=f"route:destination:{_fold(destination)}", latitude=end[0], longitude=end[1], title=destination),
+    ]
+    for p in places:
+        if p.latitude is not None and p.longitude is not None:
+            markers.append(
+                MapMarkerUI(place_id=p.id, latitude=p.latitude, longitude=p.longitude, title=p.name)
+            )
+    return MapUI(
+        enabled=True,
+        center=MapCenterUI(latitude=(start[0] + end[0]) / 2, longitude=(start[1] + end[1]) / 2),
+        markers=markers,
+    )
+
+
+def _fold(text: str | None) -> str:
+    decomposed = unicodedata.normalize("NFKD", (text or "").casefold())
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch)).strip()
 
 
 def _itinerary_ui(plan: TourismPlan | None, *, language: str) -> ItineraryUI | None:

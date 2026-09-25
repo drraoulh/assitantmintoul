@@ -152,6 +152,10 @@ def build_allowed_evidence(
     if intent.region:
         ev.place_names.add(intent.region)
         ev.place_names_folded.add(fold(intent.region))
+    for city in (intent.origin, intent.destination):
+        if city:
+            ev.place_names.add(city)
+            ev.place_names_folded.add(fold(city))
 
     corpus = [knowledge.query or ""]
     corpus.extend(c.content or "" for c in knowledge.knowledge)
@@ -193,6 +197,7 @@ def evidence_is_insufficient_for_llm(
         "CULTURE",
         "TOURISM_INFO",
         "WEB_SEARCH",
+        "TRAVEL_ROUTE",
     }
     interests = {fold(i) for i in (intent.interests or [])}
     qfold = fold(user_query or "")

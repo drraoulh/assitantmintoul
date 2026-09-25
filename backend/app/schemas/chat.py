@@ -11,6 +11,7 @@ from app.schemas.chat_ui import (
     BudgetUI,
     ChatResponseType,
     HotelUI,
+    ImageUI,
     ItineraryUI,
     MapUI,
     PlaceUI,
@@ -83,6 +84,9 @@ class ChatResponse(BaseModel):
     structured_build_ms: float | None = None
     # Web phase summary: decision, provider, queries, evidence_count, research_ms.
     web_research: dict[str, Any] | None = None
+    # Web images (IMAGE_SEARCH / dish photos) and the resolved chat intent.
+    images: list[ImageUI] = Field(default_factory=list)
+    routing: dict[str, Any] | None = None
 
     @model_validator(mode="after")
     def _mirror_text(self) -> ChatResponse:

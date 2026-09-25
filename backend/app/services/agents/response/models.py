@@ -21,6 +21,8 @@ ResponseType = Literal[
     "VISION",
     "CLARIFICATION",
     "INSUFFICIENT_INFORMATION",
+    "TRAVEL_ROUTE",
+    "IMAGES",
 ]
 
 ResponseMode = Literal["text", "voice"]

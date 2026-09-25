@@ -21,7 +21,19 @@ ChatResponseType = Literal[
     "VISION",
     "CLARIFICATION",
     "INSUFFICIENT_INFORMATION",
+    "TRAVEL_ROUTE",
+    "IMAGES",
 ]
+
+
+class ImageUI(BaseModel):
+    """Web image result — URLs come from the image search provider, never invented."""
+
+    image_url: str
+    thumbnail_url: str | None = None
+    page_url: str
+    title: str = ""
+    source_domain: str = ""
 
 
 class PlaceUI(BaseModel):

@@ -95,6 +95,8 @@ def map_response_type(intent: IntentResult, plan: TourismPlan | None) -> str:
         "CLARIFICATION": "CLARIFICATION",
         "VISION": "VISION",
         "WEB_SEARCH": "TOURISM_INFORMATION",
+        "TRAVEL_ROUTE": "TRAVEL_ROUTE",
+        "IMAGE_SEARCH": "IMAGES",
     }
     return mapping.get(intent.intent, "TOURISM_INFORMATION")
 
@@ -214,6 +216,11 @@ def build_structured_context(
         "response_mode": response_mode,
         "intent": {
             "intent": intent.intent,
+            "chat_intent": intent.chat_intent,
+            "origin": intent.origin,
+            "destination": intent.destination,
+            "dish": intent.dish,
+            "wants_activities": intent.wants_activities,
             "city": intent.city,
             "region": intent.region,
             "duration_days": intent.duration_days,

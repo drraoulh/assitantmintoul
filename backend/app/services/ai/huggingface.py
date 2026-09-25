@@ -757,6 +757,8 @@ class HuggingFaceAIService(AIService):
             plan=result.plan,
             vision_summary=result.vision_summary,
             language=result.final_response.language or locale,
+            intent=result.intent,
+            images=result.images,
         )
         # Enrich legacy ChatSource cards from structured places when possible.
         if not sources and ui.get("places"):
@@ -992,8 +994,11 @@ class HuggingFaceAIService(AIService):
                 plan=plan,
                 vision_summary=ctx.vision_summary,
                 language=language,
+                intent=intent,
+                images=ctx.images,
             )
             stream_ui["response_type"] = map_response_type(intent, plan)
+            stream_ui["web_research"] = ctx.web_research
             timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
             yield {
                 "type": "done",
@@ -1178,7 +1183,10 @@ class HuggingFaceAIService(AIService):
             plan=plan,
             vision_summary=ctx.vision_summary,
             language=language,
+            intent=intent,
+            images=ctx.images,
         )
+        stream_ui["web_research"] = ctx.web_research
         timer.mark("structured_ui", float(stream_ui.get("structured_build_ms") or 0.0))
         yield {
             "type": "done",
