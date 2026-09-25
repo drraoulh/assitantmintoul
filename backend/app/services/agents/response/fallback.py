@@ -35,12 +35,34 @@ def render_deterministic(
     culture_chunks = [
         k for k in knowledge.knowledge if (k.source_id or "").startswith("culture:")
     ]
+    food_doc_chunks = [
+        k
+        for k in knowledge.knowledge
+        if (k.source_id or "").startswith("documents/food")
+        or (k.chunk_id or "").startswith("doc:food")
+        or "nourriture" in (k.title or "").casefold()
+        or "plats" in (k.title or "").casefold()
+        or "cuisine" in (k.title or "").casefold()
+    ]
     if intent.intent == "FOOD" and culture_chunks:
         return _render_culture_food(culture_chunks, knowledge, lang=lang, voice=voice)
+    if intent.intent == "FOOD" and food_doc_chunks:
+        # Prefer gastronomy notes over unrelated SW place cards
+        slim = knowledge.model_copy(deep=True)
+        slim.knowledge = food_doc_chunks
+        slim.places = []
+        return _render_knowledge(slim, lang=lang, voice=voice)
     if intent.intent == "CULTURE" and culture_chunks:
         return _render_culture_traditions(
             culture_chunks, knowledge, lang=lang, voice=voice
         )
+
+    # WEB_SEARCH with web evidence — prefer knowledge/web over places
+    web_chunks = [
+        k for k in knowledge.knowledge if "[web evidence" in (k.content or "").casefold()
+    ]
+    if intent.intent == "WEB_SEARCH" and (web_chunks or knowledge.knowledge):
+        return _render_knowledge(knowledge, lang=lang, voice=voice)
 
     if tourism_plan is not None and tourism_plan.feasibility == "INSUFFICIENT_DATA":
         if not tourism_plan.selected_places and not knowledge.places and not knowledge.knowledge:
