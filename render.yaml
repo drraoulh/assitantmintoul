@@ -101,6 +101,11 @@ services:
         sync: false
       - key: WEB_TOOL_CALLING_ENABLED
         value: "true"
+      # Chat is web-first: every conversational intent searches (KB complements).
+      - key: CHAT_WEB_FIRST_ENABLED
+        value: "true"
+      - key: CHAT_IMAGE_SEARCH_ENABLED
+        value: "true"
       - key: WEB_CACHE_TTL_CURRENT_SECONDS
         value: "3600"
       - key: WEB_CACHE_TTL_STABLE_SECONDS

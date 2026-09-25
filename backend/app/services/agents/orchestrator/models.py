@@ -37,6 +37,7 @@ class OrchestrationContext(BaseModel):
     vision_summary: str | None = None
     web_hit_count: int = 0
     web_research: dict[str, Any] | None = None
+    images: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class OrchestrationResult(BaseModel):
@@ -53,6 +54,7 @@ class OrchestrationResult(BaseModel):
     vision_summary: str | None = None
     web_hit_count: int = 0
     web_research: dict[str, Any] | None = None
+    images: list[dict[str, Any]] = Field(default_factory=list)
     fallback_used: bool = False
 
     def observability(self) -> dict[str, Any]:

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import re
+import unicodedata
 from urllib.parse import urlparse
 
 from app.services.agents.web_research.models import WebEvidence
@@ -146,6 +148,11 @@ _TOPIC_HINTS = {
         "plantain",
         "manioc",
         "poisson",
+        "restaurant",
+        "recette",
+        "recipe",
+        "sauce",
+        "soup",
     ),
     "WEB_SEARCH": (
         "festival",
@@ -313,6 +320,20 @@ def filter_regional(
             continue
         kept.append(ev)
     return kept
+
+
+def _fold(text: str) -> str:
+    decomposed = unicodedata.normalize("NFKD", (text or "").casefold())
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
+def filter_mentions(evidence: list[WebEvidence], term: str) -> list[WebEvidence]:
+    """Keep evidence whose title/snippet names ``term`` (e.g. a dish), accent-insensitive."""
+    words = [w for w in re.split(r"[^\w]+", _fold(term)) if len(w) > 2][:1]
+    if not words:
+        return evidence
+    pattern = re.compile(rf"\b{re.escape(words[0])}\b")
+    return [ev for ev in evidence if pattern.search(_fold(f"{ev.title} {ev.snippet}"))]
 
 
 def is_answerable(evidence: list[WebEvidence]) -> bool:

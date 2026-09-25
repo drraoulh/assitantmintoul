@@ -1,4 +1,4 @@
-"""Turn the user question + resolved context into 1–3 short web queries.
+"""Turn the user question + resolved context into short web queries (1–3, up to 5 for routes).
 
 - Always carries the last explicit region/city resolved by Agent 1 (which
   already reads conversation context), so follow-ups stay on the right region.
@@ -157,6 +157,66 @@ def _topic_query(intent: IntentResult, fr_loc: str) -> str | None:
     return None
 
 
+MAX_ROUTE_QUERIES = 5
+_ROUTE_INTENTS = {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}
+
+
+def route_queries(intent: IntentResult) -> list[str]:
+    """Transport-first queries for an origin → destination question.
+
+    The origin is only used for the journey; places/activities are searched at
+    the destination.
+    """
+    dest = intent.destination or ""
+    origin = intent.origin or ""
+    english = (intent.language or "fr") == "en"
+    if origin:
+        transport = [
+            f"transport {origin} {dest} Cameroun bus agence de voyage",
+            f"trajet {origin} {dest} durée route distance",
+            f"how to travel from {origin} to {dest} Cameroon",
+        ]
+    else:
+        transport = [
+            f"comment aller à {dest} Cameroun transport",
+            f"how to get to {dest} Cameroon",
+        ]
+    if english:
+        transport.insert(0, transport.pop())
+    extra: list[str] = []
+    if intent.wants_activities or intent.duration_days:
+        extra = [f"que faire à {dest} Cameroun", f"things to do in {dest} Cameroon"]
+    if intent.duration_days:
+        extra.append(f"{dest} Cameroun itinéraire {intent.duration_days} jours")
+    return [*transport, *extra][:MAX_ROUTE_QUERIES]
+
+
+def dish_queries(intent: IntentResult) -> list[str]:
+    dish = intent.dish or ""
+    place = intent.city or ""
+    if (intent.web_reason or "") == "FORCED_RESTAURANT_SEARCH" and place:
+        return [
+            f"restaurant {dish} {place} Cameroun",
+            f"où manger {dish} à {place}",
+            f"best restaurants {dish} {place} Cameroon",
+        ]
+    return [
+        f"{dish} plat traditionnel camerounais",
+        f"{dish} Cameroonian dish",
+        f"{dish} Cameroun recette origine",
+    ]
+
+
+def build_image_query(intent: IntentResult, user_query: str = "") -> str:
+    if intent.dish:
+        return f"{intent.dish} plat camerounais"
+    subject = intent.destination or intent.city or intent.location or intent.region
+    if subject:
+        return f"{subject} Cameroun"
+    base = " ".join(strip_stopwords(user_query, drop={"photo", "photos", "image", "images"}))
+    return f"{base} Cameroun".strip()
+
+
 def build_queries(
     user_query: str,
     intent: IntentResult,
@@ -164,6 +224,10 @@ def build_queries(
     llm_queries: list[str] | None = None,
     now: datetime | None = None,
 ) -> list[str]:
+    if not llm_queries and intent.destination and intent.intent in _ROUTE_INTENTS:
+        return route_queries(intent)
+    if not llm_queries and intent.dish and intent.intent == "FOOD":
+        return dish_queries(intent)
     fr_loc, en_loc = _region_labels(intent)
     has_loc = (fr_loc, en_loc) != ("Cameroun", "Cameroon")
     now_eff = now or datetime.now(timezone.utc)

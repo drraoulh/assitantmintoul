@@ -329,6 +329,23 @@ class Settings(BaseSettings):
         default=4.0,
         validation_alias=AliasChoices("WEB_TOOL_DECISION_TIMEOUT_SECONDS"),
     )
+    # Text chat searches the web for every conversational intent (KB complements).
+    chat_web_first_enabled: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("CHAT_WEB_FIRST_ENABLED"),
+    )
+    chat_image_search_enabled: bool = Field(
+        default=True,
+        validation_alias=AliasChoices("CHAT_IMAGE_SEARCH_ENABLED"),
+    )
+    image_search_max_results: int = Field(
+        default=6,
+        validation_alias=AliasChoices("IMAGE_SEARCH_MAX_RESULTS"),
+    )
+    image_search_timeout_seconds: float = Field(
+        default=6.0,
+        validation_alias=AliasChoices("IMAGE_SEARCH_TIMEOUT_SECONDS"),
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

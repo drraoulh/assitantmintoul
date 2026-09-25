@@ -40,13 +40,16 @@ from app.services.agents.response.models import FinalResponse
 from app.services.agents.web_research import WebResearchAgent, WebResearchResult
 from app.services.agents.web_research.policy import (
     FORCED_REASONS,
+    WEB_FIRST,
     WEB_SEARCH_TOOL,
     WebToolDecision,
     build_decision_messages,
     kb_summary,
     parse_tool_decision,
+    web_first_applies,
     web_forbidden,
 )
+from app.services.agents.web_research.query_builder import build_image_query
 from app.services.rag.base import RAGService
 from app.services.search.base import WebSearchService
 from app.services.vision.base import VisionService
@@ -64,13 +67,31 @@ def _fold(text: str | None) -> str:
     return "".join(ch for ch in decomposed if not unicodedata.combining(ch)).strip()
 
 
+_NO_PLACE_INTENTS = {"FOOD", "IMAGE_SEARCH"}
+_ROUTE_INTENTS = {"TRAVEL_ROUTE", "ITINERARY", "BUDGET_TRIP"}
+
+
 def _scope_places(knowledge: KnowledgeResult, intent: IntentResult) -> KnowledgeResult:
-    """Food/hotel answers must not show places from another city or region,
-    and hotel answers only keep hotel evidence (no museums, culture notes…)."""
-    if intent.intent not in {"FOOD", "HOTEL"}:
+    """Keep only the places the user's intent is about.
+
+    - Dish / image questions never show tourist places (the catalog has no
+      restaurants).
+    - Routes only keep places at the destination (never at the origin), and a
+      plain « how do I get there » question keeps none.
+    - Hotel answers only keep hotel evidence in the requested city/region.
+    """
+    route = intent.intent in _ROUTE_INTENTS and bool(intent.destination)
+    if intent.intent not in {"HOTEL", *_NO_PLACE_INTENTS} and not route:
         return knowledge
     kept = filter_places_for_intent(intent, knowledge.places)
-    if intent.city or intent.region:
+    if intent.intent in _NO_PLACE_INTENTS:
+        kept = []
+    elif route and intent.intent == "TRAVEL_ROUTE" and not intent.wants_activities:
+        kept = []
+    elif route:
+        dest = _fold(intent.destination)
+        kept = [p for p in kept if _fold(p.city) == dest]
+    elif intent.city or intent.region:
         city, region = _fold(intent.city), _fold(intent.region)
         kept = [
             p
@@ -129,6 +150,7 @@ class AgentOrchestrator:
         self._web_tool_caller = web_tool_caller
         self.last_web_research: WebResearchResult | None = None
         self.last_tool_decision: dict[str, Any] | None = None
+        self.last_image_query: str | None = None
 
     async def prepare(
         self,
@@ -179,6 +201,15 @@ class AgentOrchestrator:
         plan: TourismPlan | None = None
         web_hit_count = 0
         web_obs: dict[str, Any] | None = None
+
+        image_task: asyncio.Task[list[dict[str, Any]]] | None = None
+        if (
+            response_mode == "text"
+            and intent.wants_images
+            and get_settings().chat_image_search_enabled
+            and callable(getattr(self._web, "search_images", None))
+        ):
+            image_task = asyncio.create_task(self._search_images(user_query, intent, rid))
 
         if intent.needs_vision and image_context and self._vision is not None:
             logger.info("vision_started request_id=%s", rid)
@@ -246,6 +277,20 @@ class AgentOrchestrator:
                 rid,
             )
 
+        images: list[dict[str, Any]] = []
+        if image_task is not None:
+            images = await image_task
+            agents_called.append("image_search")
+            web_obs = {
+                **(web_obs or {"decision": "none"}),
+                "image_query": self.last_image_query,
+                "images": len(images),
+            }
+        if intent.wants_images and not images:
+            knowledge.missing_information = list(
+                dict.fromkeys([*knowledge.missing_information, "images"])
+            )
+
         timings.total_ms = round((time.perf_counter() - started) * 1000.0, 3)
         return OrchestrationContext(
             intent=intent,
@@ -258,7 +303,33 @@ class AgentOrchestrator:
             vision_summary=vision_summary,
             web_hit_count=web_hit_count,
             web_research=web_obs,
+            images=images,
         )
+
+    async def _search_images(
+        self, user_query: str, intent: IntentResult, request_id: str
+    ) -> list[dict[str, Any]]:
+        settings = get_settings()
+        try:
+            query = build_image_query(intent, user_query)
+            self.last_image_query = query
+            rows = await asyncio.wait_for(
+                self._web.search_images(query, max_results=settings.image_search_max_results),  # type: ignore[union-attr]
+                timeout=float(settings.image_search_timeout_seconds),
+            )
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "image_search_failed request_id=%s error=%s", request_id, type(exc).__name__
+            )
+            return []
+        images = [r.model_dump() if hasattr(r, "model_dump") else dict(r) for r in rows or []]
+        logger.info(
+            "image_search_completed request_id=%s query=%r images=%s",
+            request_id,
+            self.last_image_query,
+            len(images),
+        )
+        return images[: settings.image_search_max_results]
 
     async def run(
         self,
@@ -333,6 +404,7 @@ class AgentOrchestrator:
             vision_summary=ctx.vision_summary,
             web_hit_count=ctx.web_hit_count,
             web_research=ctx.web_research,
+            images=ctx.images,
             fallback_used=final.fallback_used,
         )
         logger.info("orchestration_completed %s", result.observability())
@@ -448,8 +520,8 @@ class AgentOrchestrator:
     ) -> tuple[str, list[str] | None] | None:
         """Return (decision_label, llm_queries) when web research must run.
 
-        Order: forbidden → forced/routed by Agent 1 → Qwen tool call (text,
-        optional intents) → KB-thin fallback.
+        Order: forbidden → forced/routed by Agent 1 → web-first (text chat) →
+        Qwen tool call (text, optional intents) → KB-thin fallback.
         """
         if self._web is None or web_forbidden(intent.intent, intent.reason):
             return None
@@ -459,6 +531,18 @@ class AgentOrchestrator:
                 return (f"forced:{intent.web_reason}", None)
             return (f"router:{intent.web_reason}", None)
         settings = get_settings()
+        if (
+            response_mode == "text"
+            and settings.chat_web_first_enabled
+            and web_first_applies(
+                intent.intent,
+                intent.reason,
+                has_structured_fact=bool(knowledge is not None and knowledge.geo_facts_count),
+            )
+        ):
+            intent.needs_web = True
+            intent.web_reason = WEB_FIRST
+            return ("web_first", None)
         if (
             self._web_tool_caller is not None
             and response_mode == "text"

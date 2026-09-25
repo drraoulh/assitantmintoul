@@ -153,11 +153,16 @@ def rank(
     *,
     limit: int = MAX_SOURCES,
     now: datetime | None = None,
+    alt_queries: list[str] | tuple[str, ...] = (),
 ) -> list[WebEvidence]:
+    """Relevance uses the best of the user question and the (translated) search queries,
+    so an English source answering a French question is not flagged off-topic."""
     for ev in evidence:
-        ev.rank_score = score(ev, query, now=now)
+        blob = f"{ev.title} {ev.snippet}"
+        best = max((query, *alt_queries), key=lambda q: semantic_overlap(blob, q))
+        ev.rank_score = score(ev, best, now=now)
         ev.low_confidence = (
             ev.rank_score < LOW_CONFIDENCE_THRESHOLD
-            or semantic_overlap(f"{ev.title} {ev.snippet}", query) < MIN_RELEVANCE
+            or semantic_overlap(blob, best) < MIN_RELEVANCE
         )
     return sorted(evidence, key=lambda e: -e.rank_score)[:limit]

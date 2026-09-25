@@ -19,9 +19,10 @@ from app.services.agents.knowledge.models import KnowledgeResult
 from app.services.agents.web_research.cache import cache_get, cache_set, ttl_for
 from app.services.agents.web_research.models import WebEvidence, WebResearchResult
 from app.services.agents.web_research.query_builder import build_queries
-from app.services.agents.web_research.ranker import rank
+from app.services.agents.web_research.ranker import MAX_SOURCES, rank
 from app.services.agents.web_research.validator import (
     extract_key_facts,
+    filter_mentions,
     filter_regional,
     is_answerable,
     score_hit,
@@ -37,6 +38,9 @@ from app.services.web_search.web_search_service import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Transport and destination activities are both needed for a route answer.
+MAX_ROUTE_SOURCES = 7
 
 
 def _provider_for(web: LegacyWebSearchService) -> WebSearchProvider:
@@ -122,9 +126,16 @@ class WebResearchAgent:
 
         evidence = [self._to_evidence(r, user_query) for r in raw]
         evidence = validate_evidence(evidence, query=user_query, intent=intent.intent)
-        if intent.intent == "FOOD":
+        if intent.intent == "FOOD" and intent.dish:
+            evidence = filter_mentions(evidence, intent.dish)
+        elif intent.intent == "FOOD":
             evidence = filter_regional(evidence, intent.region, topic="FOOD")
-        evidence = rank(evidence, " ".join([user_query, region or ""]))
+        evidence = rank(
+            evidence,
+            " ".join([user_query, region or ""]),
+            alt_queries=queries,
+            limit=MAX_ROUTE_SOURCES if intent.destination else MAX_SOURCES,
+        )
         facts = extract_key_facts([e for e in evidence if not e.low_confidence])
         answerable = is_answerable(evidence) and bool(facts)
         confidence = max((e.rank_score for e in evidence), default=0.0)
