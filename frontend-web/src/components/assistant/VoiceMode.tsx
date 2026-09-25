@@ -5,14 +5,14 @@ import {
   useEffect,
   useRef,
   useState,
-  type PointerEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Loader2, Mic, Volume2, X } from 'lucide-react';
 
+import { friendlyError, transcribeAudio } from '@/lib/api/client';
 import { audioPlayback } from '@/lib/audio/playback';
 import { useLocale } from '@/lib/i18n';
-import { VoiceSocket, blobToBase64 } from '@/lib/websocket/voice';
+import { VoiceSocket } from '@/lib/websocket/voice';
 import type { StructuredChatUI } from '@/lib/types';
 
 export type VoicePhase = 'idle' | 'listening' | 'thinking' | 'speaking';
@@ -26,8 +26,11 @@ export type VoiceExchange = {
   error?: string;
 };
 
-const MAX_RECORD_MS = 20_000;
-const MIN_RECORD_MS = 800;
+const MAX_RECORD_MS = 25_000;
+/** Actual recording time after MediaRecorder has started. */
+const MIN_RECORD_MS = 1_200;
+/** WebM headers alone can exceed 1–2KB with almost no audio. */
+const MIN_BLOB_BYTES = 8_000;
 
 function phaseCopy(phase: VoicePhase): {
   title: string;
@@ -38,26 +41,26 @@ function phaseCopy(phase: VoicePhase): {
     case 'listening':
       return {
         title: 'Je vous écoute',
-        subtitle: 'Parlez naturellement, comme à un guide.',
-        action: 'Relâchez pour envoyer',
+        subtitle: 'Parlez clairement, puis appuyez pour envoyer.',
+        action: 'Appuyer pour envoyer',
       };
     case 'thinking':
       return {
-        title: 'Je prépare la réponse',
-        subtitle: 'Compréhension et recherche en cours…',
+        title: 'Je comprends…',
+        subtitle: 'Transcription puis réponse du guide.',
         action: 'Patientez',
       };
     case 'speaking':
       return {
         title: 'Réponse en cours',
-        subtitle: 'Écoutez le guide, ou appuyez pour reparler.',
+        subtitle: 'Écoutez le guide, ou appuyez pour interrompre.',
         action: 'Appuyer pour interrompre',
       };
     default:
       return {
         title: 'Prêt à vous écouter',
-        subtitle: 'Maintenez le micro pour parler, relâchez pour envoyer.',
-        action: 'Maintenir pour parler',
+        subtitle: 'Appuyez sur le micro, parlez, puis renvoyez.',
+        action: 'Appuyer pour parler',
       };
   }
 }
@@ -90,6 +93,14 @@ function pickRecorderMime(): string | undefined {
   return undefined;
 }
 
+function extForMime(mime: string): string {
+  const m = mime.toLowerCase();
+  if (m.includes('mp4') || m.includes('m4a')) return 'm4a';
+  if (m.includes('ogg')) return 'ogg';
+  if (m.includes('wav')) return 'wav';
+  return 'webm';
+}
+
 export function VoiceMode({
   open,
   onClose,
@@ -106,6 +117,8 @@ export function VoiceMode({
   const [userText, setUserText] = useState('');
   const [assistantText, setAssistantText] = useState('');
   const [hint, setHint] = useState<string | null>(null);
+  const [micReady, setMicReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const socketRef = useRef<VoiceSocket | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -118,9 +131,9 @@ export function VoiceMode({
   const phaseRef = useRef<VoicePhase>('idle');
   const conversationIdRef = useRef(conversationId);
   const finishRef = useRef<() => Promise<void>>(async () => undefined);
-  const holdingRef = useRef(false);
   const shutdownRef = useRef<() => void>(() => undefined);
-  const [mounted, setMounted] = useState(false);
+  const onExchangeRef = useRef(onExchange);
+  const localeRef = useRef(locale);
 
   useEffect(() => {
     setMounted(true);
@@ -134,6 +147,14 @@ export function VoiceMode({
     phaseRef.current = phase;
   }, [phase]);
 
+  useEffect(() => {
+    onExchangeRef.current = onExchange;
+  }, [onExchange]);
+
+  useEffect(() => {
+    localeRef.current = locale;
+  }, [locale]);
+
   const clearMaxTimer = useCallback(() => {
     if (maxTimerRef.current !== undefined) {
       clearTimeout(maxTimerRef.current);
@@ -141,7 +162,7 @@ export function VoiceMode({
     }
   }, []);
 
-  const stopRecorder = useCallback(() => {
+  const stopRecorderOnly = useCallback(() => {
     clearMaxTimer();
     try {
       if (mediaRecorderRef.current?.state === 'recording') {
@@ -151,9 +172,15 @@ export function VoiceMode({
       /* ignore */
     }
     mediaRecorderRef.current = null;
+    chunksRef.current = [];
+  }, [clearMaxTimer]);
+
+  const releaseMic = useCallback(() => {
+    stopRecorderOnly();
     mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
     mediaStreamRef.current = null;
-  }, [clearMaxTimer]);
+    setMicReady(false);
+  }, [stopRecorderOnly]);
 
   const shutdown = useCallback(() => {
     sendingRef.current = false;
@@ -170,10 +197,31 @@ export function VoiceMode({
       /* ignore */
     }
     socketRef.current = null;
-    stopRecorder();
-    chunksRef.current = [];
+    releaseMic();
     setPhase('idle');
-  }, [clearMaxTimer, stopRecorder]);
+  }, [clearMaxTimer, releaseMic]);
+
+  const armMic = useCallback(async (): Promise<MediaStream> => {
+    if (mediaStreamRef.current) {
+      const live = mediaStreamRef.current.getAudioTracks().some((t) => t.readyState === 'live');
+      if (live) {
+        setMicReady(true);
+        return mediaStreamRef.current;
+      }
+      releaseMic();
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        channelCount: 1,
+      },
+    });
+    mediaStreamRef.current = stream;
+    setMicReady(true);
+    return stream;
+  }, [releaseMic]);
 
   const ensureSocket = useCallback(async () => {
     if (socketRef.current) return socketRef.current;
@@ -185,14 +233,13 @@ export function VoiceMode({
     await socket.connect((ev) => {
       if (ev.type === 'status') {
         const p = `${ev.phase || ''} ${ev.message || ''}`.toLowerCase();
-        if (/transcrib/.test(p)) setPhase('thinking');
-        else if (/think|analy|process|llm|rag/.test(p)) setPhase('thinking');
+        if (/transcrib|think|analy|process|llm|rag/.test(p)) setPhase('thinking');
         else if (/speak|tts|audio|play/.test(p)) setPhase('speaking');
       }
 
       if (ev.type === 'transcript' && ev.text) {
         setUserText(ev.text);
-        onExchange({ userText: ev.text });
+        onExchangeRef.current({ userText: ev.text });
       }
 
       if (ev.type === 'token' && ev.text) {
@@ -214,7 +261,7 @@ export function VoiceMode({
       if (ev.type === 'turn_done') {
         sendingRef.current = false;
         const text = assistantAccRef.current;
-        onExchange({
+        onExchangeRef.current({
           assistantText: text || undefined,
           ui: ev.ui ?? null,
           conversationId: ev.conversation_id,
@@ -229,26 +276,21 @@ export function VoiceMode({
         setPhase('idle');
         setHint(null);
         assistantAccRef.current = '';
+        // Keep mic warm for next turn
+        void armMic().catch(() => setMicReady(false));
       }
 
       if (ev.type === 'interrupted') {
         sendingRef.current = false;
-        if (phaseRef.current !== 'listening') {
-          setPhase('idle');
-        }
+        if (phaseRef.current !== 'listening') setPhase('idle');
       }
 
       if (ev.type === 'error') {
         sendingRef.current = false;
         audioPlayback.stop();
-        const soft =
-          ev.code === 'empty_transcript' ||
-          /parole détectée|no speech/i.test(ev.message || '');
-        const tip = soft
-          ? 'Je n’ai rien entendu. Appuyez pour réessayer.'
-          : ev.message || 'La voix est momentanément indisponible.';
+        const tip = ev.message || 'La voix est momentanément indisponible.';
         setHint(tip);
-        onExchange(soft ? { tip } : { error: tip });
+        onExchangeRef.current({ error: tip });
         setPhase('idle');
         try {
           socket.close();
@@ -260,10 +302,10 @@ export function VoiceMode({
     });
 
     return socket;
-  }, [onExchange]);
+  }, [armMic]);
 
   const startListening = useCallback(async () => {
-    if (sendingRef.current) return;
+    if (sendingRef.current || phaseRef.current === 'listening') return;
     setHint(null);
     audioPlayback.stop();
     try {
@@ -274,18 +316,9 @@ export function VoiceMode({
 
     setPhase('listening');
     assistantAccRef.current = '';
-    // Keep last transcripts visible until new ones arrive
 
     try {
-      await ensureSocket();
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          channelCount: 1,
-        },
-      });
-      mediaStreamRef.current = stream;
+      const stream = await armMic();
       const mime = pickRecorderMime();
       const recorder = mime
         ? new MediaRecorder(stream, { mimeType: mime })
@@ -294,30 +327,26 @@ export function VoiceMode({
       chunksRef.current = [];
       recordStartedAtRef.current = Date.now();
       recorder.ondataavailable = (e) => {
-        if (e.data.size) chunksRef.current.push(e.data);
+        if (e.data?.size) chunksRef.current.push(e.data);
       };
-      recorder.start();
+      // Timeslices → real audio frames accumulate (more reliable for STT)
+      recorder.start(250);
 
       clearMaxTimer();
       maxTimerRef.current = window.setTimeout(() => {
         void finishRef.current();
       }, MAX_RECORD_MS);
-
-      // User already released while mic was arming
-      if (!holdingRef.current) {
-        void finishRef.current();
-      }
     } catch (err) {
       const msg =
-        err instanceof Error && /Permission|NotAllowed/i.test(err.message)
+        err instanceof Error && /Permission|NotAllowed|NotFound/i.test(err.message)
           ? 'Micro non autorisé. Autorisez l’accès au micro dans le navigateur.'
           : 'Impossible d’accéder au micro.';
       setHint(msg);
-      onExchange({ error: msg });
+      onExchangeRef.current({ error: msg });
       setPhase('idle');
-      stopRecorder();
+      stopRecorderOnly();
     }
-  }, [clearMaxTimer, ensureSocket, onExchange, stopRecorder]);
+  }, [armMic, clearMaxTimer, stopRecorderOnly]);
 
   const finishListeningAndSend = useCallback(async () => {
     const recorder = mediaRecorderRef.current;
@@ -326,10 +355,9 @@ export function VoiceMode({
     const elapsed = Date.now() - recordStartedAtRef.current;
     if (elapsed < MIN_RECORD_MS) {
       const tip =
-        'Enregistrement trop court. Maintenez un peu plus longtemps, puis renvoyez.';
+        'Enregistrement trop court. Parlez au moins une à deux secondes, puis renvoyez.';
       setHint(tip);
-      stopRecorder();
-      chunksRef.current = [];
+      stopRecorderOnly();
       setPhase('idle');
       return;
     }
@@ -355,45 +383,76 @@ export function VoiceMode({
       }
     });
 
-    mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
-    mediaStreamRef.current = null;
+    // Keep mic stream warm; only clear recorder
     mediaRecorderRef.current = null;
 
-    const mime =
-      (recorder.mimeType || 'audio/webm').split(';')[0] || 'audio/webm';
-    const blob = new Blob(chunksRef.current, { type: mime });
+    const mimeFull = recorder.mimeType || 'audio/webm';
+    const mime = mimeFull.split(';')[0] || 'audio/webm';
+    const blob = new Blob(chunksRef.current, { type: mimeFull });
     chunksRef.current = [];
 
-    if (blob.size < 1200) {
-      const tip = 'Je n’ai rien entendu. Appuyez pour réessayer.';
+    if (blob.size < MIN_BLOB_BYTES) {
+      const tip =
+        'Je n’ai presque rien capté. Rapprochez-vous du micro et reparlez un peu plus longtemps.';
       setHint(tip);
+      onExchangeRef.current({ tip });
       sendingRef.current = false;
       setPhase('idle');
       return;
     }
 
     try {
+      // STT via HTTP (reliable convert→Whisper), then WS text for LLM + TTS stream
+      const { text } = await transcribeAudio(blob, {
+        mimeType: mime,
+        filename: `recording.${extForMime(mime)}`,
+      });
+
+      if (!text) {
+        const tip =
+          'Je n’ai pas compris. Parlez plus distinctement près du micro, puis réessayez.';
+        setHint(tip);
+        onExchangeRef.current({ tip });
+        sendingRef.current = false;
+        setPhase('idle');
+        return;
+      }
+
+      setUserText(text);
+      onExchangeRef.current({ userText: text });
+      assistantAccRef.current = '';
+      setAssistantText('');
+
       const socket = await ensureSocket();
-      const b64 = await blobToBase64(blob);
-      socket.sendAudioBase64(b64, mime, locale);
+      socket.sendText(text, localeRef.current);
+      setPhase('thinking');
     } catch (err) {
-      const tip =
-        err instanceof Error
-          ? err.message
-          : 'Envoi vocal impossible. Réessayez.';
+      const tip = friendlyError(err);
       setHint(tip);
-      onExchange({ error: tip });
+      onExchangeRef.current({ error: tip });
       sendingRef.current = false;
       setPhase('idle');
     }
-  }, [clearMaxTimer, ensureSocket, locale, onExchange, stopRecorder]);
+  }, [clearMaxTimer, ensureSocket, stopRecorderOnly]);
 
   useEffect(() => {
     finishRef.current = finishListeningAndSend;
   }, [finishListeningAndSend]);
 
+  useEffect(() => {
+    shutdownRef.current = shutdown;
+  }, [shutdown]);
+
   const onOrbPress = useCallback(() => {
     if (phase === 'thinking') return;
+    if (phase === 'idle') {
+      void startListening();
+      return;
+    }
+    if (phase === 'listening') {
+      void finishListeningAndSend();
+      return;
+    }
     if (phase === 'speaking') {
       audioPlayback.stop();
       try {
@@ -401,69 +460,41 @@ export function VoiceMode({
       } catch {
         /* ignore */
       }
-      // After interrupt, wait for hold to speak again
-      setPhase('idle');
-      setHint(null);
-    }
-  }, [phase]);
-
-  const onOrbPointerDown = useCallback(
-    (e: PointerEvent<HTMLButtonElement>) => {
-      if (phase === 'thinking' || phase === 'speaking') return;
-      holdingRef.current = true;
-      e.currentTarget.setPointerCapture(e.pointerId);
-      void startListening();
-    },
-    [phase, startListening],
-  );
-
-  const onOrbPointerUp = useCallback(
-    (e: PointerEvent<HTMLButtonElement>) => {
-      holdingRef.current = false;
       try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
+        socketRef.current?.close();
       } catch {
         /* ignore */
       }
-      if (phaseRef.current === 'listening') {
-        void finishListeningAndSend();
-      }
-    },
-    [finishListeningAndSend],
-  );
-
-  const onOrbPointerCancel = useCallback(() => {
-    holdingRef.current = false;
-    if (phaseRef.current === 'listening') {
-      stopRecorder();
-      chunksRef.current = [];
+      socketRef.current = null;
+      sendingRef.current = false;
       setPhase('idle');
-      setHint('Enregistrement annulé.');
+      setHint(null);
+      void startListening();
     }
-  }, [stopRecorder]);
+  }, [finishListeningAndSend, phase, startListening]);
 
-  // Reset / cleanup when closing — keep shutdown out of deps to avoid
-  // re-running cleanup on every callback identity change while open.
-  useEffect(() => {
-    shutdownRef.current = shutdown;
-  }, [shutdown]);
-
+  // Open / close lifecycle
   useEffect(() => {
     if (!open) {
       shutdownRef.current();
       setUserText('');
       setAssistantText('');
       setHint(null);
+      setMicReady(false);
       return;
     }
     setPhase('idle');
     setHint(null);
+    // Pre-warm mic so first tap records immediately (better STT)
+    void armMic().catch(() => {
+      setMicReady(false);
+      setHint('Autorisez le micro pour parler au guide.');
+    });
     return () => {
       shutdownRef.current();
     };
-  }, [open]);
+  }, [open, armMic]);
 
-  // Escape to close
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -503,6 +534,10 @@ export function VoiceMode({
             SmartMboa
           </p>
           <h2 className="font-display text-xl font-bold md:text-2xl">Mode vocal</h2>
+          <p className="mt-0.5 text-xs text-white/55">
+            STT · transcription &nbsp;·&nbsp; TTS · réponse parlée
+            {micReady ? ' · micro prêt' : ''}
+          </p>
         </div>
         <button
           type="button"
@@ -531,13 +566,9 @@ export function VoiceMode({
           <button
             type="button"
             onClick={onOrbPress}
-            onPointerDown={onOrbPointerDown}
-            onPointerUp={onOrbPointerUp}
-            onPointerCancel={onOrbPointerCancel}
-            onContextMenu={(e) => e.preventDefault()}
             disabled={phase === 'thinking'}
             aria-label={copy.action}
-            className={`relative flex h-36 w-36 touch-none items-center justify-center rounded-full shadow-[0_0_0_12px_rgba(214,168,79,0.15)] transition select-none disabled:cursor-wait disabled:opacity-70 md:h-44 md:w-44 ${
+            className={`relative flex h-36 w-36 items-center justify-center rounded-full shadow-[0_0_0_12px_rgba(214,168,79,0.15)] transition select-none disabled:cursor-wait disabled:opacity-70 md:h-44 md:w-44 ${
               phase === 'listening'
                 ? 'bg-[var(--danger)] shadow-[0_0_0_16px_rgba(180,35,24,0.25)]'
                 : phase === 'speaking'
@@ -585,7 +616,7 @@ export function VoiceMode({
             </div>
           )}
           <p className="text-center text-xs text-white/50">
-            Les échanges restent aussi dans le chat quand vous fermez.
+            Les échanges restent aussi dans le chat. Lire / Stop restent dispo sur les réponses texte.
           </p>
         </div>
       </div>
