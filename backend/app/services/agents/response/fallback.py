@@ -472,10 +472,41 @@ def _render_place_list(
 
 
 def _render_knowledge(knowledge: KnowledgeResult, *, lang: str, voice: bool) -> str:
-    chunks = [c.content.strip() for c in knowledge.knowledge if c.content][:3]
+    chunks = [c.content.strip() for c in knowledge.knowledge if c.content][:5]
     if not chunks:
         return _insufficient(lang)
-    body = " ".join(chunks)
+
+    web_chunks = [c for c in chunks if "[web evidence" in c.casefold()]
+    kb_chunks = [c for c in chunks if "[web evidence" not in c.casefold()]
+
+    def _clean(text: str) -> str:
+        for prefix in (
+            "[web evidence — institutional]",
+            "[web evidence — unverified]",
+            "[web evidence — unverified] ",
+            "Key facts:",
+        ):
+            text = text.replace(prefix, "")
+        return " ".join(text.split())
+
+    if web_chunks and not kb_chunks:
+        facts = [_clean(c) for c in web_chunks]
+        body = " ".join(facts)[:900]
+        if voice:
+            return body[:500]
+        if lang == "en":
+            return (
+                "Based on consulted web sources (not a substitute for verified "
+                f"SmartMboa knowledge):\n{body}\n\n"
+                "Would you like me to refine this for a specific city?"
+            )
+        return (
+            "D’après des sources web consultées (complément lorsque la base "
+            f"SmartMboa est insuffisante) :\n{body}\n\n"
+            "Souhaitez-vous que je précise pour une ville (Buea, Limbe, …) ?"
+        )
+
+    body = " ".join(_clean(c) for c in chunks)
     if voice:
         return " ".join(body.split())[:500]
     title = "From verified notes:" if lang == "en" else "D’après les notes vérifiées :"

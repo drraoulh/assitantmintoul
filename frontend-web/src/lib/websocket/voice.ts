@@ -19,7 +19,7 @@ export type VoiceServerEvent =
       metrics?: Record<string, unknown>;
     }
   | { type: 'interrupted' }
-  | { type: 'error'; message?: string; code?: string };
+  | { type: 'error'; message?: string; code?: string; recoverable?: boolean };
 
 function wsBase(): string {
   const http = getApiBaseUrl().replace(/\/$/, '');
@@ -67,8 +67,25 @@ export class VoiceSocket {
     this.send({ type: 'text', text, locale });
   }
 
-  sendAudioBase64(audio: string, mime = 'audio/webm'): void {
-    this.send({ type: 'audio', data: audio, mime });
+  /**
+   * One message = one turn. Do NOT follow with a bare `utterance` —
+   * the server cancels the current turn on every audio/text/utterance event.
+   */
+  sendAudioBase64(
+    audio: string,
+    mime = 'audio/webm',
+    locale: 'fr' | 'en' = 'fr',
+    turnId?: string,
+  ): void {
+    this.send({
+      type: 'audio',
+      audio_base64: audio,
+      data: audio,
+      mime_type: mime,
+      mime,
+      locale,
+      ...(turnId ? { turn_id: turnId } : {}),
+    });
   }
 
   interrupt(): void {

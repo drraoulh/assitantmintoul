@@ -1,9 +1,8 @@
-import { PageTransition } from '@/components/motion';
 import { AssistantChat } from '@/components/assistant/AssistantChat';
 
 /**
- * Server page — pass searchParams as props (no useSearchParams bailout).
- * Chat UI consumes structured ChatResponse from Agents 1–4 (no Agent 5).
+ * Full-height conversational assistant — no site footer (AppShell).
+ * Server page passes searchParams as props (no useSearchParams bailout).
  */
 type AssistantSearchParams = {
   q?: string;
@@ -20,10 +19,8 @@ export default async function AssistantPage({
   const autoVoice = params.voice === '1';
 
   return (
-    <PageTransition>
-      <div className="mx-auto max-w-4xl px-0 py-0 md:px-6 md:py-8">
-        <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />
-      </div>
-    </PageTransition>
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
+      <AssistantChat initialQuestion={initialQuestion} autoVoice={autoVoice} />
+    </div>
   );
 }

@@ -29,7 +29,10 @@ class CapabilityFlags:
 # Intent → default capability matrix (Phase 2.1).
 ROUTING_MATRIX: Mapping[IntentName, CapabilityFlags] = {
     Intent.SIMPLE_QA.value: CapabilityFlags(needs_knowledge=True),
-    Intent.TOURISM_INFO.value: CapabilityFlags(needs_knowledge=True),
+    Intent.TOURISM_INFO.value: CapabilityFlags(
+        needs_knowledge=True,
+        optional_web=True,
+    ),
     Intent.PLACE_SEARCH.value: CapabilityFlags(
         needs_knowledge=True,
         needs_places=True,
@@ -57,10 +60,12 @@ ROUTING_MATRIX: Mapping[IntentName, CapabilityFlags] = {
         needs_knowledge=True,
         needs_places=True,
         optional_planner=True,
+        optional_web=True,
     ),
     Intent.FOOD.value: CapabilityFlags(
         needs_knowledge=True,
         optional_places=True,
+        optional_web=True,
     ),
     Intent.HOTEL.value: CapabilityFlags(
         needs_knowledge=True,

@@ -278,10 +278,19 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("KNOWLEDGE_GEOGRAPHY_ENABLED"),
     )
     # When KB completeness is LOW/NONE for tourism intents, allow orchestrator
-    # to set needs_web from Agent 2 web_needed (still no Agent 5). Default OFF.
+    # to call Web Research Agent from Agent 2 web_needed. Default ON so FOOD /
+    # culture questions can fall back to validated web evidence.
     web_knowledge_fallback_enabled: bool = Field(
-        default=False,
+        default=True,
         validation_alias=AliasChoices("WEB_KNOWLEDGE_FALLBACK_ENABLED"),
+    )
+    web_research_timeout_seconds: float = Field(
+        default=9.0,
+        validation_alias=AliasChoices("WEB_RESEARCH_TIMEOUT_SECONDS"),
+    )
+    web_research_cache_ttl_seconds: float = Field(
+        default=1800.0,
+        validation_alias=AliasChoices("WEB_RESEARCH_CACHE_TTL_SECONDS"),
     )
 
     @property
