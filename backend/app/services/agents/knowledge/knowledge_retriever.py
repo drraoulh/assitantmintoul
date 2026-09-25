@@ -81,4 +81,5 @@ def _chunk_to_evidence(chunk: KnowledgeChunk, rank: int) -> KnowledgeEvidence:
         source_id=chunk.source or None,
         title=chunk.title or None,
         score=round(score, 3),
+        city=chunk.city or None,
     )

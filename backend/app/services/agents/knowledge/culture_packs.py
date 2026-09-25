@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -300,10 +301,19 @@ def clear_culture_cache() -> None:
     _load_pack.cache_clear()
 
 
+def _mentions(q: str, tokens: tuple[str, ...]) -> bool:
+    """Word-start match; short tokens must be whole words (« lac » ≠ « placé »)."""
+    for t in tokens:
+        pattern = rf"\b{re.escape(t)}s?\b" if len(t) <= 4 else rf"\b{re.escape(t)}"
+        if re.search(pattern, q):
+            return True
+    return False
+
+
 def _intent_flags(q: str) -> dict[str, bool]:
-    want_food = any(
-        t in q
-        for t in (
+    want_food = _mentions(
+        q,
+        (
             "plat",
             "manger",
             "food",
@@ -326,11 +336,11 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "brochette",
             "cafe",
             "café",
-        )
+        ),
     )
-    want_trad = any(
-        t in q
-        for t in (
+    want_trad = _mentions(
+        q,
+        (
             "tradition",
             "culture",
             "chefferie",
@@ -353,23 +363,22 @@ def _intent_flags(q: str) -> dict[str, bool]:
             "musee",
             "musée",
             "monument",
-        )
+        ),
     )
-    want_craft = any(
-        t in q for t in ("artisan", "sculpture", "bronze", "marché", "market", "craft", "tissu", "wax")
+    want_craft = _mentions(q, ("artisan", "sculpture", "bronze", "marché", "market", "craft", "tissu", "wax"))
+    want_hotel = _mentions(q, ("hotel", "hôtel", "heberg", "héberg", "dormir", "stay", "lodge", "motel", "auberge"))
+    want_nature = _mentions(
+        q,
+        ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise", "mangrove", "plage", "fleuve", "ile", "île", "parc"),
     )
-    want_hotel = any(t in q for t in ("hotel", "hôtel", "heberg", "héberg", "dormir", "stay"))
-    want_nature = any(
-        t in q
-        for t in ("lac", "chute", "cascade", "mont", "nature", "randonn", "falaise", "mangrove", "plage", "fleuve", "ile", "île", "parc")
+    want_practical = _mentions(
+        q,
+        ("itineraire", "itinéraire", "comment aller", "climat", "saison", "corridor", "aeroport", "aéroport"),
     )
-    want_practical = any(
-        t in q
-        for t in ("itineraire", "itinéraire", "comment aller", "climat", "saison", "corridor", "aeroport", "aéroport")
-    )
-    broad = any(
-        t in q for t in ("visiter", "visite", "touris", "que faire", "propos", "decouvrir", "découvrir")
-    )
+    broad = _mentions(q, ("visiter", "visite", "touris", "que faire", "propos", "decouvrir", "découvrir"))
+    # « Un hôtel à Kribi pour visiter » asks for hotels, not the whole culture pack.
+    if want_hotel and not (want_food or want_trad or want_craft or want_nature or want_practical):
+        broad = False
     return {
         "food": want_food,
         "trad": want_trad,
@@ -502,6 +511,7 @@ def _pack_evidence(region_id: str, pack: dict, *, language: str, flags: dict[str
                     source_id=source_id,
                     title=hotel.get("name"),
                     score=0.85,
+                    city=hotel.get("city"),
                 )
             )
         if not hotels:

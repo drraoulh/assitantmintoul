@@ -19,6 +19,10 @@ from app.core.config import get_settings
 from app.services.agents.intent import classify_intent
 from app.services.agents.intent.models import IntentResult
 from app.services.agents.knowledge.agent import KnowledgeAgent
+from app.services.agents.knowledge.relevance import (
+    filter_knowledge_for_intent,
+    filter_places_for_intent,
+)
 from app.services.agents.knowledge.models import (
     KnowledgeEvidence,
     KnowledgeResult,
@@ -61,19 +65,33 @@ def _fold(text: str | None) -> str:
 
 
 def _scope_places(knowledge: KnowledgeResult, intent: IntentResult) -> KnowledgeResult:
-    """Food/hotel answers must not show places from another city or region."""
-    if intent.intent not in {"FOOD", "HOTEL"} or not (intent.city or intent.region):
+    """Food/hotel answers must not show places from another city or region,
+    and hotel answers only keep hotel evidence (no museums, culture notes…)."""
+    if intent.intent not in {"FOOD", "HOTEL"}:
         return knowledge
-    city, region = _fold(intent.city), _fold(intent.region)
-    kept = [
-        p
-        for p in knowledge.places
-        if (city and _fold(p.city) == city) or (region and _fold(p.region) == region)
-    ]
-    if len(kept) == len(knowledge.places):
+    kept = filter_places_for_intent(intent, knowledge.places)
+    if intent.city or intent.region:
+        city, region = _fold(intent.city), _fold(intent.region)
+        kept = [
+            p
+            for p in kept
+            if (city and _fold(p.city) == city) or (region and _fold(p.region) == region)
+        ]
+    chunks = filter_knowledge_for_intent(intent, knowledge.knowledge)
+    if len(kept) == len(knowledge.places) and len(chunks) == len(knowledge.knowledge):
         return knowledge
+    kept_ids = {p.place_id for p in kept}
+    kept_chunk_ids = {c.chunk_id for c in chunks}
+    dropped_titles = {p.name for p in knowledge.places if p.place_id not in kept_ids} | {
+        c.title for c in knowledge.knowledge if c.chunk_id not in kept_chunk_ids and c.title
+    }
     scoped = knowledge.model_copy(deep=True)
-    scoped.places = [p for p in scoped.places if p.place_id in {k.place_id for k in kept}]
+    scoped.places = [p for p in scoped.places if p.place_id in kept_ids]
+    scoped.knowledge = [c for c in scoped.knowledge if c.chunk_id in kept_chunk_ids]
+    scoped.sources = [
+        s for s in scoped.sources if s.url or (s.name or s.source_id) not in dropped_titles
+    ]
+    scoped.verified_places_count = min(scoped.verified_places_count, len(scoped.places))
     return scoped
 
 

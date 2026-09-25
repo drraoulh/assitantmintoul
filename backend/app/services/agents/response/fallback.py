@@ -144,6 +144,15 @@ def _render_core(
     if intent.intent == "PLACE_DETAILS" and knowledge.places:
         return _render_place_details(knowledge.places[0], lang=lang, voice=voice)
 
+    if intent.intent == "HOTEL" and not knowledge.places and not any(
+        (k.chunk_id or "").startswith("culture-hotel-") and "-policy-" not in (k.chunk_id or "")
+        for k in knowledge.knowledge
+    ):
+        where = intent.city or intent.region
+        if lang == "en":
+            return f"I don't have a verified hotel{f' in {where}' if where else ''} yet."
+        return f"Je n’ai pas encore d’hôtel vérifié{f' à {where}' if where else ''}."
+
     if knowledge.places:
         return _render_place_list(knowledge, intent, lang=lang, voice=voice)
 
