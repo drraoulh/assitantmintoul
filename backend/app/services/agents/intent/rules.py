@@ -133,7 +133,11 @@ _WEB = re.compile(
     r"\b("
     r"actualit[eé]|news|aujourd['’]hui|today|cette\s+semaine|"
     r"horaires?\s+actuels?|current\s+(?:hours|schedule|price)|"
-    r"ouvert\s+maintenant|open\s+now|prix\s+actuel"
+    r"ouvert\s+maintenant|open\s+now|prix\s+actuel|"
+    r"recherche\s+sur\s+(?:internet|le\s+web|google)|"
+    r"cherche\s+sur\s+(?:internet|le\s+web|google)|"
+    r"search\s+(?:the\s+)?(?:web|internet)|"
+    r"sur\s+internet|on\s+the\s+web|google\s+(?:moi|me)"
     r")\b",
     re.IGNORECASE,
 )
