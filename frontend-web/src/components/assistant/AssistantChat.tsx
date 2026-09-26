@@ -26,6 +26,7 @@ import { friendlyError, sendChatMessage, synthesizeSpeech } from '@/lib/api/clie
 import { audioPlayback } from '@/lib/audio/playback';
 import { speakOnDevice, splitForSpeech, stopDeviceSpeech } from '@/lib/audio/tts';
 import { useLocale } from '@/lib/i18n';
+import { answerLocalPhrase } from '@/lib/languages/local-phrase';
 import { structuredFromChatResponse } from '@/lib/utils/response';
 import type { StructuredChatUI } from '@/lib/types';
 
@@ -37,12 +38,15 @@ interface Msg {
   isError?: boolean;
   isTip?: boolean;
   streaming?: boolean;
+  /** Native local-language recording URL (Mbouda / Medumba). */
+  phraseAudioUrl?: string | null;
+  guideLine?: string | null;
 }
 
 const SUGGESTIONS = [
   { icon: MapPin, label: 'Lieux près de moi', q: 'Je suis à Bafoussam et je veux visiter un site touristique.' },
   { icon: Compass, label: 'Planifier un voyage', q: 'Propose un itinéraire de 3 jours à Limbé.' },
-  { icon: Landmark, label: 'Découvrir la culture', q: 'Parle-moi de la culture et des chefferies au Cameroun.' },
+  { icon: Landmark, label: 'Parler local', q: 'How do you say good morning in Mbouda?' },
   { icon: Trees, label: 'Explorer la nature', q: 'Quels parcs naturels vérifiés recommandez-vous ?' },
   { icon: Utensils, label: 'Découvrir la gastronomie', q: "C'est quoi la nourriture traditionnelle au Sud-Ouest ?" },
   { icon: Hotel, label: 'Trouver un hôtel', q: 'Propose un hôtel vérifié à Douala.' },
@@ -85,6 +89,26 @@ export function AssistantChat({
     setSpeakingMsgId(null);
   }, []);
 
+  async function playLocalCoach(msg: Msg) {
+    const guide = msg.guideLine?.trim() || msg.content.split('\n')[0]?.trim();
+    const url = msg.phraseAudioUrl;
+    if (!guide && !url) return;
+
+    stopAllAudio();
+    setSpeakingMsgId(msg.id);
+    try {
+      if (guide) {
+        await speakOnDevice(guide, locale);
+      }
+      if (url) {
+        audioPlayback.enqueueUrl(url);
+        await audioPlayback.waitUntilIdle();
+      }
+    } finally {
+      setSpeakingMsgId(null);
+    }
+  }
+
   async function ask(text: string) {
     const trimmed = text.trim();
     if (!trimmed || sending || voiceOpen) return;
@@ -96,6 +120,22 @@ export function AssistantChat({
     ]);
     setInput('');
     try {
+      const local = answerLocalPhrase(trimmed, locale === 'en' ? 'en' : 'fr');
+      if (local) {
+        const id = `${Date.now()}-a`;
+        const msg: Msg = {
+          id,
+          role: 'assistant',
+          content: local.answer,
+          phraseAudioUrl: local.audioUrl,
+          guideLine: local.guideLine,
+        };
+        setMessages((m) => [...m, msg]);
+        setSending(false);
+        void playLocalCoach(msg);
+        return;
+      }
+
       const res = await sendChatMessage({
         message: trimmed,
         conversation_id: conversationId,
@@ -209,6 +249,11 @@ export function AssistantChat({
 
     if (speakingMsgId === msg.id) {
       stopAllAudio();
+      return;
+    }
+
+    if (msg.phraseAudioUrl || msg.guideLine) {
+      await playLocalCoach(msg);
       return;
     }
 
@@ -380,7 +425,9 @@ export function AssistantChat({
                   aria-label={
                     speakingMsgId === msg.id
                       ? 'Arrêter la lecture'
-                      : 'Lire la réponse'
+                      : msg.phraseAudioUrl
+                        ? 'Écouter la voix locale'
+                        : 'Lire la réponse'
                   }
                 >
                   {speakingMsgId === msg.id ? (
@@ -391,7 +438,7 @@ export function AssistantChat({
                   ) : (
                     <>
                       <Volume2 className="h-3.5 w-3.5" aria-hidden />
-                      Lire
+                      {msg.phraseAudioUrl ? 'Voix locale' : 'Lire'}
                     </>
                   )}
                 </button>

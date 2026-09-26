@@ -6,7 +6,7 @@
 type Listener = (playing: boolean) => void;
 
 class AudioPlaybackController {
-  private queue: Blob[] = [];
+  private queue: Array<{ kind: 'blob'; blob: Blob } | { kind: 'url'; url: string }> = [];
   private current: HTMLAudioElement | null = null;
   private resolveCurrent: (() => void) | null = null;
   private pumping = false;
@@ -39,7 +39,15 @@ class AudioPlaybackController {
 
   enqueueBlob(blob: Blob) {
     if (this.stopped) this.stopped = false;
-    this.queue.push(blob);
+    this.queue.push({ kind: 'blob', blob });
+    void this.pump();
+  }
+
+  /** Play a static/public URL (e.g. native /audio/Mbouda/*.mp4). */
+  enqueueUrl(url: string) {
+    if (!url) return;
+    if (this.stopped) this.stopped = false;
+    this.queue.push({ kind: 'url', url });
     void this.pump();
   }
 
@@ -47,7 +55,14 @@ class AudioPlaybackController {
   async playExclusive(blob: Blob): Promise<void> {
     this.stop();
     this.stopped = false;
-    this.queue = [blob];
+    this.queue = [{ kind: 'blob', blob }];
+    await this.pump();
+  }
+
+  async playExclusiveUrl(url: string): Promise<void> {
+    this.stop();
+    this.stopped = false;
+    this.queue = [{ kind: 'url', url }];
     await this.pump();
   }
 
@@ -83,15 +98,16 @@ class AudioPlaybackController {
     this.pumping = true;
     this.emit();
     while (this.queue.length && !this.stopped) {
-      const blob = this.queue.shift()!;
-      const url = URL.createObjectURL(blob);
+      const item = this.queue.shift()!;
+      const objectUrl = item.kind === 'blob' ? URL.createObjectURL(item.blob) : null;
+      const src = item.kind === 'blob' ? objectUrl! : item.url;
       try {
         await new Promise<void>((resolve) => {
           if (this.stopped) {
             resolve();
             return;
           }
-          const audio = new Audio(url);
+          const audio = new Audio(src);
           this.current = audio;
           this.resolveCurrent = resolve;
           const done = () => {
@@ -103,7 +119,7 @@ class AudioPlaybackController {
           void audio.play().catch(done);
         });
       } finally {
-        URL.revokeObjectURL(url);
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
         this.current = null;
       }
     }

@@ -8,12 +8,14 @@ import {
   Camera,
   Compass,
   Hotel,
+  Languages,
   MapPin,
   Mic,
   Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 
+import { LanguageGameModal } from '@/components/languages/LanguageGameModal';
 import { PlaceCard } from '@/components/places/PlaceCard';
 import { RegionCoverGrid } from '@/components/places/RegionCoverCard';
 import { Button, Input, Skeleton } from '@/components/ui';
@@ -34,6 +36,7 @@ export default function HomePage() {
   const [allPlaces, setAllPlaces] = useState<TouristSite[]>([]);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [loadingPlaces, setLoadingPlaces] = useState(true);
+  const [langGameOpen, setLangGameOpen] = useState(false);
   const onIntroComplete = useCallback(() => setReady(true), []);
 
   useEffect(() => {
@@ -105,6 +108,7 @@ export default function HomePage() {
   return (
     <>
       {!ready ? <SmartMboaIntro onComplete={onIntroComplete} /> : null}
+      <LanguageGameModal open={langGameOpen} onClose={() => setLangGameOpen(false)} />
 
       <div className={ready ? '' : 'hidden'}>
         <section className="relative overflow-hidden bg-gradient-to-br from-white via-[#007A5E]/5 to-[#FCD116]/35">
@@ -183,39 +187,60 @@ export default function HomePage() {
             <h2 className="mb-8 text-center text-3xl font-bold text-[#007A5E] md:text-4xl">
               Ce que nous proposons
             </h2>
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {[
                 {
                   icon: Compass,
                   title: 'Explorer une région',
                   body: 'Parcourez les dix régions et les lieux vérifiés de notre catalogue.',
-                  href: '/explorer',
+                  href: '/explorer' as string | null,
                 },
                 {
                   icon: MapPin,
                   title: 'Planifier un voyage',
                   body: 'Itinéraire, budget et hébergements à partir des données disponibles.',
-                  href: '/planifier',
+                  href: '/planifier' as string | null,
                 },
                 {
                   icon: Sparkles,
                   title: 'Demander au guide',
                   body: 'Posez une question en texte ou à la voix. La réponse reste ancrée dans les sources.',
-                  href: '/assistant',
+                  href: '/assistant' as string | null,
                 },
-              ].map((card) => (
-                <Link
-                  key={card.href}
-                  href={card.href}
-                  className="rounded-lg bg-white p-6 text-center shadow-lg transition duration-300 hover:scale-105"
-                >
-                  <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FCD116]/40">
-                    <card.icon className="h-7 w-7 text-[#007A5E]" aria-hidden />
-                  </span>
-                  <h3 className="mb-2 text-xl font-bold text-[#007A5E]">{card.title}</h3>
-                  <p className="text-sm text-[#535557]">{card.body}</p>
-                </Link>
-              ))}
+                {
+                  icon: Languages,
+                  title: 'Parler local',
+                  body: 'Apprenez Ewondo, Duala, Fulfulde et Yemba avec un quiz ludique.',
+                  href: null,
+                },
+              ].map((card) =>
+                card.href ? (
+                  <Link
+                    key={card.title}
+                    href={card.href}
+                    className="rounded-lg bg-white p-6 text-center shadow-lg transition duration-300 hover:scale-105"
+                  >
+                    <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FCD116]/40">
+                      <card.icon className="h-7 w-7 text-[#007A5E]" aria-hidden />
+                    </span>
+                    <h3 className="mb-2 text-xl font-bold text-[#007A5E]">{card.title}</h3>
+                    <p className="text-sm text-[#535557]">{card.body}</p>
+                  </Link>
+                ) : (
+                  <button
+                    key={card.title}
+                    type="button"
+                    onClick={() => setLangGameOpen(true)}
+                    className="rounded-lg bg-white p-6 text-center shadow-lg transition duration-300 hover:scale-105"
+                  >
+                    <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#FCD116]/40">
+                      <card.icon className="h-7 w-7 text-[#007A5E]" aria-hidden />
+                    </span>
+                    <h3 className="mb-2 text-xl font-bold text-[#007A5E]">{card.title}</h3>
+                    <p className="text-sm text-[#535557]">{card.body}</p>
+                  </button>
+                ),
+              )}
             </div>
           </div>
         </section>

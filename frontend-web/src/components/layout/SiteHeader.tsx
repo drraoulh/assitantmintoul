@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import {
   Compass,
   Hotel,
+  Languages,
   Map,
   Menu,
   Plane,
@@ -25,6 +26,7 @@ const LINKS = [
   { href: '/explorer', key: 'nav.explorer', icon: Compass },
   { href: '/planifier', key: 'nav.planifier', icon: Map },
   { href: '/hotels', key: 'nav.hotels', icon: Hotel },
+  { href: '/langues', key: 'nav.langues', icon: Languages },
   { href: '/mon-voyage', key: 'nav.trip', icon: Plane },
   { href: '/groupe', key: 'nav.group', icon: Users },
 ] as const;
@@ -264,6 +266,7 @@ export function SiteFooter() {
               ['/explorer', 'Explorer'],
               ['/destinations', 'Destinations'],
               ['/culture', 'Culture'],
+              ['/langues', 'Langues'],
               ['/vision', 'Vision'],
             ].map(([href, label]) => (
               <Link key={href} href={href} className="hover:text-[#FCD116]">
